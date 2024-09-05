@@ -11,7 +11,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
 public class RetrieveFacetsTest extends BaseTest {
@@ -44,6 +44,9 @@ public class RetrieveFacetsTest extends BaseTest {
                 .get("/api/v1/search-facets")
                 .then()
                 .statusCode(200)
-                .body("", hasSize(11));
+                .body("", hasSize(11))
+                .body("find { it.facetGroup == 'ckan' }.values", hasSize(greaterThan(0)))
+                .body("find { it.facetGroup == 'beacon' }.values", hasSize(greaterThan(0)))
+                .body("find { it.label == 'Human Phenotype Ontology' }.values", hasSize(greaterThan(0)));
     }
 }

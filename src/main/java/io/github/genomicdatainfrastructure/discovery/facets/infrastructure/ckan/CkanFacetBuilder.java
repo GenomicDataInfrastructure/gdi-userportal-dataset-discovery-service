@@ -41,8 +41,8 @@ public class CkanFacetBuilder implements IFacetBuilder {
                 null,
                 null,
                 null,
-                null,
-                null,
+                0,
+                0,
                 selectedFacets,
                 accessToken
         );

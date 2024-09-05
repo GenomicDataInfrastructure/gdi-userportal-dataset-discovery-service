@@ -31,7 +31,7 @@ public class BeaconFacetBuilder implements IFacetBuilder {
     public List<Facet> build(String accessToken) {
         var beaconAuthorization = beaconAuth.retrieveAuthorization(accessToken);
         if (beaconAuthorization == null) {
-            return null;
+            return List.of();
         }
         return service.listFilteringTermList(beaconAuthorization);
     }

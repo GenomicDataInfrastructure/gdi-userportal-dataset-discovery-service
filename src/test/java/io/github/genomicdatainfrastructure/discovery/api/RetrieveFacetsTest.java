@@ -47,6 +47,7 @@ public class RetrieveFacetsTest extends BaseTest {
                 .body("", hasSize(11))
                 .body("find { it.facetGroup == 'ckan' }.values", hasSize(greaterThan(0)))
                 .body("find { it.facetGroup == 'beacon' }.values", hasSize(greaterThan(0)))
-                .body("find { it.label == 'Human Phenotype Ontology' }.values", hasSize(greaterThan(0)));
+                .body("find { it.label == 'Human Phenotype Ontology' }.values", hasSize(greaterThan(
+                        0)));
     }
 }

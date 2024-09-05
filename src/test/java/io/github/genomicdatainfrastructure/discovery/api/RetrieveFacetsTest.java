@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 PNED G.I.E.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 package io.github.genomicdatainfrastructure.discovery.api;
 
 import com.github.tomakehurst.wiremock.client.WireMock;

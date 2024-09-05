@@ -143,6 +143,24 @@ paths:
       security:
         - discovery_auth:
             - read:datasets
+  /api/v1/search-facets:
+    get:
+      summary: Retrieves search facets for querying datasets
+      operationId: retrieve_search_facets
+      tags:
+        - "search-facets-query"
+      responses:
+        "200":
+          description: A list of search facets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Facet"
+      security:
+        - discovery_auth:
+            - read:search-facets
 components:
   securitySchemes:
     discovery_auth:
@@ -483,6 +501,9 @@ components:
           title: Facets
     Facet:
       properties:
+        facetGroup:
+          type: string
+          title: Facet group
         key:
           type: string
           title: Key

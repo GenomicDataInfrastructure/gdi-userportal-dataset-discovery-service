@@ -8,7 +8,7 @@ import io.github.genomicdatainfrastructure.discovery.model.Facet;
 
 import java.util.List;
 
-public interface IFacetBuilder {
+public interface FacetsBuilder {
 
     List<Facet> build(String accessToken);
 }

@@ -2,13 +2,14 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence;
+package io.github.genomicdatainfrastructure.discovery.facets.infrastructure.ckan;
 
-import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.FacetsBuilder;
-import io.github.genomicdatainfrastructure.discovery.model.*;
+import io.github.genomicdatainfrastructure.discovery.facets.ports.FacetsBuilder;
+import io.github.genomicdatainfrastructure.discovery.model.Facet;
+import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
-import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
-import io.github.genomicdatainfrastructure.discovery.utils.CkanFacetsQueryBuilder;
+import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFacet;
+import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesSearchResult;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -16,7 +17,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.*;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FACET_GROUP;
 import static java.util.Optional.ofNullable;
 
 @ApplicationScoped
@@ -35,15 +36,13 @@ public class CkanFacetsBuilder implements FacetsBuilder {
     }
 
     @Override
-    public FacetGroup build(DatasetSearchQuery query, String accessToken) {
-        var facetsQuery = CkanFacetsQueryBuilder.buildFacetQuery(query);
-
+    public List<Facet> build(String accessToken) {
         var response = ckanQueryApi.packageSearch(
-                query.getQuery(),
-                facetsQuery,
                 null,
                 null,
                 null,
+                0,
+                0,
                 selectedFacets,
                 accessToken
         );
@@ -52,22 +51,21 @@ public class CkanFacetsBuilder implements FacetsBuilder {
                 .map(PackagesSearchResult::getSearchFacets)
                 .orElseGet(Map::of);
 
-        return facetGroup(nonNullSearchFacets);
+        return facets(nonNullSearchFacets);
     }
 
-    private FacetGroup facetGroup(Map<String, CkanFacet> facets) {
-        return FacetGroup.builder()
-                .key(CKAN_FACET_GROUP)
-                .label(CKAN_FACET_LABEL)
-                .facets(facets.entrySet().stream()
-                        .map(this::facet)
-                        .toList())
-                .build();
+    private List<Facet> facets(Map<String, CkanFacet> facets) {
+        return facets
+                .entrySet()
+                .stream()
+                .map(this::facet)
+                .toList();
     }
 
     private Facet facet(Map.Entry<String, CkanFacet> entry) {
         var key = entry.getKey();
         var facet = entry.getValue();
+
         var values = ofNullable(facet.getItems())
                 .orElseGet(List::of)
                 .stream()
@@ -78,11 +76,12 @@ public class CkanFacetsBuilder implements FacetsBuilder {
                 )
                 .toList();
 
-        return Facet.builder()
+        return Facet
+                .builder()
+                .facetGroup(CKAN_FACET_GROUP)
                 .key(key)
                 .label(facet.getTitle())
                 .values(values)
                 .build();
     }
-
 }

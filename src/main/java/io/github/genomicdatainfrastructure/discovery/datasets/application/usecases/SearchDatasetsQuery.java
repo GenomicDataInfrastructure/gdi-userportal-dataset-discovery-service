@@ -6,7 +6,6 @@ package io.github.genomicdatainfrastructure.discovery.datasets.application.useca
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
-import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.FacetsBuilder;
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.RecordsCountCollector;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetsSearchResponse;
@@ -17,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 
@@ -27,7 +25,6 @@ public class SearchDatasetsQuery {
 
     private final DatasetsRepository repository;
     private final Instance<DatasetIdsCollector> collectors;
-    private final Instance<FacetsBuilder> facetsBuilders;
     private final RecordsCountCollector recordsCountCollector;
 
     public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken) {
@@ -57,17 +54,10 @@ public class SearchDatasetsQuery {
                         .build())
                 .toList();
 
-        var facetGroups = facetsBuilders
-                .stream()
-                .map(facetBuilder -> facetBuilder.build(query, accessToken))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
         return DatasetsSearchResponse
                 .builder()
                 .count(datasetIds.size())
                 .results(enhancedDatasets)
-                .facetGroups(facetGroups)
                 .build();
     }
 

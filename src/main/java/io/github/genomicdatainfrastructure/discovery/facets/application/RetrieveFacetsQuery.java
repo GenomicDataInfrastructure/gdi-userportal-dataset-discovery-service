@@ -4,7 +4,7 @@
 
 package io.github.genomicdatainfrastructure.discovery.facets.application;
 
-import io.github.genomicdatainfrastructure.discovery.facets.ports.IFacetBuilder;
+import io.github.genomicdatainfrastructure.discovery.facets.ports.FacetsBuilder;
 import io.github.genomicdatainfrastructure.discovery.model.Facet;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class RetrieveFacetsQuery {
 
-    private final Instance<IFacetBuilder> facetsBuilders;
+    private final Instance<FacetsBuilder> facetsBuilders;
 
     public List<Facet> execute(String accessToken) {
         return facetsBuilders

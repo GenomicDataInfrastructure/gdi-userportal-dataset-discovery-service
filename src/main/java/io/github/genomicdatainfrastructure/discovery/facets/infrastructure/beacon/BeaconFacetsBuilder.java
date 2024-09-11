@@ -2,16 +2,17 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence;
+package io.github.genomicdatainfrastructure.discovery.facets.infrastructure.beacon;
 
-import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.FacetsBuilder;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.auth.BeaconAuth;
-import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
-import io.github.genomicdatainfrastructure.discovery.model.FacetGroup;
+import io.github.genomicdatainfrastructure.discovery.facets.ports.FacetsBuilder;
+import io.github.genomicdatainfrastructure.discovery.model.Facet;
 import io.github.genomicdatainfrastructure.discovery.services.BeaconFilteringTermsService;
 import io.quarkus.arc.lookup.LookupIfProperty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import java.util.List;
 
 @ApplicationScoped
 @LookupIfProperty(name = "sources.beacon", stringValue = "true")
@@ -27,11 +28,11 @@ public class BeaconFacetsBuilder implements FacetsBuilder {
     }
 
     @Override
-    public FacetGroup build(DatasetSearchQuery query, String accessToken) {
+    public List<Facet> build(String accessToken) {
         var beaconAuthorization = beaconAuth.retrieveAuthorization(accessToken);
         if (beaconAuthorization == null) {
-            return null;
+            return List.of();
         }
-        return service.listFilteringTerms(beaconAuthorization);
+        return service.listFilteringTermList(beaconAuthorization);
     }
 }

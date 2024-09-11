@@ -5,7 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.facets;
 
 import io.github.genomicdatainfrastructure.discovery.facets.application.RetrieveFacetsQuery;
-import io.github.genomicdatainfrastructure.discovery.facets.ports.IFacetBuilder;
+import io.github.genomicdatainfrastructure.discovery.facets.ports.FacetsBuilder;
 import io.github.genomicdatainfrastructure.discovery.model.Facet;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import jakarta.enterprise.inject.Instance;
@@ -26,13 +26,13 @@ import static org.mockito.Mockito.*;
 public class RetrieveFacetsQueryTest {
 
     @Mock
-    private Instance<IFacetBuilder> facetBuilders;
+    private Instance<FacetsBuilder> facetBuilders;
 
     @Mock
-    private IFacetBuilder facetBuilderCkan;
+    private FacetsBuilder facetBuilderCkan;
 
     @Mock
-    private IFacetBuilder facetBuilderBeacon;
+    private FacetsBuilder facetBuilderBeacon;
 
     @InjectMocks
     private RetrieveFacetsQuery query;

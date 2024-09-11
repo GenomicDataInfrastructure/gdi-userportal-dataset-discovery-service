@@ -4,13 +4,23 @@
 
 package io.github.genomicdatainfrastructure.discovery.api;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.github.genomicdatainfrastructure.discovery.BaseTest;
+import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
+import io.github.genomicdatainfrastructure.discovery.model.DatasetsSearchResponse;
+import io.github.genomicdatainfrastructure.discovery.model.Facet;
+import io.github.genomicdatainfrastructure.discovery.model.FacetGroup;
 import io.quarkus.test.junit.QuarkusTest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
@@ -49,5 +59,33 @@ public class RetrieveFacetsTest extends BaseTest {
                 .body("find { it.facetGroup == 'beacon' }.values", hasSize(greaterThan(0)))
                 .body("find { it.label == 'Human Phenotype Ontology' }.values", hasSize(greaterThan(
                         0)));
+    }
+
+    @Test
+    void retrieves_beacon_filtering_terms() {
+        var response = given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .get("/api/v1/search-facets");
+
+        var mapper = new ObjectMapper();
+
+        try {
+            List<Facet> body = mapper.readerForListOf(Facet.class).readValue(response.getBody()
+                    .asString());
+
+            var actual = body
+                    .stream()
+                    .filter(it -> "beacon".equals(it.getFacetGroup()))
+                    .map(it -> it.getKey())
+                    .collect(toList());
+
+            assertThat(actual)
+                    .containsExactlyInAnyOrder(
+                            "gaz", "ncit", "opcs4", "hp", "loinc", "icd10"
+                    );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

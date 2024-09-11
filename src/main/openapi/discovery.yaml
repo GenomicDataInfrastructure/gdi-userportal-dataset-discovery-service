@@ -281,11 +281,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SearchedDataset"
-        facetGroups:
-          type: array
-          items:
-            $ref: "#/components/schemas/FacetGroup"
-          description: Facet groups
     RetrievedDataset:
       type: object
       properties:

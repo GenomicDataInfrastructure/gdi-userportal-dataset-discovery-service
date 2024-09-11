@@ -10,7 +10,6 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryAp
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
 import io.github.genomicdatainfrastructure.discovery.utils.CkanFacetsQueryBuilder;
 import io.github.genomicdatainfrastructure.discovery.utils.DatasetOrganizationMapper;
-import io.github.genomicdatainfrastructure.discovery.utils.PackageShowMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.ObjectUtils;

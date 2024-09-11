@@ -10,6 +10,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryAp
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
 import io.github.genomicdatainfrastructure.discovery.utils.CkanFacetsQueryBuilder;
 import io.github.genomicdatainfrastructure.discovery.utils.DatasetOrganizationMapper;
+import io.github.genomicdatainfrastructure.discovery.utils.PackageShowMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.ObjectUtils;
@@ -106,6 +107,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
                 .organization(DatasetOrganizationMapper.from(dataset.getOrganization()))
                 .modifiedAt(parse(dataset.getMetadataModified()))
                 .createdAt(parse(dataset.getMetadataCreated()))
+                .distributions(distributions(dataset.getResources()))
                 .build();
     }
 
@@ -146,5 +148,25 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         return ofNullable(date)
                 .map(it -> LocalDateTime.parse(it, DATE_FORMATTER))
                 .orElse(null);
+    }
+
+    private List<RetrievedDistribution> distributions(List<CkanResource> resources) {
+        return ofNullable(resources)
+                .orElseGet(List::of)
+                .stream()
+                .map(this::distribution)
+                .toList();
+    }
+
+    private RetrievedDistribution distribution(CkanResource ckanResource) {
+        return RetrievedDistribution.builder()
+                .id(ckanResource.getId())
+                .title(ckanResource.getName())
+                .description(ckanResource.getDescription())
+                .format(value(ckanResource.getFormat()))
+                .uri(ckanResource.getUri())
+                .createdAt(parse(ckanResource.getCreated()))
+                .modifiedAt(parse(ckanResource.getLastModified()))
+                .build();
     }
 }

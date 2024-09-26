@@ -100,7 +100,7 @@ class PackageShowMapperTest {
                                         .name("pdf")
                                         .build())
                                 .uri("uri")
-                                .created("2025-03-19T13:37:05.472970")
+                                .created("2025-03-19")
                                 .lastModified("2025-03-19T13:37:05Z")
                                 .build()))
                 .contactPoint(List.of(
@@ -194,7 +194,7 @@ class PackageShowMapperTest {
                                 .id("resource_id")
                                 .title("resource_name")
                                 .description("resource_description")
-                                .createdAt(parse("2025-03-19T13:37:05Z"))
+                                .createdAt(parse("2025-03-19T00:00Z"))
                                 .modifiedAt(parse("2025-03-19T13:37:05Z"))
                                 .format(ValueLabel.builder()
                                         .value("pdf")

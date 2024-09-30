@@ -225,14 +225,18 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CkanTag"
-        contact_point:
+        contact:
           type: array
           items:
             $ref: "#/components/schemas/CkanContactPoint"
         creator:
           type: array
           items:
-            $ref: "#/components/schemas/CkanCreator"
+            $ref: "#/components/schemas/CkanAgent"
+        publisher:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanAgent"
         datasetRelationships:
           type: array
           items:
@@ -243,8 +247,6 @@ components:
           items:
             $ref: "#/components/schemas/CkanDatasetDictionaryEntry"
           title: Data Dictionary
-        publisher_name:
-          type: string
         organization:
           $ref: "#/components/schemas/CkanOrganization"
         issued:
@@ -255,14 +257,16 @@ components:
           type: string
         metadata_modified:
           type: string
+        temporal_start:
+          type: string
+        temporal_end:
+          type: string
         url:
           type: string
         language:
           type: array
           items:
             $ref: "#/components/schemas/CkanValueLabel"
-        contact_uri:
-          type: string
         has_version:
           type: array
           items:
@@ -288,28 +292,37 @@ components:
         - title
     CkanContactPoint:
       properties:
-        contact_name:
+        name:
           type: string
           title: name
-        contact_email:
+        email:
           type: string
           title: email
-        contact_uri:
+        uri:
           type: string
           title: uri
       required:
         - name
         - email
-    CkanCreator:
-      type: object
+    CkanAgent:
       properties:
-        creator_name:
+        name:
           type: string
-        creator_identifier:
+          title: name
+        email:
           type: string
+          title: email
+        url:
+          type: string
+          title: url
+        type:
+          type: string
+          title: type
+        identifier:
+          type: string
+          title: identifier
       required:
-        - creator_name
-        - creator_identifier
+        - name
     CkanDatasetRelationEntry:
       properties:
         relation:

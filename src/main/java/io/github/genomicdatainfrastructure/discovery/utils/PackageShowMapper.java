@@ -26,8 +26,7 @@ import lombok.experimental.UtilityClass;
 public class PackageShowMapper {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(
-            "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
-    );
+            "yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
 
     public RetrievedDataset from(CkanPackage ckanPackage) {
         var catalogue = ofNullable(ckanPackage.getOrganization())
@@ -40,15 +39,14 @@ public class PackageShowMapper {
                 .title(ckanPackage.getTitle())
                 .description(ckanPackage.getNotes())
                 .themes(values(ckanPackage.getTheme()))
-                .publisherName(ckanPackage.getPublisherName())
                 .catalogue(catalogue)
                 .organization(DatasetOrganizationMapper.from(ckanPackage.getOrganization()))
                 .createdAt(parse(ckanPackage.getIssued()))
                 .modifiedAt(parse(ckanPackage.getModified()))
                 .url(ckanPackage.getUrl())
                 .languages(values(ckanPackage.getLanguage()))
-                .contact(value(ckanPackage.getContactUri()))
-                .creators(creator(ckanPackage))
+                .creators(agents(ckanPackage.getCreator()))
+                .publishers(agents(ckanPackage.getPublisher()))
                 .hasVersions(values(ckanPackage.getHasVersion()))
                 .accessRights(value(ckanPackage.getAccessRights()))
                 .conformsTo(values(ckanPackage.getConformsTo()))
@@ -56,7 +54,7 @@ public class PackageShowMapper {
                 .spatial(value(ckanPackage.getSpatialUri()))
                 .distributions(distributions(ckanPackage))
                 .keywords(keywords(ckanPackage))
-                .contacts(contactPoint(ckanPackage.getContactPoint()))
+                .contacts(contactPoint(ckanPackage.getContact()))
                 .datasetRelationships(relations(ckanPackage.getDatasetRelationships()))
                 .dataDictionary(dictionary(ckanPackage.getDataDictionary()))
                 .build();
@@ -91,18 +89,10 @@ public class PackageShowMapper {
 
     private ContactPoint contactPointEntry(CkanContactPoint value) {
         return ContactPoint.builder()
-                .name(value.getContactName())
-                .email(value.getContactEmail())
-                .uri(value.getContactUri())
+                .name(value.getName())
+                .email(value.getEmail())
+                .uri(value.getUri())
                 .build();
-    }
-
-    private List<ValueLabel> creator(CkanPackage ckanPackage) {
-        return ofNullable(ckanPackage.getCreator())
-                .orElseGet(List::of)
-                .stream()
-                .map(PackageShowMapper::creator)
-                .toList();
     }
 
     private DatasetRelationEntry relation(CkanDatasetRelationEntry value) {
@@ -149,11 +139,25 @@ public class PackageShowMapper {
 
     }
 
-    private ValueLabel creator(CkanCreator creator) {
-        return ValueLabel.builder()
-                .label(creator.getCreatorName())
-                .value(creator.getCreatorIdentifier())
-                .build();
+    private Agent value(CkanAgent value) {
+        return ofNullable(value)
+                .map(it -> Agent.builder()
+                        .name(value.getName())
+                        .email(value.getEmail())
+                        .type(value.getType())
+                        .identifier(value.getIdentifier())
+                        .url(value.getUrl())
+                        .build())
+                .orElse(null);
+    }
+
+    private List<Agent> agents(List<CkanAgent> creators) {
+        return ofNullable(creators)
+                .orElseGet(List::of)
+                .stream()
+                .map(PackageShowMapper::value)
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     private OffsetDateTime parse(String date) {

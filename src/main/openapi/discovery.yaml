@@ -316,9 +316,6 @@ components:
           items:
             $ref: "#/components/schemas/DatasetDictionaryEntry"
           title: Data Dictionary
-        publisherName:
-          type: string
-          title: Publisher Name
         catalogue:
           type: string
           title: Catalogue
@@ -338,13 +335,14 @@ components:
           items:
             $ref: "#/components/schemas/ValueLabel"
           title: Languages
-        contact:
-          $ref: "#/components/schemas/ValueLabel"
-          title: Contact
         creators:
           type: array
           items:
-            $ref: "#/components/schemas/ValueLabel"
+            $ref: "#/components/schemas/Agent"
+        publishers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"
         hasVersions:
           type: array
           items:
@@ -441,6 +439,26 @@ components:
       required:
         - name
         - email
+    Agent:
+      properties:
+        name:
+          type: string
+          title: name
+        email:
+          type: string
+          title: email
+        url:
+          type: string
+          title: url
+        type:
+          type: string
+          title: type
+        identifier:
+          type: string
+          title: identifier
+      required:
+        - name
+        - email 
     DatasetRelationEntry:
       properties:
         relation:

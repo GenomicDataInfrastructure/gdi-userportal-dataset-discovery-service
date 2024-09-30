@@ -70,7 +70,6 @@ class PackageShowMapperTest {
                                 .displayName("language")
                                 .name("en")
                                 .build()))
-                .contactUri("contactUri")
                 .hasVersion(List.of(
                         CkanValueLabel.builder()
                                 .displayName("version")
@@ -175,11 +174,6 @@ class PackageShowMapperTest {
                                 .value("en")
                                 .label("language")
                                 .build()))
-                .contacts(List.of(ContactPoint.builder()
-                        .name("contactName")
-                        .email("contactEmail")
-                        .uri("contactUri")
-                        .build()))
                 .hasVersions(List.of(
                         ValueLabel.builder()
                                 .value("1")

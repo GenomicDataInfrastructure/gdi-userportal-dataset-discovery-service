@@ -2,23 +2,23 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.facets.infrastructure.quarkus;
+package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus;
 
-import io.github.genomicdatainfrastructure.discovery.api.SearchFacetsQueryApi;
-import io.github.genomicdatainfrastructure.discovery.facets.application.RetrieveFacetsQuery;
+import io.github.genomicdatainfrastructure.discovery.api.FiltersQueryApi;
+import io.github.genomicdatainfrastructure.discovery.filters.application.usecases.RetrieveFiltersQuery;
 import io.quarkus.oidc.runtime.OidcJwtCallerPrincipal;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FacetsController implements SearchFacetsQueryApi {
+public class FilterController implements FiltersQueryApi {
 
     private final SecurityIdentity identity;
-    private final RetrieveFacetsQuery query;
+    private final RetrieveFiltersQuery query;
 
     @Override
-    public Response retrieveSearchFacets() {
+    public Response retrieveFilters() {
         var facets = query.execute(accessToken());
         return Response.ok(facets).build();
     }
@@ -30,4 +30,5 @@ public class FacetsController implements SearchFacetsQueryApi {
         var principal = (OidcJwtCallerPrincipal) identity.getPrincipal();
         return principal.getRawToken();
     }
+
 }

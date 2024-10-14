@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.facets.infrastructure.ckan;
+package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan;
 
-import io.github.genomicdatainfrastructure.discovery.facets.ports.FacetsBuilder;
-import io.github.genomicdatainfrastructure.discovery.model.Facet;
+import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
+import io.github.genomicdatainfrastructure.discovery.model.Filter;
+import io.github.genomicdatainfrastructure.discovery.model.Filter.TypeEnum;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFacet;
@@ -22,14 +23,14 @@ import static io.github.genomicdatainfrastructure.discovery.datasets.infrastruct
 import static java.util.Optional.ofNullable;
 
 @ApplicationScoped
-public class CkanFacetsBuilder implements FacetsBuilder {
+public class CkanFilterBuilder implements FilterBuilder {
 
     private static final String SELECTED_FACETS_PATTERN = "[\"%s\"]";
 
     private final CkanQueryApi ckanQueryApi;
     private final String selectedFacets;
 
-    public CkanFacetsBuilder(@RestClient CkanQueryApi ckanQueryApi,
+    public CkanFilterBuilder(@RestClient CkanQueryApi ckanQueryApi,
             @ConfigProperty(name = "datasets.filters") String datasetFiltersAsString) {
         this.ckanQueryApi = ckanQueryApi;
         this.selectedFacets = SELECTED_FACETS_PATTERN.formatted(String.join("\",\"",
@@ -37,7 +38,7 @@ public class CkanFacetsBuilder implements FacetsBuilder {
     }
 
     @Override
-    public List<Facet> build(String accessToken) {
+    public List<Filter> build(String accessToken) {
         var request = new PackageSearchRequest(
                 null,
                 null,
@@ -54,22 +55,22 @@ public class CkanFacetsBuilder implements FacetsBuilder {
                 .map(PackagesSearchResult::getSearchFacets)
                 .orElseGet(Map::of);
 
-        return facets(nonNullSearchFacets);
+        return filters(nonNullSearchFacets);
     }
 
-    private List<Facet> facets(Map<String, CkanFacet> facets) {
-        return facets
+    private List<Filter> filters(Map<String, CkanFacet> filters) {
+        return filters
                 .entrySet()
                 .stream()
-                .map(this::facet)
+                .map(this::filter)
                 .toList();
     }
 
-    private Facet facet(Map.Entry<String, CkanFacet> entry) {
+    private Filter filter(Map.Entry<String, CkanFacet> entry) {
         var key = entry.getKey();
-        var facet = entry.getValue();
+        var filter = entry.getValue();
 
-        var values = ofNullable(facet.getItems())
+        var values = ofNullable(filter.getItems())
                 .orElseGet(List::of)
                 .stream()
                 .map(value -> ValueLabel.builder()
@@ -79,11 +80,12 @@ public class CkanFacetsBuilder implements FacetsBuilder {
                 )
                 .toList();
 
-        return Facet
+        return Filter
                 .builder()
-                .facetGroup(CKAN_FACET_GROUP)
+                .source(CKAN_FACET_GROUP)
+                .type(TypeEnum.DROPDOWN)
                 .key(key)
-                .label(facet.getTitle())
+                .label(filter.getTitle())
                 .values(values)
                 .build();
     }

@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.facets.application;
+package io.github.genomicdatainfrastructure.discovery.filters.application.usecases;
 
-import io.github.genomicdatainfrastructure.discovery.facets.ports.FacetsBuilder;
-import io.github.genomicdatainfrastructure.discovery.model.Facet;
+import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
+import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 @ApplicationScoped
-public class RetrieveFacetsQuery {
+public class RetrieveFiltersQuery {
 
-    private final Instance<FacetsBuilder> facetsBuilders;
+    private final Instance<FilterBuilder> filterBuilders;
 
-    public List<Facet> execute(String accessToken) {
-        return facetsBuilders
+    public List<Filter> execute(String accessToken) {
+        return filterBuilders
                 .stream()
-                .map(facetBuilder -> facetBuilder.build(accessToken))
+                .map(filterBuilder -> filterBuilder.build(accessToken))
                 .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());

@@ -142,21 +142,21 @@ paths:
       security:
         - discovery_auth:
             - read:datasets
-  /api/v1/search-facets:
+  /api/v1/filters:
     get:
-      summary: Retrieves search facets for querying datasets
-      operationId: retrieve_search_facets
+      summary: Retrieves filters for querying datasets
+      operationId: retrieve_filters
       tags:
-        - "search-facets-query"
+        - "filters-query"
       responses:
         "200":
-          description: A list of search facets
+          description: A list of filters
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Facet"
+                  $ref: "#/components/schemas/Filter"
       security:
         - discovery_auth:
             - read:search-facets
@@ -496,19 +496,6 @@ components:
         - name
         - type
         - description
-    FacetGroup:
-      properties:
-        key:
-          type: string
-          title: Key
-        label:
-          type: string
-          title: Label
-        facets:
-          type: array
-          items:
-            $ref: "#/components/schemas/Facet"
-          title: Facets
     Facet:
       properties:
         facetGroup:
@@ -525,6 +512,41 @@ components:
           items:
             $ref: "#/components/schemas/ValueLabel"
           title: values
+    Filter:
+      properties:
+        source:
+          type: string
+          title: Filter source
+        group:
+          type: string
+          title: Filter group
+        type:
+          type: string
+          enum:
+            - DROPDOWN
+            - FREE_TEXT
+          title: Filter type
+        key:
+          type: string
+          title: Key
+        label:
+          type: string
+          title: Label
+        values:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValueLabel"
+          title: values
+        operations:
+          type: array
+          items:
+            type: string
+            enum:
+              - EQUALS
+              - GREATER_THAN
+              - LESS_THAN
+              - DIFFERENT
+              - CONTAINS
     ErrorResponse:
       properties:
         title:

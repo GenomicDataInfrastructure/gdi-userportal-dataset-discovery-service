@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.facets.application.usecases;
+package io.github.genomicdatainfrastructure.discovery.filters.application.usecases;
 
-import io.github.genomicdatainfrastructure.discovery.facets.application.RetrieveFacetsQuery;
-import io.github.genomicdatainfrastructure.discovery.facets.ports.FacetsBuilder;
+import io.github.genomicdatainfrastructure.discovery.filters.application.RetrieveFacetsQuery;
+import io.github.genomicdatainfrastructure.discovery.filters.ports.FacetsBuilder;
 import io.github.genomicdatainfrastructure.discovery.model.Facet;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import jakarta.enterprise.inject.Instance;

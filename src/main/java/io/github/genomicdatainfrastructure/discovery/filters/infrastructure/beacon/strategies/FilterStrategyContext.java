@@ -14,7 +14,8 @@ public class FilterStrategyContext {
 
     private static List<BeaconFilterStrategy> SUPPORTED_STRATEGIES = List.of(
             new OntologyFilterStrategy(),
-            new AlphanumericFilterStrategy()
+            new AlphanumericFilterStrategy(),
+            new VariantFilterStrategy()
     );
 
     public List<Filter> buildFilters(BeaconFilteringTermsResponseContent content) {

@@ -4,6 +4,7 @@
 
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.beacon;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.auth.BeaconAuth;
 import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.beacon.strategies.FilterStrategyContext;
@@ -17,6 +18,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static java.util.Optional.ofNullable;
@@ -52,12 +56,21 @@ public class BeaconFilterBuilder implements FilterBuilder {
 
     private BeaconFilteringTermsResponseContent retrieveNonNullFilteringTermsResponse(
             String authorization) {
-        var filteringTerms = beaconQueryApi.listFilteringTerms(authorization);
+        try {
+            String filteringTermsResponse = new String(Files.readAllBytes(Paths.get(
+                    "src/main/resources/mock-beacon-filtering-terms.json")));
+            var objectMapper = new ObjectMapper();
+            var filteringTerms = objectMapper.readValue(filteringTermsResponse,
+                    BeaconFilteringTermsResponse.class);
 
-        return ofNullable(filteringTerms)
-                .map(BeaconFilteringTermsResponse::getResponse)
-                .filter(it -> isNotEmpty(it.getFilteringTerms()))
-                .filter(it -> isNotEmpty(it.getResources()))
-                .orElseGet(BeaconFilteringTermsResponseContent::new);
+            return ofNullable(filteringTerms)
+                    .map(BeaconFilteringTermsResponse::getResponse)
+                    .filter(it -> isNotEmpty(it.getFilteringTerms()))
+                    .filter(it -> isNotEmpty(it.getResources()))
+                    .orElseGet(BeaconFilteringTermsResponseContent::new);
+
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

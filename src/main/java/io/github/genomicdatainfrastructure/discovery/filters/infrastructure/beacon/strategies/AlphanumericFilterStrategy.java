@@ -1,6 +1,8 @@
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.beacon.strategies;
 
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
+import io.github.genomicdatainfrastructure.discovery.model.FilterInputs;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconFilteringTerm;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconFilteringTermsResponseContent;
 
 import java.util.List;
@@ -24,12 +26,25 @@ public class AlphanumericFilterStrategy implements BeaconFilterStrategy {
                 .filter(it -> DEFAULT_TYPE.equals(it.getType()))
                 .filter(it -> isNotEmpty(it.getScopes()))
                 .filter(it -> it.getScopes().contains(SUPPORTED_FILTER_SCOPE))
-                .map(it -> Filter.builder()
-                        .source(BEACON_FACET_GROUP)
-                        .type(Filter.TypeEnum.FREE_TEXT)
-                        .key(it.getId())
-                        .label(it.getLabel())
-                        .build())
+                .map(this::toFilter)
                 .toList();
+    }
+
+    private Filter toFilter(BeaconFilteringTerm term) {
+        return Filter.builder()
+                .source(BEACON_FACET_GROUP)
+                .type(Filter.TypeEnum.FREE_TEXT)
+                .key(term.getId())
+                .label(term.getLabel())
+                .inputs(FilterInputs
+                        .builder()
+                        .operations(
+                                List.of(
+                                        FilterInputs.OperationsEnum.EQUALS,
+                                        FilterInputs.OperationsEnum.DIFFERENT,
+                                        FilterInputs.OperationsEnum.GREATER_THAN,
+                                        FilterInputs.OperationsEnum.LESS_THAN,
+                                        FilterInputs.OperationsEnum.CONTAINS
+                                )).build()).build();
     }
 }

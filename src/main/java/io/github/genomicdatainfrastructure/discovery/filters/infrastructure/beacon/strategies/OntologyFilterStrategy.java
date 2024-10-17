@@ -1,6 +1,7 @@
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.beacon.strategies;
 
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
+import io.github.genomicdatainfrastructure.discovery.model.FilterInputs;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconFilteringTerm;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconFilteringTermsResponseContent;
@@ -75,7 +76,10 @@ public class OntologyFilterStrategy implements BeaconFilterStrategy {
                         .type(Filter.TypeEnum.DROPDOWN)
                         .key(entry.getKey())
                         .label(resourceNamesMappedById.get(entry.getKey()))
-                        .values(entry.getValue())
+                        .inputs(FilterInputs
+                                .builder()
+                                .values(entry.getValue())
+                                .build())
                         .build())
                 .toList();
     }

@@ -525,6 +525,7 @@ components:
           enum:
             - DROPDOWN
             - FREE_TEXT
+            - VARIANT
           title: Filter type
         key:
           type: string
@@ -532,6 +533,11 @@ components:
         label:
           type: string
           title: Label
+        inputs:
+          $ref: "#/components/schemas/FilterInputs"
+          title: inputs
+    FilterInputs:
+      properties:
         values:
           type: array
           items:
@@ -547,6 +553,18 @@ components:
               - LESS_THAN
               - DIFFERENT
               - CONTAINS
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterInputEntry'
+    FilterInputEntry:
+      properties:
+        id:
+          type: string
+          title: id
+        label:
+          type: string
+          title: label
     ErrorResponse:
       properties:
         title:

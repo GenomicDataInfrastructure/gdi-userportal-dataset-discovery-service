@@ -1,0 +1,291 @@
+{
+  "meta": {
+    "apiVersion": "v2.0.0",
+    "beaconId": "es.elixir.bsc.beacon-network",
+    "isAggregated": true,
+    "returnedSchemas": [
+      {
+        "entityType": "boolean",
+        "schema": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/framework/json/responses/beaconBooleanResponse.json"
+      },
+      {
+        "entityType": "count",
+        "schema": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/framework/json/responses/beaconCountResponse.json"
+      },
+      {
+        "entityType": "record",
+        "schema": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/framework/json/responses/beaconResultsetsResponse.json"
+      }
+    ]
+  },
+  "response": {
+    "filteringTerms": [
+      {
+        "id": "BMI",
+        "label": "BMI in Kilograms per Square Meter",
+        "scopes": [
+          "individual"
+        ],
+        "type": "alphanumeric"
+      },            {
+        "id": "Height-standing",
+        "label": "Height-standing in Centimeters",
+        "scopes": [
+          "individual"
+        ],
+        "type": "alphanumeric"
+      },
+      {
+        "id": "NCIT:C25179",
+        "label": "Hospitalization",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C171454",
+        "label": "Intensive Care Unit Stay",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "SNOMED:52765003",
+        "label": "Intubation (procedure)",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "SNOMED:371907003",
+        "label": "Oxygen administration by nasal cannula (procedure)",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "MONDO:0100096",
+        "label": "COVID-19",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C14139",
+        "label": "Immunocompromised",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C28397",
+        "label": "Asthma",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C3199",
+        "label": "Chronic Obstructive Pulmonary Disease",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C80078",
+        "label": "Chronic Kidney Disease",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C3117",
+        "label": "Hypertension",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C15289",
+        "label": "Organ Transplantation",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C3080",
+        "label": "Congestive Heart Failure",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C27996",
+        "label": "Myocardial Infarction",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C3390",
+        "label": "Stroke",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C49343",
+        "label": "Deep Vein Thrombosis",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      },
+      {
+        "id": "NCIT:C80480",
+        "label": "Reinfarction During Hospitalization",
+        "scopes": [
+          "individual"
+        ],
+        "type": "ontology"
+      }
+    ],
+    "resources": [
+      {
+        "id": "gaz",
+        "iriPrefix": "https://purl.obolibrary.org/obo/GAZ_",
+        "name": "Gazetteer",
+        "url": "https://purl.obolibrary.org/obo/gaz.owl"
+      },
+      {
+        "id": "tcgaproject",
+        "name": "The Cancer Genome Atlas",
+        "url": "http://cancergenome.nih.gov"
+      },
+      {
+        "id": "uberon",
+        "name": "Uber-anatomy ontology",
+        "version": "22-03-2024"
+      },
+      {
+        "id": "NCIT/neoplasm-core.owl",
+        "iriPrefix": "http://purl.obolibrary.org/obo/NCIT_",
+        "name": "NCI Thesaurus OBO Edition",
+        "url": "http://purl.obolibrary.org/obo/NCIT/neoplasm-core.owl"
+      },
+      {
+        "id": "AEseries",
+        "name": "EBI ArrayExpress Series",
+        "url": "https://www.ebi.ac.uk/arrayexpress/"
+      },
+      {
+        "id": "hp",
+        "iriPrefix": "https://purl.obolibrary.org/obo/HP_",
+        "name": "Human Phenotype Ontology",
+        "url": "https://purl.obolibrary.org/obo/hp.owl",
+        "version": "27-03-2020"
+      },
+      {
+        "id": "cbioportal",
+        "iriPrefix": "https://www.cbioportal.org/study/summary?id=",
+        "name": "cBioPortal",
+        "url": "https://www.cbioportal.org"
+      },
+      {
+        "id": "doid",
+        "iriPrefix": "https://purl.obolibrary.org/obo/DOID_",
+        "name": "Human Disease Ontology",
+        "url": "http://purl.obolibrary.org/obo/doid.owl",
+        "version": "28-03-2024"
+      },
+      {
+        "id": "EFO",
+        "iriPrefix": "http://www.ebi.ac.uk/EFO/EFO_",
+        "name": "Experimental Factor Ontology",
+        "url": "http://www.ebi.ac.uk/EFO/EFO_0030038"
+      },
+      {
+        "id": "efo",
+        "name": "Experimental Factor Ontology",
+        "version": "15-04-2024"
+      },
+      {
+        "id": "geno",
+        "name": "GENO ontology",
+        "version": "08-10-2023"
+      },
+      {
+        "id": "cellosaurus",
+        "iriPrefix": "https://www.cellosaurus.org/",
+        "name": "Cellosaurus cell line resource",
+        "url": "https://www.cellosaurus.org/"
+      },
+      {
+        "id": "geo_gpl",
+        "name": "Genomic Analysis Platforms",
+        "url": "https://www.ncbi.nlm.nih.gov/geo/"
+      },
+      {
+        "id": "ncit",
+        "iriPrefix": "https://purl.obolibrary.org/obo/NCIT_",
+        "name": "National Cancer Institute Thesaurus",
+        "url": "https://purl.obolibrary.org/obo/ncit.owl",
+        "version": "19-10-2023"
+      },
+      {
+        "id": "opcs4",
+        "name": "Office of Population Censuses and Surveys 4th revision",
+        "version": "01-04-2023"
+      },
+      {
+        "id": "UBERON",
+        "iriPrefix": "http://purl.obolibrary.org/obo/UBERON_",
+        "name": "Uberon cross-species anatomical structures ontology",
+        "url": "http://UBERON.org"
+      },
+      {
+        "id": "obi",
+        "iriPrefix": "https://purl.obolibrary.org/obo/OBI_",
+        "name": "Ontology for Biomedical Investigations",
+        "url": "http://purl.obolibrary.org/obo/obi.owl",
+        "version": "19-01-2024"
+      },
+      {
+        "id": "genepio",
+        "name": "Genomic Epidemiology Ontology",
+        "version": "19-08-2023"
+      },
+      {
+        "id": "loinc",
+        "name": "Logical Observation Identifiers Names and Codes",
+        "url": "https://loinc.org/download/loinc-complete/",
+        "version": "19-10-2023"
+      },
+      {
+        "id": "EDAMoperation",
+        "iriPrefix": "http://purl.obolibrary.org/obo/EDAM_",
+        "name": "EDAM ontology",
+        "url": "https://github.com/edamontology/edam-browser"
+      },
+      {
+        "id": "icd10",
+        "name": "International Classification of Diseaes 10th edition",
+        "version": "17-03-2008"
+      }
+    ]
+  }
+}

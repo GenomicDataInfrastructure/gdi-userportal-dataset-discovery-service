@@ -7,6 +7,7 @@ package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.cka
 import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.github.genomicdatainfrastructure.discovery.model.Filter.TypeEnum;
+import io.github.genomicdatainfrastructure.discovery.model.FilterInputs;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFacet;
@@ -86,7 +87,10 @@ public class CkanFilterBuilder implements FilterBuilder {
                 .type(TypeEnum.DROPDOWN)
                 .key(key)
                 .label(filter.getTitle())
-                .values(values)
+                .inputs(FilterInputs
+                        .builder()
+                        .values(values)
+                        .build())
                 .build();
     }
 }

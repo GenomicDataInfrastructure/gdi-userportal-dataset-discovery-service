@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
-import io.github.genomicdatainfrastructure.discovery.utils.PackageShowMapper;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.PackageShowMapper;
 
 class PackageShowMapperTest {
 

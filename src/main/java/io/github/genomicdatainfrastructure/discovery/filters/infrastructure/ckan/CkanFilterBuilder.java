@@ -6,8 +6,7 @@ package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.cka
 
 import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
-import io.github.genomicdatainfrastructure.discovery.model.Filter.TypeEnum;
-import io.github.genomicdatainfrastructure.discovery.model.FilterInputs;
+import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFacet;
@@ -20,7 +19,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FACET_GROUP;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
 import static java.util.Optional.ofNullable;
 
 @ApplicationScoped
@@ -83,14 +82,11 @@ public class CkanFilterBuilder implements FilterBuilder {
 
         return Filter
                 .builder()
-                .source(CKAN_FACET_GROUP)
-                .type(TypeEnum.DROPDOWN)
+                .source(CKAN_FILTER_SOURCE)
+                .type(FilterType.DROPDOWN)
                 .key(key)
                 .label(filter.getTitle())
-                .inputs(FilterInputs
-                        .builder()
-                        .values(values)
-                        .build())
+                .values(values)
                 .build();
     }
 }

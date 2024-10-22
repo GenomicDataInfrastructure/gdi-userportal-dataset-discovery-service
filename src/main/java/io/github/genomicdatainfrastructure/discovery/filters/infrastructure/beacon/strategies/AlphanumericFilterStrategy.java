@@ -1,7 +1,12 @@
+// SPDX-FileCopyrightText: 2024 PNED G.I.E.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.beacon.strategies;
 
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
-import io.github.genomicdatainfrastructure.discovery.model.FilterInputs;
+import io.github.genomicdatainfrastructure.discovery.model.FilterType;
+import io.github.genomicdatainfrastructure.discovery.model.Operator;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconFilteringTerm;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconFilteringTermsResponseContent;
 
@@ -33,18 +38,15 @@ public class AlphanumericFilterStrategy implements BeaconFilterStrategy {
     private Filter toFilter(BeaconFilteringTerm term) {
         return Filter.builder()
                 .source(BEACON_FACET_GROUP)
-                .type(Filter.TypeEnum.FREE_TEXT)
+                .type(FilterType.FREE_TEXT)
                 .key(term.getId())
                 .label(term.getLabel())
-                .inputs(FilterInputs
-                        .builder()
-                        .operations(
-                                List.of(
-                                        FilterInputs.OperationsEnum.EQUALS,
-                                        FilterInputs.OperationsEnum.DIFFERENT,
-                                        FilterInputs.OperationsEnum.GREATER_THAN,
-                                        FilterInputs.OperationsEnum.LESS_THAN,
-                                        FilterInputs.OperationsEnum.CONTAINS
-                                )).build()).build();
+                .operators(List.of(
+                        Operator.EQUALS,
+                        Operator.DIFFERENT,
+                        Operator.GREATER_THAN,
+                        Operator.LESS_THAN,
+                        Operator.CONTAINS
+                )).build();
     }
 }

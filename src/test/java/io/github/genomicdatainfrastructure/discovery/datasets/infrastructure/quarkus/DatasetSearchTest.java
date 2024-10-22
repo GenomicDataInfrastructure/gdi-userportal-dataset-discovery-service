@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.api;
+package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.quarkus;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.equalTo;
 import io.github.genomicdatainfrastructure.discovery.BaseTest;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQueryFacet;
+import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.quarkus.test.junit.QuarkusTest;
 
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import java.util.List;
 class DatasetSearchTest extends BaseTest {
 
     @Test
-    void can_anonymously_search_datasets() {
+    void canAnonymouslySearchDatasets() {
         var query = DatasetSearchQuery.builder().build();
 
         given()
@@ -36,7 +37,7 @@ class DatasetSearchTest extends BaseTest {
     }
 
     @Test
-    void can_search_datasets_without_beacon_filters() {
+    void canSearchDatasets_withoutBeaconFilters() {
         var query = DatasetSearchQuery.builder()
                 .build();
 
@@ -56,12 +57,13 @@ class DatasetSearchTest extends BaseTest {
     }
 
     @Test
-    void can_search_datasets_with_beacon_filters() {
+    void canSearchDatasets_withBeaconFilters() {
         var query = DatasetSearchQuery.builder()
                 .facets(List.of(
                         DatasetSearchQueryFacet.builder()
-                                .facetGroup("beacon")
-                                .facet("dummy")
+                                .source("beacon")
+                                .type(FilterType.DROPDOWN)
+                                .key("dummy")
                                 .value("true")
                                 .build()
                 ))
@@ -82,12 +84,13 @@ class DatasetSearchTest extends BaseTest {
     }
 
     @Test
-    void skip_search_datasets_when_beacon_returns_empty_resultsets() {
+    void shouldSkipSearchDatasets_whenBeaconReturnsEmptyResultSets() {
         var query = DatasetSearchQuery.builder()
                 .facets(List.of(
                         DatasetSearchQueryFacet.builder()
-                                .facetGroup("beacon")
-                                .facet("dummy")
+                                .source("beacon")
+                                .type(FilterType.DROPDOWN)
+                                .key("dummy")
                                 .value("DUMMY:FILTER")
                                 .build()
                 ))

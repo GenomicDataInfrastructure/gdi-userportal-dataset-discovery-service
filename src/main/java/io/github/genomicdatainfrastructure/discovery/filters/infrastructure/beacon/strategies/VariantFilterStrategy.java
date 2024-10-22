@@ -1,8 +1,12 @@
+// SPDX-FileCopyrightText: 2024 PNED G.I.E.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.beacon.strategies;
 
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
-import io.github.genomicdatainfrastructure.discovery.model.FilterInputEntry;
-import io.github.genomicdatainfrastructure.discovery.model.FilterInputs;
+import io.github.genomicdatainfrastructure.discovery.model.FilterEntry;
+import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconFilteringTermsResponseContent;
 
 import java.util.List;
@@ -13,88 +17,85 @@ public class VariantFilterStrategy implements BeaconFilterStrategy {
 
     @Override
     public List<Filter> buildFilters(BeaconFilteringTermsResponseContent content) {
-        var filterInputEntries = buildEntries();
+        var variantEntries = buildVariantEntries();
 
-        return filterInputEntries.stream().map(
+        return variantEntries.stream().map(
                 it -> Filter.builder()
                         .source(BEACON_FACET_GROUP)
-                        .type(Filter.TypeEnum.VARIANT)
-                        .key("Mutations in:")
+                        .type(FilterType.ENTRIES)
+                        .key("mutations")
                         .label("Mutations in:")
-                        .inputs(FilterInputs
-                                .builder()
-                                .entries(it)
-                                .build())
+                        .entries(it)
                         .build()).toList();
     }
 
-    private List<List<FilterInputEntry>> buildEntries() {
+    private List<List<FilterEntry>> buildVariantEntries() {
         return List.of(
                 List.of(
-                        FilterInputEntry
+                        FilterEntry
                                 .builder()
-                                .id("gene")
+                                .key("geneId")
                                 .label("gene")
                                 .build(),
-                        FilterInputEntry.builder()
-                                .id("aminoacid")
+                        FilterEntry.builder()
+                                .key("aminoacidChange")
                                 .label("aminoacid")
                                 .build()
                 ),
                 List.of(
-                        FilterInputEntry
+                        FilterEntry
                                 .builder()
-                                .id("gene")
+                                .key("geneId")
                                 .label("gene")
                                 .build()
                 ),
                 List.of(
-                        FilterInputEntry
+                        FilterEntry
                                 .builder()
-                                .id("alternateBases")
+                                .key("alternateBases")
                                 .label("alternateBases")
                                 .build(),
-                        FilterInputEntry.builder()
-                                .id("referenceBases")
+                        FilterEntry.builder()
+                                .key("referenceBases")
                                 .label("referenceBases")
                                 .build(),
-                        FilterInputEntry.builder()
-                                .id("start")
+                        FilterEntry.builder()
+                                .key("start")
                                 .label("start")
                                 .build(),
-                        FilterInputEntry.builder()
-                                .id("end")
+                        FilterEntry.builder()
+                                .key("end")
                                 .label("end")
                                 .build(),
-                        FilterInputEntry.builder()
-                                .id("type")
+                        FilterEntry.builder()
+                                .key("variantType")
                                 .label("type")
                                 .build()
                 ),
                 List.of(
-                        FilterInputEntry
+                        FilterEntry
                                 .builder()
-                                .id("alternateBases")
+                                .key("alternateBases")
                                 .label("alternateBases")
                                 .build(),
-                        FilterInputEntry.builder()
-                                .id("referenceBases")
+                        FilterEntry.builder()
+                                .key("referenceBases")
                                 .label("referenceBases")
                                 .build(),
-                        FilterInputEntry.builder()
-                                .id("start")
+                        FilterEntry.builder()
+                                .key("start")
                                 .label("start")
                                 .build(),
-                        FilterInputEntry.builder()
-                                .id("end")
+                        FilterEntry.builder()
+                                .key("end")
                                 .label("end")
                                 .build(),
-                        FilterInputEntry.builder()
-                                .id("type")
+                        FilterEntry.builder()
+                                .key("type")
                                 .label("type")
                                 .build(),
-                        FilterInputEntry.builder()
-                                .id("assemblyId")
+                        FilterEntry.builder()
+                                .key("assemblyId")
                                 .label("assemblyId")
                                 .build()
                 ));

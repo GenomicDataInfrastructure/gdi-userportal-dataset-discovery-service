@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 PNED G.I.E.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.beacon.strategies;
 
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
@@ -12,7 +16,7 @@ public class FilterStrategyContext {
     protected static final String SUPPORTED_FILTER_SCOPE = "individual";
     protected static final String BEACON_FACET_GROUP = "beacon";
 
-    private static List<BeaconFilterStrategy> SUPPORTED_STRATEGIES = List.of(
+    private static final List<BeaconFilterStrategy> SUPPORTED_STRATEGIES = List.of(
             new OntologyFilterStrategy(),
             new AlphanumericFilterStrategy(),
             new VariantFilterStrategy()

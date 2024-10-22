@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2024 PNED G.I.E.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.beacon.strategies;
 
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
-import io.github.genomicdatainfrastructure.discovery.model.FilterInputs;
+import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconFilteringTerm;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconFilteringTermsResponseContent;
@@ -73,13 +77,10 @@ public class OntologyFilterStrategy implements BeaconFilterStrategy {
                 .filter(entry -> resourceNamesMappedById.containsKey(entry.getKey()))
                 .map(entry -> Filter.builder()
                         .source(BEACON_FACET_GROUP)
-                        .type(Filter.TypeEnum.DROPDOWN)
+                        .type(FilterType.DROPDOWN)
                         .key(entry.getKey())
                         .label(resourceNamesMappedById.get(entry.getKey()))
-                        .inputs(FilterInputs
-                                .builder()
-                                .values(entry.getValue())
-                                .build())
+                        .values(entry.getValue())
                         .build())
                 .toList();
     }

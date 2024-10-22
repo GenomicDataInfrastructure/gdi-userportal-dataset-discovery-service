@@ -208,15 +208,58 @@ components:
     DatasetSearchQueryFacet:
       type: object
       properties:
-        facetGroup:
+        source:
           type: string
-          title: Facet group
-        facet:
+          title: Facet source
+        type:
+          $ref: "#/components/schemas/FilterType"
+          title: Facet type
+        key:
           type: string
-          title: Facet
+          title: Facet key
         value:
           type: string
-          title: Value
+          title: Facet value
+        operator:
+          $ref: "#/components/schemas/Operator"
+          title: Operator
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryEntry'
+      required:
+        - source
+        - type
+        - label
+    FilterType:
+      type: string
+      enum:
+        - DROPDOWN
+        - FREE_TEXT
+        - ENTRIES
+      title: Filter type
+    Operator:
+      type: string
+      enum:
+        - "="
+        - ">"
+        - "<"
+        - "!="
+        - "%"
+      x-enum-varnames:
+        - EQUALS
+        - GREATER_THAN
+        - LESS_THAN
+        - DIFFERENT
+        - CONTAINS
+    QueryEntry:
+      properties:
+        key:
+          type: string
+          title: label
+        value:
+          type: string
+          title: value
     SearchedDataset:
       type: object
       properties:
@@ -496,22 +539,6 @@ components:
         - name
         - type
         - description
-    Facet:
-      properties:
-        facetGroup:
-          type: string
-          title: Facet group
-        key:
-          type: string
-          title: Key
-        label:
-          type: string
-          title: Label
-        values:
-          type: array
-          items:
-            $ref: "#/components/schemas/ValueLabel"
-          title: values
     Filter:
       properties:
         source:
@@ -521,11 +548,7 @@ components:
           type: string
           title: Filter group
         type:
-          type: string
-          enum:
-            - DROPDOWN
-            - FREE_TEXT
-            - VARIANT
+          $ref: "#/components/schemas/FilterType"
           title: Filter type
         key:
           type: string
@@ -533,33 +556,23 @@ components:
         label:
           type: string
           title: Label
-        inputs:
-          $ref: "#/components/schemas/FilterInputs"
-          title: inputs
-    FilterInputs:
-      properties:
         values:
           type: array
           items:
             $ref: "#/components/schemas/ValueLabel"
           title: values
-        operations:
+        operators:
           type: array
           items:
-            type: string
-            enum:
-              - EQUALS
-              - GREATER_THAN
-              - LESS_THAN
-              - DIFFERENT
-              - CONTAINS
+            $ref: "#/components/schemas/Operator"
         entries:
           type: array
           items:
-            $ref: '#/components/schemas/FilterInputEntry'
-    FilterInputEntry:
+            $ref: "#/components/schemas/FilterEntry"
+          title: entries
+    FilterEntry:
       properties:
-        id:
+        key:
           type: string
           title: id
         label:

@@ -2,80 +2,81 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.api;
+package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.genomicdatainfrastructure.discovery.BaseTest;
-import io.github.genomicdatainfrastructure.discovery.model.Facet;
+import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.quarkus.test.junit.QuarkusTest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
-public class RetrieveFacetsTest extends BaseTest {
+public class RetrieveFiltersTest extends BaseTest {
 
     @Test
-    void retrieve_ckan_facets_when_not_authenticated() {
+    void shouldRetrieveCkanFilters_WhenNotAuthenticated() {
         given()
-                .get("/api/v1/search-facets")
+                .get("/api/v1/filters")
                 .then()
                 .statusCode(200)
                 .body("", hasSize(5))
-                .body("[0].facetGroup", Matchers.equalTo("ckan"))
+                .body("[0].source", Matchers.equalTo("ckan"))
                 .body("[0].key", Matchers.equalTo("tags"))
                 .body("[0].label", Matchers.equalTo("Keywords"))
                 .body("[0].values", hasSize(16))
 
-                .body("[1].facetGroup", Matchers.equalTo("ckan"))
+                .body("[1].source", Matchers.equalTo("ckan"))
                 .body("[1].key", Matchers.equalTo("organization"))
                 .body("[1].label", Matchers.equalTo("Publishers"))
                 .body("[1].values", hasSize(7));
     }
 
     @Test
-    void retrieve_all_facets_when_authenticated() {
+    void shouldRetrieveAllFilters_WhenAuthenticated() {
         given()
                 .auth()
                 .oauth2(getAccessToken("alice"))
-                .get("/api/v1/search-facets")
+                .get("/api/v1/filters")
                 .then()
                 .statusCode(200)
-                .body("", hasSize(11))
-                .body("find { it.facetGroup == 'ckan' }.values", hasSize(greaterThan(0)))
-                .body("find { it.facetGroup == 'beacon' }.values", hasSize(greaterThan(0)))
-                .body("find { it.label == 'Human Phenotype Ontology' }.values", hasSize(greaterThan(
-                        0)));
+                .body("", hasSize(12))
+                .body("find { it.source == 'ckan' }.values", hasSize(greaterThan(0)))
+                .body("find { it.source == 'beacon' }.values", hasSize(greaterThan(0)))
+                .body("find { it.label == 'National Cancer Institute Thesaurus' }.values", hasSize(
+                        greaterThan(
+                                0)));
     }
 
     @Test
-    void retrieves_beacon_filtering_terms() {
+    void shouldRetrievesBeaconFilteringTerms_WhenAuthenticated() {
         var response = given()
                 .auth()
                 .oauth2(getAccessToken("alice"))
-                .get("/api/v1/search-facets");
+                .get("/api/v1/filters");
 
         var mapper = new ObjectMapper();
 
         try {
-            List<Facet> body = mapper.readerForListOf(Facet.class).readValue(response.getBody()
+            List<Filter> body = mapper.readerForListOf(Filter.class).readValue(response.getBody()
                     .asString());
 
             var actual = body
                     .stream()
-                    .filter(it -> "beacon".equals(it.getFacetGroup()))
+                    .filter(it -> "beacon".equals(it.getSource()))
                     .map(it -> it.getKey())
-                    .collect(toList());
+                    .collect(Collectors.toSet());
 
             assertThat(actual)
                     .containsExactlyInAnyOrder(
-                            "gaz", "ncit", "opcs4", "hp", "loinc", "icd10"
+                            "ncit", "BMI", "Height-standing", "mutations"
                     );
         } catch (Exception e) {
             throw new RuntimeException(e);

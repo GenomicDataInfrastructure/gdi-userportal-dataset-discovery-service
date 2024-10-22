@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.utils;
+package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils;
 
 import static java.util.Optional.*;
 

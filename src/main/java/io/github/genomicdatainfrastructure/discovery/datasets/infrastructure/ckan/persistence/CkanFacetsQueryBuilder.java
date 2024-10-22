@@ -2,13 +2,14 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.utils;
+package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence;
 
 import java.util.List;
 import java.util.Objects;
 
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQueryFacet;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.CkanQueryOperatorMapper;
 import lombok.experimental.UtilityClass;
 
 import static java.util.Objects.nonNull;
@@ -32,7 +33,7 @@ public class CkanFacetsQueryBuilder {
                 .orElseGet(List::of)
                 .stream()
                 .filter(CkanFacetsQueryBuilder::isCkanGroupAndFacetIsNotBlank)
-                .collect(groupingBy(DatasetSearchQueryFacet::getFacet));
+                .collect(groupingBy(DatasetSearchQueryFacet::getKey));
 
         return nonNullFacets.entrySet().stream()
                 .map(entry -> getFacetQuery(entry.getKey(), entry.getValue(), operator))
@@ -40,9 +41,9 @@ public class CkanFacetsQueryBuilder {
     }
 
     private Boolean isCkanGroupAndFacetIsNotBlank(DatasetSearchQueryFacet facet) {
-        return Objects.equals(CKAN_FACET_GROUP, facet.getFacetGroup()) &&
-                nonNull(facet.getFacet()) &&
-                !facet.getFacet().isBlank() &&
+        return Objects.equals(CKAN_FACET_GROUP, facet.getSource()) &&
+                nonNull(facet.getKey()) &&
+                !facet.getKey().isBlank() &&
                 nonNull(facet.getValue()) &&
                 !facet.getValue().isBlank();
     }

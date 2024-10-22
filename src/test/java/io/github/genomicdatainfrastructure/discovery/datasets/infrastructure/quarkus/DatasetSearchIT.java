@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.api;
+package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.quarkus;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 @QuarkusIntegrationTest
-public class RetrieveFacetsIT extends RetrieveFacetsTest {
+public class DatasetSearchIT extends DatasetSearchTest {
+
 }

@@ -13,19 +13,16 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
 
 import static java.lang.Math.min;
 import static java.util.Objects.nonNull;
 
 @ApplicationScoped
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-@Log
 public class SearchDatasetsQuery {
 
     private final DatasetsRepository repository;
@@ -34,7 +31,7 @@ public class SearchDatasetsQuery {
     public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken) {
         var datasetIdsByRecordCount = collectors
                 .stream()
-                .map(collector -> collectIds(collector, query, accessToken))
+                .map(collector -> collector.collect(query, accessToken))
                 .filter(Objects::nonNull)
                 .reduce(this::findIdsIntersection)
                 .orElseGet(Map::of);
@@ -58,16 +55,6 @@ public class SearchDatasetsQuery {
                 .count(datasetIdsByRecordCount.size())
                 .results(enhancedDatasets)
                 .build();
-    }
-
-    private Map<String, Integer> collectIds(DatasetIdsCollector collector, DatasetSearchQuery query,
-            String accessToken) {
-        try {
-            return collector.collect(query, accessToken);
-        } catch (Exception e) {
-            log.log(Level.WARNING, "Failed to collect dataset ids", e);
-            return null;
-        }
     }
 
     private Map<String, Integer> findIdsIntersection(

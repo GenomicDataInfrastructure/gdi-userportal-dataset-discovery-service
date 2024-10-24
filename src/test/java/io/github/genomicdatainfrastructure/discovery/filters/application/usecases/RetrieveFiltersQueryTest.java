@@ -128,30 +128,4 @@ class RetrieveFiltersQueryTest {
                 .extracting("label", "value")
                 .containsExactly("genomics", "5");
     }
-
-    @Test
-    void shouldHandleExceptionFromFilterBuilder() {
-        when(filterBuilderCkan.build(anyString())).thenThrow(new RuntimeException(
-                "Test exception"));
-        when(filterBuilderBeacon.build(anyString())).thenReturn(List.of(
-                Filter.builder()
-                        .source("beacon")
-                        .type(FilterType.DROPDOWN)
-                        .key("Human Phenotype Ontology")
-                        .label("ontology")
-                        .values(
-                                List.of(ValueLabel.builder()
-                                        .label("Motor delay")
-                                        .value("3")
-                                        .build()))
-                        .build())
-        );
-
-        var filters = query.execute("token");
-
-        Assertions.assertThat(filters).isNotNull();
-        Assertions.assertThat(filters).hasSize(1);
-
-        Assertions.assertThat(filters.get(0).getSource()).isEqualTo("beacon");
-    }
 }

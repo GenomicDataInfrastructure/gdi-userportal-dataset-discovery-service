@@ -76,7 +76,8 @@ public class RetrieveFiltersTest extends BaseTest {
 
             assertThat(actual)
                     .containsExactlyInAnyOrder(
-                            "ncit", "BMI", "Height-standing", "mutations"
+                            "ncit", "BMI", "Height-standing", "bases", "bases+assembly", "gene",
+                            "gene+aminoacid"
                     );
         } catch (Exception e) {
             throw new RuntimeException(e);

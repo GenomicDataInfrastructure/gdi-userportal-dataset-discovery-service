@@ -5,7 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence;
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
-import io.github.genomicdatainfrastructure.discovery.exceptions.DatasetNotFoundException;
+import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.DatasetNotFoundException;
 import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;

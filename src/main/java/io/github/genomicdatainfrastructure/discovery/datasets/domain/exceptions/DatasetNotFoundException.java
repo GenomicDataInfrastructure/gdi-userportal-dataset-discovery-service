@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.exceptions;
+package io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions;
 
 public class DatasetNotFoundException extends RuntimeException {
 

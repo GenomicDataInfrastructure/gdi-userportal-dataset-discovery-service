@@ -6,7 +6,7 @@ package io.github.genomicdatainfrastructure.discovery.api;
 
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 
-import io.github.genomicdatainfrastructure.discovery.exceptions.DatasetNotFoundException;
+import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.DatasetNotFoundException;
 import io.github.genomicdatainfrastructure.discovery.model.ErrorResponse;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;

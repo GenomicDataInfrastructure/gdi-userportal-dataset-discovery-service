@@ -2,10 +2,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.repositories;
+package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence;
 
+import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.OrganizationsRepository;
+import io.github.genomicdatainfrastructure.discovery.model.DatasetOrganization;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
-import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanOrganization;
+import io.github.genomicdatainfrastructure.discovery.utils.CkanOrganizationParser;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -13,7 +15,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import java.util.List;
 
 @ApplicationScoped
-public class CkanOrganizationsRepository {
+public class CkanOrganizationsRepository implements OrganizationsRepository {
 
     private static final Boolean SHOW_ALL_FIELDS = true;
 
@@ -26,9 +28,12 @@ public class CkanOrganizationsRepository {
         this.ckanQueryApi = ckanQueryApi;
     }
 
-    public List<CkanOrganization> retrieveOrganizations(Integer limit) {
+    public List<DatasetOrganization> findAll(Integer limit) {
         return ckanQueryApi
                 .organizationList(SHOW_ALL_FIELDS, limit)
-                .getResult();
+                .getResult()
+                .stream()
+                .map(CkanOrganizationParser::organization)
+                .toList();
     }
 }

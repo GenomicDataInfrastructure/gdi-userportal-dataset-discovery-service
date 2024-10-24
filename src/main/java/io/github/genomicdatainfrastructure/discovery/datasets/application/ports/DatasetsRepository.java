@@ -4,6 +4,7 @@
 
 package io.github.genomicdatainfrastructure.discovery.datasets.application.ports;
 
+import io.github.genomicdatainfrastructure.discovery.model.RetrievedDataset;
 import io.github.genomicdatainfrastructure.discovery.model.SearchedDataset;
 
 import java.util.List;
@@ -17,4 +18,8 @@ public interface DatasetsRepository {
             Integer rows,
             Integer start,
             String accessToken);
+
+    RetrievedDataset findById(String id, String accessToken);
+
+    String retrieveDatasetInFormat(String id, String format, String accessToken);
 }

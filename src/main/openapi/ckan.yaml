@@ -387,6 +387,10 @@ components:
           $ref: "#/components/schemas/CkanValueLabel"
         uri:
           type: string
+        access_url:
+          type: string
+        download_url:
+          type: string
         created:
           type: string
         last_modified:

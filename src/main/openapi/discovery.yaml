@@ -74,7 +74,6 @@ paths:
       security:
         - discovery_auth:
             - read:datasets
-            -
   /api/v1/organizations:
     get:
       summary: Retrieves a list of organizations
@@ -235,7 +234,6 @@ components:
           title: Description
         organization:
           $ref: "#/components/schemas/DatasetOrganization"
-          title: Organization
         themes:
           type: array
           items:
@@ -300,22 +298,18 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ValueLabel"
-          title: Themes
         contacts:
           type: array
           items:
             $ref: "#/components/schemas/ContactPoint"
-          title: Contacts
         datasetRelationships:
           type: array
           items:
             $ref: "#/components/schemas/DatasetRelationEntry"
-          title: Dataset Relationships
         dataDictionary:
           type: array
           items:
             $ref: "#/components/schemas/DatasetDictionaryEntry"
-          title: Data Dictionary
         catalogue:
           type: string
           title: Catalogue
@@ -334,7 +328,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ValueLabel"
-          title: Languages
         creators:
           type: array
           items:
@@ -347,31 +340,25 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ValueLabel"
-          title: Has Versions
           deprecated: true
         accessRights:
           $ref: "#/components/schemas/ValueLabel"
-          title: Access Rights
         conformsTo:
           type: array
           items:
             $ref: "#/components/schemas/ValueLabel"
-          title: Conforms to
           deprecated: true
         keywords:
           type: array
           items:
             $ref: "#/components/schemas/ValueLabel"
-          title: Keywords
         provenance:
           type: string
           title: Provenance
         spatial:
           $ref: "#/components/schemas/ValueLabel"
-          title: Spatial
         organization:
           $ref: "#/components/schemas/DatasetOrganization"
-          title: Organization
         distributions:
           type: array
           items:
@@ -397,10 +384,12 @@ components:
           title: Description
         format:
           $ref: "#/components/schemas/ValueLabel"
-          title: Format
-        uri:
+        accessUrl:
           type: string
-          title: URI
+          title: Access URL
+        downloadUrl:
+          type: string
+          title: Download URL
         createdAt:
           type: string
           format: date-time

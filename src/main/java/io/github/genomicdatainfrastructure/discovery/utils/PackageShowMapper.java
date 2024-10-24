@@ -200,9 +200,10 @@ public class PackageShowMapper {
                 .title(ckanResource.getName())
                 .description(ckanResource.getDescription())
                 .format(value(ckanResource.getFormat()))
-                .uri(ckanResource.getUri())
                 .createdAt(parse(ckanResource.getCreated()))
                 .modifiedAt(parse(ckanResource.getLastModified()))
+                .accessUrl(ckanResource.getAccessUrl())
+                .downloadUrl(ckanResource.getDownloadUrl())
                 .build();
     }
 

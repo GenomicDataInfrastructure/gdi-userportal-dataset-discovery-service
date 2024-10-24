@@ -11,7 +11,6 @@ import io.github.genomicdatainfrastructure.discovery.remote.beacon.api.BeaconQue
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsResponseContent;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconResultSet;
-import io.github.genomicdatainfrastructure.discovery.utils.BeaconIndividualsRequestMapper;
 import io.quarkus.arc.lookup.LookupIfProperty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

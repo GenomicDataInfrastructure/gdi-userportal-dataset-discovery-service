@@ -95,6 +95,12 @@ components:
               title: Filters
               items:
                 $ref: "#/components/schemas/BeaconIndividualsRequestQueryFilter"
+              default: []
+            requestParameters:
+              type: array
+              items:
+                additionalProperties:
+                  type: string
             includeResultsetResponses:
               type: string
               title: Include Resultset Responses
@@ -124,6 +130,12 @@ components:
         id:
           type: string
           title: Term ID
+        operator:
+          type: string
+          title: Operator
+        value:
+          type: string
+          title: Value
         scope:
           type: string
           title: Scope

@@ -7,7 +7,6 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ck
 public class CkanConfiguration {
 
     public static final String CKAN_IDENTIFIER_FIELD = "identifier";
-    public static final String CKAN_FACET_GROUP = "ckan";
-    public static final String CKAN_FACET_LABEL = "DCAT-AP";
+    public static final String CKAN_FILTER_SOURCE = "ckan";
     public static final int CKAN_PAGINATION_MAX_SIZE = 1000;
 }

@@ -47,7 +47,6 @@ public class CkanFacetsBuilder implements FacetsBuilder {
                 selectedFacets);
 
         var response = ckanQueryApi.packageSearch(
-                accessToken,
                 request
         );
 

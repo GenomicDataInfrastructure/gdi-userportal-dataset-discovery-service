@@ -258,11 +258,9 @@ components:
         recordsCount:
           type: integer
           title: Records count
-        distributions:
-          type: array
-          items:
-            $ref: "#/components/schemas/RetrievedDistribution"
-          title: Distributions
+        distributionsCount:
+          type: integer
+          title: Distributions count
       required:
         - id
         - title

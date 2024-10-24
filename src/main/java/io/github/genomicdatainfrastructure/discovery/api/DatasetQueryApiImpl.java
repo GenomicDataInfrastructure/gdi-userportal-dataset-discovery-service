@@ -4,9 +4,10 @@
 
 package io.github.genomicdatainfrastructure.discovery.api;
 
+import io.github.genomicdatainfrastructure.discovery.datasets.application.usecases.RetrieveDatasetInFormatQuery;
+import io.github.genomicdatainfrastructure.discovery.datasets.application.usecases.RetrieveDatasetQuery;
 import io.github.genomicdatainfrastructure.discovery.datasets.application.usecases.SearchDatasetsQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
-import io.github.genomicdatainfrastructure.discovery.services.RetrieveDatasetService;
 import io.quarkus.oidc.runtime.OidcJwtCallerPrincipal;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.ws.rs.core.Response;
@@ -16,7 +17,8 @@ import lombok.RequiredArgsConstructor;
 public class DatasetQueryApiImpl implements DatasetQueryApi {
 
     private final SecurityIdentity identity;
-    private final RetrieveDatasetService retrievedDatasetService;
+    private final RetrieveDatasetInFormatQuery retrieveDatasetInFormatQuery;
+    private final RetrieveDatasetQuery retrieveDatasetQuery;
     private final SearchDatasetsQuery searchDatasetsQuery;
 
     @Override
@@ -27,14 +29,14 @@ public class DatasetQueryApiImpl implements DatasetQueryApi {
 
     @Override
     public Response retrieveDataset(String id) {
-        var content = retrievedDatasetService.retrieve(id, accessToken());
+        var content = retrieveDatasetQuery.execute(id, accessToken());
         return Response.ok(content).build();
     }
 
     @Override
     public Response retrieveDatasetInFormat(String id, String format) {
         var type = getType(format);
-        var content = retrievedDatasetService.retrieveInFormat(id, format, accessToken());
+        var content = retrieveDatasetInFormatQuery.execute(id, format, accessToken());
         return Response
                 .ok(content)
                 .type(type)

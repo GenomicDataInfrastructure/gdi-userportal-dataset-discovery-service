@@ -16,13 +16,6 @@ paths:
       operationId: package_search
       tags:
         - "ckan-query"
-      parameters:
-        - name: Authorization
-          in: header
-          description: The authorization header
-          required: false
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -46,12 +39,6 @@ paths:
           in: query
           description: The ID of the package to retrieve
           required: true
-          schema:
-            type: string
-        - name: Authorization
-          in: header
-          description: The authorization header
-          required: false
           schema:
             type: string
       responses:

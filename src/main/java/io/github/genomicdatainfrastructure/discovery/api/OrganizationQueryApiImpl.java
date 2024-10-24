@@ -4,21 +4,18 @@
 
 package io.github.genomicdatainfrastructure.discovery.api;
 
-import io.github.genomicdatainfrastructure.discovery.services.RetrieveOrganizationsService;
+import io.github.genomicdatainfrastructure.discovery.datasets.application.usecases.RetrieveOrganizationsQuery;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
-
-import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
 public class OrganizationQueryApiImpl implements OrganizationQueryApi {
 
-    private final RetrieveOrganizationsService retrieveOrganizationsService;
+    private final RetrieveOrganizationsQuery organizationsQuery;
 
     @Override
     public Response retrieveOrganizations(Integer limit) {
-        var nonNullLimit = ofNullable(limit).orElse(100);
-        var content = retrieveOrganizationsService.retrieve(nonNullLimit);
+        var content = organizationsQuery.execute(limit);
         return Response.ok(content).build();
     }
 }

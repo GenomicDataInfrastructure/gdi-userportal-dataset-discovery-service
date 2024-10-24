@@ -5,14 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.utils;
 
 import static java.util.Optional.*;
-import static java.util.function.Predicate.*;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,12 +14,8 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
 import lombok.experimental.UtilityClass;
 
 // TODO review original field and date format on resources
-// TODO Remove duplicated code
 @UtilityClass
 public class PackageShowMapper {
-
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(
-            "yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
 
     public RetrievedDataset from(CkanPackage ckanPackage) {
         var catalogue = ofNullable(ckanPackage.getOrganization())
@@ -38,22 +27,22 @@ public class PackageShowMapper {
                 .identifier(ckanPackage.getIdentifier())
                 .title(ckanPackage.getTitle())
                 .description(ckanPackage.getNotes())
-                .themes(values(ckanPackage.getTheme()))
+                .themes(CkanValueLabelParser.values(ckanPackage.getTheme()))
                 .catalogue(catalogue)
-                .organization(DatasetOrganizationMapper.from(ckanPackage.getOrganization()))
-                .createdAt(parse(ckanPackage.getIssued()))
-                .modifiedAt(parse(ckanPackage.getModified()))
+                .organization(CkanOrganizationParser.organization(ckanPackage.getOrganization()))
+                .createdAt(CkanDatetimeParser.datetime(ckanPackage.getIssued()))
+                .modifiedAt(CkanDatetimeParser.datetime(ckanPackage.getModified()))
                 .url(ckanPackage.getUrl())
-                .languages(values(ckanPackage.getLanguage()))
+                .languages(CkanValueLabelParser.values(ckanPackage.getLanguage()))
                 .creators(agents(ckanPackage.getCreator()))
                 .publishers(agents(ckanPackage.getPublisher()))
-                .hasVersions(values(ckanPackage.getHasVersion()))
-                .accessRights(value(ckanPackage.getAccessRights()))
-                .conformsTo(values(ckanPackage.getConformsTo()))
+                .hasVersions(CkanValueLabelParser.values(ckanPackage.getHasVersion()))
+                .accessRights(CkanValueLabelParser.value(ckanPackage.getAccessRights()))
+                .conformsTo(CkanValueLabelParser.values(ckanPackage.getConformsTo()))
                 .provenance(ckanPackage.getProvenance())
-                .spatial(value(ckanPackage.getSpatialUri()))
-                .distributions(distributions(ckanPackage))
-                .keywords(keywords(ckanPackage))
+                .spatial(CkanValueLabelParser.value(ckanPackage.getSpatialUri()))
+                .distributions(distributions(ckanPackage.getResources()))
+                .keywords(CkanTagParser.keywords(ckanPackage.getTags()))
                 .contacts(contactPoint(ckanPackage.getContact()))
                 .datasetRelationships(relations(ckanPackage.getDatasetRelationships()))
                 .dataDictionary(dictionary(ckanPackage.getDataDictionary()))
@@ -110,36 +99,37 @@ public class PackageShowMapper {
                 .build();
     }
 
-    private List<ValueLabel> values(List<CkanValueLabel> values) {
-        return ofNullable(values)
+    private List<RetrievedDistribution> distributions(List<CkanResource> resources) {
+        return ofNullable(resources)
                 .orElseGet(List::of)
                 .stream()
-                .map(PackageShowMapper::value)
+                .map(PackageShowMapper::distribution)
+                .toList();
+    }
+
+    private RetrievedDistribution distribution(CkanResource ckanResource) {
+        return RetrievedDistribution.builder()
+                .id(ckanResource.getId())
+                .title(ckanResource.getName())
+                .description(ckanResource.getDescription())
+                .format(CkanValueLabelParser.value(ckanResource.getFormat()))
+                .createdAt(CkanDatetimeParser.datetime(ckanResource.getCreated()))
+                .modifiedAt(CkanDatetimeParser.datetime(ckanResource.getLastModified()))
+                .accessUrl(ckanResource.getAccessUrl())
+                .downloadUrl(ckanResource.getDownloadUrl())
+                .build();
+    }
+
+    private List<Agent> agents(List<CkanAgent> creators) {
+        return ofNullable(creators)
+                .orElseGet(List::of)
+                .stream()
+                .map(PackageShowMapper::agent)
                 .filter(Objects::nonNull)
                 .toList();
     }
 
-    private ValueLabel value(String value) {
-        return ofNullable(value)
-                .filter(not(String::isBlank))
-                .map(it -> ValueLabel.builder()
-                        .value(it)
-                        .label(it)
-                        .build())
-                .orElse(null);
-    }
-
-    private ValueLabel value(CkanValueLabel value) {
-        return ofNullable(value)
-                .map(it -> ValueLabel.builder()
-                        .value(value.getName())
-                        .label(value.getDisplayName())
-                        .build())
-                .orElse(null);
-
-    }
-
-    private Agent value(CkanAgent value) {
+    private Agent agent(CkanAgent value) {
         return ofNullable(value)
                 .map(it -> Agent.builder()
                         .name(value.getName())
@@ -149,68 +139,5 @@ public class PackageShowMapper {
                         .url(value.getUrl())
                         .build())
                 .orElse(null);
-    }
-
-    private List<Agent> agents(List<CkanAgent> creators) {
-        return ofNullable(creators)
-                .orElseGet(List::of)
-                .stream()
-                .map(PackageShowMapper::value)
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
-    private OffsetDateTime parse(String date) {
-        if (date == null) {
-            return null;
-        }
-
-        try {
-            return OffsetDateTime.parse(date);
-        } catch (DateTimeParseException e) {
-            var dateToParse = date;
-            if (dateToParse.matches("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$")) {
-                dateToParse += "T00:00:00.000000";
-            }
-            return LocalDateTime.parse(dateToParse, DATE_FORMATTER)
-                    .truncatedTo(ChronoUnit.SECONDS)
-                    .atOffset(ZoneOffset.UTC);
-        }
-    }
-
-    private List<RetrievedDistribution> distributions(CkanPackage ckanPackage) {
-        return ofNullable(ckanPackage.getResources())
-                .orElseGet(List::of)
-                .stream()
-                .map(PackageShowMapper::distribution)
-                .toList();
-    }
-
-    private List<ValueLabel> keywords(CkanPackage ckanPackage) {
-        return ofNullable(ckanPackage.getTags())
-                .orElseGet(List::of)
-                .stream()
-                .map(PackageShowMapper::keyword)
-                .toList();
-    }
-
-    private RetrievedDistribution distribution(CkanResource ckanResource) {
-        return RetrievedDistribution.builder()
-                .id(ckanResource.getId())
-                .title(ckanResource.getName())
-                .description(ckanResource.getDescription())
-                .format(value(ckanResource.getFormat()))
-                .createdAt(parse(ckanResource.getCreated()))
-                .modifiedAt(parse(ckanResource.getLastModified()))
-                .accessUrl(ckanResource.getAccessUrl())
-                .downloadUrl(ckanResource.getDownloadUrl())
-                .build();
-    }
-
-    private ValueLabel keyword(CkanTag ckanTag) {
-        return ValueLabel.builder()
-                .label(ckanTag.getDisplayName())
-                .value(ckanTag.getName())
-                .build();
     }
 }

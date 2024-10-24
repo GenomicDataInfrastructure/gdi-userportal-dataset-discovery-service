@@ -12,9 +12,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 @UtilityClass
-public class DatasetOrganizationMapper {
+public class CkanOrganizationParser {
 
-    public DatasetOrganization from(CkanOrganization organization) {
+    public DatasetOrganization organization(CkanOrganization organization) {
         if (organization == null) {
             return null;
         }

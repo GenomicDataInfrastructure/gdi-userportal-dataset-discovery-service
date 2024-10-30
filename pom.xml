@@ -18,7 +18,7 @@
         <quarkus-openapi-generator.version>2.5.0</quarkus-openapi-generator.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.15.1</quarkus.platform.version>
+        <quarkus.platform.version>3.16.1</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire.version>3.5.1</surefire.version>
         <quarkus-wiremock.version>1.4.0</quarkus-wiremock.version>
@@ -85,7 +85,7 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-oidc-client-reactive-filter</artifactId>
+            <artifactId>quarkus-rest-client-oidc-filter</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

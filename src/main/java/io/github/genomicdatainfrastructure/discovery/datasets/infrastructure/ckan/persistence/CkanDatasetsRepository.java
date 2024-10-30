@@ -5,13 +5,12 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence;
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
-import io.github.genomicdatainfrastructure.discovery.exceptions.DatasetNotFoundException;
+import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.DatasetNotFoundException;
 import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
-import io.github.genomicdatainfrastructure.discovery.utils.CkanFacetsQueryBuilder;
-import io.github.genomicdatainfrastructure.discovery.utils.PackageSearchMapper;
-import io.github.genomicdatainfrastructure.discovery.utils.PackageShowMapper;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.PackageSearchMapper;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.PackageShowMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
@@ -20,7 +19,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import java.util.List;
 import java.util.Set;
 
-import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FACET_GROUP;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_IDENTIFIER_FIELD;
 
 @ApplicationScoped
@@ -51,8 +50,8 @@ public class CkanDatasetsRepository implements DatasetsRepository {
                 .stream()
                 .map(id -> DatasetSearchQueryFacet
                         .builder()
-                        .facetGroup(CKAN_FACET_GROUP)
-                        .facet(CKAN_IDENTIFIER_FIELD)
+                        .source(CKAN_FILTER_SOURCE)
+                        .key(CKAN_IDENTIFIER_FIELD)
                         .value(id)
                         .build())
                 .toList();

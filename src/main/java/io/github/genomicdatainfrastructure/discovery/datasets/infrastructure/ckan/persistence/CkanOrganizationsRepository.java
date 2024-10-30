@@ -7,7 +7,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ck
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.OrganizationsRepository;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetOrganization;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
-import io.github.genomicdatainfrastructure.discovery.utils.CkanOrganizationParser;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.CkanOrganizationParser;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.rest.client.inject.RestClient;

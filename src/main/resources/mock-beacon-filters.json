@@ -1,0 +1,176 @@
+[
+  {
+    "source": "beacon",
+    "type": "DROPDOWN",
+    "key": "ncit",
+    "label": "National Cancer Institute Thesaurus",
+    "values": [
+      {
+        "value": "NCIT:C25179",
+        "label": "Hospitalization"
+      },
+      {
+        "value": "NCIT:C171454",
+        "label": "Intensive Care Unit Stay"
+      },
+      {
+        "value": "NCIT:C14139",
+        "label": "Immunocompromised"
+      },
+      {
+        "value": "NCIT:C28397",
+        "label": "Asthma"
+      },
+      {
+        "value": "NCIT:C3199",
+        "label": "Chronic Obstructive Pulmonary Disease"
+      },
+      {
+        "value": "NCIT:C80078",
+        "label": "Chronic Kidney Disease"
+      },
+      {
+        "value": "NCIT:C3117",
+        "label": "Hypertension"
+      },
+      {
+        "value": "NCIT:C15289",
+        "label": "Organ Transplantation"
+      },
+      {
+        "value": "NCIT:C3080",
+        "label": "Congestive Heart Failure"
+      },
+      {
+        "value": "NCIT:C27996",
+        "label": "Myocardial Infarction"
+      },
+      {
+        "value": "NCIT:C3390",
+        "label": "Stroke"
+      },
+      {
+        "value": "NCIT:C49343",
+        "label": "Deep Vein Thrombosis"
+      },
+      {
+        "value": "NCIT:C80480",
+        "label": "Reinfarction During Hospitalization"
+      }
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "FREE_TEXT",
+    "key": "BMI",
+    "label": "BMI in Kilograms per Square Meter",
+    "operators": [
+      "=",
+      "!=",
+      ">",
+      "<",
+      "%"
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "FREE_TEXT",
+    "key": "Height-standing",
+    "label": "Height-standing in Centimeters",
+    "operators": [
+      "=",
+      "!=",
+      ">",
+      "<",
+      "%"
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "ENTRIES",
+    "key": "gene+aminoacid",
+    "label": "Mutations in:",
+    "entries": [
+      {
+        "key": "geneId",
+        "label": "gene"
+      },
+      {
+        "key": "aminoacidChange",
+        "label": "aminoacid"
+      }
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "ENTRIES",
+    "key": "gene",
+    "label": "Mutations in:",
+    "entries": [
+      {
+        "key": "geneId",
+        "label": "gene"
+      }
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "ENTRIES",
+    "key": "bases",
+    "label": "Mutations in:",
+    "entries": [
+      {
+        "key": "alternateBases",
+        "label": "alternateBases"
+      },
+      {
+        "key": "referenceBases",
+        "label": "referenceBases"
+      },
+      {
+        "key": "start",
+        "label": "start"
+      },
+      {
+        "key": "end",
+        "label": "end"
+      },
+      {
+        "key": "variantType",
+        "label": "type"
+      }
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "ENTRIES",
+    "key": "bases+assembly",
+    "label": "Mutations in:",
+    "entries": [
+      {
+        "key": "alternateBases",
+        "label": "alternateBases"
+      },
+      {
+        "key": "referenceBases",
+        "label": "referenceBases"
+      },
+      {
+        "key": "start",
+        "label": "start"
+      },
+      {
+        "key": "end",
+        "label": "end"
+      },
+      {
+        "key": "variantType",
+        "label": "type"
+      },
+      {
+        "key": "assemblyId",
+        "label": "assemblyId"
+      }
+    ]
+  }
+]

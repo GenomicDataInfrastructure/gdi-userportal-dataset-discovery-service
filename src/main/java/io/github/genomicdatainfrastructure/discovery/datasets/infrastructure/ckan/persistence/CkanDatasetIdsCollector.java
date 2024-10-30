@@ -35,13 +35,20 @@ public class CkanDatasetIdsCollector implements DatasetIdsCollector {
     public Map<String, Integer> collect(DatasetSearchQuery query, String accessToken) {
         var facetsQuery = CkanFacetsQueryBuilder.buildFacetQuery(query);
 
-        var request = new PackageSearchRequest(
-                query.getQuery(),
-                facetsQuery,
-                null,
-                CKAN_PAGINATION_MAX_SIZE,
-                0,
-                null);
+        // var request = new PackageSearchRequest(
+        //         query.getQuery(),
+        //         facetsQuery,
+        //         null,
+        //         CKAN_PAGINATION_MAX_SIZE,
+        //         0,
+        //         null);
+
+        var request = PackageSearchRequest.builder()
+                .q(query.getQuery())
+                .fq(facetsQuery)
+                .rows(CKAN_PAGINATION_MAX_SIZE)
+                .start(0)
+                .build();
 
         var response = ckanQueryApi.packageSearch(
                 request

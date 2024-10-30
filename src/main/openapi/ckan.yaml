@@ -160,6 +160,10 @@ components:
         facet.field:
           type: string
           description: Which facets to include in the response
+        facet.limit:
+          type: integer
+          description: Max number of facet items to return
+          default: -1
     PackagesSearchResponse:
       type: object
       properties:

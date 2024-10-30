@@ -160,6 +160,31 @@ paths:
       security:
         - discovery_auth:
             - read:search-facets
+  /api/v1/filters/{key}/values:
+    get:
+      summary: Retrieves values for a specific filter
+      operationId: retrieve_filter_values
+      tags:
+        - "filters-query"
+      parameters:
+        - name: key
+          in: path
+          description: The key of the filter to retrieve values for
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A list of values for the specified filter
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValueLabel"
+      security:
+        - discovery_auth:
+            - read:search-facets
 components:
   securitySchemes:
     discovery_auth:
@@ -452,6 +477,9 @@ components:
         label:
           type: string
           title: label
+        count:
+          type: integer
+          title: count
       required:
         - value
         - label

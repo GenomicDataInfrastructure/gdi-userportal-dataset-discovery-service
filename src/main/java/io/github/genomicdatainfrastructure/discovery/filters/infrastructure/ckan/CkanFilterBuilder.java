@@ -39,13 +39,21 @@ public class CkanFilterBuilder implements FilterBuilder {
 
     @Override
     public List<Filter> build(String accessToken) {
-        var request = new PackageSearchRequest(
-                null,
-                null,
-                null,
-                0,
-                0,
-                selectedFacets);
+        // var request = new PackageSearchRequest(
+        //         null,
+        //         null,
+        //         null,
+        //         0,
+        //         0,
+        //         selectedFacets)
+        ;
+
+        var request = PackageSearchRequest.builder()
+                .rows(0)
+                .start(0)
+                .facetLimit(-1)
+                .facetField(selectedFacets)
+                .build();
 
         var response = ckanQueryApi.packageSearch(
                 request

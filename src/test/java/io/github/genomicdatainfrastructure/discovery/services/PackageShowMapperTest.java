@@ -102,6 +102,11 @@ class PackageShowMapperTest {
                                 .downloadUrl("downloadUrl")
                                 .issuedDate("2025-03-19")
                                 .modifiedDate("2025-03-19T13:37:05Z")
+                                .language(List.of(
+                                        CkanValueLabel.builder()
+                                                .displayName("language")
+                                                .name("en")
+                                                .build()))
                                 .build()))
                 .contact(List.of(
                         CkanContactPoint.builder()
@@ -247,6 +252,11 @@ class PackageShowMapperTest {
                                         .build())
                                 .accessUrl("accessUrl")
                                 .downloadUrl("downloadUrl")
+                                .languages(List.of(
+                                        ValueLabel.builder()
+                                                .value("en")
+                                                .label("language")
+                                                .build()))
                                 .build()))
                 .contacts(List.of(
                         ContactPoint.builder()

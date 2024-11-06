@@ -117,6 +117,7 @@ public class PackageShowMapper {
                 .modifiedAt(CkanDatetimeParser.datetime(ckanResource.getModifiedDate()))
                 .accessUrl(ckanResource.getAccessUrl())
                 .downloadUrl(ckanResource.getDownloadUrl())
+                .languages(CkanValueLabelParser.values(ckanResource.getLanguage()))
                 .build();
     }
 

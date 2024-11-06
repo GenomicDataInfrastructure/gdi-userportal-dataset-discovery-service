@@ -41,7 +41,6 @@ public class DatasetQueryApiImpl implements DatasetQueryApi {
                 .ok(content)
                 .type(type)
                 .header("Content-Disposition", "attachment; filename=\"" + id + "." + format + "\"")
-                .header("Content-Length", content.length())
                 .build();
     }
 

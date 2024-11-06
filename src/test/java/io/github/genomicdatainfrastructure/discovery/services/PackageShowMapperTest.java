@@ -100,8 +100,8 @@ class PackageShowMapperTest {
                                         .build())
                                 .accessUrl("accessUrl")
                                 .downloadUrl("downloadUrl")
-                                .created("2025-03-19")
-                                .lastModified("2025-03-19T13:37:05Z")
+                                .issuedDate("2025-03-19")
+                                .modifiedDate("2025-03-19T13:37:05Z")
                                 .build()))
                 .contact(List.of(
                         CkanContactPoint.builder()

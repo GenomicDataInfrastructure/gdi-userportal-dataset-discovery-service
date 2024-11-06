@@ -5,6 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils;
 
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -21,7 +22,7 @@ public class CkanDatetimeParser {
             "yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
 
     public OffsetDateTime datetime(String date) {
-        if (date == null) {
+        if (StringUtils.isBlank(date)) {
             return null;
         }
 

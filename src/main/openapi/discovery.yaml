@@ -74,29 +74,6 @@ paths:
       security:
         - discovery_auth:
             - read:datasets
-  /api/v1/organizations:
-    get:
-      summary: Retrieves a list of organizations
-      operationId: retrieve_organizations
-      parameters:
-        - name: limit
-          in: query
-          description: maximum number of organizations per query
-          required: true
-          schema:
-            type: integer
-            default: 100
-      tags:
-        - "organization-query"
-      responses:
-        "200":
-          description: The list of organizations
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DatasetOrganization"
   /api/v1/datasets/{id}.{format}:
     get:
       summary: Retrieves a dataset by its ID, in the requested format
@@ -160,6 +137,31 @@ paths:
       security:
         - discovery_auth:
             - read:search-facets
+  /api/v1/filters/{key}/values:
+    get:
+      summary: Retrieves the values for a filter key
+      operationId: retrieve_filter_values
+      tags:
+        - "filters-query"
+      parameters:
+        - name: key
+          in: path
+          description: The key of the filter to retrieve values for
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The values for the filter key
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValueLabel"
+      security:
+        - discovery_auth:
+            - read:search-facets
 components:
   securitySchemes:
     discovery_auth:
@@ -213,7 +215,6 @@ components:
           title: Facet source
         type:
           $ref: "#/components/schemas/FilterType"
-          title: Facet type
         key:
           type: string
           title: Facet key
@@ -222,7 +223,6 @@ components:
           title: Facet value
         operator:
           $ref: "#/components/schemas/Operator"
-          title: Operator
         entries:
           type: array
           items:
@@ -275,8 +275,10 @@ components:
         description:
           type: string
           title: Description
-        organization:
-          $ref: "#/components/schemas/DatasetOrganization"
+        publishers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"
         themes:
           type: array
           items:
@@ -398,8 +400,6 @@ components:
           title: Provenance
         spatial:
           $ref: "#/components/schemas/ValueLabel"
-        organization:
-          $ref: "#/components/schemas/DatasetOrganization"
         distributions:
           type: array
           items:
@@ -452,6 +452,9 @@ components:
         label:
           type: string
           title: label
+        count:
+          type: integer
+          title: count
       required:
         - value
         - label
@@ -488,7 +491,6 @@ components:
           title: identifier
       required:
         - name
-        - email 
     DatasetRelationEntry:
       properties:
         relation:
@@ -500,30 +502,6 @@ components:
       required:
         - target
         - relation
-    DatasetOrganization:
-      properties:
-        id:
-          type: string
-          title: ID of organization
-        name:
-          type: string
-          title: Name of organization
-        title:
-          type: string
-          title: Title of organization
-        description:
-          type: string
-          title: Description of organization
-        imageUrl:
-          type: string
-          title: Image url of organization
-        numberOfDatasets:
-          type: integer
-          title: Number of datasets
-      required:
-        - id
-        - name
-        - numberOfDatasets
     DatasetDictionaryEntry:
       properties:
         name:
@@ -549,7 +527,6 @@ components:
           title: Filter group
         type:
           $ref: "#/components/schemas/FilterType"
-          title: Filter type
         key:
           type: string
           title: Key

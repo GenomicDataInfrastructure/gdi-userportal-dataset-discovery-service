@@ -30,22 +30,26 @@ public class CkanFilterBuilder implements FilterBuilder {
     private final CkanQueryApi ckanQueryApi;
     private final String selectedFacets;
 
-    public CkanFilterBuilder(@RestClient CkanQueryApi ckanQueryApi,
-            @ConfigProperty(name = "datasets.filters") String datasetFiltersAsString) {
+    public CkanFilterBuilder(
+            @RestClient CkanQueryApi ckanQueryApi,
+            @ConfigProperty(name = "datasets.filters") String datasetFiltersAsString
+    ) {
         this.ckanQueryApi = ckanQueryApi;
-        this.selectedFacets = SELECTED_FACETS_PATTERN.formatted(String.join("\",\"",
-                datasetFiltersAsString.split(",")));
+        this.selectedFacets = SELECTED_FACETS_PATTERN.formatted(String.join(
+                "\",\"",
+                datasetFiltersAsString.split(",")
+        ));
     }
 
     @Override
     public List<Filter> build(String accessToken) {
-        var request = new PackageSearchRequest(
-                null,
-                null,
-                null,
-                0,
-                0,
-                selectedFacets);
+
+        var request = PackageSearchRequest.builder()
+                .rows(0)
+                .start(0)
+                .facetLimit(-1)
+                .facetField(selectedFacets)
+                .build();
 
         var response = ckanQueryApi.packageSearch(
                 request

@@ -4,23 +4,20 @@
 
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils;
 
-import static java.util.Optional.*;
+import io.github.genomicdatainfrastructure.discovery.model.*;
+import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
+import lombok.experimental.UtilityClass;
 
 import java.util.List;
 import java.util.Objects;
 
-import io.github.genomicdatainfrastructure.discovery.model.*;
-import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
-import lombok.experimental.UtilityClass;
+import static java.util.Optional.ofNullable;
 
 // TODO review original field and date format on resources
 @UtilityClass
 public class PackageShowMapper {
 
     public RetrievedDataset from(CkanPackage ckanPackage) {
-        var catalogue = ofNullable(ckanPackage.getOrganization())
-                .map(CkanOrganization::getTitle)
-                .orElse(null);
 
         return RetrievedDataset.builder()
                 .id(ckanPackage.getId())
@@ -28,8 +25,7 @@ public class PackageShowMapper {
                 .title(ckanPackage.getTitle())
                 .description(ckanPackage.getNotes())
                 .themes(CkanValueLabelParser.values(ckanPackage.getTheme()))
-                .catalogue(catalogue)
-                .organization(CkanOrganizationParser.organization(ckanPackage.getOrganization()))
+                .publishers(CkanAgentParser.agents(ckanPackage.getPublisher()))
                 .createdAt(CkanDatetimeParser.datetime(ckanPackage.getIssued()))
                 .modifiedAt(CkanDatetimeParser.datetime(ckanPackage.getModified()))
                 .url(ckanPackage.getUrl())

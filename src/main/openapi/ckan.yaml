@@ -54,34 +54,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CkanErrorResponse"
-  /api/3/action/organization_list:
-    get:
-      summary: Retrieves a list of organizations
-      operationId: organization_list
-      parameters:
-        - name: all_fields
-          in: query
-          description: if all metadata of organization is required
-          required: true
-          schema:
-            type: boolean
-            default: true
-        - name: limit
-          in: query
-          description: maximum number of organizations per query
-          required: true
-          schema:
-            type: integer
-            default: 100
-      tags:
-        - "ckan-query"
-      responses:
-        "200":
-          description: List of organizations
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CkanOrganizationsResponse"
   /dataset/{id}.{format}:
     get:
       summary: Retrieves a dataset by its ID, in the requested format
@@ -160,6 +132,10 @@ components:
         facet.field:
           type: string
           description: Which facets to include in the response
+        facet.limit:
+          type: integer
+          description: Maximum number of facets to return
+          default: -1
     PackagesSearchResponse:
       type: object
       properties:
@@ -234,8 +210,6 @@ components:
           items:
             $ref: "#/components/schemas/CkanDatasetDictionaryEntry"
           title: Data Dictionary
-        organization:
-          $ref: "#/components/schemas/CkanOrganization"
         issued:
           type: string
         modified:
@@ -331,36 +305,6 @@ components:
         - name
         - type
         - description
-    CkanOrganization:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        title:
-          type: string
-        image_url:
-          type: string
-        description:
-          type: string
-        package_count:
-          type: integer
-      required:
-        - id
-        - name
-        - package_count
-    CkanOrganizationsResponse:
-      type: object
-      properties:
-        help:
-          type: string
-        success:
-          type: boolean
-        result:
-          type: array
-          items:
-            $ref: "#/components/schemas/CkanOrganization"
     CkanResource:
       type: object
       properties:

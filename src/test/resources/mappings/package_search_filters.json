@@ -5,7 +5,7 @@
     "urlPattern": "/api/3/action/enhanced_package_search",
     "bodyPatterns": [
       {
-        "equalToJson": "[ \"access_rights\", \"theme\", \"tags\", \"organization\", \"res_format\" ]"
+        "matchesJsonPath": "['facet.field']"
       }
     ]
   },

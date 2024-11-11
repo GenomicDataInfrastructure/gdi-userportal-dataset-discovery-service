@@ -5,40 +5,7 @@
     "urlPattern": "/api/3/action/enhanced_package_search",
     "bodyPatterns": [
       {
-        "matchesJsonPath": {
-          "expression": "['facet.field']",
-          "contains": "access_rights"
-        }
-      },
-      {
-        "matchesJsonPath": {
-          "expression": "$..'facet.field'",
-          "contains": "theme"
-        }
-      },
-      {
-        "matchesJsonPath": {
-          "expression": "$..'facet.field'",
-          "contains": "tags"
-        }
-      },
-      {
-        "matchesJsonPath": {
-          "expression": "$..'facet.field'",
-          "contains": "access_rights"
-        }
-      },
-      {
-        "matchesJsonPath": {
-          "expression": "$..'facet.field'",
-          "contains": "res_format"
-        }
-      },
-      {
-        "matchesJsonPath": {
-          "expression": "$..'facet.field'",
-          "contains": "res_format"
-        }
+        "equalToJson": "[\"theme\"]"
       }
     ]
   },

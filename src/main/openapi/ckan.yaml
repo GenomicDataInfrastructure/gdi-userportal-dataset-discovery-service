@@ -322,10 +322,14 @@ components:
           type: string
         download_url:
           type: string
-        created:
+        issued_date:
           type: string
-        last_modified:
+        modified_date:
           type: string
+        language:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanValueLabel"
       required:
         - id
         - name

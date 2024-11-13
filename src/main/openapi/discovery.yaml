@@ -439,6 +439,10 @@ components:
           type: string
           format: date-time
           title: Distribution modified at
+        languages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValueLabel"
       required:
         - id
         - title

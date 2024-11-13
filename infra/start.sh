@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2024 PNED G.I.E.
+#
+# SPDX-License-Identifier: Apache-2.0
 #!/bin/bash
 
 cd ../
@@ -18,5 +21,4 @@ docker build -t local/dds .
 echo "Docker image build completed successfully."
 
 echo "Starting application"
-pwd
 docker-compose -f ./infra/docker-compose.yml up

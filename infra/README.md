@@ -5,11 +5,14 @@ SPDX-License-Identifier: CC-BY-4.0
 -->
 ## To Run the application locally 
 
-* Add a new file in infra/config named .env.secrets same as the content in the template just update the secret
+* Create a new file named .env.secrets in infra/config by copying .env.secrets.template and updating the secret values
 * To build and start the docker image using your local changes Run the script
-    ```bash
-      ./start.sh
-
+    
+  ```bash
+  ./start.sh
+    ```
 * To stop the application run the below script
+  
   ```bash
   ./stop.sh
+  ```

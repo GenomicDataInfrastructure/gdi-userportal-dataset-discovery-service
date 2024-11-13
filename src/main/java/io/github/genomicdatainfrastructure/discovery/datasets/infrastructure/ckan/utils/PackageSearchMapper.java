@@ -28,9 +28,6 @@ public class PackageSearchMapper {
     }
 
     private SearchedDataset result(CkanPackage ckanPackage) {
-        var catalogue = ofNullable(ckanPackage.getOrganization())
-                .map(CkanOrganization::getTitle)
-                .orElse(null);
 
         return SearchedDataset.builder()
                 .id(ckanPackage.getId())
@@ -39,8 +36,7 @@ public class PackageSearchMapper {
                 .description(ckanPackage.getNotes())
                 .themes(CkanValueLabelParser.values(ckanPackage.getTheme()))
                 .keywords(CkanTagParser.keywords(ckanPackage.getTags()))
-                .catalogue(catalogue)
-                .organization(CkanOrganizationParser.organization(ckanPackage.getOrganization()))
+                .publishers(CkanAgentParser.agents(ckanPackage.getPublisher()))
                 .modifiedAt(CkanDatetimeParser.datetime(ckanPackage.getModified()))
                 .createdAt(CkanDatetimeParser.datetime(ckanPackage.getIssued()))
                 .distributionsCount(ckanPackage.getResources().size())

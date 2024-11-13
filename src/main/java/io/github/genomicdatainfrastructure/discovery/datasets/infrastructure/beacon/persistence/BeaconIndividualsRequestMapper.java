@@ -24,8 +24,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
 
-import javax.sql.rowset.Predicate;
-
 @UtilityClass
 public class BeaconIndividualsRequestMapper {
 

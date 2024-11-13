@@ -1,342 +1,342 @@
 {
-    "priority": 1,
-    "request": {
-        "method": "POST",
-        "urlPattern": "/api/3/action/enhanced_package_search",
-        "bodyPatterns": [
-            {
-                "matchesJsonPath": "['facet.field']"
-            }
-        ]
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "urlPattern": "/api/3/action/enhanced_package_search",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "['facet.field']"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
     },
-    "response": {
-        "status": 200,
-        "headers": {
-            "Content-Type": "application/json"
+    "jsonBody": {
+      "help": "https://catalogue.portal.dev.gdi.lu/api/3/action/help_show?name=enhanced_package_search",
+      "success": true,
+      "result": {
+        "count": 16,
+        "facets": {
+          "tags": {
+            "cancer": 5,
+            "colon": 5,
+            "genomics": 5,
+            "synthetic": 5,
+            "CINECA": 1,
+            "COVID-19": 1,
+            "VCF": 1,
+            "colorectal": 1,
+            "colorectal_tumor": 1,
+            "genomic": 1,
+            "long": 1,
+            "ngs": 1,
+            "normal_tumor_pair": 1,
+            "rectum": 1,
+            "tofu": 1,
+            "wgs": 1
+          },
+          "organization": {
+            "umcg": 5,
+            "ega": 4,
+            "nbis": 3,
+            "csc-fi": 1,
+            "instituto-superior-tecnico": 1,
+            "lnds": 1,
+            "university-of-oslo": 1
+          },
+          "res_format": {
+            "vcf": 2,
+            "CSV": 1,
+            "JSON": 1,
+            "XLS": 1,
+            "ZIP": 1,
+            "fastq": 1,
+            "graphql": 1,
+            "jsonld": 1,
+            "ped": 1,
+            "rdf-jsonld": 1,
+            "rdf-n3": 1,
+            "rdf-nquads": 1,
+            "rdf-ntriples": 1,
+            "rdf-trig": 1,
+            "rdf-ttl": 1,
+            "rdf-xml": 1,
+            "ttl": 1
+          },
+          "access_rights": {
+            "http://publications.europa.eu/resource/authority/access-right/RESTRICTED": 5,
+            "https://staging-fdp.gdi.nbis.se/dataset/87495812-3201-4099-9478-1c60c9ef8c85#accessRights": 1
+          },
+          "theme": {
+            "https://publications.europa.eu/resource/authority/data-theme/TECH": 5,
+            "http://publications.europa.eu/resource/authority/data-theme/HEAL": 2,
+            "https://en.wikipedia.org/wiki/Colorectal_cancer": 1,
+            "https://gdi.onemilliongenomes.eu": 1
+          }
         },
-        "jsonBody": {
-            "help": "https://catalogue.portal.dev.gdi.lu/api/3/action/help_show?name=enhanced_package_search",
-            "success": true,
-            "result": {
-                "count": 16,
-                "facets": {
-                    "tags": {
-                        "cancer": 5,
-                        "colon": 5,
-                        "genomics": 5,
-                        "synthetic": 5,
-                        "CINECA": 1,
-                        "COVID-19": 1,
-                        "VCF": 1,
-                        "colorectal": 1,
-                        "colorectal_tumor": 1,
-                        "genomic": 1,
-                        "long": 1,
-                        "ngs": 1,
-                        "normal_tumor_pair": 1,
-                        "rectum": 1,
-                        "tofu": 1,
-                        "wgs": 1
-                    },
-                    "organization": {
-                        "umcg": 5,
-                        "ega": 4,
-                        "nbis": 3,
-                        "csc-fi": 1,
-                        "instituto-superior-tecnico": 1,
-                        "lnds": 1,
-                        "university-of-oslo": 1
-                    },
-                    "res_format": {
-                        "vcf": 2,
-                        "CSV": 1,
-                        "JSON": 1,
-                        "XLS": 1,
-                        "ZIP": 1,
-                        "fastq": 1,
-                        "graphql": 1,
-                        "jsonld": 1,
-                        "ped": 1,
-                        "rdf-jsonld": 1,
-                        "rdf-n3": 1,
-                        "rdf-nquads": 1,
-                        "rdf-ntriples": 1,
-                        "rdf-trig": 1,
-                        "rdf-ttl": 1,
-                        "rdf-xml": 1,
-                        "ttl": 1
-                    },
-                    "access_rights": {
-                        "http://publications.europa.eu/resource/authority/access-right/RESTRICTED": 5,
-                        "https://staging-fdp.gdi.nbis.se/dataset/87495812-3201-4099-9478-1c60c9ef8c85#accessRights": 1
-                    },
-                    "theme": {
-                        "https://publications.europa.eu/resource/authority/data-theme/TECH": 5,
-                        "http://publications.europa.eu/resource/authority/data-theme/HEAL": 2,
-                        "https://en.wikipedia.org/wiki/Colorectal_cancer": 1,
-                        "https://gdi.onemilliongenomes.eu": 1
-                    }
-                },
-                "results": [],
-                "sort": "score desc, metadata_modified desc",
-                "search_facets": {
-                    "tags": {
-                        "title": "Keywords",
-                        "items": [
-                            {
-                                "name": "wgs",
-                                "display_name": "wgs",
-                                "count": 1
-                            },
-                            {
-                                "name": "tofu",
-                                "display_name": "tofu",
-                                "count": 1
-                            },
-                            {
-                                "name": "synthetic",
-                                "display_name": "synthetic",
-                                "count": 5
-                            },
-                            {
-                                "name": "rectum",
-                                "display_name": "rectum",
-                                "count": 1
-                            },
-                            {
-                                "name": "normal_tumor_pair",
-                                "display_name": "normal_tumor_pair",
-                                "count": 1
-                            },
-                            {
-                                "name": "ngs",
-                                "display_name": "ngs",
-                                "count": 1
-                            },
-                            {
-                                "name": "long",
-                                "display_name": "long",
-                                "count": 1
-                            },
-                            {
-                                "name": "genomics",
-                                "display_name": "genomics",
-                                "count": 5
-                            },
-                            {
-                                "name": "genomic",
-                                "display_name": "genomic",
-                                "count": 1
-                            },
-                            {
-                                "name": "colorectal_tumor",
-                                "display_name": "colorectal_tumor",
-                                "count": 1
-                            },
-                            {
-                                "name": "colorectal",
-                                "display_name": "colorectal",
-                                "count": 1
-                            },
-                            {
-                                "name": "colon",
-                                "display_name": "colon",
-                                "count": 5
-                            },
-                            {
-                                "name": "cancer",
-                                "display_name": "cancer",
-                                "count": 5
-                            },
-                            {
-                                "name": "VCF",
-                                "display_name": "VCF",
-                                "count": 1
-                            },
-                            {
-                                "name": "COVID-19",
-                                "display_name": "COVID-19",
-                                "count": 1
-                            },
-                            {
-                                "name": "CINECA",
-                                "display_name": "CINECA",
-                                "count": 1
-                            }
-                        ]
-                    },
-                    "organization": {
-                        "title": "Publishers",
-                        "items": [
-                            {
-                                "name": "university-of-oslo",
-                                "display_name": "university-of-oslo",
-                                "count": 1
-                            },
-                            {
-                                "name": "umcg",
-                                "display_name": "umcg",
-                                "count": 5
-                            },
-                            {
-                                "name": "nbis",
-                                "display_name": "nbis",
-                                "count": 3
-                            },
-                            {
-                                "name": "lnds",
-                                "display_name": "lnds",
-                                "count": 1
-                            },
-                            {
-                                "name": "ega",
-                                "display_name": "ega",
-                                "count": 4
-                            },
-                            {
-                                "name": "csc-fi",
-                                "display_name": "csc-fi",
-                                "count": 1
-                            },
-                            {
-                                "name": "instituto-superior-tecnico",
-                                "display_name": "instituto-superior-tecnico",
-                                "count": 1
-                            }
-                        ]
-                    },
-                    "res_format": {
-                        "title": "File Formats",
-                        "items": [
-                            {
-                                "name": "vcf",
-                                "display_name": "vcf",
-                                "count": 2
-                            },
-                            {
-                                "name": "ttl",
-                                "display_name": "ttl",
-                                "count": 1
-                            },
-                            {
-                                "name": "rdf-xml",
-                                "display_name": "rdf-xml",
-                                "count": 1
-                            },
-                            {
-                                "name": "rdf-ttl",
-                                "display_name": "rdf-ttl",
-                                "count": 1
-                            },
-                            {
-                                "name": "rdf-trig",
-                                "display_name": "rdf-trig",
-                                "count": 1
-                            },
-                            {
-                                "name": "rdf-ntriples",
-                                "display_name": "rdf-ntriples",
-                                "count": 1
-                            },
-                            {
-                                "name": "rdf-nquads",
-                                "display_name": "rdf-nquads",
-                                "count": 1
-                            },
-                            {
-                                "name": "rdf-n3",
-                                "display_name": "rdf-n3",
-                                "count": 1
-                            },
-                            {
-                                "name": "rdf-jsonld",
-                                "display_name": "rdf-jsonld",
-                                "count": 1
-                            },
-                            {
-                                "name": "ped",
-                                "display_name": "ped",
-                                "count": 1
-                            },
-                            {
-                                "name": "jsonld",
-                                "display_name": "jsonld",
-                                "count": 1
-                            },
-                            {
-                                "name": "graphql",
-                                "display_name": "graphql",
-                                "count": 1
-                            },
-                            {
-                                "name": "fastq",
-                                "display_name": "fastq",
-                                "count": 1
-                            },
-                            {
-                                "name": "ZIP",
-                                "display_name": "ZIP",
-                                "count": 1
-                            },
-                            {
-                                "name": "XLS",
-                                "display_name": "XLS",
-                                "count": 1
-                            },
-                            {
-                                "name": "JSON",
-                                "display_name": "JSON",
-                                "count": 1
-                            },
-                            {
-                                "name": "CSV",
-                                "display_name": "CSV",
-                                "count": 1
-                            }
-                        ]
-                    },
-                    "access_rights": {
-                        "title": "Access Rights",
-                        "items": [
-                            {
-                                "name": "https://staging-fdp.gdi.nbis.se/dataset/87495812-3201-4099-9478-1c60c9ef8c85#accessRights",
-                                "display_name": "https://staging-fdp.gdi.nbis.se/dataset/87495812-3201-4099-9478-1c60c9ef8c85#accessRights",
-                                "count": 1
-                            },
-                            {
-                                "name": "http://publications.europa.eu/resource/authority/access-right/RESTRICTED",
-                                "display_name": "Restricted",
-                                "count": 5
-                            }
-                        ]
-                    },
-                    "theme": {
-                        "title": "Themes",
-                        "items": [
-                            {
-                                "name": "https://publications.europa.eu/resource/authority/data-theme/TECH",
-                                "display_name": "Science and technology",
-                                "count": 5
-                            },
-                            {
-                                "name": "https://gdi.onemilliongenomes.eu",
-                                "display_name": "GDI",
-                                "count": 1
-                            },
-                            {
-                                "name": "https://en.wikipedia.org/wiki/Colorectal_cancer",
-                                "display_name": "Colorectal cancer",
-                                "count": 1
-                            },
-                            {
-                                "name": "http://publications.europa.eu/resource/authority/data-theme/HEAL",
-                                "display_name": "Health",
-                                "count": 2
-                            }
-                        ]
-                    }
-                }
-            }
+        "results": [],
+        "sort": "score desc, metadata_modified desc",
+        "search_facets": {
+          "tags": {
+            "title": "Keywords",
+            "items": [
+              {
+                "name": "wgs",
+                "display_name": "wgs",
+                "count": 1
+              },
+              {
+                "name": "tofu",
+                "display_name": "tofu",
+                "count": 1
+              },
+              {
+                "name": "synthetic",
+                "display_name": "synthetic",
+                "count": 5
+              },
+              {
+                "name": "rectum",
+                "display_name": "rectum",
+                "count": 1
+              },
+              {
+                "name": "normal_tumor_pair",
+                "display_name": "normal_tumor_pair",
+                "count": 1
+              },
+              {
+                "name": "ngs",
+                "display_name": "ngs",
+                "count": 1
+              },
+              {
+                "name": "long",
+                "display_name": "long",
+                "count": 1
+              },
+              {
+                "name": "genomics",
+                "display_name": "genomics",
+                "count": 5
+              },
+              {
+                "name": "genomic",
+                "display_name": "genomic",
+                "count": 1
+              },
+              {
+                "name": "colorectal_tumor",
+                "display_name": "colorectal_tumor",
+                "count": 1
+              },
+              {
+                "name": "colorectal",
+                "display_name": "colorectal",
+                "count": 1
+              },
+              {
+                "name": "colon",
+                "display_name": "colon",
+                "count": 5
+              },
+              {
+                "name": "cancer",
+                "display_name": "cancer",
+                "count": 5
+              },
+              {
+                "name": "VCF",
+                "display_name": "VCF",
+                "count": 1
+              },
+              {
+                "name": "COVID-19",
+                "display_name": "COVID-19",
+                "count": 1
+              },
+              {
+                "name": "CINECA",
+                "display_name": "CINECA",
+                "count": 1
+              }
+            ]
+          },
+          "organization": {
+            "title": "Publishers",
+            "items": [
+              {
+                "name": "university-of-oslo",
+                "display_name": "university-of-oslo",
+                "count": 1
+              },
+              {
+                "name": "umcg",
+                "display_name": "umcg",
+                "count": 5
+              },
+              {
+                "name": "nbis",
+                "display_name": "nbis",
+                "count": 3
+              },
+              {
+                "name": "lnds",
+                "display_name": "lnds",
+                "count": 1
+              },
+              {
+                "name": "ega",
+                "display_name": "ega",
+                "count": 4
+              },
+              {
+                "name": "csc-fi",
+                "display_name": "csc-fi",
+                "count": 1
+              },
+              {
+                "name": "instituto-superior-tecnico",
+                "display_name": "instituto-superior-tecnico",
+                "count": 1
+              }
+            ]
+          },
+          "res_format": {
+            "title": "File Formats",
+            "items": [
+              {
+                "name": "vcf",
+                "display_name": "vcf",
+                "count": 2
+              },
+              {
+                "name": "ttl",
+                "display_name": "ttl",
+                "count": 1
+              },
+              {
+                "name": "rdf-xml",
+                "display_name": "rdf-xml",
+                "count": 1
+              },
+              {
+                "name": "rdf-ttl",
+                "display_name": "rdf-ttl",
+                "count": 1
+              },
+              {
+                "name": "rdf-trig",
+                "display_name": "rdf-trig",
+                "count": 1
+              },
+              {
+                "name": "rdf-ntriples",
+                "display_name": "rdf-ntriples",
+                "count": 1
+              },
+              {
+                "name": "rdf-nquads",
+                "display_name": "rdf-nquads",
+                "count": 1
+              },
+              {
+                "name": "rdf-n3",
+                "display_name": "rdf-n3",
+                "count": 1
+              },
+              {
+                "name": "rdf-jsonld",
+                "display_name": "rdf-jsonld",
+                "count": 1
+              },
+              {
+                "name": "ped",
+                "display_name": "ped",
+                "count": 1
+              },
+              {
+                "name": "jsonld",
+                "display_name": "jsonld",
+                "count": 1
+              },
+              {
+                "name": "graphql",
+                "display_name": "graphql",
+                "count": 1
+              },
+              {
+                "name": "fastq",
+                "display_name": "fastq",
+                "count": 1
+              },
+              {
+                "name": "ZIP",
+                "display_name": "ZIP",
+                "count": 1
+              },
+              {
+                "name": "XLS",
+                "display_name": "XLS",
+                "count": 1
+              },
+              {
+                "name": "JSON",
+                "display_name": "JSON",
+                "count": 1
+              },
+              {
+                "name": "CSV",
+                "display_name": "CSV",
+                "count": 1
+              }
+            ]
+          },
+          "access_rights": {
+            "title": "Access Rights",
+            "items": [
+              {
+                "name": "https://staging-fdp.gdi.nbis.se/dataset/87495812-3201-4099-9478-1c60c9ef8c85#accessRights",
+                "display_name": "https://staging-fdp.gdi.nbis.se/dataset/87495812-3201-4099-9478-1c60c9ef8c85#accessRights",
+                "count": 1
+              },
+              {
+                "name": "http://publications.europa.eu/resource/authority/access-right/RESTRICTED",
+                "display_name": "Restricted",
+                "count": 5
+              }
+            ]
+          },
+          "theme": {
+            "title": "Themes",
+            "items": [
+              {
+                "name": "https://publications.europa.eu/resource/authority/data-theme/TECH",
+                "display_name": "Science and technology",
+                "count": 5
+              },
+              {
+                "name": "https://gdi.onemilliongenomes.eu",
+                "display_name": "GDI",
+                "count": 1
+              },
+              {
+                "name": "https://en.wikipedia.org/wiki/Colorectal_cancer",
+                "display_name": "Colorectal cancer",
+                "count": 1
+              },
+              {
+                "name": "http://publications.europa.eu/resource/authority/data-theme/HEAL",
+                "display_name": "Health",
+                "count": 2
+              }
+            ]
+          }
         }
+      }
     }
+  }
 }

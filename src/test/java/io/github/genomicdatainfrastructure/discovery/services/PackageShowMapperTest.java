@@ -4,16 +4,15 @@
 
 package io.github.genomicdatainfrastructure.discovery.services;
 
-import static java.time.OffsetDateTime.*;
-import static org.assertj.core.api.Assertions.*;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.PackageShowMapper;
+import io.github.genomicdatainfrastructure.discovery.model.*;
+import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
-import io.github.genomicdatainfrastructure.discovery.model.*;
-import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
-import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.PackageShowMapper;
+import static java.time.OffsetDateTime.parse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PackageShowMapperTest {
 
@@ -52,11 +51,6 @@ class PackageShowMapperTest {
                         .displayName("theme")
                         .name("theme-name")
                         .build()))
-                .organization(CkanOrganization.builder()
-                        .title("organization")
-                        .description("description")
-                        .imageUrl("https://image.com")
-                        .build())
                 .issued("2024-07-01T22:00:00+00:00")
                 .modified("2024-07-02T22:00:00Z")
                 .tags(List.of(CkanTag.builder()
@@ -117,7 +111,8 @@ class PackageShowMapperTest {
                                 .name("Contact 2")
                                 .email("contact2@example.com")
                                 .uri("http://example.com")
-                                .build()))
+                                .build()
+                ))
                 .creator(List.of(
                         CkanAgent.builder()
                                 .name("creatorName")
@@ -132,7 +127,8 @@ class PackageShowMapperTest {
                                 .email("email2")
                                 .url("url2")
                                 .type("type2")
-                                .build()))
+                                .build()
+                ))
                 .publisher(List.of(
                         CkanAgent.builder()
                                 .name("publisherName")
@@ -147,17 +143,20 @@ class PackageShowMapperTest {
                                 .email("email2")
                                 .url("url2")
                                 .type("type2")
-                                .build()))
+                                .build()
+                ))
                 .datasetRelationships(List.of(
                         CkanDatasetRelationEntry.builder().target("Dataset 1").relation(
                                 "Relation 1").build(),
                         CkanDatasetRelationEntry.builder().target("Dataset 2").relation(
-                                "Relation 2").build()))
+                                "Relation 2").build()
+                ))
                 .dataDictionary(List.of(
                         CkanDatasetDictionaryEntry.builder().name("Entry 1").type("Type 1")
                                 .description("Description 1").build(),
                         CkanDatasetDictionaryEntry.builder().name("Entry 2").type("Type 2")
-                                .description("Description 2").build()))
+                                .description("Description 2").build()
+                ))
                 .build();
 
         var actual = PackageShowMapper.from(ckanPackage);
@@ -171,7 +170,6 @@ class PackageShowMapperTest {
                                 .value("theme-name")
                                 .label("theme")
                                 .build()))
-                .catalogue("organization")
                 .createdAt(parse("2024-07-01T22:00:00+00:00"))
                 .modifiedAt(parse("2024-07-02T22:00:00+00:00"))
                 .url("url")
@@ -199,7 +197,8 @@ class PackageShowMapperTest {
                                 .email("email2")
                                 .url("url2")
                                 .type("type2")
-                                .build()))
+                                .build()
+                ))
                 .publishers(List.of(
                         Agent.builder()
                                 .name("publisherName")
@@ -214,7 +213,8 @@ class PackageShowMapperTest {
                                 .email("email2")
                                 .url("url2")
                                 .type("type2")
-                                .build()))
+                                .build()
+                ))
                 .accessRights(ValueLabel.builder()
                         .value("public")
                         .label("accessRights")
@@ -224,12 +224,6 @@ class PackageShowMapperTest {
                                 .value("conforms")
                                 .label("conformsTo")
                                 .build()))
-                .organization(DatasetOrganization
-                        .builder()
-                        .title("organization")
-                        .description("description")
-                        .imageUrl("https://image.com")
-                        .build())
                 .provenance("provenance")
                 .keywords(List.of(ValueLabel.builder()
                         .label("key-tag")
@@ -267,14 +261,16 @@ class PackageShowMapperTest {
                                 .name("Contact 2")
                                 .email("contact2@example.com")
                                 .uri("http://example.com")
-                                .build()))
+                                .build()
+                ))
                 .datasetRelationships(List.of(
                         DatasetRelationEntry.builder().relation("Relation 1")
                                 .target("Dataset 1")
                                 .build(),
                         DatasetRelationEntry.builder().relation("Relation 2")
                                 .target("Dataset 2")
-                                .build()))
+                                .build()
+                ))
                 .dataDictionary(List.of(
                         DatasetDictionaryEntry.builder().name("Entry 1").type("Type 1")
                                 .description(
@@ -283,7 +279,8 @@ class PackageShowMapperTest {
                         DatasetDictionaryEntry.builder().name("Entry 2").type("Type 2")
                                 .description(
                                         "Description 2")
-                                .build()))
+                                .build()
+                ))
                 .build();
 
         assertThat(actual)

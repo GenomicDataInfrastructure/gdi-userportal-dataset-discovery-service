@@ -1,0 +1,56 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "headers": {
+      "Content-Length": {
+        "contains": "55"
+      }
+    },
+    "urlPattern": "/api/3/action/enhanced_package_search",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "['facet.field']",
+        "equalToJson": ["theme"]
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "help": "https://catalogue.portal.dev.gdi.lu/api/3/action/help_show?name=enhanced_package_search",
+      "success": true,
+      "result": {
+        "count": 14,
+        "facets": {
+          "theme": {
+            "https://gdi.onemilliongenomes.eu": 1,
+            "https://publications.europa.eu/resource/authority/data-theme/TECH": 4
+          }
+        },
+        "results": [],
+        "sort": "score desc, metadata_modified desc",
+        "search_facets": {
+          "theme": {
+            "title": "Themes",
+            "items": [
+              {
+                "name": "https://publications.europa.eu/resource/authority/data-theme/TECH",
+                "display_name": "Science and technology",
+                "count": 4
+              },
+              {
+                "name": "https://gdi.onemilliongenomes.eu",
+                "display_name": "GDI",
+                "count": 1
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

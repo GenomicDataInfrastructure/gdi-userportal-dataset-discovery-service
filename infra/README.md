@@ -1,7 +1,8 @@
-[//]: # (SPDX-FileCopyrightText: 2024 PNED G.I.E.)
+<!--
+SPDX-FileCopyrightText: 2024 PNED G.I.E.
 
-[//]: # ()
-[//]: # (SPDX-License-Identifier: Apache-2.0)
+SPDX-License-Identifier: CC-BY-4.0
+-->
 ## To Run the application locally 
 
 * Add a new file in infra/config named .env.secrets same as the content in the template just update the secret

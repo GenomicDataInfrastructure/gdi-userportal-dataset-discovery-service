@@ -42,9 +42,9 @@ public class BeaconFilterBuilder implements FilterBuilder {
         }
         final var inputStream = ofNullable(getClass()
                 .getClassLoader()
-                .getResourceAsStream("mock-beacon-filters.json"))
+                .getResourceAsStream("META-INF/resources/beacon-filters.json"))
                 .orElseThrow(() -> new IOException(
-                        "Resource file 'mock-beacon-filters.json' not found"));
+                        "Resource file 'beacon-filters.json' not found"));
 
         return objectMapper.readValue(inputStream,
                 new TypeReference<>() {

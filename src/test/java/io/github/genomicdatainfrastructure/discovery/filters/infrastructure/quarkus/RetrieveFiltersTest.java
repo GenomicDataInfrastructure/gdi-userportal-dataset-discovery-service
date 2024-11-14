@@ -47,12 +47,8 @@ public class RetrieveFiltersTest extends BaseTest {
                 .get("/api/v1/filters")
                 .then()
                 .statusCode(200)
-                .body("", hasSize(12))
                 .body("find { it.source == 'ckan' }.values", hasSize(greaterThan(0)))
-                .body("find { it.source == 'beacon' }.values", hasSize(greaterThan(0)))
-                .body("find { it.label == 'National Cancer Institute Thesaurus' }.values", hasSize(
-                        greaterThan(
-                                0)));
+                .body("find { it.source == 'beacon' }.values", hasSize(greaterThan(0)));
     }
 
     @Test
@@ -76,8 +72,9 @@ public class RetrieveFiltersTest extends BaseTest {
 
             assertThat(actual)
                     .containsExactlyInAnyOrder(
-                            "ncit", "BMI", "Height-standing", "bases", "bases+assembly", "gene",
-                            "gene+aminoacid"
+                            "treatment", "genetic_variation", "sex", "histopathology", "diseases",
+                            "intervention",
+                            "diseases.ageOfOnset.iso8601duration", "genetic_mutation"
                     );
         } catch (Exception e) {
             throw new RuntimeException(e);

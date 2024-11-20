@@ -106,11 +106,13 @@ class PackageShowMapperTest {
                         CkanContactPoint.builder()
                                 .name("Contact 1")
                                 .email("contact1@example.com")
+                                .identifier("contact-identifier-1")
                                 .build(),
                         CkanContactPoint.builder()
                                 .name("Contact 2")
                                 .email("contact2@example.com")
                                 .uri("http://example.com")
+                                .identifier("contact-identifier-2")
                                 .build()
                 ))
                 .creator(List.of(
@@ -120,6 +122,7 @@ class PackageShowMapperTest {
                                 .email("email")
                                 .url("url")
                                 .type("type")
+                                .uri("uri")
                                 .build(),
                         CkanAgent.builder()
                                 .name("creatorName2")
@@ -127,6 +130,7 @@ class PackageShowMapperTest {
                                 .email("email2")
                                 .url("url2")
                                 .type("type2")
+                                .uri("uri2")
                                 .build()
                 ))
                 .publisher(List.of(
@@ -136,6 +140,7 @@ class PackageShowMapperTest {
                                 .email("email")
                                 .url("url")
                                 .type("type")
+                                .uri("uri")
                                 .build(),
                         CkanAgent.builder()
                                 .name("publisherName2")
@@ -143,6 +148,7 @@ class PackageShowMapperTest {
                                 .email("email2")
                                 .url("url2")
                                 .type("type2")
+                                .uri("uri2")
                                 .build()
                 ))
                 .datasetRelationships(List.of(
@@ -190,6 +196,7 @@ class PackageShowMapperTest {
                                 .email("email")
                                 .url("url")
                                 .type("type")
+                                .uri("uri")
                                 .build(),
                         Agent.builder()
                                 .name("creatorName2")
@@ -197,6 +204,7 @@ class PackageShowMapperTest {
                                 .email("email2")
                                 .url("url2")
                                 .type("type2")
+                                .uri("uri2")
                                 .build()
                 ))
                 .publishers(List.of(
@@ -206,6 +214,7 @@ class PackageShowMapperTest {
                                 .email("email")
                                 .url("url")
                                 .type("type")
+                                .uri("uri")
                                 .build(),
                         Agent.builder()
                                 .name("publisherName2")
@@ -213,6 +222,7 @@ class PackageShowMapperTest {
                                 .email("email2")
                                 .url("url2")
                                 .type("type2")
+                                .uri("uri2")
                                 .build()
                 ))
                 .accessRights(ValueLabel.builder()
@@ -256,11 +266,13 @@ class PackageShowMapperTest {
                         ContactPoint.builder()
                                 .name("Contact 1")
                                 .email("contact1@example.com")
+                                .identifier("contact-identifier-1")
                                 .build(),
                         ContactPoint.builder()
                                 .name("Contact 2")
                                 .email("contact2@example.com")
                                 .uri("http://example.com")
+                                .identifier("contact-identifier-2")
                                 .build()
                 ))
                 .datasetRelationships(List.of(

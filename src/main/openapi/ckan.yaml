@@ -262,6 +262,9 @@ components:
         uri:
           type: string
           title: uri
+        identifier:
+          type: string
+          title: identifier
       required:
         - name
         - email
@@ -276,6 +279,9 @@ components:
         url:
           type: string
           title: url
+        uri:
+          type: string
+          title: uri
         type:
           type: string
           title: type

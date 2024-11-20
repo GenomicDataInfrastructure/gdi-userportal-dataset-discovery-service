@@ -77,6 +77,7 @@ public class PackageShowMapper {
                 .name(value.getName())
                 .email(value.getEmail())
                 .uri(value.getUri())
+                .identifier(value.getIdentifier())
                 .build();
     }
 
@@ -134,6 +135,7 @@ public class PackageShowMapper {
                         .type(value.getType())
                         .identifier(value.getIdentifier())
                         .url(value.getUrl())
+                        .uri(value.getUri())
                         .build())
                 .orElse(null);
     }

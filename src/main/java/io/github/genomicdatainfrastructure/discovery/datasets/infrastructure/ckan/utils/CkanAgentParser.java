@@ -34,6 +34,7 @@ public class CkanAgentParser {
                 .name(agent.getName())
                 .email(agent.getEmail())
                 .url(agent.getUrl())
+                .uri(agent.getUri())
                 .type(agent.getType())
                 .identifier(agent.getIdentifier())
                 .build();

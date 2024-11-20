@@ -473,6 +473,9 @@ components:
         uri:
           type: string
           title: uri
+        identifier:
+          type: string
+          title: identifier
       required:
         - name
         - email
@@ -493,6 +496,9 @@ components:
         identifier:
           type: string
           title: identifier
+        uri:
+          type: string
+          title: uri
       required:
         - name
     DatasetRelationEntry:

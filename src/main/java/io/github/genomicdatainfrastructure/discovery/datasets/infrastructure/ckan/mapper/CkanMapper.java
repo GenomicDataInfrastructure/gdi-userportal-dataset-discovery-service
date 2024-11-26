@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 PNED G.I.E.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.mapper;
 
 import io.github.genomicdatainfrastructure.discovery.model.RetrievedDataset;

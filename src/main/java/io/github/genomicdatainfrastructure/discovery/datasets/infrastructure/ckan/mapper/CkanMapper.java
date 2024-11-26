@@ -70,7 +70,7 @@ public interface CkanMapper {
         }
         return result.getResults().stream()
                 .map(this::mapToSearchedDataset)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Mapping(target = "description", source = "notes")

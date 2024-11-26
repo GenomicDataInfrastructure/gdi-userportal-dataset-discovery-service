@@ -23,6 +23,7 @@
         <surefire.version>3.5.2</surefire.version>
         <quarkus-wiremock.version>1.4.0</quarkus-wiremock.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -138,6 +139,17 @@
             <artifactId>quarkus-jacoco</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -172,6 +184,7 @@
                 <configuration>
                     <compilerArgs>
                         <arg>-parameters</arg>
+                        <arg>-Amapstruct.unmappedTargetPolicy=ERROR</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

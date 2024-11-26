@@ -9,10 +9,7 @@ import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toMap;
 
 import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.InvalidFacetException;
-import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
-import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQueryFacet;
-import io.github.genomicdatainfrastructure.discovery.model.FilterType;
-import io.github.genomicdatainfrastructure.discovery.model.QueryEntry;
+import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequest;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestMeta;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery;
@@ -29,7 +26,7 @@ public class BeaconIndividualsRequestMapper {
 
     private static final String BEACON_FACET_GROUP = "beacon";
     private static final String SCOPE = "individual";
-    private static final String INCLUDE_RESULTSET_RESPONSES = "HIT";
+    private static final String INCLUDE_RESULT_SET_RESPONSES = "HIT";
     private static final String REQUESTED_GRANULARITY = "record";
 
     public BeaconIndividualsRequest from(
@@ -56,7 +53,7 @@ public class BeaconIndividualsRequestMapper {
         return BeaconIndividualsRequest.builder()
                 .meta(new BeaconIndividualsRequestMeta())
                 .query(BeaconIndividualsRequestQuery.builder()
-                        .includeResultsetResponses(INCLUDE_RESULTSET_RESPONSES)
+                        .includeResultsetResponses(INCLUDE_RESULT_SET_RESPONSES)
                         .requestedGranularity(REQUESTED_GRANULARITY)
                         .testMode(false)
                         .pagination(new BeaconIndividualsRequestQueryPagination())
@@ -90,7 +87,7 @@ public class BeaconIndividualsRequestMapper {
     private BeaconIndividualsRequestQueryFilter buildFreeTextBeaconFacet(
             DatasetSearchQueryFacet facet) {
         String operator = ofNullable(facet.getOperator())
-                .map(it -> it.value())
+                .map(Operator::value)
                 .orElseThrow(() -> new InvalidFacetException(
                         "Facet operator must not be null"));
 

@@ -6,11 +6,10 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ck
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
 import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.DatasetNotFoundException;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.mapper.CkanMapper;
 import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
-import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.PackageSearchMapper;
-import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.PackageShowMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
@@ -26,12 +25,14 @@ import static io.github.genomicdatainfrastructure.discovery.datasets.infrastruct
 public class CkanDatasetsRepository implements DatasetsRepository {
 
     private final CkanQueryApi ckanQueryApi;
+    private final CkanMapper ckanMapper;
 
     @Inject
     public CkanDatasetsRepository(
-            @RestClient CkanQueryApi ckanQueryApi
+            @RestClient CkanQueryApi ckanQueryApi, CkanMapper ckanMapper
     ) {
         this.ckanQueryApi = ckanQueryApi;
+        this.ckanMapper = ckanMapper;
     }
 
     @Override
@@ -72,14 +73,14 @@ public class CkanDatasetsRepository implements DatasetsRepository {
                 request
         );
 
-        return PackageSearchMapper.from(response.getResult());
+        return ckanMapper.map(response.getResult());
     }
 
     @Override
     public RetrievedDataset findById(String id, String accessToken) {
         try {
             var ckanPackage = ckanQueryApi.packageShow(id);
-            return PackageShowMapper.from(ckanPackage.getResult());
+            return ckanMapper.map(ckanPackage.getResult());
         } catch (WebApplicationException e) {
             if (e.getResponse().getStatus() == 404) {
                 throw new DatasetNotFoundException(id);

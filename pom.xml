@@ -23,7 +23,7 @@
         <surefire.version>3.5.2</surefire.version>
         <quarkus-wiremock.version>1.4.0</quarkus-wiremock.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
     </properties>
     <dependencyManagement>
         <dependencies>

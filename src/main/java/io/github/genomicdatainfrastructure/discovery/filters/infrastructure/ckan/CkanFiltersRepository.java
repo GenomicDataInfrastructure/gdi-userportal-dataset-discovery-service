@@ -4,6 +4,7 @@
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan;
 
 import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FiltersRepository;
+import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.mapper.CkanFilterMapper;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFacet;
@@ -23,52 +24,29 @@ public class CkanFiltersRepository implements FiltersRepository {
     private static final String SELECTED_FACETS_PATTERN = "[\"%s\"]";
 
     private final CkanQueryApi ckanQueryApi;
+    private final CkanFilterMapper ckanFilterMapper;
 
-    public CkanFiltersRepository(@RestClient CkanQueryApi ckanQueryApi) {
+    public CkanFiltersRepository(@RestClient CkanQueryApi ckanQueryApi,
+            CkanFilterMapper ckanFilterMapper) {
         this.ckanQueryApi = ckanQueryApi;
 
+        this.ckanFilterMapper = ckanFilterMapper;
     }
 
     @Override
-    public List<ValueLabel> getValuesForFilter(String key) {
+    public List<ValueLabel> getValuesForFilter(final String key) {
 
-        var facetField = SELECTED_FACETS_PATTERN.formatted(key);
+        final var facetField = SELECTED_FACETS_PATTERN.formatted(key);
 
-        var request = PackageSearchRequest.builder()
+        final var request = PackageSearchRequest.builder()
                 .facetField(facetField)
                 .rows(0)
                 .facetLimit(-1)
                 .build();
 
-        var response = ckanQueryApi.packageSearch(
+        final var response = ckanQueryApi.packageSearch(
                 request
         );
-
-        var ckanFacet = ofNullable(response.getResult())
-                .map(PackagesSearchResult::getSearchFacets)
-                .orElseGet(Map::of)
-                .get(key);
-        if (ckanFacet == null) {
-            return List.of();
-        }
-        return filters(ckanFacet);
-
+        return ckanFilterMapper.map(response, key);
     }
-
-    private List<ValueLabel> filters(CkanFacet facet) {
-
-        var values = ofNullable(facet.getItems())
-                .orElseGet(List::of)
-                .stream()
-                .map(value -> ValueLabel.builder()
-                        .value(value.getName())
-                        .label(value.getDisplayName())
-                        .count(value.getCount())
-                        .build()
-                )
-                .toList();
-
-        return values;
-    }
-
 }

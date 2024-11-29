@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package io.github.genomicdatainfrastructure.discovery.services;
+package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.mapper;
 
-import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.mapper.CkanMapper;
-import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.mapper.CkanMapperImpl;
 import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
 import org.jetbrains.annotations.NotNull;
@@ -23,9 +21,9 @@ import java.util.stream.Stream;
 import static java.time.OffsetDateTime.parse;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PackageShowMapperTest {
+class CkanDatasetsMapperTest {
 
-    private final CkanMapper mapper = new CkanMapperImpl();
+    private final CkanDatasetsMapper mapper = new CkanDatasetsMapperImpl();
 
     @Nested
     class RetrievedDatasetTest {

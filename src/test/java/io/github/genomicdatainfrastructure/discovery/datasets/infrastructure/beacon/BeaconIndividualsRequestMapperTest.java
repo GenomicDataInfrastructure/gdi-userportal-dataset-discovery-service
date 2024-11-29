@@ -45,7 +45,7 @@ class BeaconIndividualsRequestMapperTest {
                                         .skip(0)
                                         .build())
                                 .filters(List.of())
-                                .requestParameters(List.of())
+                                .requestParameters(null)
                                 .build())
                         .build());
     }
@@ -71,7 +71,7 @@ class BeaconIndividualsRequestMapperTest {
                                         .skip(0)
                                         .build())
                                 .filters(List.of())
-                                .requestParameters(List.of())
+                                .requestParameters(null)
                                 .build())
                         .build());
     }
@@ -97,7 +97,7 @@ class BeaconIndividualsRequestMapperTest {
                                         .skip(0)
                                         .build())
                                 .filters(List.of())
-                                .requestParameters(List.of())
+                                .requestParameters(null)
                                 .build())
                         .build());
     }

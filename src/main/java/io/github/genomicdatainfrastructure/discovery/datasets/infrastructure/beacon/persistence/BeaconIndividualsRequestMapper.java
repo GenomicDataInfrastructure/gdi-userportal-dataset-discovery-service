@@ -61,7 +61,7 @@ public class BeaconIndividualsRequestMapper {
                         .testMode(false)
                         .pagination(new BeaconIndividualsRequestQueryPagination())
                         .filters(beaconFilters)
-                        .requestParameters(requestParameters)
+                        .requestParameters(requestParameters.isEmpty() ? null : requestParameters)
                         .build())
                 .build();
     }

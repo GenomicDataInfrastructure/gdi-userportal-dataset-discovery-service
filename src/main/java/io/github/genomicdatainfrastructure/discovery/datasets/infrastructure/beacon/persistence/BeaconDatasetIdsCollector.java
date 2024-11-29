@@ -23,6 +23,7 @@ import java.util.Objects;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @ApplicationScoped
@@ -47,7 +48,8 @@ public class BeaconDatasetIdsCollector implements DatasetIdsCollector {
 
         var beaconQuery = BeaconIndividualsRequestMapper.from(query);
 
-        if (beaconAuthorization == null || beaconQuery.getQuery().getFilters().isEmpty()) {
+        if (beaconAuthorization == null || (isEmpty(beaconQuery.getQuery().getFilters()) &&
+                isEmpty(beaconQuery.getQuery().getRequestParameters()))) {
             return null;
         }
 

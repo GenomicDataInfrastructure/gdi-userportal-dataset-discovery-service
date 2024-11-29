@@ -6,6 +6,7 @@ package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.qua
 
 import io.github.genomicdatainfrastructure.discovery.api.FiltersQueryApi;
 import io.github.genomicdatainfrastructure.discovery.filters.application.usecases.RetrieveFiltersQuery;
+import io.github.genomicdatainfrastructure.discovery.filters.application.usecases.RetrieveFiltersValuesQuery;
 import io.quarkus.oidc.runtime.OidcJwtCallerPrincipal;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.ws.rs.core.Response;
@@ -16,6 +17,7 @@ public class FilterController implements FiltersQueryApi {
 
     private final SecurityIdentity identity;
     private final RetrieveFiltersQuery query;
+    private final RetrieveFiltersValuesQuery valuesQuery;
 
     @Override
     public Response retrieveFilters() {
@@ -29,6 +31,12 @@ public class FilterController implements FiltersQueryApi {
         }
         var principal = (OidcJwtCallerPrincipal) identity.getPrincipal();
         return principal.getRawToken();
+    }
+
+    @Override
+    public Response retrieveFilterValues(String key) {
+        var values = valuesQuery.execute(key);
+        return Response.ok(values).build();
     }
 
 }

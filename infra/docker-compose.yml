@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2024 PNED G.I.E.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+services:
+  dataset-discovery-service:
+    container_name: dds
+    image: local/dds:latest
+    build:
+      context: ../
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./config/.env
+      - ./config/.env.secrets
+    healthcheck:
+      test: ["CMD", "curl", "-o", "/dev/null", "http://localhost:8080/q/health"]

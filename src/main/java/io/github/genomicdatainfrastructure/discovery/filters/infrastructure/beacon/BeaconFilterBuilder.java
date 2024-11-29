@@ -35,19 +35,19 @@ public class BeaconFilterBuilder implements FilterBuilder {
 
     @SneakyThrows
     @Override
-    public List<Filter> build(String accessToken) {
-        var beaconAuthorization = beaconAuth.retrieveAuthorization(accessToken);
+    public List<Filter> build(final String accessToken) {
+        final var beaconAuthorization = beaconAuth.retrieveAuthorization(accessToken);
         if (beaconAuthorization == null) {
             return List.of();
         }
-        var inputStream = ofNullable(getClass()
+        final var inputStream = ofNullable(getClass()
                 .getClassLoader()
-                .getResourceAsStream("mock-beacon-filters.json"))
+                .getResourceAsStream("META-INF/resources/beacon-filters.json"))
                 .orElseThrow(() -> new IOException(
-                        "Resource file 'mock-beacon-filters.json' not found"));
+                        "Resource file 'beacon-filters.json' not found"));
 
         return objectMapper.readValue(inputStream,
-                new TypeReference<List<Filter>>() {
+                new TypeReference<>() {
                 });
     }
 }

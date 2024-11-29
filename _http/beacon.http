@@ -2,28 +2,93 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+
+## Ontology
 POST https://beacon-network-backend-demo.ega-archive.org/beacon-network/v2.0.0/individuals
 Content-Type: application/json
 
 {
-   "meta":{
-      "apiVersion":"2.0"
-   },
-   "query":{
-      "filters":[
-         {
-            "id":"UBERON:0005352",
-            "scope": "individual"
-         }
-      ],
-      "includeResultsetResponses":"HIT",
-      "pagination":{
-         "skip":0,
-         "limit":0
-      },
-      "testMode":false,
-      "requestedGranularity":"count"
-   }
+  "meta": {
+    "apiVersion": "2.0"
+  },
+  "query": {
+    "filters": [
+      {
+        "id": "ICD10:J40",
+        "scope": "individual"
+      }
+    ],
+    "requestParameters": [],
+    "includeResultsetResponses": "HIT",
+    "pagination": {
+      "skip": 0,
+      "limit": 1
+    },
+    "testMode": false,
+    "requestedGranularity": "record"
+  }
+}
+
+
+### Alphanumeric
+POST https://beacon-network-backend-demo.ega-archive.org/beacon-network/v2.0.0/individuals
+Content-Type: application/json
+
+{
+    "meta": {
+        "apiVersion": "2.0"
+    },
+    "query": {
+        "filters": [
+            {
+                "id": "PATO:0000011",
+                "operator": ">",
+                "value": "P30Y",
+                "scope": "individual"
+            }
+        ],
+        "requestParameters": [],
+        "includeResultsetResponses": "HIT",
+        "pagination": {
+            "skip": 0,
+            "limit": 1
+        },
+        "testMode": false,
+        "requestedGranularity": "record"
+    }
+}
+
+
+### Variants
+POST https://beacon-network-backend-demo.ega-archive.org/beacon-network/v2.0.0/individuals
+Content-Type: application/json
+
+{
+  "$schema":"beaconRequestBody.json",
+  "meta": {
+    "apiVersion": "2.0",
+    "requestedSchemas": [
+      {
+        "entityType": "genomicVariation",
+        "schema:": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/genomicVariations/defaultSchema.json"
+      }
+    ]
+  },
+  "query": {
+    "requestParameters": {
+      "g_variant": {
+        "referenceName": "NC_000017.11",
+        "start": [7577120],
+        "referenceBases": "G",
+        "alternateBases": "A"
+      }
+    }
+  },
+  "requestedGranularity": "record",
+  "pagination": {
+    "skip": 0,
+    "limit": 10
+  }
 }
 
 ###

@@ -11,18 +11,19 @@
         <assertj.version>3.26.3</assertj.version>
         <checkstyle-maven-plugin.version>3.3.1</checkstyle-maven-plugin.version>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
-        <lombok.version>1.18.34</lombok.version>
+        <lombok.version>1.18.36</lombok.version>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus-openapi-generator.version>2.5.0</quarkus-openapi-generator.version>
+        <quarkus-openapi-generator.version>2.6.0-lts</quarkus-openapi-generator.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.16.1</quarkus.platform.version>
+        <quarkus.platform.version>3.17.2</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire.version>3.5.2</surefire.version>
         <quarkus-wiremock.version>1.4.0</quarkus-wiremock.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -138,6 +139,17 @@
             <artifactId>quarkus-jacoco</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -172,6 +184,7 @@
                 <configuration>
                     <compilerArgs>
                         <arg>-parameters</arg>
+                        <arg>-Amapstruct.unmappedTargetPolicy=ERROR</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

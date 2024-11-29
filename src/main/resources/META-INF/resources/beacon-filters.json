@@ -1,0 +1,259 @@
+[
+  {
+    "source": "beacon",
+    "type": "DROPDOWN",
+    "key": "diseases",
+    "label": "Diseases",
+    "values": [
+      {
+        "value": "NCIT:C4349",
+        "label": "Colon adenocarcinoma"
+      },
+      {
+        "value": "NCIT:C7966",
+        "label": "Mucinous Adenocarcinoma of the Colon and Rectum"
+      },
+      {
+        "value": "NCIT:C9383",
+        "label": "Rectal Adenocarcinoma"
+      },
+      {
+        "value": "MONDO:0100096",
+        "label": "COVID-19"
+      },
+      {
+        "value": "NCIT:C14139",
+        "label": "Immunocompromised"
+      },
+      {
+        "value": "NCIT:C28397",
+        "label": "Asthma"
+      },
+      {
+        "value": "NCIT:C3199",
+        "label": "Chronic Obstructive Pulmonary Disease"
+      },
+      {
+        "value": "NCIT:C80078",
+        "label": "Chronic Kidney Disease"
+      },
+      {
+        "value": "NCIT:C3117",
+        "label": "Hypertension"
+      },
+      {
+        "value": "NCIT:C15289",
+        "label": "Organ Transplantation"
+      },
+      {
+        "value": "NCIT:C3117",
+        "label": "Hypertension"
+      },
+      {
+        "value": "NCIT:C3080",
+        "label": "Congestive Heart Failure"
+      },
+      {
+        "value": "NCIT:C27996",
+        "label": "Myocardial Infarction"
+      },
+      {
+        "value": "NCIT:C3390",
+        "label": "Stroke"
+      },
+      {
+        "value": "NCIT:C49343",
+        "label": "Deep Vein Thrombosis"
+      },
+      {
+        "value": "NCIT:C80480",
+        "label": "Reinfarction During Hospitalization"
+      }
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "DROPDOWN",
+    "key": "histopathology",
+    "label": "Histopathology",
+    "values": [
+      {
+        "value": "ICD10:C18.2",
+        "label": "Ascending colon"
+      },
+      {
+        "value": "ICD10:C18.6",
+        "label": "Descending colon"
+      },
+      {
+        "value": "ICD10:C18.4",
+        "label": "Transverse colon"
+      },
+      {
+        "value": "ICD10:C18.3",
+        "label": "Hepatic flexure"
+      },
+      {
+        "value": "ICD10:C18.5",
+        "label": "Splenic flexure"
+      },
+      {
+        "value": "ICD10:C18.7",
+        "label": "Sigmoid colon"
+      },
+      {
+        "value": "ICD10:C18.0",
+        "label": "Caecum"
+      },
+      {
+        "value": "NCIT:C27966",
+        "label": "Stage I"
+      },
+      {
+        "value": "NCIT:C28054",
+        "label": "Stage II"
+      },
+      {
+        "value": "NCIT:C27970",
+        "label": "Stage III"
+      },
+      {
+        "value": "NCIT:C27971",
+        "label": "Stage IV"
+      }
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "DROPDOWN",
+    "key": "treatment",
+    "label": "Treatment",
+    "values": [
+      {
+        "value": "NCIT:C15313",
+        "label": "Radiation Therapy"
+      },
+      {
+        "value": "NCIT:C15632",
+        "label": "Chemotherapy"
+      },
+      {
+        "value": "NCIT:C505",
+        "label": "Fluorouracil"
+      },
+      {
+        "value": "NCIT:C1181",
+        "label": "Oxaliplatin"
+      },
+      {
+        "value": "NCIT:C1699",
+        "label": "Zoledronic Acid"
+      },
+      {
+        "value": "NCIT:C62040",
+        "label": "Irinotecan"
+      }
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "DROPDOWN",
+    "key": "intervention",
+    "label": "Intervention",
+    "values": [
+      {
+        "value": "NCIT:C25179",
+        "label": "Hospitalization"
+      },
+      {
+        "value": "NCIT:C171454",
+        "label": "Intensive Care Unit Stay"
+      },
+      {
+        "value": "SNOMED:52765003",
+        "label": "Intubation (procedure)"
+      },
+      {
+        "value": "SNOMED:371907003",
+        "label": "Oxygen administration by nasal cannula"
+      }
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "DROPDOWN",
+    "key": "sex",
+    "label": "Sex",
+    "values": [
+      {
+        "value": "NCIT:C16576",
+        "label": "Female"
+      },
+      {
+        "value": "NCIT:C20197",
+        "label": "Male"
+      }
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "FREE_TEXT",
+    "key": "diseases.ageOfOnset.iso8601duration",
+    "label": "Age",
+    "operators": [
+      "=",
+      "!=",
+      ">",
+      "<",
+      "%"
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "ENTRIES",
+    "key": "genetic_mutation",
+    "label": "Genetic Mutation",
+    "entries": [
+      {
+        "key": "geneId",
+        "label": "gene"
+      },
+      {
+        "key": "aminoacidChange",
+        "label": "aminoacid"
+      }
+    ]
+  },
+  {
+    "source": "beacon",
+    "type": "ENTRIES",
+    "key": "genetic_variation",
+    "label": "Genetic Variation",
+    "entries": [
+      {
+        "key": "alternateBases",
+        "label": "alternateBases"
+      },
+      {
+        "key": "referenceBases",
+        "label": "referenceBases"
+      },
+      {
+        "key": "start",
+        "label": "start"
+      },
+      {
+        "key": "end",
+        "label": "end"
+      },
+      {
+        "key": "variantType",
+        "label": "type"
+      },
+      {
+        "key": "assemblyId",
+        "label": "assemblyId"
+      }
+    ]
+  }
+]

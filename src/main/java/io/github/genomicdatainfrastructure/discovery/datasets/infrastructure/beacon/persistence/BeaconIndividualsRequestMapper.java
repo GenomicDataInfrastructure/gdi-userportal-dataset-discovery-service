@@ -4,6 +4,8 @@
 
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence;
 
+import static io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.IncludeResultsetResponsesEnum.HIT;
+import static io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.RequestedGranularityEnum.RECORD;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toMap;
@@ -13,7 +15,10 @@ import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequest;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestMeta;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.IncludeResultsetResponsesEnum;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.RequestedGranularityEnum;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQueryFilter;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQueryFilter.OperatorEnum;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQueryPagination;
 import lombok.experimental.UtilityClass;
 import java.util.List;
@@ -26,8 +31,8 @@ public class BeaconIndividualsRequestMapper {
 
     private static final String BEACON_FACET_GROUP = "beacon";
     private static final String SCOPE = "individual";
-    private static final String INCLUDE_RESULT_SET_RESPONSES = "HIT";
-    private static final String REQUESTED_GRANULARITY = "record";
+    private static final IncludeResultsetResponsesEnum INCLUDE_RESULT_SET_RESPONSES = HIT;
+    private static final RequestedGranularityEnum REQUESTED_GRANULARITY = RECORD;
 
     public BeaconIndividualsRequest from(
             DatasetSearchQuery query
@@ -104,7 +109,7 @@ public class BeaconIndividualsRequestMapper {
         return BeaconIndividualsRequestQueryFilter
                 .builder()
                 .id(key)
-                .operator(operator)
+                .operator(OperatorEnum.fromString(operator))
                 .value(value)
                 .scope(SCOPE)
                 .build();

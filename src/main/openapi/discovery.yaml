@@ -239,19 +239,17 @@ components:
         - ENTRIES
       title: Filter type
     Operator:
-      type: string
+      default: "="
+      description: Defines how the value relates to the field `id`.
       enum:
         - "="
-        - ">"
         - "<"
-        - "!="
-        - "%"
-      x-enum-varnames:
-        - EQUALS
-        - GREATER_THAN
-        - LESS_THAN
-        - DIFFERENT
-        - CONTAINS
+        - ">"
+        - "!"
+        - ">="
+        - "<="
+      example: ">"
+      type: string
     QueryEntry:
       properties:
         key:

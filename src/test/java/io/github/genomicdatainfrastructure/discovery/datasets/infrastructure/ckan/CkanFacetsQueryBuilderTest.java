@@ -7,6 +7,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ck
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanFacetsQueryBuilder;
 import io.github.genomicdatainfrastructure.discovery.model.FilterType;
+import io.github.genomicdatainfrastructure.discovery.model.QueryOperator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
@@ -100,7 +101,7 @@ class CkanFacetsQueryBuilderTest {
 
         var query = new DatasetSearchQuery();
         query.setFacets(facets);
-        query.setOperator(DatasetSearchQuery.OperatorEnum.AND);
+        query.setOperator(QueryOperator.AND);
 
         var expected = "field1:(\"value1\" AND \"value2\") AND field2:(\"value3\")";
         var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
@@ -169,7 +170,7 @@ class CkanFacetsQueryBuilderTest {
 
         var query = new DatasetSearchQuery();
         query.setFacets(facets);
-        query.setOperator(DatasetSearchQuery.OperatorEnum.OR);
+        query.setOperator(QueryOperator.OR);
 
         var expected = "field1:(\"value1\" OR \"value2\") AND field2:(\"value3\")";
         var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);

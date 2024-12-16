@@ -203,9 +203,7 @@ components:
         operator:
           title: Ckan query operator
           type: string
-          enum:
-            - AND
-            - OR
+          $ref: "#/components/schemas/QueryOperator"
           default: OR
     DatasetSearchQueryFacet:
       type: object
@@ -226,7 +224,7 @@ components:
         entries:
           type: array
           items:
-            $ref: '#/components/schemas/QueryEntry'
+            $ref: "#/components/schemas/QueryEntry"
       required:
         - source
         - type
@@ -258,6 +256,15 @@ components:
         value:
           type: string
           title: value
+      required:
+        - key
+        - value
+    QueryOperator:
+      type: string
+      enum:
+        - OR
+        - AND
+      title: Query operator
     SearchedDataset:
       type: object
       properties:
@@ -308,8 +315,6 @@ components:
         - id
         - title
         - description
-        - catalogue
-        - modifiedAt
     DatasetsSearchResponse:
       type: object
       properties:
@@ -407,8 +412,6 @@ components:
         - id
         - title
         - description
-        - catalogue
-        - createdAt
     RetrievedDistribution:
       type: object
       properties:
@@ -445,7 +448,6 @@ components:
         - id
         - title
         - description
-        - createdAt
     ValueLabel:
       properties:
         value:
@@ -471,9 +473,6 @@ components:
         uri:
           type: string
           title: uri
-        identifier:
-          type: string
-          title: identifier
       required:
         - name
         - email
@@ -494,9 +493,6 @@ components:
         identifier:
           type: string
           title: identifier
-        uri:
-          type: string
-          title: uri
       required:
         - name
     DatasetRelationEntry:
@@ -555,6 +551,11 @@ components:
           items:
             $ref: "#/components/schemas/FilterEntry"
           title: entries
+      required:
+        - source
+        - type
+        - key
+        - label
     FilterEntry:
       properties:
         key:
@@ -563,6 +564,9 @@ components:
         label:
           type: string
           title: label
+      required:
+        - key
+        - label
     ErrorResponse:
       properties:
         title:
@@ -574,3 +578,6 @@ components:
         detail:
           type: string
           title: Error detail
+      required:
+        - title
+        - status

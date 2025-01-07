@@ -21,6 +21,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.IncludeResultsetResponsesEnum.HIT;
+import static io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.RequestedGranularityEnum.RECORD;
+import static io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQueryFilter.OperatorEnum.GREATER_THAN_SYMBOL;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -37,8 +40,8 @@ class BeaconIndividualsRequestMapperTest {
                                 .apiVersion("2.0")
                                 .build())
                         .query(BeaconIndividualsRequestQuery.builder()
-                                .includeResultsetResponses("HIT")
-                                .requestedGranularity("record")
+                                .includeResultsetResponses(HIT)
+                                .requestedGranularity(RECORD)
                                 .testMode(false)
                                 .pagination(BeaconIndividualsRequestQueryPagination.builder()
                                         .limit(1)
@@ -63,8 +66,8 @@ class BeaconIndividualsRequestMapperTest {
                                 .apiVersion("2.0")
                                 .build())
                         .query(BeaconIndividualsRequestQuery.builder()
-                                .includeResultsetResponses("HIT")
-                                .requestedGranularity("record")
+                                .includeResultsetResponses(HIT)
+                                .requestedGranularity(RECORD)
                                 .testMode(false)
                                 .pagination(BeaconIndividualsRequestQueryPagination.builder()
                                         .limit(1)
@@ -89,8 +92,8 @@ class BeaconIndividualsRequestMapperTest {
                                 .apiVersion("2.0")
                                 .build())
                         .query(BeaconIndividualsRequestQuery.builder()
-                                .includeResultsetResponses("HIT")
-                                .requestedGranularity("record")
+                                .includeResultsetResponses(HIT)
+                                .requestedGranularity(RECORD)
                                 .testMode(false)
                                 .pagination(BeaconIndividualsRequestQueryPagination.builder()
                                         .limit(1)
@@ -118,7 +121,7 @@ class BeaconIndividualsRequestMapperTest {
                                 .type(FilterType.FREE_TEXT)
                                 .key("dummy_key_2")
                                 .value("dummy_value_2")
-                                .operator(Operator.GREATER_THAN)
+                                .operator(Operator.GREATER_THAN_SYMBOL)
                                 .entries(List.of())
                                 .build(),
                         DatasetSearchQueryFacet.builder()
@@ -139,8 +142,8 @@ class BeaconIndividualsRequestMapperTest {
                                 .apiVersion("2.0")
                                 .build())
                         .query(BeaconIndividualsRequestQuery.builder()
-                                .includeResultsetResponses("HIT")
-                                .requestedGranularity("record")
+                                .includeResultsetResponses(HIT)
+                                .requestedGranularity(RECORD)
                                 .testMode(false)
                                 .pagination(BeaconIndividualsRequestQueryPagination.builder()
                                         .limit(1)
@@ -153,7 +156,7 @@ class BeaconIndividualsRequestMapperTest {
                                                 .build(),
                                         BeaconIndividualsRequestQueryFilter.builder()
                                                 .id("dummy_key_2")
-                                                .operator(">")
+                                                .operator(GREATER_THAN_SYMBOL)
                                                 .value("dummy_value_2")
                                                 .scope("individual")
                                                 .build()

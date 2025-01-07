@@ -1,22 +1,18 @@
 // SPDX-FileCopyrightText: 2024 PNED G.I.E.
 //
 // SPDX-License-Identifier: Apache-2.0
+
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan;
 
 import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FiltersRepository;
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.mapper.CkanFilterMapper;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
-import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFacet;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackageSearchRequest;
-import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesSearchResult;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
-import java.util.Map;
-
-import static java.util.Optional.ofNullable;
 
 @ApplicationScoped
 public class CkanFiltersRepository implements FiltersRepository {

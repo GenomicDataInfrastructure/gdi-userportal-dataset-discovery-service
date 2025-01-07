@@ -8,20 +8,20 @@
     <version>0.0.0</version>
     <name>gdi-userportal-dataset-discovery-service</name>
     <properties>
-        <assertj.version>3.26.3</assertj.version>
+        <assertj.version>3.27.2</assertj.version>
         <checkstyle-maven-plugin.version>3.3.1</checkstyle-maven-plugin.version>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <lombok.version>1.18.36</lombok.version>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus-openapi-generator.version>2.7.0-lts</quarkus-openapi-generator.version>
+        <quarkus-openapi-generator.version>2.7.1-lts</quarkus-openapi-generator.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.17.3</quarkus.platform.version>
+        <quarkus.platform.version>3.17.5</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire.version>3.5.2</surefire.version>
-        <quarkus-wiremock.version>1.4.0</quarkus-wiremock.version>
+        <quarkus-wiremock.version>1.4.1</quarkus-wiremock.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <mapstruct.version>1.6.3</mapstruct.version>
     </properties>

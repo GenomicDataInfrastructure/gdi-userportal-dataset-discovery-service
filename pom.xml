@@ -77,6 +77,11 @@
             <version>${quarkus-openapi-generator.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.quarkiverse.openapi.generator</groupId>
+            <artifactId>quarkus-openapi-generator-oidc</artifactId>
+            <version>${quarkus-openapi-generator.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>

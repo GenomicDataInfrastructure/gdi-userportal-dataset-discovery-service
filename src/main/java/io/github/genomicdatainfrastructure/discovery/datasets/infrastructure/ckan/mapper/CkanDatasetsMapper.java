@@ -44,6 +44,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "hasVersions", source = "hasVersion")
     @Mapping(target = "publishers", source = "publisher")
     @Mapping(target = "languages", source = "language")
+    @Mapping(target = "type", source = "type")
     @Mapping(target = "catalogue", ignore = true)
     RetrievedDataset map(CkanPackage ckanPackage);
 

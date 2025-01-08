@@ -248,6 +248,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CkanResource"
+        type:
+          type: string
       required:
         - id
         - title

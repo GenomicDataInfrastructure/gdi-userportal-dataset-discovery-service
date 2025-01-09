@@ -12,6 +12,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ghcr.io/genomicdatainfrastructure/gdi-userportal-dataset-discovery-service
+  REPOSITORY_URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
+  BUILD_DATE: ""
 
 jobs:
   ort:
@@ -48,6 +50,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set BUILD_DATE
+        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+
       - name: Build project
         run: mvn package -Dnative
 
@@ -64,6 +69,19 @@ jobs:
             type=semver,pattern={{major}}.{{minor}},priority=900
             type=semver,pattern={{major}},priority=800
             type=sha,priority=1000
+          labels: |
+            vcs-ref=${{env.GITHUB_SHA}}
+            build-date=${{env.BUILD_DATE}}
+            org.opencontainers.image.created=${{env.BUILD_DATE}}
+            release=${{env.BUILD_DATE}}
+            version=${{env.GITHUB_REF_NAME}}
+            org.opencontainers.image.version=${{env.GITHUB_REF_NAME}}
+            org.opencontainers.image.url=${{env.REPOSITORY_URL}}
+            org.opencontainers.image.source=${{env.REPOSITORY_URL}}
+            org.opencontainers.image.documentation=${{env.REPOSITORY_URL}}
+            help=${{env.REPOSITORY_URL}}
+            url=${{env.REPOSITORY_URL}}
+            name=${{env.IMAGE_NAME}}
 
       - name: Extract last tag
         id: tag

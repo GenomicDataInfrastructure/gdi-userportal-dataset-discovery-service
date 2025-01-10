@@ -408,9 +408,8 @@ components:
           items:
             $ref: "#/components/schemas/RetrievedDistribution"
           title: Distributions
-        type:
-          type: string
-          title: Dataset type
+        dcatType:
+          $ref: "#/components/schemas/ValueLabel"
       required:
         - id
         - title

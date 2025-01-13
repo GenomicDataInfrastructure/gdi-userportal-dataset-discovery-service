@@ -61,6 +61,10 @@ class CkanDatasetsMapperTest {
                     .id("id")
                     .identifier("identifier")
                     .title("title")
+                    .dcatType(ValueLabel.builder()
+                            .value("type-uri")
+                            .label("type")
+                            .build())
                     .description("notes")
                     .themes(List.of(
                             ValueLabel.builder()
@@ -191,6 +195,7 @@ class CkanDatasetsMapperTest {
                 .id("id")
                 .identifier("identifier")
                 .title("title")
+                .dcatType(getCkanValueLabel("type", "type-uri"))
                 .notes("notes")
                 .theme(getValueLabels("theme", "theme-name"))
                 .issued("2024-07-01T22:00:00+00:00")

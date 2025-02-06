@@ -2,6 +2,11 @@
   "priority": 1,
   "request": {
     "method": "POST",
+    "headers": {
+      "Content-Length": {
+        "contains": "126"
+      }
+    },
     "urlPattern": "/api/3/action/enhanced_package_search",
     "bodyPatterns": [
       {

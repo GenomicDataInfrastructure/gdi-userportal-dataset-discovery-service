@@ -95,51 +95,153 @@ components:
               title: Filters
               items:
                 $ref: "#/components/schemas/BeaconIndividualsRequestQueryFilter"
-              default: []
-            requestParameters:
-              type: array
-              items:
-                additionalProperties:
-                  type: string
+              default: [ ]
             includeResultsetResponses:
               type: string
               title: Include Resultset Responses
-              default: "HIT"
+              enum:
+                - ALL
+                - HIT
+                - MISS
+                - NONE
+              default: HIT
             pagination:
               type: object
               properties:
                 skip:
                   type: integer
                   title: Skip
+                  minimum: 0
                   default: 0
+                  example: 0
                 limit:
                   type: integer
                   title: Limit
+                  minimum: 0
                   default: 1
-            testMode:
-              type: boolean
-              title: Test Mode
-              default: false
+                  example: 10
+                currentPage:
+                  type: string
+                  example: ab0sc&fe1dd
+                nextPage:
+                  type: string
+                  example: ab0sc&fe1dd
+                previousPage:
+                  type: string
+                  example: ab0sc&fe1dd
+            requestParameters:
+              properties:
+                "$schema":
+                  description: Added here to allow proper validation of the documents w/o providing specific values.
+                  type: string
+              type: array
+              items:
+                additionalProperties:
+                  description: The schema below is a placeholder for a dictionary 'key':'object'. The individual 
+                   definitions depend on the model (e.g. beacon-v2-default-model) and entity (e.g. `genomicVariant`).
+                  type: string
             requestedGranularity:
               type: string
               title: Requested Granularity
-              default: "record"
+              enum:
+                - boolean
+                - count
+                - record
+              default: boolean
+            testMode:
+              description: >-
+                Used for indicating that a request or response is done in a test context e.g. for compliance testing 
+                i.e. to evaluate the acceptance/understanding of a request and the structure of the returned response by 
+                the Beacon instance. A TRUE `testMode` parameter DOES NOT require that the Beacon instance is a test 
+                instance, but that this specific request-response cycle is a testing one. When `true` the Beacon instance 
+                MUST respond the request but it SHOULD use virtual or non-sensitive data. Here, what is being evaluated 
+                is the acceptance/understanding of a request and the structure of the returned response by the Beacon 
+                instance.
+              type: boolean
+              title: Test Mode
+              default: false
     BeaconIndividualsRequestQueryFilter:
+      anyOf:
+        - "$ref": "#/components/schemas/OntologyFilter"
+        - "$ref": "#/components/schemas/AlphanumericFilter"
+        - "$ref": "#/components/schemas/CustomFilter"
+
+    AlphanumericFilter:
       type: object
+      description: Filter results based on operators and values applied to alphanumeric fields.
+      required:
+        - id
+        - operator
+        - value
       properties:
         id:
+          description: Field identifier to be queried.
+          example: ageOfOnset
           type: string
-          title: Term ID
         operator:
+          default: "="
+          description: Defines how the value relates to the field `id`.
+          enum:
+            - "="
+            - "<"
+            - ">"
+            - "!"
+            - ">="
+            - "<="
+          example: ">"
           type: string
-          title: Operator
-        value:
-          type: string
-          title: Value
         scope:
+          description: The entry type to which the filter applies
+          example: individuals
           type: string
-          title: Scope
-          default: "individual"
+        value:
+          description: Alphanumeric search term to be used within the query which can contain wildcard characters (%) 
+           to denote any number of unknown characters.  Values can be associated with units if applicable.
+          example: P70Y
+          type: string
+    CustomFilter:
+      type: object
+      description: Filter results to include records that contain a custom term defined by this Beacon.
+      required:
+        - id
+      properties:
+        id:
+          description: Custom filter terms should contain a unique identifier.
+          example: demographic.ethnicity:asian
+          type: string
+        scope:
+          description: The entry type to which the filter applies
+          example: individuals
+          type: string
+    OntologyFilter:
+      type: object
+      description: Filter results to include records that contain a specific ontology term.
+      required:
+        - id
+      properties:
+        id:
+          description: Term ID to be queried, using CURIE syntax where possible.
+          example: HP:0002664
+          type: string
+        includeDescendantTerms:
+          default: true
+          description: Define if the Beacon should implement the ontology hierarchy, thus query the descendant terms of `id`.
+          type: boolean
+        scope:
+          description: The entry type to which the filter applies
+          example: biosamples
+          type: string
+        similarity:
+          default: exact
+          description: Allow the Beacon to return results which do not match the filter exactly, but do match to a certain 
+           degree of similarity. The Beacon defines the semantic similarity model implemented and how to apply 
+            the thresholds of 'high', 'medium' and 'low' similarity.
+          enum:
+            - exact
+            - high
+            - medium
+            - low
+          type: string
     BeaconIndividualsResponse:
       type: object
       properties:
@@ -153,9 +255,6 @@ components:
           title: Result Sets
           items:
             $ref: "#/components/schemas/BeaconResultSet"
-      required:
-        - individuals
-        - resources
     BeaconResultSet:
       type: object
       properties:

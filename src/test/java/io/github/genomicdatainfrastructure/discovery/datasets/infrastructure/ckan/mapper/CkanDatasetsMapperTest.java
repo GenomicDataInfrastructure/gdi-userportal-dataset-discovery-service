@@ -61,6 +61,10 @@ class CkanDatasetsMapperTest {
                     .id("id")
                     .identifier("identifier")
                     .title("title")
+                    .dcatType(ValueLabel.builder()
+                            .value("type-uri")
+                            .label("type")
+                            .build())
                     .description("notes")
                     .themes(List.of(
                             ValueLabel.builder()
@@ -87,7 +91,6 @@ class CkanDatasetsMapperTest {
                                     .email("email")
                                     .url("url")
                                     .type("type")
-                                    .uri("uri")
                                     .build(),
                             Agent.builder()
                                     .name("creatorName2")
@@ -95,7 +98,6 @@ class CkanDatasetsMapperTest {
                                     .email("email2")
                                     .url("url2")
                                     .type("type2")
-                                    .uri("uri2")
                                     .build()
                     ))
                     .publishers(List.of(
@@ -105,7 +107,6 @@ class CkanDatasetsMapperTest {
                                     .email("email")
                                     .url("url")
                                     .type("type")
-                                    .uri("uri")
                                     .build(),
                             Agent.builder()
                                     .name("publisherName2")
@@ -113,7 +114,6 @@ class CkanDatasetsMapperTest {
                                     .email("email2")
                                     .url("url2")
                                     .type("type2")
-                                    .uri("uri2")
                                     .build()
                     ))
                     .accessRights(ValueLabel.builder()
@@ -157,13 +157,11 @@ class CkanDatasetsMapperTest {
                             ContactPoint.builder()
                                     .name("Contact 1")
                                     .email("contact1@example.com")
-                                    .identifier("contact-identifier-1")
                                     .build(),
                             ContactPoint.builder()
                                     .name("Contact 2")
                                     .email("contact2@example.com")
                                     .uri("http://example.com")
-                                    .identifier("contact-identifier-2")
                                     .build()
                     ))
                     .datasetRelationships(List.of(
@@ -197,6 +195,7 @@ class CkanDatasetsMapperTest {
                 .id("id")
                 .identifier("identifier")
                 .title("title")
+                .dcatType(getCkanValueLabel("type", "type-uri"))
                 .notes("notes")
                 .theme(getValueLabels("theme", "theme-name"))
                 .issued("2024-07-01T22:00:00+00:00")
@@ -309,7 +308,6 @@ class CkanDatasetsMapperTest {
                             .email("email")
                             .url("url")
                             .identifier("publisherIdentifier")
-                            .uri("uri")
                             .type("type")
                             .build(),
                             Agent.builder()
@@ -317,7 +315,6 @@ class CkanDatasetsMapperTest {
                                     .email("email2")
                                     .url("url2")
                                     .identifier("publisherIdentifier2")
-                                    .uri("uri2")
                                     .type("type2")
                                     .build()))
                     .themes(List.of(ValueLabel.builder()

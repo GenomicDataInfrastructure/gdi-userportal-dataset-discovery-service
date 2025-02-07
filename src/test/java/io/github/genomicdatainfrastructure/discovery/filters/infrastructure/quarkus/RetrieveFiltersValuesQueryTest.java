@@ -31,7 +31,7 @@ class RetrieveFiltersValuesQueryTest extends BaseTest {
 
         assertThat(actual)
                 .usingRecursiveFieldByFieldElementComparator()
-                .contains(
+                .containsExactlyInAnyOrder(
                         ValueLabel.builder()
                                 .value("https://publications.europa.eu/resource/authority/data-theme/TECH")
                                 .label("Science and technology")

@@ -8,14 +8,9 @@
     },
     {
       "description": "Trigger fix release for patch updates",
-      "matchPackageNames": [
-        "renovate/renovate",
-        "ghcr.io/renovatebot/renovate"
-      ],
       "automerge": true,
-      "matchUpdateTypes": ["patch"],
-      "semanticCommitType": "fix",
-      "automergeType": "pr"
+      "matchUpdateTypes": ["patch", "pin", "digest"],
+      "automergeType": "branch"
     }
   ],
   "extends": [

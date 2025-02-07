@@ -248,6 +248,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CkanResource"
+        dcat_type:
+          $ref: "#/components/schemas/CkanValueLabel"
       required:
         - id
         - title

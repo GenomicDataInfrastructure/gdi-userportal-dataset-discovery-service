@@ -93,3 +93,36 @@ Content-Type: application/json
 
 ###
 GET https://beacon-network-backend-demo.ega-archive.org/beacon-network/v2.0.0/filtering_terms
+
+### G_VARIANTS
+POST https://af-gdi-bn-api-demo.ega-archive.org/beacon-network/v2.0.0/g_variants
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJCNXUyN0lfMVppakRzOVZTWmU5bm5qbVhKemVyTjhoY2R3Mk9iaEpaMFdvIn0.eyJleHAiOjE3MzMzMDA5MTcsImlhdCI6MTczMzMwMDYxNywiYXV0aF90aW1lIjoxNzMzMzAwNjE1LCJqdGkiOiI3OWZlOTJhOC00ZjBmLTQ3ZmMtYmM1MC01MTU5NDNjYTg2NzgiLCJpc3MiOiJodHRwczovL2lkLnBvcnRhbC5kZXYuZ2RpLmx1L3JlYWxtcy9nZGkiLCJhdWQiOlsiYnJva2VyIiwiYWNjb3VudCJdLCJzdWIiOiJlMjg0NzA3Yy05ODgxLTQ4OTAtYTdkNS1hN2Q0Nzc0NWZmZGEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJnZGkiLCJzaWQiOiI0OTc0N2JkNS1hOWQ5LTRiMGItYTA0NC1mY2Y1Nzc5MDMwN2EiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHBzOi8vcG9ydGFsLmRldi5nZGkubHUiLCJodHRwOi8vbG9jYWxob3N0OjU1MDAiLCJodHRwczovL2NhdGFsb2d1ZS5wb3J0YWwuZGV2LmdkaS5sdSIsImh0dHBzOi8vZGFhbS5wb3J0YWwuZGV2LmdkaS5sdSIsImh0dHBzOi8vb2F1dGgucHN0bW4uaW8iLCJodHRwOi8vbG9jYWxob3N0OjMwMDAiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLWdkaSJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImJyb2tlciI6eyJyb2xlcyI6WyJyZWFkLXRva2VuIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbGl4aXJfaWQgcHJvZmlsZSBnYTRnaF9wYXNzcG9ydF92MSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJlbGl4aXJfaWQiOiI0MjI5ZDc2OGE3ZGU5Njg2MGY3MDYxYTExOWJhNTIzNDEwNzY5ZDhiQGVsaXhpci1ldXJvcGUub3JnIiwibmFtZSI6ImphZCBqYWQiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJqYWR6IiwiZ2l2ZW5fbmFtZSI6ImphZCIsImZhbWlseV9uYW1lIjoiamFkIiwiZW1haWwiOiJqYWQuemVpbmlAbG5kcy5sdSJ9.OUDDHfF1NBZRxGr-jVrvXgYrYBPk6c0BK_vScTd-btRWYAVPJpT8rUTOKU-WHemOkxlIGkCHl6Jo0dpkKkhE55qc5cdj223ispJGWLXXdeBOY-YEhW2u1kDLjtGbFMcDgbO8PMDb5uRTJ_MoI4R7PKDbRAWjOQiZ3opwMXAAB2V90ELwKd1bwaU5-WacYE32Lju6N4YaN-JxoCXPJgDnf_ir27kzTBD5DcStuMkAn8z8zqVWlMiqQN_unArWyysPqodo9vwlnt5J3UZ6mAfR0_ntQCz6G0m0txCcEMNh3_GyknouMOi4CehgQcR0HXCbAHjL9j2mau2LMH2KhONp1A
+
+
+
+{
+    "meta": {
+        "apiVersion": "2.0"
+    },
+    "query": {
+        "filters": [],
+        "requestParameters": {
+          "alternateBases": "C" ,
+          "referenceBases": "T" ,
+          "start": [45864731],
+          "referenceName": "3",
+          "assemblyId": "GRCh37"
+        },
+        "includeResultsetResponses": "HIT",
+        "pagination": {
+            "skip": 0,
+            "limit": 10
+        },
+        "testMode": false,
+        "requestedGranularity": "record"
+    }
+}
+
+### G_VARAINRTS
+GET https://af-gdi-bn-api-demo.ega-archive.org/beacon-network/v2.0.0/g_variants?start=45864731&alternateBases=C&referenceBases=T&referenceName=3&limit=1&assemblyId=GRCh37

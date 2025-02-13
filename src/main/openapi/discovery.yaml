@@ -633,6 +633,7 @@ components:
       required:
         - params
     GVariantsSearchResponse:
+      type: object
       properties:
         beacon:
           type: string

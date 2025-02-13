@@ -74,7 +74,7 @@ class GVariantsApiIT extends BaseTest {
         Map<String, Object> params = new HashMap<>();
         params.put("alternateBases", "C");
         params.put("referenceBases", "T");
-        params.put("start", new int[] {45864731});
+        params.put("start", new int[]{45864731});
         params.put("referenceName", "3");
         params.put("assemblyId", "GRCh37");
         query.setParams(params);

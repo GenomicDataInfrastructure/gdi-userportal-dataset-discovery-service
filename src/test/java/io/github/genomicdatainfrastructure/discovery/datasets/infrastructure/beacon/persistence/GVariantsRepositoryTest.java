@@ -60,7 +60,8 @@ class GVariantsRepositoryTest {
         List<GVariantsSearchResponse> result = gVariantsRepository.search(query, accessToken);
 
         assertNotNull(result);
-        assertTrue(result.isEmpty(), "Result should be an empty list because query params are empty");
+        assertTrue(result.isEmpty(),
+                "Result should be an empty list because query params are empty");
         verify(gVariantsApi, never()).postGenomicVariationsRequest(any(), any());
     }
 

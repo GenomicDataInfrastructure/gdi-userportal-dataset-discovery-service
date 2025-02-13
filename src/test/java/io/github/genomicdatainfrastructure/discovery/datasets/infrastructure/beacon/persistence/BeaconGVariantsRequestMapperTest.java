@@ -66,8 +66,8 @@ class BeaconGVariantsRequestMapperTest {
         GVariantsSearchResponse variant = result.getFirst();
         assertNotNull(variant, "GVariantsSearchResponse entry should not be null");
 
-        assertEquals("testBeaconId", variant.getBeacon(), "Beacon ID should match the resultSet beacon ID");
-
+        assertEquals("testBeaconId", variant.getBeacon(),
+                "Beacon ID should match the resultSet beacon ID");
 
         assertEquals(BigDecimal.valueOf(0.1234), variant.getAlleleFrequency(),
                 "Allele frequency should match the mock frequency");
@@ -83,7 +83,6 @@ class BeaconGVariantsRequestMapperTest {
         assertEquals(BigDecimal.valueOf(95.0), variant.getAlleleCountHeterozygous(),
                 "alleleCountHeterozygous should match the mock frequency");
     }
-
 
     public static BeaconResponse buildBeaconsResponse() {
         var freq = new Frequencies();

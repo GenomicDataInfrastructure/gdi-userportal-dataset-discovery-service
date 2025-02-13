@@ -39,7 +39,8 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
         var beaconAuthorization = beaconAuth.retrieveAuthorization(accessToken);
 
         var beaconQuery = BeaconGVariantsRequestMapper.map(query);
-        if (beaconAuthorization == null || (isEmpty(beaconQuery.getQuery().getRequestParameters()))) {
+        if (beaconAuthorization == null || (isEmpty(beaconQuery.getQuery()
+                .getRequestParameters()))) {
             return Collections.emptyList();
         }
 

@@ -162,6 +162,49 @@ paths:
       security:
         - discovery_auth:
             - read:search-facets
+
+  /api/v1/g_variants:
+    post:
+      description: Search for allele frequencies
+      operationId: searchGenomicVariants
+      tags:
+        - g_variants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GVariantSearchQuery"
+      responses:
+        "200":
+          description: A list of datasets matching the search criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GVariantsSearchResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Dataset not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - discovery_auth:
+            - read:datasets
+
 components:
   securitySchemes:
     discovery_auth:
@@ -583,3 +626,88 @@ components:
       required:
         - title
         - status
+    GVariantSearchQuery:
+      type: object
+      properties:
+        params:
+          type: object
+          additionalProperties: true
+      required:
+        - params
+    GVariantsSearchResponse:
+      type: object
+      properties:
+        beacon:
+          type: string
+          example: fi.csc.gdi-aggregate-beacon
+        dataset:
+          type: string
+          example: COVID_pop12_ita_2
+        population:
+          type: string
+          enum:
+            - aut
+            - bel
+            - bgr
+            - hrv
+            - cyp
+            - cze
+            - dnk
+            - est
+            - fin
+            - fra
+            - deu
+            - grc
+            - hun
+            - irl
+            - ita
+            - lva
+            - ltu
+            - lux
+            - mlt
+            - nld
+            - pol
+            - prt
+            - rou
+            - svk
+            - svn
+            - esp
+            - swe
+          x-enum-varnames:
+            - AUSTRIA
+            - BELGIUM
+            - BULGARIA
+            - CROATIA
+            - CYPRUS
+            - CZECH_REPUBLIC
+            - DENMARK
+            - ESTONIA
+            - FINLAND
+            - FRANCE
+            - GERMANY
+            - GREECE
+            - HUNGARY
+            - IRELAND
+            - ITALY
+            - LATVIA
+            - LITHUANIA
+            - LUXEMBOURG
+            - MALTA
+            - NETHERLANDS
+            - POLAND
+            - PORTUGAL
+            - ROMANIA
+            - SLOVAKIA
+            - SLOVENIA
+            - SPAIN
+            - SWEDEN
+        alleleCount:
+          type: number
+        alleleNumber:
+          type: number
+        alleleCountHomozygous:
+          type: number
+        alleleCountHeterozygous:
+          type: number
+        alleleFrequency:
+          type: number

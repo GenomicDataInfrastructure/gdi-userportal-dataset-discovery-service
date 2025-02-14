@@ -9,11 +9,11 @@ import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.bea
 import io.github.genomicdatainfrastructure.discovery.model.*;
 import org.junit.jupiter.api.Test;
 
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequest;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestMeta;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQueryFilter;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQueryPagination;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequest;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestMeta;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQuery;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQueryFilter;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQueryPagination;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -21,13 +21,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.IncludeResultsetResponsesEnum.HIT;
-import static io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.RequestedGranularityEnum.RECORD;
-import static io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQueryFilter.OperatorEnum.GREATER_THAN_SYMBOL;
+import static io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQuery.IncludeResultsetResponsesEnum.HIT;
+import static io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQuery.RequestedGranularityEnum.RECORD;
+import static io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQueryFilter.OperatorEnum.GREATER_THAN_SYMBOL;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-class BeaconIndividualsRequestMapperTest {
+class BeaconRequestMapperTest {
 
     @Test
     void shouldAcceptNullQuery() {
@@ -35,15 +35,15 @@ class BeaconIndividualsRequestMapperTest {
 
         assertThat(actual)
                 .usingRecursiveComparison()
-                .isEqualTo(BeaconIndividualsRequest.builder()
-                        .meta(BeaconIndividualsRequestMeta.builder()
+                .isEqualTo(BeaconRequest.builder()
+                        .meta(BeaconRequestMeta.builder()
                                 .apiVersion("2.0")
                                 .build())
-                        .query(BeaconIndividualsRequestQuery.builder()
+                        .query(BeaconRequestQuery.builder()
                                 .includeResultsetResponses(HIT)
                                 .requestedGranularity(RECORD)
                                 .testMode(false)
-                                .pagination(BeaconIndividualsRequestQueryPagination.builder()
+                                .pagination(BeaconRequestQueryPagination.builder()
                                         .limit(1)
                                         .skip(0)
                                         .build())
@@ -61,15 +61,15 @@ class BeaconIndividualsRequestMapperTest {
 
         assertThat(actual)
                 .usingRecursiveComparison()
-                .isEqualTo(BeaconIndividualsRequest.builder()
-                        .meta(BeaconIndividualsRequestMeta.builder()
+                .isEqualTo(BeaconRequest.builder()
+                        .meta(BeaconRequestMeta.builder()
                                 .apiVersion("2.0")
                                 .build())
-                        .query(BeaconIndividualsRequestQuery.builder()
+                        .query(BeaconRequestQuery.builder()
                                 .includeResultsetResponses(HIT)
                                 .requestedGranularity(RECORD)
                                 .testMode(false)
-                                .pagination(BeaconIndividualsRequestQueryPagination.builder()
+                                .pagination(BeaconRequestQueryPagination.builder()
                                         .limit(1)
                                         .skip(0)
                                         .build())
@@ -87,15 +87,15 @@ class BeaconIndividualsRequestMapperTest {
 
         assertThat(actual)
                 .usingRecursiveComparison()
-                .isEqualTo(BeaconIndividualsRequest.builder()
-                        .meta(BeaconIndividualsRequestMeta.builder()
+                .isEqualTo(BeaconRequest.builder()
+                        .meta(BeaconRequestMeta.builder()
                                 .apiVersion("2.0")
                                 .build())
-                        .query(BeaconIndividualsRequestQuery.builder()
+                        .query(BeaconRequestQuery.builder()
                                 .includeResultsetResponses(HIT)
                                 .requestedGranularity(RECORD)
                                 .testMode(false)
-                                .pagination(BeaconIndividualsRequestQueryPagination.builder()
+                                .pagination(BeaconRequestQueryPagination.builder()
                                         .limit(1)
                                         .skip(0)
                                         .build())
@@ -137,24 +137,24 @@ class BeaconIndividualsRequestMapperTest {
 
         assertThat(actual)
                 .usingRecursiveComparison()
-                .isEqualTo(BeaconIndividualsRequest.builder()
-                        .meta(BeaconIndividualsRequestMeta.builder()
+                .isEqualTo(BeaconRequest.builder()
+                        .meta(BeaconRequestMeta.builder()
                                 .apiVersion("2.0")
                                 .build())
-                        .query(BeaconIndividualsRequestQuery.builder()
+                        .query(BeaconRequestQuery.builder()
                                 .includeResultsetResponses(HIT)
                                 .requestedGranularity(RECORD)
                                 .testMode(false)
-                                .pagination(BeaconIndividualsRequestQueryPagination.builder()
+                                .pagination(BeaconRequestQueryPagination.builder()
                                         .limit(1)
                                         .skip(0)
                                         .build())
                                 .filters(List.of(
-                                        BeaconIndividualsRequestQueryFilter.builder()
+                                        BeaconRequestQueryFilter.builder()
                                                 .id("dummy_value_1")
                                                 .scope("individual")
                                                 .build(),
-                                        BeaconIndividualsRequestQueryFilter.builder()
+                                        BeaconRequestQueryFilter.builder()
                                                 .id("dummy_key_2")
                                                 .operator(GREATER_THAN_SYMBOL)
                                                 .value("dummy_value_2")

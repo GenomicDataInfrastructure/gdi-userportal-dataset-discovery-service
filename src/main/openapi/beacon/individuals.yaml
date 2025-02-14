@@ -27,14 +27,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BeaconIndividualsRequest"
+              $ref: "#/components/schemas/BeaconRequest"
       responses:
         "200":
           description: A list of individuals
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BeaconIndividualsResponse"
+                $ref: "#/components/schemas/BeaconResponse"
         "401":
           description: "Unauthorized"
       security:
@@ -65,6 +65,7 @@ paths:
       security:
         - beacon_auth:
             - read:beacon
+
 components:
   securitySchemes:
     beacon_auth:
@@ -77,7 +78,7 @@ components:
           scopes:
             read:beacon: read beacon
   schemas:
-    BeaconIndividualsRequest:
+    BeaconRequest:
       type: object
       properties:
         meta:
@@ -94,7 +95,7 @@ components:
               type: array
               title: Filters
               items:
-                $ref: "#/components/schemas/BeaconIndividualsRequestQueryFilter"
+                $ref: "#/components/schemas/BeaconRequestQueryFilter"
               default: [ ]
             includeResultsetResponses:
               type: string
@@ -137,8 +138,8 @@ components:
               type: array
               items:
                 additionalProperties:
-                  description: The schema below is a placeholder for a dictionary 'key':'object'. The individual 
-                   definitions depend on the model (e.g. beacon-v2-default-model) and entity (e.g. `genomicVariant`).
+                  description: The schema below is a placeholder for a dictionary 'key':'object'. The individual
+                    definitions depend on the model (e.g. beacon-v2-default-model) and entity (e.g. `genomicVariant`).
                   type: string
             requestedGranularity:
               type: string
@@ -160,7 +161,7 @@ components:
               type: boolean
               title: Test Mode
               default: false
-    BeaconIndividualsRequestQueryFilter:
+    BeaconRequestQueryFilter:
       anyOf:
         - "$ref": "#/components/schemas/OntologyFilter"
         - "$ref": "#/components/schemas/AlphanumericFilter"
@@ -195,8 +196,8 @@ components:
           example: individuals
           type: string
         value:
-          description: Alphanumeric search term to be used within the query which can contain wildcard characters (%) 
-           to denote any number of unknown characters.  Values can be associated with units if applicable.
+          description: Alphanumeric search term to be used within the query which can contain wildcard characters (%)
+            to denote any number of unknown characters.  Values can be associated with units if applicable.
           example: P70Y
           type: string
     CustomFilter:
@@ -233,8 +234,8 @@ components:
           type: string
         similarity:
           default: exact
-          description: Allow the Beacon to return results which do not match the filter exactly, but do match to a certain 
-           degree of similarity. The Beacon defines the semantic similarity model implemented and how to apply 
+          description: Allow the Beacon to return results which do not match the filter exactly, but do match to a certain
+            degree of similarity. The Beacon defines the semantic similarity model implemented and how to apply
             the thresholds of 'high', 'medium' and 'low' similarity.
           enum:
             - exact
@@ -242,12 +243,12 @@ components:
             - medium
             - low
           type: string
-    BeaconIndividualsResponse:
+    BeaconResponse:
       type: object
       properties:
         response:
-          $ref: "#/components/schemas/BeaconIndividualsResponseContent"
-    BeaconIndividualsResponseContent:
+          $ref: "#/components/schemas/BeaconResponseContent"
+    BeaconResponseContent:
       type: object
       properties:
         resultSets:

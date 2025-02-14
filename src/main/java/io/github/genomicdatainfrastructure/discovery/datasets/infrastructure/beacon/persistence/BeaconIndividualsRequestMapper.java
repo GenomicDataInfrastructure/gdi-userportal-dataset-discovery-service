@@ -4,22 +4,23 @@
 
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence;
 
-import static io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.IncludeResultsetResponsesEnum.HIT;
-import static io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.RequestedGranularityEnum.RECORD;
+import static io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQuery.IncludeResultsetResponsesEnum.HIT;
+import static io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQuery.RequestedGranularityEnum.RECORD;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toMap;
 
 import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.InvalidFacetException;
 import io.github.genomicdatainfrastructure.discovery.model.*;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequest;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestMeta;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.IncludeResultsetResponsesEnum;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQuery.RequestedGranularityEnum;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQueryFilter;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQueryFilter.OperatorEnum;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsRequestQueryPagination;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequest;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestMeta;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQuery;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQuery.IncludeResultsetResponsesEnum;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQuery.RequestedGranularityEnum;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQueryFilter;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQueryFilter.OperatorEnum;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQueryPagination;
+import io.smallrye.common.constraint.NotNull;
 import lombok.experimental.UtilityClass;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +32,10 @@ public class BeaconIndividualsRequestMapper {
 
     private static final String BEACON_FACET_GROUP = "beacon";
     private static final String SCOPE = "individual";
-    private static final IncludeResultsetResponsesEnum INCLUDE_RESULT_SET_RESPONSES = HIT;
+    public static final IncludeResultsetResponsesEnum INCLUDE_RESULT_SET_RESPONSES = HIT;
     private static final RequestedGranularityEnum REQUESTED_GRANULARITY = RECORD;
 
-    public BeaconIndividualsRequest from(
+    public BeaconRequest from(
             DatasetSearchQuery query
     ) {
         var nonNullFacets = ofNullable(query)
@@ -55,20 +56,20 @@ public class BeaconIndividualsRequestMapper {
                 .map(BeaconIndividualsRequestMapper::buildBeaconRequestParameters)
                 .toList();
 
-        return BeaconIndividualsRequest.builder()
-                .meta(new BeaconIndividualsRequestMeta())
-                .query(BeaconIndividualsRequestQuery.builder()
+        return BeaconRequest.builder()
+                .meta(new BeaconRequestMeta())
+                .query(BeaconRequestQuery.builder()
                         .includeResultsetResponses(INCLUDE_RESULT_SET_RESPONSES)
                         .requestedGranularity(REQUESTED_GRANULARITY)
                         .testMode(false)
-                        .pagination(new BeaconIndividualsRequestQueryPagination())
+                        .pagination(new BeaconRequestQueryPagination())
                         .filters(beaconFilters)
                         .requestParameters(requestParameters.isEmpty() ? null : requestParameters)
                         .build())
                 .build();
     }
 
-    private BeaconIndividualsRequestQueryFilter buildBeaconFilter(DatasetSearchQueryFacet facet) {
+    private BeaconRequestQueryFilter buildBeaconFilter(DatasetSearchQueryFacet facet) {
         return switch (facet.getType()) {
             case DROPDOWN -> buildDropdownBeaconFacet(facet);
             case FREE_TEXT -> buildFreeTextBeaconFacet(facet);
@@ -76,20 +77,20 @@ public class BeaconIndividualsRequestMapper {
         };
     }
 
-    private BeaconIndividualsRequestQueryFilter buildDropdownBeaconFacet(
+    private BeaconRequestQueryFilter buildDropdownBeaconFacet(
             DatasetSearchQueryFacet facet) {
         String value = ofNullable(facet.getValue())
                 .filter(not(String::isBlank))
                 .orElseThrow(() -> new InvalidFacetException(
                         "Facet value must not be null or empty"));
 
-        return BeaconIndividualsRequestQueryFilter.builder()
+        return BeaconRequestQueryFilter.builder()
                 .id(value)
                 .scope(SCOPE)
                 .build();
     }
 
-    private BeaconIndividualsRequestQueryFilter buildFreeTextBeaconFacet(
+    private BeaconRequestQueryFilter buildFreeTextBeaconFacet(
             DatasetSearchQueryFacet facet) {
         String operator = ofNullable(facet.getOperator())
                 .map(Operator::value)
@@ -106,7 +107,7 @@ public class BeaconIndividualsRequestMapper {
                 .orElseThrow(() -> new InvalidFacetException(
                         "Facet key must not be null or empty"));
 
-        return BeaconIndividualsRequestQueryFilter
+        return BeaconRequestQueryFilter
                 .builder()
                 .id(key)
                 .operator(OperatorEnum.fromString(operator))
@@ -116,6 +117,11 @@ public class BeaconIndividualsRequestMapper {
     }
 
     private Map<String, String> buildBeaconRequestParameters(DatasetSearchQueryFacet facet) {
+        return extractRequestParams(facet);
+    }
+
+    @NotNull
+    static Map<String, String> extractRequestParams(DatasetSearchQueryFacet facet) {
         return ofNullable(facet.getEntries())
                 .filter(not(List::isEmpty))
                 .filter(entries -> entries
@@ -128,5 +134,4 @@ public class BeaconIndividualsRequestMapper {
                 .stream()
                 .collect(toMap(QueryEntry::getKey, QueryEntry::getValue));
     }
-
 }

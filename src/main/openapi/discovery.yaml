@@ -180,7 +180,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GVariantsSearchResponse"
+                type: array
+                items:
+                  $ref: "#/components/schemas/GVariantsSearchResponse"
         "400":
           description: Bad request
           content:
@@ -709,6 +711,3 @@ components:
           type: number
         alleleFrequency:
           type: number
-
-
-

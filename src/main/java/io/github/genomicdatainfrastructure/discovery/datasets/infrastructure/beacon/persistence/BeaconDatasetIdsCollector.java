@@ -7,10 +7,10 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.be
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.auth.BeaconAuth;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.api.BeaconQueryApi;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsResponse;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconIndividualsResponseContent;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.model.BeaconResultSet;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.api.BeaconQueryApi;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconResponse;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconResponseContent;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconResultSet;
 import io.quarkus.arc.lookup.LookupIfProperty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -56,8 +56,8 @@ public class BeaconDatasetIdsCollector implements DatasetIdsCollector {
         var response = beaconQueryApi.listIndividuals(beaconAuthorization, beaconQuery);
 
         var nonNullResultSets = ofNullable(response)
-                .map(BeaconIndividualsResponse::getResponse)
-                .map(BeaconIndividualsResponseContent::getResultSets)
+                .map(BeaconResponse::getResponse)
+                .map(BeaconResponseContent::getResultSets)
                 .filter(ObjectUtils::isNotEmpty)
                 .orElseGet(List::of);
 

@@ -1,0 +1,142 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "url": "/v2.0.0/g_variants"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "meta": {
+        "apiVersion": "v2.0.0",
+        "beaconId": "es.gdi.af.beacon-network",
+        "receivedRequestSummary": {
+          "apiVersion": "2.0",
+          "beaconRequestParameters": {},
+          "filters": [],
+          "pagination": {
+            "limit": 1,
+            "skip": 0
+          },
+          "requestedGranularity": "record",
+          "requestedSchemas": [],
+          "testMode": false
+        },
+        "returnedGranularity": "record"
+      },
+      "responseSummary": {
+        "exists": true,
+        "numTotalResults": 40628794
+      },
+      "response": {
+        "resultSets": [
+          {
+            "beaconId": "org.nbis.ga4gh-approval-beacon-test",
+            "exists": true,
+            "id": "COVID_pop11_fin_1",
+            "results": [
+              {
+                "frequencyInPopulations": [
+                  {
+                    "frequencies": [
+                      {
+                        "alleleFrequency": 0.005915809888392687,
+                        "population": "COVID_pop11_fin_1",
+                        "alleleCount": 491.0,
+                        "alleleNumber": 82998.0,
+                        "alleleCountHomozygous": 8.0,
+                        "alleleCountHeterozygous": 483.0
+                      }
+                    ],
+                    "source": "The Genome Aggregation Database (gnomAD)",
+                    "sourceReference": "gnomad.broadinstitute.org/"
+                  }
+                ],
+                "identifiers": {
+                  "genomicHGVSId": "NC_000011.10:g.87202G>T"
+                },
+                "variantInternalId": "69dce43a-9abe-11ef-a6ad-0242ac190003:G:T",
+                "variation": {
+                  "location": {
+                    "type": "SequenceLocation",
+                    "sequence_id": "HGVSid:11:g.87202G>T",
+                    "interval": {
+                      "type": "SequenceInterval",
+                      "start": {
+                        "type": "Number",
+                        "value": 87202
+                      },
+                      "end": {
+                        "type": "Number",
+                        "value": 87203
+                      }
+                    }
+                  },
+                  "alternateBases": "T",
+                  "referenceBases": "G",
+                  "variantType": "SNP"
+                }
+              }
+            ],
+            "resultsCount": 22246418,
+            "setType": "dataset"
+          },
+          {
+            "beaconId": "pt.biodata.gdi.beacon-alleles",
+            "exists": true,
+            "id": "COVID_pop12_ita_1",
+            "results": [
+              {
+                "frequencyInPopulations": [
+                  {
+                    "frequencies": [
+                      {
+                        "alleleFrequency": 0.004268940072506666,
+                        "population": "COVID_pop12_ita_1",
+                        "alleleCount": 478.0,
+                        "alleleNumber": 83028.0,
+                        "alleleCountHomozygous": 4,
+                        "alleleCountHeterozygous": 474
+                      }
+                    ],
+                    "source": "The Genome Aggregation Database (gnomAD)",
+                    "sourceReference": "gnomad.broadinstitute.org/"
+                  }
+                ],
+                "identifiers": {
+                  "genomicHGVSId": "NC_000018.10:g.10718C>G"
+                },
+                "variantInternalId": "31ef4f84-9d4f-11ef-b74d-0242ac130005:C:G",
+                "variation": {
+                  "location": {
+                    "type": "SequenceLocation",
+                    "sequence_id": "HGVSid:18:g.10718C>G",
+                    "interval": {
+                      "type": "SequenceInterval",
+                      "start": {
+                        "type": "Number",
+                        "value": 10718
+                      },
+                      "end": {
+                        "type": "Number",
+                        "value": 10719
+                      }
+                    }
+                  },
+                  "alternateBases": "G",
+                  "referenceBases": "C",
+                  "variantType": "SNP"
+                }
+              }
+            ],
+            "resultsCount": 18382376,
+            "setType": "dataset"
+          }
+        ]
+      }
+    }
+  }
+}

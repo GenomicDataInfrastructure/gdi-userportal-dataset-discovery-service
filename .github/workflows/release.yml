@@ -34,9 +34,10 @@ jobs:
           echo "Latest tag: $LATEST_TAG"
           IFS='.' read -r MAJOR MINOR PATCH <<<"${LATEST_TAG//v/}"
           
-          echo "Updating : ${{ github.event.inputs.version }} version"
+          INCREMENT=${{ github.event.inputs.version }}
+          echo "Updating : $INCREMENT version"
           
-          case "${{ github.event.inputs.version }}" in
+          case "$INCREMENT" in
             major) ((MAJOR++)); MINOR=0; PATCH=0 ;;
             minor) ((MINOR++)); PATCH=0 ;;
             patch|*) ((PATCH++)) ;;

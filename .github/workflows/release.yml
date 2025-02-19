@@ -101,7 +101,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Log in to Container Registry
+      - name: Log in to the Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -136,12 +136,12 @@ jobs:
             type=semver,pattern={{major}},priority=800
             type=sha,priority=1000
           labels: |
-            version=${{ needs.versioning.outputs.new_tag }}
-            org.opencontainers.image.version=${{ needs.versioning.outputs.new_tag }}
             vcs-ref=${{env.GITHUB_SHA}}
             build-date=${{env.BUILD_DATE}}
             org.opencontainers.image.created=${{env.BUILD_DATE}}
             release=${{env.BUILD_DATE}}
+            version=${{ needs.versioning.outputs.new_tag }}
+            org.opencontainers.image.version=${{ needs.versioning.outputs.new_tag }}
             org.opencontainers.image.url=${{env.REPOSITORY_URL}}
             org.opencontainers.image.source=${{env.REPOSITORY_URL}}
             org.opencontainers.image.documentation=${{env.REPOSITORY_URL}}

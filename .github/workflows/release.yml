@@ -72,9 +72,14 @@ jobs:
           git config --local user.email "github-actions@users.noreply.github.com"
           git config --local user.name "GitHub Actions"
 
+      - name: Install github_changelog_generator in User Space
+        run: gem install --user-install github_changelog_generator
+
+      - name: Set Up Ruby Path
+        run: echo "$(ruby -r rubygems -e 'puts Gem.user_dir')/bin" >> $GITHUB_PATH
+
       - name: Update CHANGELOG.md
         run: |
-          gem install github_changelog_generator
           github_changelog_generator --since-tag $(git tag --sort=-creatordate | sed -n '2p') -u $GITHUB_REPOSITORY_OWNER -p $(basename $GITHUB_REPOSITORY)
           git add CHANGELOG.md
           git commit -m "Update CHANGELOG for release ${{ needs.versioning.outputs.new_tag }}"

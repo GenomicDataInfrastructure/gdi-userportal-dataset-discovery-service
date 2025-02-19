@@ -144,8 +144,8 @@ jobs:
             build-date=${{env.BUILD_DATE}}
             org.opencontainers.image.created=${{env.BUILD_DATE}}
             release=${{env.BUILD_DATE}}
-            version=${{ needs.versioning.outputs.new_tag }}
-            org.opencontainers.image.version=${{ needs.versioning.outputs.new_tag }}
+            version=${{env.GITHUB_REF_NAME}}
+            org.opencontainers.image.version=${{env.GITHUB_REF_NAME}}
             org.opencontainers.image.url=${{env.REPOSITORY_URL}}
             org.opencontainers.image.source=${{env.REPOSITORY_URL}}
             org.opencontainers.image.documentation=${{env.REPOSITORY_URL}}
@@ -153,18 +153,25 @@ jobs:
             url=${{env.REPOSITORY_URL}}
             name=${{env.IMAGE_NAME}}
 
+      - name: Extract last tag
+        id: tag
+        run: |
+          IFS=',' read -ra TAGS <<< "${{ steps.meta.outputs.tags }}"
+          LAST_INDEX=$((${#TAGS[@]} - 1))
+          echo "last_tag=${TAGS[LAST_INDEX]}" >> $GITHUB_OUTPUT
+
       - name: Build Docker image for scanning
         uses: docker/build-push-action@v6
         with:
           context: .
           load: true
-          tags: ${{ needs.versioning.outputs.new_tag }}
+          tags: ${{ steps.tag.outputs.last_tag }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Run Trivy Vulnerability Scanner
         uses: aquasecurity/trivy-action@0.29.0
         with:
-          image-ref: "${{ needs.versioning.outputs.new_tag }}"
+          image-ref: "${{ steps.tag.outputs.last_tag }}"
           format: "table"
           exit-code: "1"
           ignore-unfixed: true
@@ -179,5 +186,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ needs.versioning.outputs.new_tag }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

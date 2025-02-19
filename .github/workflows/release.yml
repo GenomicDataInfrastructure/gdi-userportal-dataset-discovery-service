@@ -94,7 +94,7 @@ jobs:
           echo "Extracted user: $USER"
           echo "Extracted project: $PROJECT"
           
-          github_changelog_generator --since-tag $(git tag --sort=-creatordate | sed -n '2p') --user "$USER" --project "$PROJECT"
+          github_changelog_generator --since-tag $(git tag --sort=-creatordate | sed -n '2p') --user $USER --project $PROJECT
           git add CHANGELOG.md
           git commit -m "Update CHANGELOG for release ${{ needs.versioning.outputs.new_tag }}"
           git push

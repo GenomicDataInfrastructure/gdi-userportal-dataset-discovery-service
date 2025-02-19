@@ -30,7 +30,7 @@ jobs:
       - name: Fetch Latest Tag and Increment Version
         id: tagging
         run: |
-          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) || echo "v1.0.0")
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null)
           echo "Latest tag: $LATEST_TAG"
           IFS='.' read -r MAJOR MINOR PATCH <<<"${LATEST_TAG//v/}"
           
@@ -60,7 +60,7 @@ jobs:
       - name: Update CHANGELOG.md
         run: |
           gem install github_changelog_generator
-          github_changelog_generator -u $GITHUB_REPOSITORY_OWNER -p $(basename $GITHUB_REPOSITORY)
+          github_changelog_generator --since-tag $(git describe --tags --abbrev=0 HEAD~) -u $GITHUB_REPOSITORY_OWNER -p $(basename $GITHUB_REPOSITORY)
           git add CHANGELOG.md
           git commit -m "Update CHANGELOG for release ${{ needs.versioning.outputs.new_tag }}"
           git push

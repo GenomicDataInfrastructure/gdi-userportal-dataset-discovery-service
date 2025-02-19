@@ -30,15 +30,15 @@ jobs:
       - name: Fetch Latest Tag and Increment Version
         id: tagging
         run: |
-          git tag --sort=-creatordate | head -n 1
-          git tag --sort=-creatordate | sed -n '2p'
-          LATEST_TAG=$(git describe --tags $(git tag --sort=-creatordate | head -n 1) || echo "v1.0.0")
+          LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
           echo "Latest tag: $LATEST_TAG"
           
+          # Extract Major, Minor, Patch
           IFS='.' read -r MAJOR MINOR PATCH <<<"${LATEST_TAG//v/}"
-          echo "Updating : ${{ github.event.inputs.version }} version"
+          INCREMENT=${{ github.event.inputs.version }}
+          echo "Updating : $INCREMENT version"
           
-          case "${{ github.event.inputs.version }}" in
+          case "$INCREMENT" in
             major) ((MAJOR++)); MINOR=0; PATCH=0 ;;
             minor) ((MINOR++)); PATCH=0 ;;
             patch|*) ((PATCH++)) ;;

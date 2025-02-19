@@ -80,7 +80,7 @@ jobs:
 
       - name: Update CHANGELOG.md
         run: |
-          github_changelog_generator --since-tag $(git tag --sort=-creatordate | sed -n '2p') --user $GITHUB_REPOSITORY_OWNER --project $(basename $GITHUB_REPOSITORY)
+          github_changelog_generator --since-tag $(git tag --sort=-creatordate | sed -n '2p') --user ${{ github.actor }} --project ${{ github.repository }}
           git add CHANGELOG.md
           git commit -m "Update CHANGELOG for release ${{ needs.versioning.outputs.new_tag }}"
           git push

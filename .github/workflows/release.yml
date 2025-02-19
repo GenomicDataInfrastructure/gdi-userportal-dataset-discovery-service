@@ -30,9 +30,9 @@ jobs:
       - name: Fetch Latest Tag and Increment Version
         id: tagging
         run: |
-          git describe --tags --abbrev=0 HEAD~
+          git tag --sort=-creatordate | head -n 1
           git tag --sort=-creatordate | sed -n '2p'
-          LATEST_TAG=$(git describe --tags --abbrev=0 HEAD~ || echo "v1.0.0")
+          LATEST_TAG=$(git describe --tags $(git tag --sort=-creatordate | head -n 1) || echo "v1.0.0")
           echo "Latest tag: $LATEST_TAG"
           
           IFS='.' read -r MAJOR MINOR PATCH <<<"${LATEST_TAG//v/}"

@@ -27,30 +27,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Fetch All Tags
-        run: git fetch --tags --force
-
-
       - name: Fetch Latest Tag and Increment Version
         id: tagging
         run: |
-          # Check if any tags exist; exit if none are found
-          if ! git tag | grep -q .; then
+          git describe --tags --abbrev=0 2>/dev/null
+          
+          if git tag | grep .; then
+              LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null)
+          else
               echo "❌ No tags found in the repository. Exiting."
               exit 1
           fi
-
-          # Fetch the latest tag
-          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null)
           echo "Latest tag: $LATEST_TAG"
           
-          
-          # Extract Major, Minor, Patch
           IFS='.' read -r MAJOR MINOR PATCH <<<"${LATEST_TAG//v/}"
-          INCREMENT=${{ github.event.inputs.version }}
-          echo "Updating : $INCREMENT version"
-
-          case "$INCREMENT" in
+          echo "Updating : ${{ github.event.inputs.version }} version"
+          
+          case "${{ github.event.inputs.version }}" in
             major) ((MAJOR++)); MINOR=0; PATCH=0 ;;
             minor) ((MINOR++)); PATCH=0 ;;
             patch|*) ((PATCH++)) ;;
@@ -59,7 +52,7 @@ jobs:
           NEW_TAG="v$MAJOR.$MINOR.$PATCH"
           git tag -a "$NEW_TAG" -m "Release $NEW_TAG"
           git push origin "$NEW_TAG"
-
+          
           echo "New tag pushed: $NEW_TAG"
           echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
 

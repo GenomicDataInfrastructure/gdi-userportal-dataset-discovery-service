@@ -532,6 +532,9 @@ components:
         url:
           type: string
           title: url
+        uri:
+          type: string
+          title: uri
         type:
           type: string
           title: type

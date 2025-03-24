@@ -201,9 +201,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-      security:
-        - discovery_auth:
-            - read:datasets
+      security: []
 
 components:
   securitySchemes:

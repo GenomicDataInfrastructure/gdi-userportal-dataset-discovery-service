@@ -43,11 +43,11 @@ class GVariantsRepositoryTest {
 
         GVariantSearchQuery query = new GVariantSearchQuery();
 
-        List<GVariantsSearchResponse> result = gVariantsRepository.search(query, accessToken);
+        List<GVariantsSearchResponse> result = gVariantsRepository.search(query);
 
         assertNotNull(result, "Result should not be null");
         assertTrue(result.isEmpty(), "Result should be an empty list");
-        verify(gVariantsApi, never()).postGenomicVariationsRequest(any(), any());
+        verify(gVariantsApi, never()).postGenomicVariationsRequest(any());
     }
 
     @Test
@@ -57,12 +57,12 @@ class GVariantsRepositoryTest {
         GVariantSearchQuery query = new GVariantSearchQuery();
         query.setParams(Collections.emptyMap());
 
-        List<GVariantsSearchResponse> result = gVariantsRepository.search(query, accessToken);
+        List<GVariantsSearchResponse> result = gVariantsRepository.search(query);
 
         assertNotNull(result);
         assertTrue(result.isEmpty(),
                 "Result should be an empty list because query params are empty");
-        verify(gVariantsApi, never()).postGenomicVariationsRequest(any(), any());
+        verify(gVariantsApi, never()).postGenomicVariationsRequest(any());
     }
 
     @Test
@@ -75,17 +75,17 @@ class GVariantsRepositoryTest {
 
         BeaconResponse mockBeaconResponse = buildBeaconsResponse();
 
-        when(gVariantsApi.postGenomicVariationsRequest(anyString(), any()))
+        when(gVariantsApi.postGenomicVariationsRequest(any()))
                 .thenReturn(mockBeaconResponse);
 
-        List<GVariantsSearchResponse> result = gVariantsRepository.search(query, accessToken);
+        List<GVariantsSearchResponse> result = gVariantsRepository.search(query);
 
         assertNotNull(result, "Result should not be null");
         assertFalse(result.isEmpty(), "Result should not be empty");
         assertEquals(1, result.size(), "We expect 1 mapped variant response in this mock scenario");
 
         verify(beaconAuth).retrieveAuthorization(accessToken);
-        verify(gVariantsApi).postGenomicVariationsRequest(eq("some-authorization"), any());
+        verify(gVariantsApi).postGenomicVariationsRequest(any());
 
         GVariantsSearchResponse item = result.getFirst();
         assertEquals("testBeaconId", item.getBeacon(), "Expected beacon ID from mock data");

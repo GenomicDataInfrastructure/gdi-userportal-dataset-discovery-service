@@ -14,13 +14,6 @@ paths:
     post:
       description: Get a Beacon response for genomic variations
       operationId: postGenomicVariationsRequest
-      parameters:
-        - name: Authorization
-          in: header
-          description: The authorization header
-          required: true
-          schema:
-            type: string
       tags:
         - GVariants
       requestBody:
@@ -36,8 +29,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BeaconResponse"
-        "401":
-          description: "Unauthorized"
       security:
         - beacon_auth:
             - read:beacon

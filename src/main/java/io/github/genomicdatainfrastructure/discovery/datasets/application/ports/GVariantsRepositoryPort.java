@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface GVariantsRepositoryPort {
 
-    List<GVariantsSearchResponse> search(GVariantSearchQuery gVariantSearchQuery,
-            String accessToken);
+    List<GVariantsSearchResponse> search(GVariantSearchQuery gVariantSearchQuery);
 
 }

@@ -13,7 +13,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.util.Collections;
 import java.util.List;
+
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @ApplicationScoped
 @LookupIfProperty(name = "sources.beacon", stringValue = "true")
@@ -29,6 +32,9 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
     @Override
     public List<GVariantsSearchResponse> search(GVariantSearchQuery query) {
         var beaconQuery = BeaconGVariantsRequestMapper.map(query);
+        if (isEmpty(beaconQuery.getQuery().getRequestParameters())) {
+            return Collections.emptyList();
+        }
 
         var response = gVariantsApi.postGenomicVariationsRequest(beaconQuery);
 

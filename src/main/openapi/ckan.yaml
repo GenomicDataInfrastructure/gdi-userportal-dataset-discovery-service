@@ -315,8 +315,6 @@ components:
           type: integer
         min_typical_age:
           type: integer
-        frequency:
-          type: string
         number_of_records:
           type: integer
         number_of_unique_individuals:

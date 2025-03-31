@@ -251,7 +251,7 @@ components:
         dcat_type:
           $ref: "#/components/schemas/CkanValueLabel"
 
-        # Bellow are properties from HealthDCAT
+        # Below are properties from HealthDCAT
         publisher_note:
           type: array
           items:

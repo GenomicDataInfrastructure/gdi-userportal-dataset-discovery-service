@@ -450,7 +450,7 @@ components:
           title: Distributions
         dcatType:
           $ref: "#/components/schemas/ValueLabel"
-        # Bellow are properties from HealthDCAT
+        # Below are properties from HealthDCAT
         publisher_note:
           type: array
           items:

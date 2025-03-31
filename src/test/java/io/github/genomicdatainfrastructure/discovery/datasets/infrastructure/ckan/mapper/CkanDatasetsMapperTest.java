@@ -45,6 +45,11 @@ class CkanDatasetsMapperTest {
                     .publishers(List.of())
                     .datasetRelationships(List.of())
                     .dataDictionary(List.of())
+                    .hdab(List.of())
+                    .qualifiedRelation(List.of())
+                    .retentionPeriod(List.of())
+                    .spatialCoverage(List.of())
+                    .temporalCoverage(List.of())
                     .build();
 
             assertThat(actual)
@@ -186,6 +191,62 @@ class CkanDatasetsMapperTest {
                                             "Description 2")
                                     .build()
                     ))
+                    .alternateIdentifier(List.of("internalURI:admsIdentifier0"))
+                    .analytics(List.of("http://example.com/analytics"))
+                    .applicableLegislation(List.of("http://data.europa.eu/eli/reg/2022/868/oj"))
+                    .codeValues(List.of("http://example.com/code1", "http://example.com/code2"))
+                    .codingSystem(List.of("http://example.com/codingSystem"))
+                    .hdab(List.of(Agent.builder()
+                            .name("EU Health Data Access Body")
+                            .email("hdab@example.com")
+                            .url("https://www.example.com/hdab")
+                            .build()))
+                    .healthCategory(List.of("Genomics", "Medical Imaging",
+                            "Electronic Health Records"))
+                    .healthTheme(List.of(
+                            "http://www.wikidata.org/entity/Q58624061",
+                            "http://www.wikidata.org/entity/Q7907952"))
+                    .legalBasis(List.of("https://w3id.org/dpv#Consent"))
+                    .maxTypicalAge(100)
+                    .minTypicalAge(0)
+                    .numberOfRecords(123456789)
+                    .numberOfUniqueIndividuals(123456789)
+                    .personalData(List.of(
+                            "https://w3id.org/dpv/dpv-pd#Age",
+                            "https://w3id.org/dpv/dpv-pd#Gender",
+                            "https://w3id.org/dpv/dpv-pd#HealthRecord"))
+                    .populationCoverage(List.of(
+                            "This example includes a very non-descript population"))
+                    .publisherNote(List.of(
+                            "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation."))
+                    .publisherType(List.of("http://example.com/publisherType/undefined"))
+                    .purpose(List.of("https://w3id.org/dpv#AcademicResearch"))
+                    .qualifiedRelation(List.of(
+                            RetrievedDatasetQualifiedRelationInner.builder()
+                                    .relation("http://example.com/dataset/3.141592")
+                                    .role("https://w3id.org/dpv#AcademicResearchRole")
+                                    .uri("https://w3id.org/dpv#AcademicResearchUri")
+                                    .build()))
+                    .retentionPeriod(List.of(
+                            TimeWindow.builder()
+                                    .start(parse("2024-07-01T22:00:00Z"))
+                                    .end(parse("2024-07-02T22:00:00Z"))
+                                    .build()))
+                    .spatialCoverage(List.of(
+                            SpatialCoverage.builder()
+                                    .uri("https://www.geonames.org/2745912/utrecht.html")
+                                    .text("Utrecht, Netherlands")
+                                    .geom("POLYGON((5.045 52.090, 5.145 52.090, 5.145 52.150, 5.045 52.150, 5.045 52.090))")
+                                    .bbox("5.045,52.090,5.145,52.150")
+                                    .centroid("5.095,52.120")
+                                    .build()))
+                    .spatialResolutionInMeters(10.0f)
+                    .temporalCoverage(List.of(
+                            TimeWindow.builder()
+                                    .start(parse("2024-07-01T22:00:00+00:00"))
+                                    .end(parse("2024-07-02T22:00:00+00:00"))
+                                    .build()))
+                    .temporalResolution("P1D")
                     .build();
 
             assertThat(actual)
@@ -274,6 +335,72 @@ class CkanDatasetsMapperTest {
                         CkanDatasetDictionaryEntry.builder().name("Entry 2").type("Type 2")
                                 .description("Description 2").build()
                 ))
+                .healthTheme(List.of("http://www.wikidata.org/entity/Q58624061",
+                        "http://www.wikidata.org/entity/Q7907952"))
+                .healthCategory(List.of("Genomics", "Medical Imaging", "Electronic Health Records"))
+                .legalBasis(List.of("https://w3id.org/dpv#Consent"))
+                .hdab(List.of(
+                        CkanAgent.builder()
+                                .name("EU Health Data Access Body")
+                                .url("https://www.example.com/hdab")
+                                .email("hdab@example.com")
+                                .build()
+                )
+                )
+                .minTypicalAge(0)
+                .maxTypicalAge(100)
+                .numberOfRecords(123456789)
+                .numberOfUniqueIndividuals(123456789)
+                .personalData(List.of("https://w3id.org/dpv/dpv-pd#Age",
+                        "https://w3id.org/dpv/dpv-pd#Gender",
+                        "https://w3id.org/dpv/dpv-pd#HealthRecord"))
+                .populationCoverage(List.of("This example includes a very non-descript population"))
+                .personalData(List.of("https://w3id.org/dpv/dpv-pd#Age",
+                        "https://w3id.org/dpv/dpv-pd#Gender",
+                        "https://w3id.org/dpv/dpv-pd#HealthRecord"))
+                .populationCoverage(List.of("This example includes a very non-descript population"))
+                .publisherNote(List.of(
+                        "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation."))
+                .publisherType(List.of("http://example.com/publisherType/undefined"))
+                .purpose(List.of("https://w3id.org/dpv#AcademicResearch"))
+                .retentionPeriod(List.of(
+                        CkanTimeWindow.builder()
+                                .start("2024-07-01T22:00:00+00:00")
+                                .end("2024-07-02T22:00:00+00:00")
+                                .build()
+                ))
+                .codeValues(List.of("http://example.com/code1", "http://example.com/code2"))
+                .analytics(List.of("http://example.com/analytics"))
+                .codingSystem(List.of("http://example.com/codingSystem"))
+                .applicableLegislation(List.of("http://data.europa.eu/eli/reg/2022/868/oj"))
+                .qualifiedRelation(List.of(
+                        CkanPackageQualifiedRelationInner.builder()
+                                .role("https://w3id.org/dpv#AcademicResearchRole")
+                                .relation("http://example.com/dataset/3.141592")
+                                .uri("https://w3id.org/dpv#AcademicResearchUri")
+                                .build()
+                ))
+                .temporalStart("2024-07-12T22:00:00+00:00")
+                .temporalEnd("2024-07-13T22:00:00+00:00")
+                .temporalCoverage(List.of(
+                        CkanTimeWindow.builder()
+                                .start("2024-07-01T22:00:00+00:00")
+                                .end("2024-07-02T22:00:00+00:00")
+                                .build()
+                ))
+                .temporalResolution("P1D")
+                .alternateIdentifier(List.of("internalURI:admsIdentifier0"))
+                .spatialCoverage(List.of(
+                        CkanSpatialCoverage.builder()
+                                .uri("https://www.geonames.org/2745912/utrecht.html")
+                                .text("Utrecht, Netherlands")
+                                .geom("POLYGON((5.045 52.090, 5.145 52.090, 5.145 52.150, 5.045 52.150, 5.045 52.090))")
+                                .bbox("5.045,52.090,5.145,52.150")
+                                .centroid("5.095,52.120")
+                                .build()
+                ))
+                .spatialResolutionInMeters(10.0f)
+                .alternateIdentifier(List.of("internalURI:admsIdentifier0"))
                 .build();
     }
 

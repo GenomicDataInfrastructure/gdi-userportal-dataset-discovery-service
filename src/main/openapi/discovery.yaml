@@ -450,6 +450,109 @@ components:
           title: Distributions
         dcatType:
           $ref: "#/components/schemas/ValueLabel"
+        # Bellow are properties from HealthDCAT
+        publisher_note:
+          type: array
+          items:
+            type: string
+        publisher_coverage:
+          type: array
+          items:
+            type: string
+        publisher_type:
+          type: array
+          items:
+            type: string
+        hdab:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"
+        spatial_coverage:
+          type: array
+          description: A geographic region that is covered by the dataset.
+          items:
+            $ref: '#/components/schemas/SpatialCoverage'
+        spatial_resolution_in_meters:
+          type: number
+          format: float
+          description: Minimum spatial separation resolvable in a dataset, measured in meters.
+        temporal_coverage:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeWindow"
+        temporal_resolution:
+          type: string
+        population_coverage:
+          type: array
+          items:
+            type: string
+        retention_period:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeWindow"
+        purpose:
+          type: array
+          items:
+            type: string
+        legal_basis:
+          type: array
+          items:
+            type: string
+        applicable_legislation:
+          type: array
+          items:
+            type: string
+        health_theme:
+          type: array
+          items:
+            type: string
+        health_category:
+          type: array
+          items:
+            type: string
+        max_typical_age:
+          type: integer
+        min_typical_age:
+          type: integer
+        frequency:
+          type: string
+        number_of_records:
+          type: integer
+        number_of_unique_individuals:
+          type: integer
+        analytics:
+          type: array
+          items:
+            type: string
+        code_values:
+          type: array
+          items:
+            type: string
+        coding_system:
+          type: array
+          items:
+            type: string
+        alternate_identifier:
+          type: array
+          items:
+            type: string
+        version_notes:
+          type: string
+        qualified_relation:
+          type: array
+          items:
+            type: object
+            properties:
+              relation:
+                type: string
+              role:
+                type: string
+              uri:
+                type: string
+        personal_data:
+          type: array
+          items:
+            type: string
       required:
         - id
         - title
@@ -566,6 +669,32 @@ components:
         - name
         - type
         - description
+    TimeWindow:
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+    SpatialCoverage:
+      type: object
+      properties:
+        uri:
+          type: string
+          description: URI
+        text:
+          type: string
+          description: Label
+        geom:
+          type: string
+          description: Geometry
+        bbox:
+          type: string
+          description: Bounding Box
+        centroid:
+          type: string
+          description: Centroid
     Filter:
       properties:
         source:

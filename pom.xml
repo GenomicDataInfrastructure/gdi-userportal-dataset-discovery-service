@@ -18,7 +18,7 @@
         <quarkus-openapi-generator.version>2.9.0-lts</quarkus-openapi-generator.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.19.4</quarkus.platform.version>
+        <quarkus.platform.version>3.21.0</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire.version>3.5.3</surefire.version>
         <quarkus-wiremock.version>1.4.1</quarkus-wiremock.version>

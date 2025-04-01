@@ -220,6 +220,7 @@ class CkanDatasetsMapperTest {
                     .publisherNote(List.of(
                             "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation."))
                     .publisherType(List.of("http://example.com/publisherType/undefined"))
+                    .trustedDataHolder(true)
                     .purpose(List.of("https://w3id.org/dpv#AcademicResearch"))
                     .qualifiedRelation(List.of(
                             RetrievedDatasetQualifiedRelationInner.builder()
@@ -362,6 +363,7 @@ class CkanDatasetsMapperTest {
                 .publisherNote(List.of(
                         "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation."))
                 .publisherType(List.of("http://example.com/publisherType/undefined"))
+                .trustedDataHolder(true)
                 .purpose(List.of("https://w3id.org/dpv#AcademicResearch"))
                 .retentionPeriod(List.of(
                         CkanTimeWindow.builder()

@@ -451,42 +451,44 @@ components:
         dcatType:
           $ref: "#/components/schemas/ValueLabel"
         # Below are properties from HealthDCAT
-        publisher_note:
+        publisherNote:
           type: array
           items:
             type: string
-        publisher_coverage:
+        publisherCoverage:
           type: array
           items:
             type: string
-        publisher_type:
+        publisherType:
           type: array
           items:
             type: string
+        trustedDataHolder:
+          type: boolean
         hdab:
           type: array
           items:
             $ref: "#/components/schemas/Agent"
-        spatial_coverage:
+        spatialCoverage:
           type: array
           description: A geographic region that is covered by the dataset.
           items:
             $ref: '#/components/schemas/SpatialCoverage'
-        spatial_resolution_in_meters:
+        spatialResolutionInMeters:
           type: number
           format: float
           description: Minimum spatial separation resolvable in a dataset, measured in meters.
-        temporal_coverage:
+        temporalCoverage:
           type: array
           items:
             $ref: "#/components/schemas/TimeWindow"
-        temporal_resolution:
+        temporalResolution:
           type: string
-        population_coverage:
+        populationCoverage:
           type: array
           items:
             type: string
-        retention_period:
+        retentionPeriod:
           type: array
           items:
             $ref: "#/components/schemas/TimeWindow"
@@ -494,49 +496,49 @@ components:
           type: array
           items:
             type: string
-        legal_basis:
+        legalBasis:
           type: array
           items:
             type: string
-        applicable_legislation:
+        applicableLegislation:
           type: array
           items:
             type: string
-        health_theme:
+        healthTheme:
           type: array
           items:
             type: string
-        health_category:
+        healthCategory:
           type: array
           items:
             type: string
-        max_typical_age:
+        maxTypicalAge:
           type: integer
-        min_typical_age:
+        minTypicalAge:
           type: integer
-        number_of_records:
+        numberOfRecords:
           type: integer
-        number_of_unique_individuals:
+        numberOfUniqueIndividuals:
           type: integer
         analytics:
           type: array
           items:
             type: string
-        code_values:
+        codeValues:
           type: array
           items:
             type: string
-        coding_system:
+        codingSystem:
           type: array
           items:
             type: string
-        alternate_identifier:
+        alternateIdentifier:
           type: array
           items:
             type: string
-        version_notes:
+        versionNotes:
           type: string
-        qualified_relation:
+        qualifiedRelation:
           type: array
           items:
             type: object
@@ -547,7 +549,7 @@ components:
                 type: string
               uri:
                 type: string
-        personal_data:
+        personalData:
           type: array
           items:
             type: string

@@ -90,6 +90,7 @@ class CkanDatasetsMapperTest {
                                     .identifier("creatorIdentifier")
                                     .email("email")
                                     .url("url")
+                                    .uri("uri")
                                     .type("type")
                                     .build(),
                             Agent.builder()
@@ -97,6 +98,7 @@ class CkanDatasetsMapperTest {
                                     .identifier("creatorIdentifier2")
                                     .email("email2")
                                     .url("url2")
+                                    .uri("uri2")
                                     .type("type2")
                                     .build()
                     ))
@@ -106,6 +108,7 @@ class CkanDatasetsMapperTest {
                                     .identifier("publisherIdentifier")
                                     .email("email")
                                     .url("url")
+                                    .uri("uri")
                                     .type("type")
                                     .build(),
                             Agent.builder()
@@ -113,6 +116,7 @@ class CkanDatasetsMapperTest {
                                     .identifier("publisherIdentifier2")
                                     .email("email2")
                                     .url("url2")
+                                    .uri("uri2")
                                     .type("type2")
                                     .build()
                     ))
@@ -307,6 +311,7 @@ class CkanDatasetsMapperTest {
                             .name("publisherName")
                             .email("email")
                             .url("url")
+                            .uri("uri")
                             .identifier("publisherIdentifier")
                             .type("type")
                             .build(),
@@ -314,6 +319,7 @@ class CkanDatasetsMapperTest {
                                     .name("publisherName2")
                                     .email("email2")
                                     .url("url2")
+                                    .uri("uri2")
                                     .identifier("publisherIdentifier2")
                                     .type("type2")
                                     .build()))

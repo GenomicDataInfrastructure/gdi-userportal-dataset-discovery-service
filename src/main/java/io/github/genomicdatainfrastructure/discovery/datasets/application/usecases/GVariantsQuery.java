@@ -19,8 +19,7 @@ public class GVariantsQuery {
 
     private final GVariantsRepositoryPort repository;
 
-    public List<GVariantsSearchResponse> execute(GVariantSearchQuery gVariantSearchQuery,
-            String accessToken) {
-        return repository.search(gVariantSearchQuery, accessToken);
+    public List<GVariantsSearchResponse> execute(GVariantSearchQuery gVariantSearchQuery) {
+        return repository.search(gVariantSearchQuery);
     }
 }

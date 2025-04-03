@@ -201,9 +201,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-      security:
-        - discovery_auth:
-            - read:datasets
 
 components:
   securitySchemes:
@@ -532,6 +529,9 @@ components:
         url:
           type: string
           title: url
+        uri:
+          type: string
+          title: uri
         type:
           type: string
           title: type

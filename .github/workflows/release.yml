@@ -138,7 +138,7 @@ jobs:
           rm temp_changelog.md
   
           git add "$CHANGELOG_FILE"
-          git commit -m "📜 Update CHANGELOG.md for $LATEST_TAG" || echo "No changes to commit"
+          git commit -m "doc: Update CHANGELOG.md for $LATEST_TAG" || echo "No changes to commit"
           git push origin main
 
 

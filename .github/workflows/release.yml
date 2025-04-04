@@ -74,6 +74,15 @@ jobs:
           echo "New tag pushed: $NEW_TAG"
           echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
 
+  generate-changelog:
+    runs-on: ubuntu-latest
+    needs: versioning
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important: ensures all tags are fetched
+
       - name: Set execute permissions for changelog script
         run: chmod +x changelog.sh
 
@@ -85,7 +94,7 @@ jobs:
 
   publish-release:
     runs-on: ubuntu-latest
-    needs: versioning
+    needs: generate-changelog
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

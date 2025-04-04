@@ -99,7 +99,7 @@ jobs:
 
   publish-release:
     runs-on: ubuntu-latest
-    needs: generate-changelog
+    needs: [versioning, generate-changelog]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

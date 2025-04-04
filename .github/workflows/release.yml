@@ -132,12 +132,10 @@ jobs:
           if [[ ! -f "$CHANGELOG_FILE" ]]; then
             echo -e "# Changelog\n\nAll notable changes to this project will be documented here.\n" > "$CHANGELOG_FILE"
           fi
-  
-          cat temp_changelog.md "$CHANGELOG_FILE" > temp_combined.md && mv temp_combined.md "$CHANGELOG_FILE"
+          
+          sed -i '' '14r temp_changelog.md' "$CHANGELOG_FILE"
           rm temp_changelog.md
   
-          git config user.name "GitHub Actions"
-          git config user.email "github-actions@users.noreply.github.com"
           git add "$CHANGELOG_FILE"
           git commit -m "📜 Update CHANGELOG.md for $LATEST_TAG" || echo "No changes to commit"
           git push origin main

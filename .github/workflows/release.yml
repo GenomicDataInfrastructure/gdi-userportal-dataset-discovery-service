@@ -233,13 +233,13 @@ jobs:
         with:
           context: .
           load: true
-          tags: ${{ needs.versioning.outputs.new_tag }}
+          tags: ${{ steps.tag.outputs.last_tag }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Run Trivy Vulnerability Scanner
         uses: aquasecurity/trivy-action@0.30.0
         with:
-          image-ref: "${{ needs.versioning.outputs.new_tag }}"
+          image-ref: "${{ steps.tag.outputs.last_tag }}"
           format: "table"
           exit-code: "1"
           ignore-unfixed: true

@@ -12,6 +12,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.7] - 2025-04-04
+
+### Changed
+- refactor changelog.sh by @jadzlnds in 48892ad
+- refactor changelog.sh by @jadzlnds in 2d0084b
+- chore(deps): update quarkus.platform.version to v3.21.1 by @Renovate Bot in f4673d8
+- chore(deps): update dependency org.jacoco:jacoco-maven-plugin to v0.8.13 by @Renovate Bot in 3fbbbb5
+- chore(deps): update quarkus.platform.version to v3.21.0 by @Renovate Bot in 304fa0f
+- chore(deps): update surefire.version to v3.5.3 by @Renovate Bot in e003577
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.5-1742914212 by @Renovate Bot in 55e2f78
+- Feat/g variant does not require auth (#198) by @Younès Adem in 4b3e51a
+- chore(deps): update dependency net.revelc.code.formatter:formatter-maven-plugin to v2.26.0 by @Renovate Bot in 7a85997
+- chore(deps): update quarkus.platform.version to v3.19.4 by @Renovate Bot in ba18dee
+- chore(deps): update aquasecurity/trivy-action action to v0.30.0 by @Renovate Bot in 83221fc
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.5-1741850109 by @Renovate Bot in 6f2f844
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.5-1741599792 by @Renovate Bot in 6ab02a8
+- chore add changelog.sh by @jadzlnds in c1f1d0c
+- chore add changelog.sh by @jadzlnds in f272c55
+- 📜 Update CHANGELOG.md for v1.3.6 by @jadzlnds in 521467d
+- 📜 Update CHANGELOG.md for v1.3.1 by @jadzlnds in 2b582b9
+- chore(deps): update dependency org.apache.maven.plugins:maven-compiler-plugin to v3.14.0 by @Renovate Bot in 490243b
+- chore(deps): update quarkus.platform.version to v3.18.4 by @Renovate Bot in 0da0b0b
+- chore: use gh release create by @jadzlnds in ee880f8
+- chore: use gh release create by @jadzlnds in 0b484b9
+- chore: use gh release create by @jadzlnds in 2b9616e
+- chore: add user by @jadzlnds in 4a8e18f
+- chore: add user by @jadzlnds in 64822cd
+- chore: add user by @jadzlnds in 0cc5ef9
+- chore: update changelog script by @jadzlnds in 7b72bf8
+- chore: update changelog script by @jadzlnds in 007de8f
+
+
+### Fixed
+- fix(deps): update quarkus-openapi-generator.version to v2.9.1-lts by @Renovate Bot in 1d2cf2a
+- fix(deps): update dependency org.projectlombok:lombok to v1.18.38 by @Renovate Bot in 86d52c7
+- fix(deps): update quarkus-openapi-generator.version to v2.9.0-lts by @Renovate Bot in e86ce40
+- fix(mapping): fix uri creator and publisher by @Hans-Chrstian in 3847563
+- fix(deps): update quarkus-openapi-generator.version to v2.8.2-lts by @Renovate Bot in 267898e
+- fix(deps): update quarkus-openapi-generator.version to v2.8.1-lts by @Renovate Bot in c96050b
+
+
+
 ## [v1.3.6] - 2025-02-27
 
 ### Added

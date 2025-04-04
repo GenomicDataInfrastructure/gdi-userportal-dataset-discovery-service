@@ -83,6 +83,11 @@ jobs:
         with:
           fetch-depth: 0  # Important: ensures all tags are fetched
 
+      - name: Set Git User Identity
+        run: |
+          git config --local user.email "github-actions@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
+
       - name: Set execute permissions for changelog script
         run: chmod +x changelog.sh
 

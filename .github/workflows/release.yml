@@ -81,6 +81,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
+          token: '${{ secrets.JADZ_TOKEN }}'
           fetch-depth: 0
 
       - name: Set Git User Identity
@@ -139,8 +140,6 @@ jobs:
           git add "$CHANGELOG_FILE"
           git commit -m "📜 Update CHANGELOG.md for $LATEST_TAG" || echo "No changes to commit"
           git push origin main
-        env:
-          GH_TOKEN: ${{ secrets.JADZ_TOKEN }}
 
 
   publish-release:

@@ -12,23 +12,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [v1.3.8] - 2025-04-04
-
-### Changed
-- refactor script by @jadzlnds in 64232ae
-- refactor script by @jadzlnds in 0d97769
-- refactor script by @jadzlnds in 7ba291a
-- refactor script by @jadzlnds in 2dc6de5
-- refactor script by @jadzlnds in 7180171
-- refactor script by @jadzlnds in 068332e
-- refactor update scripts by @jadzlnds in d0a54f6
-- refactor update scripts by @jadzlnds in f620c4a
-- refactor update scripts by @jadzlnds in 753d894
-- refactor update scripts by @jadzlnds in 3720985
-- refactor update scripts by @jadzlnds in 0f2e434
-- refactor scripts by @jadzlnds in 85f50b9
-
-
 ## [v1.3.7] - 2025-04-04
 
 ### Changed

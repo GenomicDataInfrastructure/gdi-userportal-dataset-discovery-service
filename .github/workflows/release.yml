@@ -203,7 +203,7 @@ jobs:
             type=schedule,priority=400
             type=ref,event=branch,priority=600
             type=ref,event=pr,priority=500
-            type=semver,pattern={{version}},priority=700
+            type=semver,pattern={{version}},priority=700,value=${{ needs.versioning.outputs.new_tag }}
             type=semver,pattern={{major}}.{{minor}},priority=900
             type=semver,pattern={{major}},priority=800
             type=sha,priority=1000

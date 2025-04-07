@@ -20,11 +20,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch and sync all tags
-        run: |
-          git fetch --prune origin "+refs/tags/*:refs/tags/*"
-          git tag --sort=-creatordate
-
       - name: Generate changelog entry
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

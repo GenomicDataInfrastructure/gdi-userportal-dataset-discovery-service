@@ -12,6 +12,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.9] - 2025-04-07
+
+### Added
+- feat(dataset): add HealthDCAT fields to RetrievedDataset and update mapping by @Hans-Chrstian in b8e1f4b
+
+
+### Changed
+- refactor script by @jadzlnds in 386fe55
+- doc: Update CHANGELOG.md for v1.3.8 by @LNDS-Sysadmins in 748aa53
+- Appllied comments. Discovery part of a openAPI follows camCase format by @Hans-Chrstian in 746ba7e
+- Remove unused frequency by @Hans-Chrstian in 71cc0ab
+- Apply suggestions from code review by @Hans-Christian in 468223c
+
+
 ## [v1.3.8] - 2025-04-04
 
 ### Changed

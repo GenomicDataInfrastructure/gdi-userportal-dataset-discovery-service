@@ -75,10 +75,10 @@ jobs:
 
           git add "$CHANGELOG_FILE"
           git commit -m "doc: update CHANGELOG.md for $LATEST_TAG"
-          git push origin CHANGELOG_BRANCH
+          git push origin "$CHANGELOG_BRANCH"
           
           gh pr create \
             --title "chore: update changelog for $LATEST_TAG" \
             --body "This PR updates the changelog for release $LATEST_TAG." \
             --base main \
-            --head CHANGELOG_BRANCH
+            --head "$CHANGELOG_BRANCH"

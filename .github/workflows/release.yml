@@ -186,3 +186,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  call-generate-changelog:
+    needs: [versioning, publish-docker-image]  # or versioning if gh release create is there
+    uses: ./.github/workflows/generate_changelog.yml
+    with:
+      tag: ${{ needs.versioning.outputs.new_tag }}

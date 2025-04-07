@@ -5,8 +5,11 @@
 name: Generate Changelog
 
 on:
-  release:
-    types: [published] # trigger only when release is published example gh release create "$LATEST_TAG"
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
 
 jobs:
   generate-changelog:
@@ -32,7 +35,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           CHANGELOG_FILE="CHANGELOG.md"
-          LATEST_TAG=$(git tag --sort=-creatordate | sed -n '1p')
+          LATEST_TAG="${{ inputs.tag }}"
           PREVIOUS_TAG=$(git tag --sort=-creatordate | sed -n '2p')
           
           CHANGELOG_BRANCH="chore/$LATEST_TAG"

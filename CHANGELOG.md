@@ -12,6 +12,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.10] - 2025-04-07
+
+### Changed
+- refactor scripts by @jadzlnds in f00585c
+- refactor scripts by @jadzlnds in 5fdda68
+- doc: Update CHANGELOG.md for v1.3.9 by @LNDS-Sysadmins in 7851010
+
+
+### Fixed
+- fix typo by @jadzlnds in cd833d8
+- fix typo by @jadzlnds in 5085ad7
+- fix typo by @jadzlnds in 64f16dc
+- fix typo by @jadzlnds in 1dbc70b
+
+
 ## [v1.3.9] - 2025-04-07
 
 ### Added

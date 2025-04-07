@@ -450,6 +450,109 @@ components:
           title: Distributions
         dcatType:
           $ref: "#/components/schemas/ValueLabel"
+        # Below are properties from HealthDCAT
+        publisherNote:
+          type: array
+          items:
+            type: string
+        publisherCoverage:
+          type: array
+          items:
+            type: string
+        publisherType:
+          type: array
+          items:
+            type: string
+        trustedDataHolder:
+          type: boolean
+        hdab:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"
+        spatialCoverage:
+          type: array
+          description: A geographic region that is covered by the dataset.
+          items:
+            $ref: '#/components/schemas/SpatialCoverage'
+        spatialResolutionInMeters:
+          type: number
+          format: float
+          description: Minimum spatial separation resolvable in a dataset, measured in meters.
+        temporalCoverage:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeWindow"
+        temporalResolution:
+          type: string
+        populationCoverage:
+          type: array
+          items:
+            type: string
+        retentionPeriod:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeWindow"
+        purpose:
+          type: array
+          items:
+            type: string
+        legalBasis:
+          type: array
+          items:
+            type: string
+        applicableLegislation:
+          type: array
+          items:
+            type: string
+        healthTheme:
+          type: array
+          items:
+            type: string
+        healthCategory:
+          type: array
+          items:
+            type: string
+        maxTypicalAge:
+          type: integer
+        minTypicalAge:
+          type: integer
+        numberOfRecords:
+          type: integer
+        numberOfUniqueIndividuals:
+          type: integer
+        analytics:
+          type: array
+          items:
+            type: string
+        codeValues:
+          type: array
+          items:
+            type: string
+        codingSystem:
+          type: array
+          items:
+            type: string
+        alternateIdentifier:
+          type: array
+          items:
+            type: string
+        versionNotes:
+          type: string
+        qualifiedRelation:
+          type: array
+          items:
+            type: object
+            properties:
+              relation:
+                type: string
+              role:
+                type: string
+              uri:
+                type: string
+        personalData:
+          type: array
+          items:
+            type: string
       required:
         - id
         - title
@@ -566,6 +669,32 @@ components:
         - name
         - type
         - description
+    TimeWindow:
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+    SpatialCoverage:
+      type: object
+      properties:
+        uri:
+          type: string
+          description: URI
+        text:
+          type: string
+          description: Label
+        geom:
+          type: string
+          description: Geometry
+        bbox:
+          type: string
+          description: Bounding Box
+        centroid:
+          type: string
+          description: Centroid
     Filter:
       properties:
         source:

@@ -15,10 +15,10 @@
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus-openapi-generator.version>2.9.1-lts</quarkus-openapi-generator.version>
+        <quarkus-openapi-generator.version>2.11.0</quarkus-openapi-generator.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.21.4</quarkus.platform.version>
+        <quarkus.platform.version>3.24.2</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire.version>3.5.3</surefire.version>
         <quarkus-wiremock.version>1.5.0</quarkus-wiremock.version>

@@ -12,6 +12,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.10] - 2025-07-08
+
+### Changed
+- chore(deps): update quarkus.platform.version to v3.24.2 by @Renovate Bot in c61559a
+- chore(deps): update aquasecurity/trivy-action action to v0.32.0 by @Renovate Bot in f9fea4a
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.6-1751286687 by @Renovate Bot in aaafdad
+- chore(deps): update dependency net.revelc.code.formatter:formatter-maven-plugin to v2.27.0 by @Renovate Bot in 55c5491
+- chore(deps): update quarkus-wiremock.version to v1.5.0 by @Renovate Bot in 4f4e507
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.5-1747111267 by @Renovate Bot in b217b3a
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.5-1745855087 by @Renovate Bot in 58f0ceb
+- chore(deps): update quarkus.platform.version to v3.21.4 by @Renovate Bot in cc82724
+- chore(deps): update quarkus.platform.version to v3.21.3 by @Renovate Bot in ca764bd
+- chore(deps): update quarkus.platform.version to v3.21.2 by @Renovate Bot in 487821c
+- refactor scripts by @jadzlnds in f00585c
+- refactor scripts by @jadzlnds in 5fdda68
+- doc: Update CHANGELOG.md for v1.3.9 by @LNDS-Sysadmins in 7851010
+
+
+### Fixed
+- fix: show correct count value when multiple datasets share the same identifier by @kburger in df7a8da
+- fix typo by @jadzlnds in cd833d8
+- fix typo by @jadzlnds in 5085ad7
+- fix typo by @jadzlnds in 64f16dc
+- fix typo by @jadzlnds in 1dbc70b
+
+
 ## [v1.3.9] - 2025-04-07
 
 ### Added

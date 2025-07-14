@@ -354,6 +354,65 @@ components:
           type: array
           items:
             type: string
+        homepage:
+          type: string
+        uri:
+          type: string
+        documentation:
+          type: array
+          items:
+            type: string
+        frequency:
+          type: string
+        in_series:
+          type: array
+          items:
+            type: string
+        is_referenced_by:
+          type: array
+          items:
+            type: string
+        quality_annotation:
+          type: array
+          items:
+            type: object
+            properties:
+              body:
+                type: string
+              motivated_by:
+                type: string
+              target:
+                type: string
+        provenance_activity:
+          type: array
+          items:
+            type: object
+            properties:
+              dct_type:
+                type: string
+              label:
+                type: string
+              seeAlso:
+                type: string
+              startedAtTime:
+                type: string
+              uri:
+                type: string
+              wasAssociatedWith:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanAgent"
+        qualified_attribution:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+              agent:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanAgent"
       required:
         - id
         - title
@@ -442,6 +501,47 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CkanValueLabel"
+        retention_period:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanTimeWindow"
+        access_services:
+          type: array
+          items:
+            type: object
+            properties:
+              uri:
+                type: string
+              title:
+                type: string
+              endpoint_description:
+                type: string
+              endpoint_url:
+                type: array
+                items:
+                  type: string
+              serves_dataset:
+                type: array
+                items:
+                  type: string
+              access_rights:
+                type: string
+              conforms_to:
+                type: string
+              format:
+                type: string
+              identifier:
+                type: string
+              language:
+                type: string
+              rights:
+                type: string
+              landing_page:
+                type: string
+              keyword:
+                type: array
+                items:
+                  type: string
       required:
         - id
         - name
@@ -521,4 +621,3 @@ components:
         centroid:
           type: string
           description: Centroid
-

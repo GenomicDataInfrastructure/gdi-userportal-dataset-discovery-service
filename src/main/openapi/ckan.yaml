@@ -364,6 +364,7 @@ components:
           type: array
           items:
             type: string
+            format: uri
         frequency:
           type: string
         in_series:

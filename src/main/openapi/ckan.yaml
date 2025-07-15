@@ -527,6 +527,7 @@ components:
                 type: array
                 items:
                   type: string
+                  format: uri
               serves_dataset:
                 type: array
                 items:

@@ -394,6 +394,11 @@ components:
           type: array
           items:
             type: object
+            required:
+              - dct_type
+              - label
+              - uri
+              - startedAtTime
             properties:
               dct_type:
                 type: string

@@ -356,8 +356,10 @@ components:
             type: string
         homepage:
           type: string
+          format: uri
         uri:
           type: string
+          format: uri
         documentation:
           type: array
           items:

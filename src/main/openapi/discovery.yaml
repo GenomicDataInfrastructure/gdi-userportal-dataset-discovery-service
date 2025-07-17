@@ -553,6 +553,77 @@ components:
           type: array
           items:
             type: string
+        homepage:
+          type: string
+          format: uri
+        uri:
+          type: string
+          format: uri
+        documentation:
+          type: array
+          items:
+            type: string
+            format: uri
+        frequency:
+          type: string
+        inSeries:
+          type: array
+          items:
+            type: string
+        isReferencedBy:
+          type: array
+          items:
+            type: string
+        provenanceActivity:
+          type: array
+          items:
+            type: object
+            required:
+              - dct_type
+              - label
+              - uri
+              - startedAtTime
+            properties:
+              dct_type:
+                type: string
+              label:
+                type: string
+              seeAlso:
+                type: string
+              startedAtTime:
+                type: string
+              uri:
+                type: string
+              wasAssociatedWith:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Agent"
+        qualityAnnotation:
+          type: array
+          items:
+            type: object
+            required:
+              - body
+              - motivated_by
+              - target
+            properties:
+              body:
+                type: string
+              motivated_by:
+                type: string
+              target:
+                type: string
+        qualifiedAttribution:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+              agent:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Agent"
       required:
         - id
         - title
@@ -560,39 +631,166 @@ components:
     RetrievedDistribution:
       type: object
       properties:
-        id:
-          type: string
-          title: Distribution internal ID
-        title:
-          type: string
-          title: Title
-        description:
-          type: string
-          title: Description
-        format:
-          $ref: "#/components/schemas/ValueLabel"
         accessUrl:
           type: string
           title: Access URL
+          format: uri
+        applicableLegislation:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValueLabel"
+        byteSize:
+          type: integer
+        checksum:
+          type: string
+        checksumAlgorithm:
+          type: string
+        compressionFormat:
+          $ref: "#/components/schemas/ValueLabel"
+        description:
+          type: string
+          title: Description
+        documentation:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValueLabel"
         downloadUrl:
           type: string
           title: Download URL
-        createdAt:
-          type: string
-          format: date-time
-          title: Distribution created at
-        modifiedAt:
-          type: string
-          format: date-time
-          title: Distribution modified at
+          format: uri
+        format:
+          $ref: "#/components/schemas/ValueLabel"
         languages:
           type: array
           items:
             $ref: "#/components/schemas/ValueLabel"
+        license:
+          $ref: "#/components/schemas/ValueLabel"
+        conformsTo:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValueLabel"
+        mediaType:
+          type: string
+        modifiedAt:
+          type: string
+          format: date-time
+          title: Distribution modified at
+        packagingFormat:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+          title: Distribution created at
+        retentionPeriod:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeWindow"
+        rights:
+          type: string
+        status:
+          type: string
+        temporalResolution:
+          type: string
+        title:
+          type: string
+          title: Title
+        availability:
+          type: string
+        id:
+          type: string
+          title: Distribution internal ID
+        spatialResolutionInMeters:
+          type: number
+          format: float
+        uri:
+          type: string
+        accessService:
+          type: array
+          title: Access service
+          items:
+            type: object
+            properties:
+              accessRights:
+                $ref: "#/components/schemas/ValueLabel"
+              applicableLegislation:
+                type: array
+                items:
+                  type: string
+              conformsTo:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValueLabel"
+              contact:
+                $ref: "#/components/schemas/ContactPoint"
+              creator:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Agent"
+              rights:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValueLabel"
+              description:
+                type: string
+              endpointDescription:
+                type: string
+              endpoint_url:
+                type: array
+                items:
+                  type: string
+                  format: uri
+              format:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValueLabel"
+              id:
+                type: string
+                title: Data service internal ID
+              keywords:
+                type: array
+                items:
+                  type: string
+              landingPage:
+                type: array
+                items:
+                  type: string
+              languages:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValueLabel"
+              license:
+                type: string
+                format: uri
+              modified:
+                type: string
+                format: date-time
+              publisher:
+                $ref: "#/components/schemas/Agent"
+              servesDataset:
+                type: array
+                items:
+                  type: string
+              theme:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValueLabel"
+              uri:
+                type: string
+                format: uri
+              title:
+                type: string
+            required:
+              - id
+              - title
+              - description
+
       required:
         - id
         - title
         - description
+
+
     ValueLabel:
       properties:
         value:
@@ -840,3 +1038,36 @@ components:
           type: number
         alleleFrequency:
           type: number
+
+    QualifiedAttribution:
+      type: object
+      properties:
+        role:
+          type: string
+        agent:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"
+
+    ProvenanceActivity:
+      type: object
+      required:
+        - dct_type
+        - label
+        - uri
+        - startedAtTime
+      properties:
+        dct_type:
+          type: string
+        label:
+          type: string
+        seeAlso:
+          type: string
+        startedAtTime:
+          type: string
+        uri:
+          type: string
+        wasAssociatedWith:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"

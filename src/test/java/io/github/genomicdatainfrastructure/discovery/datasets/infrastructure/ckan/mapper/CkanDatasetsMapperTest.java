@@ -51,6 +51,9 @@ class CkanDatasetsMapperTest {
                     .retentionPeriod(List.of())
                     .spatialCoverage(List.of())
                     .temporalCoverage(List.of())
+                    .provenanceActivity(List.of())
+                    .qualifiedAttribution(List.of())
+                    .qualityAnnotation(List.of())
                     .build();
 
             assertThat(actual)
@@ -162,6 +165,11 @@ class CkanDatasetsMapperTest {
                                                     .value("en")
                                                     .label("language")
                                                     .build()))
+                                    .accessService(List.of())
+                                    .applicableLegislation(List.of())
+                                    .conformsTo(List.of())
+                                    .documentation(List.of())
+                                    .retentionPeriod(List.of())
                                     .build()))
                     .contacts(List.of(
                             ContactPoint.builder()
@@ -249,6 +257,9 @@ class CkanDatasetsMapperTest {
                                     .end(parse("2024-07-02T22:00:00+00:00"))
                                     .build()))
                     .temporalResolution("P1D")
+                    .provenanceActivity(List.of())
+                    .qualifiedAttribution(List.of())
+                    .qualityAnnotation(List.of())
                     .build();
 
             assertThat(actual)

@@ -13,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -154,8 +155,8 @@ class CkanDatasetsMapperTest {
                                             .value("pdf")
                                             .label("format")
                                             .build())
-                                    .accessUrl("accessUrl")
-                                    .downloadUrl("downloadUrl")
+                                    .accessUrl(URI.create("https://accessUrl.com"))
+                                    .downloadUrl(URI.create("https://downloadUrl.com"))
                                     .languages(List.of(
                                             ValueLabel.builder()
                                                     .value("en")
@@ -474,8 +475,8 @@ class CkanDatasetsMapperTest {
                         .name("resource_name")
                         .description("resource_description")
                         .format(getCkanValueLabel("format", "pdf"))
-                        .accessUrl("accessUrl")
-                        .downloadUrl("downloadUrl")
+                        .accessUrl(URI.create("https://accessUrl.com"))
+                        .downloadUrl(URI.create("https://downloadUrl.com"))
                         .issuedDate("2025-03-19")
                         .modifiedDate("2025-03-19T13:37:05Z")
                         .language(getValueLabels("language", "en"))

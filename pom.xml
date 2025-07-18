@@ -21,7 +21,7 @@
         <quarkus.platform.version>3.24.3</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire.version>3.5.3</surefire.version>
-        <quarkus-wiremock.version>1.5.0</quarkus-wiremock.version>
+        <quarkus-wiremock.version>1.5.1</quarkus-wiremock.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <mapstruct.version>1.6.3</mapstruct.version>
     </properties>

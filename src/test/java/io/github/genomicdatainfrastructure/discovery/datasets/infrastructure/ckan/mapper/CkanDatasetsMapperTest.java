@@ -13,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -50,6 +51,9 @@ class CkanDatasetsMapperTest {
                     .retentionPeriod(List.of())
                     .spatialCoverage(List.of())
                     .temporalCoverage(List.of())
+                    .provenanceActivity(List.of())
+                    .qualifiedAttribution(List.of())
+                    .qualityAnnotation(List.of())
                     .build();
 
             assertThat(actual)
@@ -154,13 +158,18 @@ class CkanDatasetsMapperTest {
                                             .value("pdf")
                                             .label("format")
                                             .build())
-                                    .accessUrl("accessUrl")
-                                    .downloadUrl("downloadUrl")
+                                    .accessUrl(URI.create("https://accessUrl.com"))
+                                    .downloadUrl(URI.create("https://downloadUrl.com"))
                                     .languages(List.of(
                                             ValueLabel.builder()
                                                     .value("en")
                                                     .label("language")
                                                     .build()))
+                                    .accessService(List.of())
+                                    .applicableLegislation(List.of())
+                                    .conformsTo(List.of())
+                                    .documentation(List.of())
+                                    .retentionPeriod(List.of())
                                     .build()))
                     .contacts(List.of(
                             ContactPoint.builder()
@@ -248,6 +257,9 @@ class CkanDatasetsMapperTest {
                                     .end(parse("2024-07-02T22:00:00+00:00"))
                                     .build()))
                     .temporalResolution("P1D")
+                    .provenanceActivity(List.of())
+                    .qualifiedAttribution(List.of())
+                    .qualityAnnotation(List.of())
                     .build();
 
             assertThat(actual)
@@ -474,8 +486,8 @@ class CkanDatasetsMapperTest {
                         .name("resource_name")
                         .description("resource_description")
                         .format(getCkanValueLabel("format", "pdf"))
-                        .accessUrl("accessUrl")
-                        .downloadUrl("downloadUrl")
+                        .accessUrl(URI.create("https://accessUrl.com"))
+                        .downloadUrl(URI.create("https://downloadUrl.com"))
                         .issuedDate("2025-03-19")
                         .modifiedDate("2025-03-19T13:37:05Z")
                         .language(getValueLabels("language", "en"))

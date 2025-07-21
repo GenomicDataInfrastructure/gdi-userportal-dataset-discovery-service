@@ -354,6 +354,77 @@ components:
           type: array
           items:
             type: string
+        homepage:
+          type: string
+          format: uri
+        uri:
+          type: string
+          format: uri
+        documentation:
+          type: array
+          items:
+            type: string
+            format: uri
+        frequency:
+          type: string
+        in_series:
+          type: array
+          items:
+            type: string
+        is_referenced_by:
+          type: array
+          items:
+            type: string
+        quality_annotation:
+          type: array
+          items:
+            type: object
+            properties:
+              body:
+                type: string
+              motivated_by:
+                type: string
+              target:
+                type: string
+            required:
+              - body
+              - motivated_by
+              - target
+        provenance_activity:
+          type: array
+          items:
+            type: object
+            required:
+              - dct_type
+              - label
+              - uri
+              - startedAtTime
+            properties:
+              dct_type:
+                type: string
+              label:
+                type: string
+              seeAlso:
+                type: string
+              startedAtTime:
+                type: string
+              uri:
+                type: string
+              wasAssociatedWith:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanAgent"
+        qualified_attribution:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+              agent:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanAgent"
       required:
         - id
         - title
@@ -420,28 +491,143 @@ components:
     CkanResource:
       type: object
       properties:
-        id:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        format:
-          $ref: "#/components/schemas/CkanValueLabel"
-        uri:
-          type: string
         access_url:
           type: string
+          format: uri
+        applicable_legislation:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanValueLabel"
+        size:
+          type: integer
+        hash:
+          type: string
+        hash_algorithm:
+          type: string
+        compress_format:
+          $ref: "#/components/schemas/CkanValueLabel"
+        description:
+          type: string
+        documentation:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanValueLabel"
         download_url:
           type: string
-        issued_date:
-          type: string
-        modified_date:
-          type: string
+          format: uri
+        format:
+          $ref: "#/components/schemas/CkanValueLabel"
         language:
           type: array
           items:
             $ref: "#/components/schemas/CkanValueLabel"
+        license:
+          $ref: "#/components/schemas/CkanValueLabel"
+        conforms_to:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanValueLabel"
+        mimetype:
+          type: string
+        modified_date:
+          type: string
+        package_format:
+          type: string
+        issued_date:
+          type: string
+        retention_period:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanTimeWindow"
+        rights:
+          type: string
+        status:
+          type: string
+        temporal_resolution:
+          type: string
+        name:
+          type: string
+        availability:
+          type: string
+        id:
+          type: string
+        spatial_resolution_in_meters:
+          type: number
+          format: float
+        uri:
+          type: string
+        access_services:
+          type: array
+          items:
+            type: object
+            properties:
+              access_rights:
+                $ref: "#/components/schemas/CkanValueLabel"
+              applicable_legislation:
+                type: array
+                items:
+                  type: string
+              conforms_to:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanValueLabel"
+              contact:
+                $ref: "#/components/schemas/CkanContactPoint"
+              creator:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanAgent"
+              rights:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanValueLabel"
+              description:
+                type: string
+              endpoint_description:
+                type: string
+              endpoint_url:
+                type: array
+                items:
+                  type: string
+                  format: uri
+              format:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanValueLabel"
+              identifier:
+                type: string
+              keyword:
+                type: array
+                items:
+                  type: string
+              landing_page:
+                type: array
+                items:
+                  type: string
+              language:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanValueLabel"
+              licence:
+                type: string
+                format: uri
+              modified:
+                type: string
+              publisher:
+                $ref: "#/components/schemas/CkanAgent"
+              serves_dataset:
+                type: array
+                items:
+                  type: string
+              theme:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanValueLabel"
+              uri:
+                type: string
+                format: uri
+              title:
+                type: string
       required:
         - id
         - name
@@ -521,4 +707,3 @@ components:
         centroid:
           type: string
           description: Centroid
-

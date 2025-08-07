@@ -524,7 +524,9 @@ components:
           items:
             $ref: "#/components/schemas/CkanValueLabel"
         license:
-          $ref: "#/components/schemas/CkanValueLabel"
+          #$ref: "#/components/schemas/CkanValueLabel"
+          type: string
+          format: uri
         conforms_to:
           type: array
           items:

@@ -115,7 +115,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "id", source = "identifier")
     @Mapping(target = "keywords", source = "keyword")
     @Mapping(target = "languages", source = "language")
-    @Mapping(target = "license", source = "licence")
+    @Mapping(target = "license", source = "license")
     @Mapping(target = "accessRights", source = "accessRights")
     @Mapping(target = "applicableLegislation", source = "applicableLegislation")
     @Mapping(target = "conformsTo", source = "conformsTo")

@@ -667,9 +667,7 @@ components:
           items:
             $ref: "#/components/schemas/ValueLabel"
         license:
-          #$ref: "#/components/schemas/ValueLabel"
           type: string
-          format: uri
         conformsTo:
           type: array
           items:
@@ -766,7 +764,6 @@ components:
                   $ref: "#/components/schemas/ValueLabel"
               license:
                 type: string
-                format: uri
               modified:
                 type: string
                 format: date-time

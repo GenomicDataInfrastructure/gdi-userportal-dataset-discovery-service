@@ -12,6 +12,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.11] - 2025-09-02
+
+### Added
+- feat(missing fields) Add missing fields to OpenAPI specs (#212) by @Hans-Christian in a1f544a
+
+
+### Changed
+- chore(deps): update actions/checkout action to v5 by @Renovate Bot in f609eab
+- chore(deps): update quarkus.platform.version to v3.26.1 by @Renovate Bot in d06d190
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.6-1755695350 by @Renovate Bot in a7d1a64
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.6-1754584681 by @Renovate Bot in c113bb3
+- chore(deps): update dependency org.assertj:assertj-core to v3.27.4 by @Renovate Bot in a92a7f9
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.6-1754456323 by @Renovate Bot in d292386
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.6-1754356396 by @Renovate Bot in 9319eed
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.6-1754000177 by @Renovate Bot in e569949
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.6-1753762263 by @Renovate Bot in 07e9bab
+- chore(deps): update quarkus.platform.version to v3.24.5 by @Renovate Bot in 561b8d7
+- chore(deps): update quarkus.platform.version to v3.24.4 by @Renovate Bot in 0295354
+- chore(deps): update quarkus-wiremock.version to v1.5.1 by @Renovate Bot in a7412ed
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.6-1752587672 by @Renovate Bot in 6d0e7c8
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.6-1752069876 by @Renovate Bot in 8125b5b
+- chore(deps): update quarkus.platform.version to v3.24.3 by @Renovate Bot in a25b45b
+- doc: update CHANGELOG.md for v1.3.10 by @LNDS-Sysadmins in 0fd0fa3
+
+
+### Fixed
+- fix(deps): update quarkus-openapi-generator.version to v2.12.0-lts by @Renovate Bot in 2533e49
+- fix(license) Make it a string instead of URI by @Hans-christian in 8577234
+- fix: add workaround for the license field type assumption by @kburger in 85488da
+- fix: typo in field name and field types by @kburger in 097bb25
+- fix(deps): update quarkus-openapi-generator.version to v2.11.0-lts by @Renovate Bot in 52eaac8
+
+
 ## [v1.3.10] - 2025-07-08
 
 ### Changed

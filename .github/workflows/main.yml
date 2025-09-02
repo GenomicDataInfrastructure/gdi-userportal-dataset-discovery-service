@@ -24,7 +24,7 @@ jobs:
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oss-review-toolkit/ort-ci-github-action@v1
         with:
           allow-dynamic-versions: "true"
@@ -51,7 +51,7 @@ jobs:
           java-version: "21"
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set BUILD_DATE
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV

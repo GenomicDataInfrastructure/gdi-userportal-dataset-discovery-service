@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oss-review-toolkit/ort-ci-github-action@v1
         with:
           allow-dynamic-versions: "true"
@@ -39,7 +39,7 @@ jobs:
       new_tag: ${{ steps.tagging.outputs.new_tag }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -79,7 +79,7 @@ jobs:
     needs: versioning
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install GitHub CLI
         run: sudo apt-get install -y gh
@@ -118,7 +118,7 @@ jobs:
           java-version: "21"
 
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set BUILD_DATE
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV

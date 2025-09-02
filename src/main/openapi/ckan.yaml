@@ -305,6 +305,7 @@ components:
           type: array
           items:
             type: string
+            format: uri
         health_theme:
           type: array
           items:
@@ -497,7 +498,8 @@ components:
         applicable_legislation:
           type: array
           items:
-            $ref: "#/components/schemas/CkanValueLabel"
+            type: string
+            format: uri
         size:
           type: integer
         hash:
@@ -522,7 +524,7 @@ components:
           items:
             $ref: "#/components/schemas/CkanValueLabel"
         license:
-          $ref: "#/components/schemas/CkanValueLabel"
+          type: string
         conforms_to:
           type: array
           items:
@@ -567,6 +569,7 @@ components:
                 type: array
                 items:
                   type: string
+                  format: uri
               conforms_to:
                 type: array
                 items:
@@ -608,9 +611,8 @@ components:
                 type: array
                 items:
                   $ref: "#/components/schemas/CkanValueLabel"
-              licence:
+              license:
                 type: string
-                format: uri
               modified:
                 type: string
               publisher:

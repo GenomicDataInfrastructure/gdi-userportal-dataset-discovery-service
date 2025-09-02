@@ -504,6 +504,7 @@ components:
           type: array
           items:
             type: string
+            format: uri
         healthTheme:
           type: array
           items:
@@ -638,7 +639,8 @@ components:
         applicableLegislation:
           type: array
           items:
-            $ref: "#/components/schemas/ValueLabel"
+            type: string
+            format: uri
         byteSize:
           type: integer
         checksum:
@@ -665,7 +667,7 @@ components:
           items:
             $ref: "#/components/schemas/ValueLabel"
         license:
-          $ref: "#/components/schemas/ValueLabel"
+          type: string
         conformsTo:
           type: array
           items:
@@ -717,6 +719,7 @@ components:
                 type: array
                 items:
                   type: string
+                  format: uri
               conformsTo:
                 type: array
                 items:
@@ -761,7 +764,6 @@ components:
                   $ref: "#/components/schemas/ValueLabel"
               license:
                 type: string
-                format: uri
               modified:
                 type: string
                 format: date-time

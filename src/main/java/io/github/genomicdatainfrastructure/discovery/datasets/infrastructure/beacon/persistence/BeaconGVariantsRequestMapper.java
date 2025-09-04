@@ -6,6 +6,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.be
 
 import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.model.*;
+import java.util.Objects;
 import org.mapstruct.ap.shaded.freemarker.template.utility.CollectionUtils;
 
 import java.util.Collections;
@@ -45,6 +46,7 @@ public class BeaconGVariantsRequestMapper {
                 .map(BeaconResponseContent::getResultSets)
                 .map(resultSets -> resultSets.stream()
                         .map(BeaconGVariantsRequestMapper::mapResultSetToVariant)
+                        .filter(Objects::nonNull)
                         .toList())
                 .orElse(Collections.emptyList());
     }

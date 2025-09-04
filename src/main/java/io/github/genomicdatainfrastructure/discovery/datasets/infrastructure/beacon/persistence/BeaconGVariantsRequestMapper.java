@@ -50,7 +50,7 @@ public class BeaconGVariantsRequestMapper {
     }
 
     private static GVariantsSearchResponse mapResultSetToVariant(BeaconResultSet resultSet) {
-        if (resultSet == null) {
+        if (resultSet == null || resultSet.getResults() == null) {
             return null;
         }
         GVariantsSearchResponse variant = new GVariantsSearchResponse();

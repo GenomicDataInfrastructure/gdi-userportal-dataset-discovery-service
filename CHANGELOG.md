@@ -12,6 +12,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.12] - 2025-09-04
+
+### Changed
+- chore(deps): update aquasecurity/trivy-action action to v0.33.1 by @Renovate Bot in 684a8b6
+- chore(deps): update quarkus.platform.version to v3.26.2 by @Renovate Bot in 498b467
+- doc: update CHANGELOG.md for v1.3.11 by @LNDS-Sysadmins in 84fcf6b
+
+
+### Fixed
+- fix: avoid nullpointer when gvariants return empty results by @Bruno Pacheco in 950d88a
+- fix(deps): update quarkus-openapi-generator.version to v2.12.1-lts by @Renovate Bot in 6c7e893
+
+
 ## [v1.3.11] - 2025-09-02
 
 ### Added

@@ -714,7 +714,8 @@ components:
             type: object
             properties:
               accessRights:
-                $ref: "#/components/schemas/ValueLabel"
+                type: string
+                format: uri
               applicableLegislation:
                 type: array
                 items:
@@ -723,7 +724,8 @@ components:
               conformsTo:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ValueLabel"
+                  type: string
+                  format: uri
               contact:
                 $ref: "#/components/schemas/ContactPoint"
               creator:
@@ -733,7 +735,7 @@ components:
               rights:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ValueLabel"
+                  type: string
               description:
                 type: string
               endpointDescription:
@@ -746,7 +748,8 @@ components:
               format:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ValueLabel"
+                  type: string
+                  format: uri
               id:
                 type: string
                 title: Data service internal ID
@@ -761,7 +764,8 @@ components:
               languages:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ValueLabel"
+                  type: string
+                  format: uri
               license:
                 type: string
               modified:
@@ -776,7 +780,8 @@ components:
               theme:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ValueLabel"
+                  type: string
+                  format: uri
               uri:
                 type: string
                 format: uri

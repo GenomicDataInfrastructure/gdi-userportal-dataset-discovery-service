@@ -564,7 +564,8 @@ components:
             type: object
             properties:
               access_rights:
-                $ref: "#/components/schemas/CkanValueLabel"
+                type: string
+                format: uri
               applicable_legislation:
                 type: array
                 items:
@@ -573,7 +574,8 @@ components:
               conforms_to:
                 type: array
                 items:
-                  $ref: "#/components/schemas/CkanValueLabel"
+                  type: string
+                  format: uri
               contact:
                 $ref: "#/components/schemas/CkanContactPoint"
               creator:
@@ -583,7 +585,7 @@ components:
               rights:
                 type: array
                 items:
-                  $ref: "#/components/schemas/CkanValueLabel"
+                  type: string
               description:
                 type: string
               endpoint_description:
@@ -596,7 +598,8 @@ components:
               format:
                 type: array
                 items:
-                  $ref: "#/components/schemas/CkanValueLabel"
+                  type: string
+                  format: uri
               identifier:
                 type: string
               keyword:
@@ -610,7 +613,8 @@ components:
               language:
                 type: array
                 items:
-                  $ref: "#/components/schemas/CkanValueLabel"
+                  type: string
+                  format: uri
               license:
                 type: string
               modified:
@@ -624,7 +628,8 @@ components:
               theme:
                 type: array
                 items:
-                  $ref: "#/components/schemas/CkanValueLabel"
+                  type: string
+                  format: uri
               uri:
                 type: string
                 format: uri

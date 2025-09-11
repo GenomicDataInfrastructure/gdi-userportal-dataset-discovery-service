@@ -5,6 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan;
 
 import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
+import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus.DatasetsConfig;
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
@@ -13,7 +14,6 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFacet
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackageSearchRequest;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesSearchResult;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
@@ -32,12 +32,12 @@ public class CkanFilterBuilder implements FilterBuilder {
 
     public CkanFilterBuilder(
             @RestClient CkanQueryApi ckanQueryApi,
-            @ConfigProperty(name = "datasets.filters") String datasetFiltersAsString
+            DatasetsConfig datasetsConfig
     ) {
         this.ckanQueryApi = ckanQueryApi;
         this.selectedFacets = SELECTED_FACETS_PATTERN.formatted(String.join(
                 "\",\"",
-                datasetFiltersAsString.split(",")
+                datasetsConfig.filters().split(",")
         ));
     }
 

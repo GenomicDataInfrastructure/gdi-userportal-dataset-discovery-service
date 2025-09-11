@@ -12,6 +12,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.14] - 2025-09-10
+
+### Changed
+- chore(deps): update quarkus.platform.version to v3.26.3 by @Renovate Bot in 627064f
+- doc: update CHANGELOG.md for v1.3.13 by @LNDS-Sysadmins in fde2770
+
+
+### Fixed
+- fix(openapi): avoid complex objects in access service (unsupported for now) by @Hans-christian in 0f18b4e
+- fix(deps): update dependency org.projectlombok:lombok to v1.18.40 by @Renovate Bot in 8f76758
+
+
 ## [v1.3.13] - 2025-09-04
 
 ### Changed

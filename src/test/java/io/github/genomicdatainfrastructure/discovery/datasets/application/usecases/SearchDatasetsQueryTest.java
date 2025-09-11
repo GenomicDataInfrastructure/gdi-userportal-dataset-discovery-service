@@ -77,7 +77,7 @@ class SearchDatasetsQueryTest {
 
         var response = underTest.execute(query, accessToken);
 
-        assertEquals(2, response.getCount());
+        assertEquals(1, response.getCount());
         assertEquals("id1", response.getResults().getFirst().getIdentifier());
         assertEquals(10, response.getResults().getFirst().getRecordsCount());
 

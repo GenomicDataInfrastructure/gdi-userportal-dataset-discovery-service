@@ -12,6 +12,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.15] - 2025-09-11
+
+### Added
+- feat: group filters by key by @Bruno Pacheco in 4867717
+
+
+### Changed
+- doc: update CHANGELOG.md for v1.3.14 by @LNDS-Sysadmins in 5343371
+
+
+### Fixed
+- fix(test): adjust test to reflect changes in count logic by @kburger in 85aab27
+- fix(count) Fix paging by @Hans-christian in ceae146
+
+
 ## [v1.3.14] - 2025-09-10
 
 ### Changed

@@ -52,7 +52,7 @@ public class SearchDatasetsQuery {
 
         return DatasetsSearchResponse
                 .builder()
-                .count(enhancedDatasets.size())
+                .count(datasetIdsByRecordCount.size())
                 .results(enhancedDatasets)
                 .build();
     }

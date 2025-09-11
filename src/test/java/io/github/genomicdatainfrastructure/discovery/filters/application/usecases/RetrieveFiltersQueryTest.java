@@ -5,10 +5,16 @@
 package io.github.genomicdatainfrastructure.discovery.filters.application.usecases;
 
 import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
+import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus.DatasetsConfig;
+import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus.DatasetsConfig.FilterGroup;
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import jakarta.enterprise.inject.Instance;
+import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,12 +40,16 @@ class RetrieveFiltersQueryTest {
     @Mock
     private FilterBuilder filterBuilderBeacon;
 
+    @Mock
+    private DatasetsConfig datasetsConfig;
+
     @InjectMocks
     private RetrieveFiltersQuery query;
 
     @BeforeEach
     public void setUp() {
         when(filterBuilders.stream()).thenReturn(Stream.of(filterBuilderCkan, filterBuilderBeacon));
+        when(datasetsConfig.noGroupKey()).thenReturn("NO_GROUP");
     }
 
     @Test
@@ -73,27 +83,34 @@ class RetrieveFiltersQueryTest {
                         .build());
         when(filterBuilderBeacon.build(anyString())).thenReturn(mockBeaconFilters);
 
-        var filters = query.execute("token");
+        var actual = query.execute("token");
 
-        Assertions.assertThat(filters).isNotNull();
-        Assertions.assertThat(filters).hasSize(2);
-
-        Assertions.assertThat(filters.get(0))
-                .extracting("source", "type", "key", "label")
-                .containsExactly("ckan", FilterType.DROPDOWN, "tags", "tags");
-
-        Assertions.assertThat(filters.get(0).getValues().get(0))
-                .extracting("label", "value")
-                .containsExactly("genomics", "5");
-
-        Assertions.assertThat(filters.get(1))
-                .extracting("source", "type", "key", "label")
-                .containsExactly("beacon", FilterType.DROPDOWN, "Human Phenotype Ontology",
-                        "ontology");
-
-        Assertions.assertThat(filters.get(1).getValues().get(0))
-                .extracting("label", "value")
-                .containsExactly("Motor delay", "3");
+        Assertions.assertThat(actual)
+                .containsExactlyInAnyOrder(Filter.builder()
+                        .source("beacon")
+                        .group("NO_GROUP")
+                        .type(FilterType.DROPDOWN)
+                        .key("Human Phenotype Ontology")
+                        .label("ontology")
+                        .values(
+                                List.of(ValueLabel.builder()
+                                        .label("Motor delay")
+                                        .value("3")
+                                        .build()))
+                        .build(),
+                        Filter.builder()
+                                .source("ckan")
+                                .group("NO_GROUP")
+                                .type(FilterType.DROPDOWN)
+                                .key("tags")
+                                .label("tags")
+                                .values(
+                                        List.of(ValueLabel.builder()
+                                                .label("genomics")
+                                                .value("5")
+                                                .build()))
+                                .build()
+                );
     }
 
     @Test
@@ -115,17 +132,105 @@ class RetrieveFiltersQueryTest {
 
         when(filterBuilderBeacon.build(anyString())).thenReturn(null);
 
-        var filters = query.execute("token");
+        var actual = query.execute("token");
 
-        Assertions.assertThat(filters).isNotNull();
-        Assertions.assertThat(filters).hasSize(1);
+        Assertions.assertThat(actual)
+                .containsExactly(Filter.builder()
+                        .group("NO_GROUP")
+                        .key("tags")
+                        .type(FilterType.DROPDOWN)
+                        .label("tags")
+                        .source("ckan")
+                        .values(
+                                List.of(ValueLabel.builder()
+                                        .label("genomics")
+                                        .value("5")
+                                        .build()))
+                        .build());
+    }
 
-        Assertions.assertThat(filters.get(0))
-                .extracting("source", "type", "key", "label")
-                .containsExactly("ckan", FilterType.DROPDOWN, "tags", "tags");
+    @Test
+    void shouldGroupFilters() {
+        when(datasetsConfig.filterGroups()).thenReturn(List.of(
+                new MockFilterGroup("CKAN_GROUP", Set.of("tags")),
+                new MockFilterGroup("BEACON_GROUP", Set.of("Human Phenotype Ontology"))
+        ));
+        when(datasetsConfig.noGroupKey()).thenReturn("DUMMY");
 
-        Assertions.assertThat(filters.get(0).getValues().get(0))
-                .extracting("label", "value")
-                .containsExactly("genomics", "5");
+        var mockCkanFilters = List.of(
+                Filter.builder()
+                        .source("ckan")
+                        .type(FilterType.DROPDOWN)
+                        .key("tags")
+                        .label("tags")
+                        .values(
+                                List.of(ValueLabel.builder()
+                                        .label("genomics")
+                                        .value("5")
+                                        .build()))
+                        .build());
+
+        when(filterBuilderCkan.build(anyString())).thenReturn(mockCkanFilters);
+
+        var mockBeaconFilters = List.of(
+                Filter.builder()
+                        .source("beacon")
+                        .type(FilterType.DROPDOWN)
+                        .key("Human Phenotype Ontology")
+                        .label("ontology")
+                        .values(
+                                List.of(ValueLabel.builder()
+                                        .label("Motor delay")
+                                        .value("3")
+                                        .build()))
+                        .build());
+        when(filterBuilderBeacon.build(anyString())).thenReturn(mockBeaconFilters);
+
+        var actual = query.execute("token");
+
+        Assertions.assertThat(actual)
+                .containsExactlyInAnyOrder(Filter.builder()
+                        .source("beacon")
+                        .group("BEACON_GROUP")
+                        .type(FilterType.DROPDOWN)
+                        .key("Human Phenotype Ontology")
+                        .label("ontology")
+                        .values(
+                                List.of(ValueLabel.builder()
+                                        .label("Motor delay")
+                                        .value("3")
+                                        .build()))
+                        .build(),
+                        Filter.builder()
+                                .source("ckan")
+                                .group("CKAN_GROUP")
+                                .type(FilterType.DROPDOWN)
+                                .key("tags")
+                                .label("tags")
+                                .values(
+                                        List.of(ValueLabel.builder()
+                                                .label("genomics")
+                                                .value("5")
+                                                .build()))
+                                .build()
+                );
+    }
+
+    @Data
+    @AllArgsConstructor
+    class MockFilterGroup implements FilterGroup {
+
+        private String key;
+        private Set<String> filters;
+
+        @Override
+        public String key() {
+            return key;
+        }
+
+        @Override
+        public Set<String> filters() {
+            return filters;
+        }
     }
 }

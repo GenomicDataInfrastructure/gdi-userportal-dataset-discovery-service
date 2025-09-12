@@ -494,6 +494,8 @@ class CkanDatasetsMapperTest {
                         .issuedDate("2025-03-19")
                         .modifiedDate("2025-03-19T13:37:05Z")
                         .language(getValueLabels("language", "en"))
+                        .conformsTo(List.of())
+                        .documentation(List.of())
                         .build());
     }
 

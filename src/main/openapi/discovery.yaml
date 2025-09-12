@@ -655,7 +655,8 @@ components:
         documentation:
           type: array
           items:
-            $ref: "#/components/schemas/ValueLabel"
+            type: string
+            format: uri
         downloadUrl:
           type: string
           title: Download URL
@@ -671,7 +672,7 @@ components:
         conformsTo:
           type: array
           items:
-            $ref: "#/components/schemas/ValueLabel"
+            type: string
         mediaType:
           type: string
         modifiedAt:
@@ -727,7 +728,9 @@ components:
                   type: string
                   format: uri
               contact:
-                $ref: "#/components/schemas/ContactPoint"
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContactPoint"
               creator:
                 type: array
                 items:
@@ -772,7 +775,9 @@ components:
                 type: string
                 format: date-time
               publisher:
-                $ref: "#/components/schemas/Agent"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Agent"
               servesDataset:
                 type: array
                 items:

@@ -513,7 +513,8 @@ components:
         documentation:
           type: array
           items:
-            $ref: "#/components/schemas/CkanValueLabel"
+            type: string
+            format: uri
         download_url:
           type: string
           format: uri
@@ -528,7 +529,7 @@ components:
         conforms_to:
           type: array
           items:
-            $ref: "#/components/schemas/CkanValueLabel"
+            type: string
         mimetype:
           type: string
         modified_date:
@@ -577,7 +578,9 @@ components:
                   type: string
                   format: uri
               contact:
-                $ref: "#/components/schemas/CkanContactPoint"
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanContactPoint"
               creator:
                 type: array
                 items:
@@ -620,7 +623,9 @@ components:
               modified:
                 type: string
               publisher:
-                $ref: "#/components/schemas/CkanAgent"
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanAgent"
               serves_dataset:
                 type: array
                 items:

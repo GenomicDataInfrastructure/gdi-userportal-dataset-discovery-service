@@ -12,6 +12,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.16] - 2025-09-12
+
+### Changed
+- chore(deps): update dependency net.revelc.code.formatter:formatter-maven-plugin to v2.29.0 by @Renovate Bot in e0625f7
+- doc: update CHANGELOG.md for v1.3.15 by @LNDS-Sysadmins in 1f4f1da
+- chore(deps): update dependency net.revelc.code.formatter:formatter-maven-plugin to v2.28.0 by @Renovate Bot in 2248b26
+
+
+### Fixed
+- fix: UT for conformsTO and documentation by @Hans-christian in 983ccea
+- fix: openapi file for arrays by @Hans-christian in b3dbfe2
+
+
 ## [v1.3.15] - 2025-09-11
 
 ### Added

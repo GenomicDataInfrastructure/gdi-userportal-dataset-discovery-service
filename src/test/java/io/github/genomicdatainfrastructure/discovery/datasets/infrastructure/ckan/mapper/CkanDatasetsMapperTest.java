@@ -53,6 +53,7 @@ class CkanDatasetsMapperTest {
                     .provenanceActivity(List.of())
                     .qualifiedAttribution(List.of())
                     .qualityAnnotation(List.of())
+                    .temporalCoverage(TimeWindow.builder().build())
                     .build();
 
             assertThat(actual)
@@ -254,8 +255,8 @@ class CkanDatasetsMapperTest {
                     .spatialResolutionInMeters(10.0f)
                     .temporalCoverage(
                             TimeWindow.builder()
-                                    .start(parse("2024-07-01T22:00:00+00:00"))
-                                    .end(parse("2024-07-02T22:00:00+00:00"))
+                                    .start(parse("2024-07-12T22:00:00+00:00"))
+                                    .end(parse("2024-07-13T22:00:00+00:00"))
                                     .build())
                     .temporalResolution("P1D")
                     .provenanceActivity(List.of())
@@ -471,6 +472,15 @@ class CkanDatasetsMapperTest {
                     .modifiedAt(OffsetDateTime.parse("2024-07-02T22:00Z"))
                     .createdAt(OffsetDateTime.parse("2024-07-01T22:00Z"))
                     .distributionsCount(1)
+                    .numberOfUniqueIndividuals(123456789)
+                    .accessRights(ValueLabel.builder()
+                            .value("public")
+                            .label("accessRights")
+                            .build())
+                    .temporalCoverage(TimeWindow.builder()
+                            .start(parse("2024-07-12T22:00Z"))
+                            .end(parse("2024-07-13T22:00Z"))
+                            .build())
                     .build();
         }
     }

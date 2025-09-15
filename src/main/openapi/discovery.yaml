@@ -349,6 +349,7 @@ components:
           $ref: "#/components/schemas/ValueLabel"
         numberOfUniqueIndividuals:
           type: integer
+          minimum: 0
         temporalCoverage:
           $ref: "#/components/schemas/TimeWindow"
         recordsCount:

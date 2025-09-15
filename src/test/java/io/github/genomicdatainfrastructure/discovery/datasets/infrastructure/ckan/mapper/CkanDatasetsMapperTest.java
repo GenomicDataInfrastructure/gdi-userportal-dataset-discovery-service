@@ -50,7 +50,6 @@ class CkanDatasetsMapperTest {
                     .qualifiedRelation(List.of())
                     .retentionPeriod(List.of())
                     .spatialCoverage(List.of())
-                    .temporalCoverage(List.of())
                     .provenanceActivity(List.of())
                     .qualifiedAttribution(List.of())
                     .qualityAnnotation(List.of())
@@ -253,11 +252,11 @@ class CkanDatasetsMapperTest {
                                     .centroid("5.095,52.120")
                                     .build()))
                     .spatialResolutionInMeters(10.0f)
-                    .temporalCoverage(List.of(
+                    .temporalCoverage(
                             TimeWindow.builder()
                                     .start(parse("2024-07-01T22:00:00+00:00"))
                                     .end(parse("2024-07-02T22:00:00+00:00"))
-                                    .build()))
+                                    .build())
                     .temporalResolution("P1D")
                     .provenanceActivity(List.of())
                     .qualifiedAttribution(List.of())
@@ -399,12 +398,6 @@ class CkanDatasetsMapperTest {
                 ))
                 .temporalStart("2024-07-12T22:00:00+00:00")
                 .temporalEnd("2024-07-13T22:00:00+00:00")
-                .temporalCoverage(List.of(
-                        CkanTimeWindow.builder()
-                                .start("2024-07-01T22:00:00+00:00")
-                                .end("2024-07-02T22:00:00+00:00")
-                                .build()
-                ))
                 .temporalResolution("P1D")
                 .alternateIdentifier(List.of("internalURI:admsIdentifier0"))
                 .spatialCoverage(List.of(

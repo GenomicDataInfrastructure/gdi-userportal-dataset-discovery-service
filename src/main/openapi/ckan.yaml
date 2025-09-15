@@ -279,10 +279,6 @@ components:
           type: number
           format: float
           description: Minimum spatial separation resolvable in a dataset, measured in meters.
-        temporal_coverage:
-          type: array
-          items:
-            $ref: "#/components/schemas/CkanTimeWindow"
         temporal_resolution:
           type: string
         population_coverage:

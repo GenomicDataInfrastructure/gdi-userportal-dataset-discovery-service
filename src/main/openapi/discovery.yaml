@@ -345,6 +345,13 @@ components:
           type: string
           format: date-time
           title: Metadata for dataset created at
+        accessRights:
+          $ref: "#/components/schemas/ValueLabel"
+        numberOfUniqueIndividuals:
+          type: integer
+          minimum: 0
+        temporalCoverage:
+          $ref: "#/components/schemas/TimeWindow"
         recordsCount:
           type: integer
           title: Records count
@@ -479,9 +486,7 @@ components:
           format: float
           description: Minimum spatial separation resolvable in a dataset, measured in meters.
         temporalCoverage:
-          type: array
-          items:
-            $ref: "#/components/schemas/TimeWindow"
+          $ref: "#/components/schemas/TimeWindow"
         temporalResolution:
           type: string
         populationCoverage:

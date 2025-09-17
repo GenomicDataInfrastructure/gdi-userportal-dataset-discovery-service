@@ -4,7 +4,6 @@
 
 package io.github.genomicdatainfrastructure.discovery.api;
 
-import io.github.genomicdatainfrastructure.discovery.common.AcceptLanguageParser;
 import io.github.genomicdatainfrastructure.discovery.datasets.application.usecases.RetrieveDatasetInFormatQuery;
 import io.github.genomicdatainfrastructure.discovery.datasets.application.usecases.RetrieveDatasetQuery;
 import io.github.genomicdatainfrastructure.discovery.datasets.application.usecases.SearchDatasetsQuery;

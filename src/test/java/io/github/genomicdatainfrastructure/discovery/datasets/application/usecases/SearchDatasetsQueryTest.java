@@ -52,12 +52,12 @@ class SearchDatasetsQueryTest {
 
         when(collectors.stream()).thenReturn(Stream.of());
 
-        var response = underTest.execute(query, accessToken);
+        var response = underTest.execute(query, accessToken, null);
 
         assertEquals(0, response.getCount());
         assertEquals(0, response.getResults().size());
 
-        verify(repository).search(eq(Set.of()), any(), any(), any(), eq(accessToken));
+        verify(repository).search(eq(Set.of()), any(), any(), any(), eq(accessToken), isNull());
     }
 
     @Test
@@ -72,16 +72,18 @@ class SearchDatasetsQueryTest {
 
         var dataset1 = mockDataset("id1");
         var dataset2 = mockDataset("id2");
-        when(repository.search(any(), any(), any(), any(), any())).thenReturn(List.of(dataset1,
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
+                dataset1,
                 dataset2));
 
-        var response = underTest.execute(query, accessToken);
+        var response = underTest.execute(query, accessToken, "en");
 
         assertEquals(1, response.getCount());
         assertEquals("id1", response.getResults().getFirst().getIdentifier());
         assertEquals(10, response.getResults().getFirst().getRecordsCount());
 
-        verify(repository).search(eq(Set.of("id1")), any(), any(), any(), eq(accessToken));
+        verify(repository).search(eq(Set.of("id1")), any(), any(), any(), eq(accessToken), eq(
+                "en"));
     }
 
     @Test
@@ -95,15 +97,17 @@ class SearchDatasetsQueryTest {
         when(collector1.collect(any(), any())).thenReturn(returnValue);
 
         var dataset1 = mockDataset("id1");
-        when(repository.search(any(), any(), any(), any(), any())).thenReturn(List.of(dataset1));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
+                dataset1));
 
-        DatasetsSearchResponse response = underTest.execute(query, accessToken);
+        DatasetsSearchResponse response = underTest.execute(query, accessToken, null);
 
         assertEquals(1, response.getCount());
         assertEquals("id1", response.getResults().getFirst().getIdentifier());
         assertEquals(null, response.getResults().getFirst().getRecordsCount()); // null record count
 
-        verify(repository).search(eq(Set.of("id1")), any(), any(), any(), eq(accessToken));
+        verify(repository).search(eq(Set.of("id1")), any(), any(), any(), eq(accessToken),
+                isNull());
     }
 
     private SearchedDataset mockDataset(String id) {

@@ -41,7 +41,8 @@ public class CkanDatasetsRepository implements DatasetsRepository {
             String sort,
             Integer rows,
             Integer start,
-            String accessToken) {
+            String accessToken,
+            String preferredLanguage) {
 
         if (datasetIds == null || datasetIds.isEmpty()) {
             return List.of();
@@ -70,6 +71,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
                 .build();
 
         var response = ckanQueryApi.packageSearch(
+                preferredLanguage,
                 request
         );
 
@@ -77,9 +79,9 @@ public class CkanDatasetsRepository implements DatasetsRepository {
     }
 
     @Override
-    public RetrievedDataset findById(String id, String accessToken) {
+    public RetrievedDataset findById(String id, String accessToken, String preferredLanguage) {
         try {
-            var ckanPackage = ckanQueryApi.packageShow(id);
+            var ckanPackage = ckanQueryApi.packageShow(id, preferredLanguage);
             return ckanDatasetsMapper.map(ckanPackage.getResult());
         } catch (WebApplicationException e) {
             if (e.getResponse().getStatus() == 404) {

@@ -35,7 +35,7 @@ public class BeaconFilterBuilder implements FilterBuilder {
 
     @SneakyThrows
     @Override
-    public List<Filter> build(final String accessToken) {
+    public List<Filter> build(final String accessToken, String preferredLanguage) {
         final var beaconAuthorization = beaconAuth.retrieveAuthorization(accessToken);
         if (beaconAuthorization == null) {
             return List.of();

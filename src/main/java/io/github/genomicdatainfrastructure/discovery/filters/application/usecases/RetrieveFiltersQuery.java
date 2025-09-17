@@ -27,10 +27,10 @@ public class RetrieveFiltersQuery {
     private final Instance<FilterBuilder> filterBuilders;
     private final DatasetsConfig datasetsConfig;
 
-    public List<Filter> execute(String accessToken) {
+    public List<Filter> execute(String accessToken, String preferredLanguage) {
         return filterBuilders
                 .stream()
-                .map(filterBuilder -> filterBuilder.build(accessToken))
+                .map(filterBuilder -> filterBuilder.build(accessToken, preferredLanguage))
                 .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
                 .map(this::mapGroup)

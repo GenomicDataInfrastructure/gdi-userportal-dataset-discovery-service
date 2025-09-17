@@ -16,7 +16,8 @@ public class RetrieveDatasetQuery {
 
     private final DatasetsRepository repository;
 
-    public RetrievedDataset execute(String datasetId, String accessToken) {
-        return repository.findById(datasetId, accessToken);
+    public RetrievedDataset execute(String datasetId, String accessToken,
+            String preferredLanguage) {
+        return repository.findById(datasetId, accessToken, preferredLanguage);
     }
 }

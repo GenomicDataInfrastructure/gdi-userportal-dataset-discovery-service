@@ -16,6 +16,8 @@ paths:
       operationId: package_search
       tags:
         - "ckan-query"
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
       requestBody:
         content:
           application/json:
@@ -35,6 +37,7 @@ paths:
       tags:
         - "ckan-query"
       parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
         - name: id
           in: query
           description: The ID of the package to retrieve
@@ -103,6 +106,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/CkanErrorResponse"
 components:
+  parameters:
+    AcceptLanguage:
+      name: Accept-Language
+      in: header
+      description: Preferred language for the response
+      required: false
+      schema:
+        type: string
+        example: en
   schemas:
     PackageSearchRequest:
       type: object

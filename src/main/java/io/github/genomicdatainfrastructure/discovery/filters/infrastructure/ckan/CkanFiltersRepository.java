@@ -30,7 +30,7 @@ public class CkanFiltersRepository implements FiltersRepository {
     }
 
     @Override
-    public List<ValueLabel> getValuesForFilter(final String key) {
+    public List<ValueLabel> getValuesForFilter(final String key, String preferredLanguage) {
 
         final var facetField = SELECTED_FACETS_PATTERN.formatted(key);
 
@@ -41,6 +41,7 @@ public class CkanFiltersRepository implements FiltersRepository {
                 .build();
 
         final var response = ckanQueryApi.packageSearch(
+                preferredLanguage,
                 request
         );
         return ckanFilterMapper.map(response, key);

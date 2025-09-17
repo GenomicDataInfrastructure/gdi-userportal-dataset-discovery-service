@@ -43,6 +43,7 @@ public class CkanDatasetIdsCollector implements DatasetIdsCollector {
                 .build();
 
         var response = ckanQueryApi.packageSearch(
+                null,
                 request
         );
 

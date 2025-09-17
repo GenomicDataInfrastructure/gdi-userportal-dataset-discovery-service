@@ -12,6 +12,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.17] - 2025-09-17
+
+### Added
+- feat(api): implement Accept-Language header support for dataset queries and fetch filters by @Hans-christian in aaac22e
+- feat(fields) Add minimum 0 to number of individueal by @Hans-christian in 23c9cad
+- feat(datasearchResults) Add number of fields, temporal Coverage and access rights to SearchDataResults by @Hans-christian in 67ce965
+- feat Extend Search data results by @Hans-christian in 95330c4
+
+
+### Changed
+- chore(deps): update surefire.version to v3.5.4 by @Renovate Bot in 717dd76
+- doc: update CHANGELOG.md for v1.3.16 by @LNDS-Sysadmins in 01c0e1b
+
+
+### Fixed
+- fix build by @Hans-christian in 6b44f85
+- fix Unit tests by @Hans-christian in 9b707e0
+
+
 ## [v1.3.16] - 2025-09-12
 
 ### Changed

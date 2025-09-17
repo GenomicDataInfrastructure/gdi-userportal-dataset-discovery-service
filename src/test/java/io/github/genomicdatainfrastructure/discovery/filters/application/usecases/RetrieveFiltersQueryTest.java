@@ -67,7 +67,7 @@ class RetrieveFiltersQueryTest {
                                         .build()))
                         .build());
 
-        when(filterBuilderCkan.build(anyString())).thenReturn(mockCkanFilters);
+        when(filterBuilderCkan.build(anyString(), any())).thenReturn(mockCkanFilters);
 
         var mockBeaconFilters = List.of(
                 Filter.builder()
@@ -81,9 +81,9 @@ class RetrieveFiltersQueryTest {
                                         .value("3")
                                         .build()))
                         .build());
-        when(filterBuilderBeacon.build(anyString())).thenReturn(mockBeaconFilters);
+        when(filterBuilderBeacon.build(anyString(), any())).thenReturn(mockBeaconFilters);
 
-        var actual = query.execute("token");
+        var actual = query.execute("token", "en");
 
         Assertions.assertThat(actual)
                 .containsExactlyInAnyOrder(Filter.builder()
@@ -128,11 +128,11 @@ class RetrieveFiltersQueryTest {
                                         .build()))
                         .build());
 
-        when(filterBuilderCkan.build(anyString())).thenReturn(mockCkanFilters);
+        when(filterBuilderCkan.build(anyString(), any())).thenReturn(mockCkanFilters);
 
-        when(filterBuilderBeacon.build(anyString())).thenReturn(null);
+        when(filterBuilderBeacon.build(anyString(), any())).thenReturn(null);
 
-        var actual = query.execute("token");
+        var actual = query.execute("token", null);
 
         Assertions.assertThat(actual)
                 .containsExactly(Filter.builder()
@@ -170,7 +170,7 @@ class RetrieveFiltersQueryTest {
                                         .build()))
                         .build());
 
-        when(filterBuilderCkan.build(anyString())).thenReturn(mockCkanFilters);
+        when(filterBuilderCkan.build(anyString(), any())).thenReturn(mockCkanFilters);
 
         var mockBeaconFilters = List.of(
                 Filter.builder()
@@ -184,9 +184,9 @@ class RetrieveFiltersQueryTest {
                                         .value("3")
                                         .build()))
                         .build());
-        when(filterBuilderBeacon.build(anyString())).thenReturn(mockBeaconFilters);
+        when(filterBuilderBeacon.build(anyString(), any())).thenReturn(mockBeaconFilters);
 
-        var actual = query.execute("token");
+        var actual = query.execute("token", "en");
 
         Assertions.assertThat(actual)
                 .containsExactlyInAnyOrder(Filter.builder()

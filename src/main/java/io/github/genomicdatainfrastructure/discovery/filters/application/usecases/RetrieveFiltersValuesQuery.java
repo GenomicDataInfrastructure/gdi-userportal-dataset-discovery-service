@@ -17,8 +17,8 @@ public class RetrieveFiltersValuesQuery {
 
     private final FiltersRepository filtersRepository;
 
-    public List<ValueLabel> execute(String key) {
-        return filtersRepository.getValuesForFilter(key);
+    public List<ValueLabel> execute(String key, String preferredLanguage) {
+        return filtersRepository.getValuesForFilter(key, preferredLanguage);
     }
 
 }

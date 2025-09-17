@@ -42,7 +42,7 @@ public class CkanFilterBuilder implements FilterBuilder {
     }
 
     @Override
-    public List<Filter> build(String accessToken) {
+    public List<Filter> build(String accessToken, String preferredLanguage) {
 
         var request = PackageSearchRequest.builder()
                 .rows(0)
@@ -52,6 +52,7 @@ public class CkanFilterBuilder implements FilterBuilder {
                 .build();
 
         var response = ckanQueryApi.packageSearch(
+                preferredLanguage,
                 request
         );
 

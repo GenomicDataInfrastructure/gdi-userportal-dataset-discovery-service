@@ -17,9 +17,10 @@ public interface DatasetsRepository {
             String sort,
             Integer rows,
             Integer start,
-            String accessToken);
+            String accessToken,
+            String preferredLanguage);
 
-    RetrievedDataset findById(String id, String accessToken);
+    RetrievedDataset findById(String id, String accessToken, String preferredLanguage);
 
     String retrieveDatasetInFormat(String id, String format, String accessToken);
 }

@@ -28,7 +28,8 @@ public class SearchDatasetsQuery {
     private final DatasetsRepository repository;
     private final Instance<DatasetIdsCollector> collectors;
 
-    public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken) {
+    public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken,
+            String preferredLanguage) {
         var datasetIdsByRecordCount = collectors
                 .stream()
                 .map(collector -> collector.collect(query, accessToken))
@@ -40,7 +41,8 @@ public class SearchDatasetsQuery {
                 query.getSort(),
                 query.getRows(),
                 query.getStart(),
-                accessToken);
+                accessToken,
+                preferredLanguage);
 
         var enhancedDatasets = datasets
                 .stream()

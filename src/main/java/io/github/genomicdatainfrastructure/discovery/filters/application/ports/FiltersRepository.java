@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface FiltersRepository {
 
-    List<ValueLabel> getValuesForFilter(String key);
+    List<ValueLabel> getValuesForFilter(String key, String preferredLanguage);
 
 }

@@ -8,7 +8,7 @@
     <version>0.0.0</version>
     <name>gdi-userportal-dataset-discovery-service</name>
     <properties>
-        <assertj.version>3.27.5</assertj.version>
+        <assertj.version>3.27.6</assertj.version>
         <checkstyle-maven-plugin.version>3.3.1</checkstyle-maven-plugin.version>
         <compiler-plugin.version>3.14.1</compiler-plugin.version>
         <lombok.version>1.18.42</lombok.version>

@@ -27,7 +27,7 @@ public class RetrieveFiltersTest extends BaseTest {
                 .get("/api/v1/filters")
                 .then()
                 .statusCode(200)
-                .body("", hasSize(5))
+                .body("", hasSize(6))
                 .body("[0].source", Matchers.equalTo("ckan"))
                 .body("[0].key", Matchers.equalTo("tags"))
                 .body("[0].label", Matchers.equalTo("Keywords"))
@@ -36,7 +36,12 @@ public class RetrieveFiltersTest extends BaseTest {
                 .body("[1].source", Matchers.equalTo("ckan"))
                 .body("[1].key", Matchers.equalTo("organization"))
                 .body("[1].label", Matchers.equalTo("Publishers"))
-                .body("[1].values", hasSize(7));
+                .body("[1].values", hasSize(7))
+                .body("find { it.key == 'metadata_modified' }.source", equalTo("ckan"))
+                .body("find { it.key == 'metadata_modified' }.type", equalTo("DATETIME"))
+                .body("find { it.key == 'metadata_modified' }.label", nullValue())
+                .body("find { it.key == 'metadata_modified' }.group", equalTo("DEFAULT"))
+                .body("find { it.key == 'metadata_modified' }.entries", nullValue());
     }
 
     @Test

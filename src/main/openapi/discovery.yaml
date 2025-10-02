@@ -290,6 +290,7 @@ components:
         - DROPDOWN
         - FREE_TEXT
         - ENTRIES
+        - DATETIME
       title: Filter type
     Operator:
       default: "="

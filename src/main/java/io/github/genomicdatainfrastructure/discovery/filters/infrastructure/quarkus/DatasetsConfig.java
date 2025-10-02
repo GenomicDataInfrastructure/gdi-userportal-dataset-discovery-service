@@ -23,6 +23,14 @@ public interface DatasetsConfig {
 
         String key();
 
-        Set<String> filters();
+        Set<Filter> filters();
+    }
+
+    interface Filter {
+
+        String key();
+
+        @WithDefault("false")
+        Boolean isDateTime();
     }
 }

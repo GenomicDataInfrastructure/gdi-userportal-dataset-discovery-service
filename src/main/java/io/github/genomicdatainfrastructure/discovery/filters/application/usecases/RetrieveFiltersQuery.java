@@ -42,7 +42,10 @@ public class RetrieveFiltersQuery {
                 .orElseGet(List::of);
 
         var group = nonNullGroups.stream()
-                .filter(it -> it.filters().contains(filter.getKey()))
+                .filter(it -> ofNullable(it.filters()).orElseGet(java.util.Set::of)
+                        .stream()
+                        .anyMatch(configuredFilter -> filter.getKey().equals(configuredFilter
+                                .key())))
                 .map(FilterGroup::key)
                 .findFirst()
                 .orElse(datasetsConfig.noGroupKey());

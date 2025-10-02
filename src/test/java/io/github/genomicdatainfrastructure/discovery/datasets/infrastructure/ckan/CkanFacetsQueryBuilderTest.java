@@ -7,6 +7,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ck
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanFacetsQueryBuilder;
 import io.github.genomicdatainfrastructure.discovery.model.FilterType;
+import io.github.genomicdatainfrastructure.discovery.model.Operator;
 import io.github.genomicdatainfrastructure.discovery.model.QueryOperator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,8 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQueryFacet;
-
-import javax.xml.crypto.Data;
 
 class CkanFacetsQueryBuilderTest {
 
@@ -174,6 +173,79 @@ class CkanFacetsQueryBuilderTest {
 
         var expected = "field1:(\"value1\" OR \"value2\") AND field2:(\"value3\")";
         var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withDateRangeFacet() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("metadata_modified")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2024-01-01T00:00:00Z")
+                                .build(),
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("metadata_modified")
+                                .operator(Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2024-12-31T23:59:59Z")
+                                .build()
+                ))
+                .build();
+
+        var expected = "metadata_modified:[\"2024-01-01T00:00:00Z\" TO \"2024-12-31T23:59:59Z\"]";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withDateRangeFacetAndDropdown() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("metadata_modified")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2024-01-01T00:00:00Z")
+                                .build(),
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DROPDOWN)
+                                .key("field1")
+                                .value("value1")
+                                .build()
+                ))
+                .build();
+
+        var expected = "metadata_modified:[\"2024-01-01T00:00:00Z\" TO *] AND field1:(\"value1\")";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withConfigurableDateRangeFacetKey() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("custom_datetime_field")
+                                .operator(Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2025-05-01T00:00:00Z")
+                                .build()
+                ))
+                .build();
+
+        var expected = "custom_datetime_field:[* TO \"2025-05-01T00:00:00Z\"]";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
         assertEquals(expected, actual);
     }
 }

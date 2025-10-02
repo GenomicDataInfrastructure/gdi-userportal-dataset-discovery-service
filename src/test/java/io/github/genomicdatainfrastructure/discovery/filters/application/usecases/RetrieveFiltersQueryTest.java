@@ -152,8 +152,9 @@ class RetrieveFiltersQueryTest {
     @Test
     void shouldGroupFilters() {
         when(datasetsConfig.filterGroups()).thenReturn(List.of(
-                new MockFilterGroup("CKAN_GROUP", Set.of("tags")),
-                new MockFilterGroup("BEACON_GROUP", Set.of("Human Phenotype Ontology"))
+                new MockFilterGroup("CKAN_GROUP", Set.of(new MockFilter("tags", false))),
+                new MockFilterGroup("BEACON_GROUP",
+                        Set.of(new MockFilter("Human Phenotype Ontology", false)))
         ));
         when(datasetsConfig.noGroupKey()).thenReturn("DUMMY");
 
@@ -221,7 +222,7 @@ class RetrieveFiltersQueryTest {
     class MockFilterGroup implements FilterGroup {
 
         private String key;
-        private Set<String> filters;
+        private Set<DatasetsConfig.Filter> filters;
 
         @Override
         public String key() {
@@ -229,8 +230,26 @@ class RetrieveFiltersQueryTest {
         }
 
         @Override
-        public Set<String> filters() {
+        public Set<DatasetsConfig.Filter> filters() {
             return filters;
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    class MockFilter implements DatasetsConfig.Filter {
+
+        private String key;
+        private Boolean dateTime;
+
+        @Override
+        public String key() {
+            return key;
+        }
+
+        @Override
+        public Boolean isDateTime() {
+            return dateTime;
         }
     }
 }

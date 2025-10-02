@@ -223,7 +223,7 @@ class CkanFacetsQueryBuilderTest {
                 ))
                 .build();
 
-        var expected = "metadata_modified:[\"2024-01-01T00:00:00Z\" TO *] AND field1:(\"value1\")";
+        var expected = "field1:(\"value1\") AND metadata_modified:[\"2024-01-01T00:00:00Z\" TO *]";
         var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
 
         assertEquals(expected, actual);

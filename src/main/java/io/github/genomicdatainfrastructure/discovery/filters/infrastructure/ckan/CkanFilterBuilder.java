@@ -79,18 +79,19 @@ public class CkanFilterBuilder implements FilterBuilder {
                 .filter(f -> f != null)
                 .forEach(filter -> filtersByKey.put(filter.getKey(), filter));
 
-        dateTimeFilterKeys.forEach(key -> filtersByKey.putIfAbsent(key, buildDateTimeFilter(key)));
+        dateTimeFilterKeys.forEach(key -> filtersByKey.putIfAbsent(key, buildDateTimeFilter(key,
+                null)));
 
         return List.copyOf(filtersByKey.values());
     }
 
     private Filter filter(Map.Entry<String, CkanFacet> entry) {
         var key = entry.getKey();
-        if (dateTimeFilterKeys.contains(key)) {
-            return buildDateTimeFilter(key);
-        }
-
         var facet = entry.getValue();
+
+        if (dateTimeFilterKeys.contains(key)) {
+            return buildDateTimeFilter(key, facet.getTitle());
+        }
 
         var values = ofNullable(facet.getItems())
                 .orElseGet(List::of)
@@ -111,12 +112,12 @@ public class CkanFilterBuilder implements FilterBuilder {
                 .build();
     }
 
-    private Filter buildDateTimeFilter(String key) {
+    private Filter buildDateTimeFilter(String key, String ckanLabel) {
         return Filter.builder()
                 .source(CKAN_FILTER_SOURCE)
                 .type(FilterType.DATETIME)
                 .key(key)
-                .label(key)
+                .label(ckanLabel)
                 .group(filterGroupByKey.getOrDefault(key, null))
                 .build();
     }

@@ -39,7 +39,7 @@ public class RetrieveFiltersTest extends BaseTest {
                 .body("[1].values", hasSize(7))
                 .body("find { it.key == 'metadata_modified' }.source", equalTo("ckan"))
                 .body("find { it.key == 'metadata_modified' }.type", equalTo("DATETIME"))
-                .body("find { it.key == 'metadata_modified' }.label", equalTo("metadata_modified"))
+                .body("find { it.key == 'metadata_modified' }.label", nullValue())
                 .body("find { it.key == 'metadata_modified' }.group", equalTo("DEFAULT"))
                 .body("find { it.key == 'metadata_modified' }.entries", nullValue());
     }

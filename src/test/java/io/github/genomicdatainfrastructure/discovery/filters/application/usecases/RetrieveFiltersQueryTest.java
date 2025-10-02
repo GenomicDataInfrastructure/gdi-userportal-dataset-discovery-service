@@ -12,9 +12,6 @@ import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import jakarta.enterprise.inject.Instance;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -217,12 +214,15 @@ class RetrieveFiltersQueryTest {
                 );
     }
 
-    @Data
-    @AllArgsConstructor
     class MockFilterGroup implements FilterGroup {
 
         private String key;
         private Set<DatasetsConfig.Filter> filters;
+
+        MockFilterGroup(String key, Set<DatasetsConfig.Filter> filters) {
+            this.key = key;
+            this.filters = filters;
+        }
 
         @Override
         public String key() {
@@ -235,12 +235,15 @@ class RetrieveFiltersQueryTest {
         }
     }
 
-    @Data
-    @AllArgsConstructor
     class MockFilter implements DatasetsConfig.Filter {
 
         private String key;
         private Boolean dateTime;
+
+        MockFilter(String key, Boolean dateTime) {
+            this.key = key;
+            this.dateTime = dateTime;
+        }
 
         @Override
         public String key() {

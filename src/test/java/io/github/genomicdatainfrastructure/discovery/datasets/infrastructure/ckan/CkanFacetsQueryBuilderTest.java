@@ -248,4 +248,77 @@ class CkanFacetsQueryBuilderTest {
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    void canParse_withNumberRangeFacet() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.NUMBER)
+                                .key("number_of_records")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("10")
+                                .build(),
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.NUMBER)
+                                .key("number_of_records")
+                                .operator(Operator.LESS_THAN_SYMBOL)
+                                .value("20")
+                                .build()
+                ))
+                .build();
+
+        var expected = "number_of_records:[10 TO 20]";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withNumberRangeFacetAndDropdown() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.NUMBER)
+                                .key("number_of_records")
+                                .operator(Operator.GREATER_THAN_SYMBOL)
+                                .value("5")
+                                .build(),
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DROPDOWN)
+                                .key("field1")
+                                .value("value1")
+                                .build()
+                ))
+                .build();
+
+        var expected = "field1:(\"value1\") AND number_of_records:[5 TO *]";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withNumberExactFacet() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.NUMBER)
+                                .key("number_of_records")
+                                .operator(Operator.EQUAL_SYMBOL)
+                                .value("15")
+                                .build()
+                ))
+                .build();
+
+        var expected = "number_of_records:(15)";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
 }

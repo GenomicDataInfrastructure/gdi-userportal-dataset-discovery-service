@@ -58,13 +58,14 @@ public class CkanFacetsQueryBuilder {
             return Optional.empty();
         }
 
-        var rangeQuery = buildDateTimeRangeQuery(key, facets);
+        var rangeQuery = buildRangeQuery(key, facets);
         if (rangeQuery.isPresent()) {
             return rangeQuery;
         }
 
         var values = facets.stream()
-                .filter(facet -> !FilterType.DATETIME.equals(facet.getType()))
+                .filter(facet -> !FilterType.DATETIME.equals(facet.getType()) &&
+                        !FilterType.NUMBER.equals(facet.getType()))
                 .map(DatasetSearchQueryFacet::getValue)
                 .filter(value -> nonNull(value) && !value.isBlank())
                 .map(value -> QUOTED_VALUE.formatted(value))
@@ -75,6 +76,11 @@ public class CkanFacetsQueryBuilder {
         }
 
         return Optional.of(FACET_PATTERN.formatted(key, values));
+    }
+
+    private Optional<String> buildRangeQuery(String key, List<DatasetSearchQueryFacet> facets) {
+        return buildDateTimeRangeQuery(key, facets)
+                .or(() -> buildNumberRangeQuery(key, facets));
     }
 
     private Optional<String> buildDateTimeRangeQuery(String key,
@@ -108,6 +114,38 @@ public class CkanFacetsQueryBuilder {
         }
 
         return Optional.of(new DateTimeCondition(lower, upper, exact));
+    }
+
+    private Optional<String> buildNumberRangeQuery(String key,
+            List<DatasetSearchQueryFacet> facets) {
+        return resolveNumberCondition(facets)
+                .flatMap(condition -> condition.toSolrQuery(key));
+    }
+
+    private Optional<NumberCondition> resolveNumberCondition(List<DatasetSearchQueryFacet> facets) {
+        var numericFacets = facets.stream()
+                .filter(facet -> FilterType.NUMBER.equals(facet.getType()))
+                .toList();
+
+        if (numericFacets.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var lower = findValueByOperator(numericFacets,
+                Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL,
+                Operator.GREATER_THAN_SYMBOL).orElse(null);
+
+        var upper = findValueByOperator(numericFacets,
+                Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL,
+                Operator.LESS_THAN_SYMBOL).orElse(null);
+
+        var exact = findValueByOperator(numericFacets, Operator.EQUAL_SYMBOL).orElse(null);
+
+        if (lower == null && upper == null && exact == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new NumberCondition(lower, upper, exact));
     }
 
     private Optional<String> findValueByOperator(
@@ -165,6 +203,47 @@ public class CkanFacetsQueryBuilder {
             if (hasExactMatch()) {
                 var value = QUOTED_VALUE.formatted(exactMatch);
                 return Optional.of(FACET_PATTERN.formatted(key, value));
+            }
+
+            return Optional.empty();
+        }
+    }
+
+    private static String formatNumberBoundary(String value) {
+        return value == null || value.isBlank()
+                ? RANGE_WILDCARD
+                : value;
+    }
+
+    private static final class NumberCondition {
+
+        private final String lowerBound;
+        private final String upperBound;
+        private final String exactMatch;
+
+        private NumberCondition(String lowerBound, String upperBound, String exactMatch) {
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
+            this.exactMatch = exactMatch;
+        }
+
+        private boolean hasRange() {
+            return lowerBound != null || upperBound != null;
+        }
+
+        private boolean hasExactMatch() {
+            return exactMatch != null;
+        }
+
+        private Optional<String> toSolrQuery(String key) {
+            if (hasRange()) {
+                var start = formatNumberBoundary(lowerBound);
+                var end = formatNumberBoundary(upperBound);
+                return Optional.of(RANGE_PATTERN.formatted(key, start, end));
+            }
+
+            if (hasExactMatch()) {
+                return Optional.of(FACET_PATTERN.formatted(key, exactMatch));
             }
 
             return Optional.empty();

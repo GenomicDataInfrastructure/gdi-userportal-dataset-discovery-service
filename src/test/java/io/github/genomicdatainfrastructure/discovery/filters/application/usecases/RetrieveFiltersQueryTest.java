@@ -237,12 +237,18 @@ class RetrieveFiltersQueryTest {
 
     class MockFilter implements DatasetsConfig.Filter {
 
-        private String key;
-        private Boolean dateTime;
+        private final String key;
+        private final Boolean dateTime;
+        private final Boolean number;
 
         MockFilter(String key, Boolean dateTime) {
+            this(key, dateTime, false);
+        }
+
+        MockFilter(String key, Boolean dateTime, Boolean number) {
             this.key = key;
             this.dateTime = dateTime;
+            this.number = number;
         }
 
         @Override
@@ -253,6 +259,11 @@ class RetrieveFiltersQueryTest {
         @Override
         public Boolean isDateTime() {
             return dateTime;
+        }
+
+        @Override
+        public Boolean isNumber() {
+            return number;
         }
     }
 }

@@ -2,11 +2,6 @@
   "priority": 1,
   "request": {
     "method": "POST",
-    "headers": {
-      "Content-Length": {
-        "contains": "126"
-      }
-    },
     "urlPattern": "/api/3/action/enhanced_package_search",
     "bodyPatterns": [
       {
@@ -300,6 +295,136 @@
               }
             ]
           },
+          "organization": {
+            "title": "Publishers",
+            "items": [
+              {
+                "name": "umcg",
+                "display_name": "umcg",
+                "count": 5
+              },
+              {
+                "name": "ega",
+                "display_name": "ega",
+                "count": 4
+              },
+              {
+                "name": "nbis",
+                "display_name": "nbis",
+                "count": 3
+              },
+              {
+                "name": "csc-fi",
+                "display_name": "csc-fi",
+                "count": 1
+              },
+              {
+                "name": "instituto-superior-tecnico",
+                "display_name": "instituto-superior-tecnico",
+                "count": 1
+              },
+              {
+                "name": "lnds",
+                "display_name": "lnds",
+                "count": 1
+              },
+              {
+                "name": "university-of-oslo",
+                "display_name": "university-of-oslo",
+                "count": 1
+              }
+            ]
+          },
+          "res_format": {
+            "title": "File Formats",
+            "items": [
+              {
+                "name": "vcf",
+                "display_name": "vcf",
+                "count": 2
+              },
+              {
+                "name": "CSV",
+                "display_name": "CSV",
+                "count": 1
+              },
+              {
+                "name": "JSON",
+                "display_name": "JSON",
+                "count": 1
+              },
+              {
+                "name": "XLS",
+                "display_name": "XLS",
+                "count": 1
+              },
+              {
+                "name": "ZIP",
+                "display_name": "ZIP",
+                "count": 1
+              },
+              {
+                "name": "fastq",
+                "display_name": "fastq",
+                "count": 1
+              },
+              {
+                "name": "graphql",
+                "display_name": "graphql",
+                "count": 1
+              },
+              {
+                "name": "jsonld",
+                "display_name": "jsonld",
+                "count": 1
+              },
+              {
+                "name": "ped",
+                "display_name": "ped",
+                "count": 1
+              },
+              {
+                "name": "rdf-jsonld",
+                "display_name": "rdf-jsonld",
+                "count": 1
+              },
+              {
+                "name": "rdf-n3",
+                "display_name": "rdf-n3",
+                "count": 1
+              },
+              {
+                "name": "rdf-nquads",
+                "display_name": "rdf-nquads",
+                "count": 1
+              },
+              {
+                "name": "rdf-ntriples",
+                "display_name": "rdf-ntriples",
+                "count": 1
+              },
+              {
+                "name": "rdf-trig",
+                "display_name": "rdf-trig",
+                "count": 1
+              },
+              {
+                "name": "rdf-ttl",
+                "display_name": "rdf-ttl",
+                "count": 1
+              },
+              {
+                "name": "rdf-xml",
+                "display_name": "rdf-xml",
+                "count": 1
+              },
+              {
+                "name": "ttl",
+                "display_name": "ttl",
+                "count": 1
+              }
+            ]
+          },
           "access_rights": {
             "title": "Access Rights",
             "items": [
@@ -337,6 +462,46 @@
                 "name": "http://publications.europa.eu/resource/authority/data-theme/HEAL",
                 "display_name": "Health",
                 "count": 2
+              }
+            ]
+          },
+          "modified": {
+            "title": "Modification date",
+            "items": [
+              {
+                "name": "2024-01-01T00:00:00+00:00",
+                "display_name": "2024-01-01T00:00:00+00:00",
+                "count": 1
+              },
+              {
+                "name": "2024-12-31T23:59:59+00:00",
+                "display_name": "2024-12-31T23:59:59+00:00",
+                "count": 1
+              }
+            ]
+          },
+          "number_of_records": {
+            "title": "Number of records",
+            "items": [
+              {
+                "name": "10",
+                "display_name": "10",
+                "count": 1
+              },
+              {
+                "name": "250",
+                "display_name": "250",
+                "count": 1
+              }
+            ]
+          },
+          "empty_range_filter": {
+            "title": "Empty Range Filter",
+            "items": [
+              {
+                "name": "",
+                "display_name": "",
+                "count": 1
               }
             ]
           }

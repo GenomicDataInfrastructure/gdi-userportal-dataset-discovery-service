@@ -135,17 +135,7 @@ public class CkanFacetsQueryBuilder {
                 : QUOTED_VALUE.formatted(value);
     }
 
-    private static final class DateTimeCondition {
-
-        private final String lowerBound;
-        private final String upperBound;
-        private final String exactMatch;
-
-        private DateTimeCondition(String lowerBound, String upperBound, String exactMatch) {
-            this.lowerBound = lowerBound;
-            this.upperBound = upperBound;
-            this.exactMatch = exactMatch;
-        }
+    private record DateTimeCondition(String lowerBound, String upperBound, String exactMatch) {
 
         private boolean hasRange() {
             return lowerBound != null || upperBound != null;

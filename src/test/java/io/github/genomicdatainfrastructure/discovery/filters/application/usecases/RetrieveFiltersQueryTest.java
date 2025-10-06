@@ -214,45 +214,9 @@ class RetrieveFiltersQueryTest {
                 );
     }
 
-    class MockFilterGroup implements FilterGroup {
-
-        private String key;
-        private Set<DatasetsConfig.Filter> filters;
-
-        MockFilterGroup(String key, Set<DatasetsConfig.Filter> filters) {
-            this.key = key;
-            this.filters = filters;
-        }
-
-        @Override
-        public String key() {
-            return key;
-        }
-
-        @Override
-        public Set<DatasetsConfig.Filter> filters() {
-            return filters;
-        }
+    record MockFilterGroup(String key, Set<DatasetsConfig.Filter> filters) implements FilterGroup {
     }
 
-    class MockFilter implements DatasetsConfig.Filter {
-
-        private String key;
-        private Boolean dateTime;
-
-        MockFilter(String key, Boolean dateTime) {
-            this.key = key;
-            this.dateTime = dateTime;
-        }
-
-        @Override
-        public String key() {
-            return key;
-        }
-
-        @Override
-        public Boolean isDateTime() {
-            return dateTime;
-        }
+    record MockFilter(String key, Boolean isDateTime) implements DatasetsConfig.Filter {
     }
 }

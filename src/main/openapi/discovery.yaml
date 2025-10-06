@@ -486,7 +486,7 @@ components:
         publisherType:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/ValueLabel"
         trustedDataHolder:
           type: boolean
         hdab:
@@ -517,11 +517,11 @@ components:
         purpose:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/ValueLabel"
         legalBasis:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/ValueLabel"
         applicableLegislation:
           type: array
           items:
@@ -530,11 +530,11 @@ components:
         healthTheme:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/ValueLabel"
         healthCategory:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/ValueLabel"
         maxTypicalAge:
           type: integer
         minTypicalAge:
@@ -550,11 +550,11 @@ components:
         codeValues:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/ValueLabel"
         codingSystem:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/ValueLabel"
         alternateIdentifier:
           type: array
           items:
@@ -569,13 +569,13 @@ components:
               relation:
                 type: string
               role:
-                type: string
+                $ref: "#/components/schemas/ValueLabel"
               uri:
                 type: string
         personalData:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/ValueLabel"
         homepage:
           type: string
           format: uri
@@ -588,7 +588,7 @@ components:
             type: string
             format: uri
         frequency:
-          type: string
+          $ref: "#/components/schemas/ValueLabel"
         inSeries:
           type: array
           items:
@@ -642,7 +642,7 @@ components:
             type: object
             properties:
               role:
-                type: string
+                $ref: "#/components/schemas/ValueLabel"
               agent:
                 type: array
                 items:
@@ -714,7 +714,7 @@ components:
         rights:
           type: string
         status:
-          type: string
+          $ref: "#/components/schemas/ValueLabel"
         temporalResolution:
           type: string
         title:
@@ -1088,7 +1088,7 @@ components:
       type: object
       properties:
         role:
-          type: string
+          $ref: "#/components/schemas/ValueLabel"
         agent:
           type: array
           items:

@@ -47,6 +47,7 @@ class CkanFilterMapperTest {
                         Map.of("requestedKey", new CkanFacet()
                                 .items(List.of(new CkanValueLabel()
                                         .name("CkanValueName1")
+                                        .displayName("CkanValueDisplayName1")
                                         .count(1),
                                         new CkanValueLabel()
                                                 .name("CkanValueName2")
@@ -58,6 +59,7 @@ class CkanFilterMapperTest {
                 ));
         final var expected = List.of(new ValueLabel()
                 .value("CkanValueName1")
+                .label("CkanValueDisplayName1")
                 .count(1),
                 new ValueLabel()
                         .value("CkanValueName2")

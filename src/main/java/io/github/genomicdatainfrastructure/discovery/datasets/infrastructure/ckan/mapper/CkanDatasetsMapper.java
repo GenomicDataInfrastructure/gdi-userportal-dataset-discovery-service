@@ -79,7 +79,7 @@ public interface CkanDatasetsMapper {
 
     @Mapping(target = "label", source = "displayName")
     @Mapping(target = "value", source = "name")
-    @Mapping(target = "count", ignore = true)
+    @Mapping(target = "count", source = "count")
     ValueLabel map(CkanValueLabel ckanValueLabel);
 
     @Mapping(target = "label", source = "displayName")

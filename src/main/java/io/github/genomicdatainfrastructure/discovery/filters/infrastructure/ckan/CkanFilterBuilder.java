@@ -73,7 +73,7 @@ public class CkanFilterBuilder implements FilterBuilder {
         facets.entrySet()
                 .stream()
                 .map(this::filter)
-                .filter(f -> f != null)
+                .filter(Objects::nonNull)
                 .forEach(filter -> filtersByKey.put(filter.getKey(), filter));
 
         filtersMetadata.entrySet().stream()

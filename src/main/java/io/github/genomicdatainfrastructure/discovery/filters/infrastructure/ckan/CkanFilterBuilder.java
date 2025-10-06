@@ -16,10 +16,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesS
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
 import static java.util.Optional.ofNullable;

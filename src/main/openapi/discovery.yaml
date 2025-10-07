@@ -291,6 +291,7 @@ components:
         - FREE_TEXT
         - ENTRIES
         - DATETIME
+        - NUMBER
       title: Filter type
     Operator:
       default: "="
@@ -947,6 +948,8 @@ components:
           items:
             $ref: "#/components/schemas/ValueLabel"
           title: values
+        range:
+          $ref: "#/components/schemas/FilterRange"
         operators:
           type: array
           items:
@@ -961,6 +964,15 @@ components:
         - type
         - key
         - label
+    FilterRange:
+      type: object
+      properties:
+        min:
+          type: string
+          title: minimum value supported by the filter
+        max:
+          type: string
+          title: maximum value supported by the filter
     FilterEntry:
       properties:
         key:

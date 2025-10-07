@@ -27,7 +27,7 @@ public class RetrieveFiltersTest extends BaseTest {
                 .get("/api/v1/filters")
                 .then()
                 .statusCode(200)
-                .body("", hasSize(6))
+                .body("", hasSize(8))
                 .body("[0].source", Matchers.equalTo("ckan"))
                 .body("[0].key", Matchers.equalTo("tags"))
                 .body("[0].label", Matchers.equalTo("Keywords"))
@@ -37,11 +37,26 @@ public class RetrieveFiltersTest extends BaseTest {
                 .body("[1].key", Matchers.equalTo("organization"))
                 .body("[1].label", Matchers.equalTo("Publishers"))
                 .body("[1].values", hasSize(7))
-                .body("find { it.key == 'metadata_modified' }.source", equalTo("ckan"))
-                .body("find { it.key == 'metadata_modified' }.type", equalTo("DATETIME"))
-                .body("find { it.key == 'metadata_modified' }.label", nullValue())
-                .body("find { it.key == 'metadata_modified' }.group", equalTo("DEFAULT"))
-                .body("find { it.key == 'metadata_modified' }.entries", nullValue());
+                .body("find { it.key == 'modified' }.source", equalTo("ckan"))
+                .body("find { it.key == 'modified' }.type", equalTo("DATETIME"))
+                .body("find { it.key == 'modified' }.label", equalTo("Modification date"))
+                .body("find { it.key == 'modified' }.group", equalTo("DEFAULT"))
+                .body("find { it.key == 'modified' }.range.min", equalTo("2024-01-01T00:00Z"))
+                .body("find { it.key == 'modified' }.range.max", equalTo("2024-12-31T23:59:59Z"))
+                .body("find { it.key == 'number_of_records' }.type", equalTo("NUMBER"))
+                .body("find { it.key == 'number_of_records' }.label", equalTo("Number of records"))
+                .body("find { it.key == 'number_of_records' }.group", equalTo("DEFAULT"))
+                .body("find { it.key == 'number_of_records' }.range.min", equalTo("10"))
+                .body("find { it.key == 'number_of_records' }.range.max", equalTo("250"));
+    }
+
+    @Test
+    void shouldHandleEmptyRangeValues() {
+        given()
+                .get("/api/v1/filters")
+                .then()
+                .statusCode(200)
+                .body("find { it.key == 'empty_range_filter' }.range", nullValue());
     }
 
     @Test

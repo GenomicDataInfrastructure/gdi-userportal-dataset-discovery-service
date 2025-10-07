@@ -32,5 +32,8 @@ public interface DatasetsConfig {
 
         @WithDefault("false")
         Boolean isDateTime();
+
+        @WithDefault("false")
+        Boolean isNumber();
     }
 }

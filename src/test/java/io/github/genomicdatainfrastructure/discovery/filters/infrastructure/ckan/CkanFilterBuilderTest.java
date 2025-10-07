@@ -37,10 +37,12 @@ class CkanFilterBuilderTest {
                                                 CkanValueLabel.builder()
                                                         .name("2024-01-01T00:00:00+00:00")
                                                         .displayName("from")
+                                                        .count(1)
                                                         .build(),
                                                 CkanValueLabel.builder()
                                                         .name("2024-12-31T23:59:59+00:00")
                                                         .displayName("to")
+                                                        .count(2)
                                                         .build()))
                                         .build(),
                                 "number_of_records", CkanFacet.builder()
@@ -49,10 +51,12 @@ class CkanFilterBuilderTest {
                                                 CkanValueLabel.builder()
                                                         .name("10")
                                                         .displayName("10")
+                                                        .count(3)
                                                         .build(),
                                                 CkanValueLabel.builder()
                                                         .name("250")
                                                         .displayName("250")
+                                                        .count(4)
                                                         .build()))
                                         .build(),
                                 "tags", CkanFacet.builder()
@@ -61,6 +65,7 @@ class CkanFilterBuilderTest {
                                                 CkanValueLabel.builder()
                                                         .name("synthetic")
                                                         .displayName("synthetic")
+                                                        .count(5)
                                                         .build()))
                                         .build()))
                         .build())
@@ -85,6 +90,9 @@ class CkanFilterBuilderTest {
         assertThat(tags.getValues())
                 .extracting(ValueLabel::getValue)
                 .containsExactly("synthetic");
+        assertThat(tags.getValues())
+                .extracting(ValueLabel::getCount)
+                .containsExactly(5);
     }
 
     @Test
@@ -96,7 +104,7 @@ class CkanFilterBuilderTest {
                                         .items(List.of(
                                                 CkanValueLabel.builder()
                                                         .name("not-a-number")
-                                                        .displayName("N/A")
+                                                        .count(1)
                                                         .build()))
                                         .build()))
                         .build())

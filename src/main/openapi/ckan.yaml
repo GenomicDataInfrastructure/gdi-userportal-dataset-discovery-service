@@ -275,7 +275,7 @@ components:
         publisher_type:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/CkanValueLabel"
         trusted_data_holder:
           type: boolean
         hdab:
@@ -304,11 +304,11 @@ components:
         purpose:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/CkanValueLabel"
         legal_basis:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/CkanValueLabel"
         applicable_legislation:
           type: array
           items:
@@ -317,11 +317,11 @@ components:
         health_theme:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/CkanValueLabel"
         health_category:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/CkanValueLabel"
         max_typical_age:
           type: integer
         min_typical_age:
@@ -337,11 +337,11 @@ components:
         code_values:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/CkanValueLabel"
         coding_system:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/CkanValueLabel"
         alternate_identifier:
           type: array
           items:
@@ -356,13 +356,13 @@ components:
               relation:
                 type: string
               role:
-                type: string
+                $ref: "#/components/schemas/CkanValueLabel"
               uri:
                 type: string
         personal_data:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/CkanValueLabel"
         homepage:
           type: string
           format: uri
@@ -375,7 +375,7 @@ components:
             type: string
             format: uri
         frequency:
-          type: string
+          $ref: "#/components/schemas/CkanValueLabel"
         in_series:
           type: array
           items:
@@ -429,7 +429,7 @@ components:
             type: object
             properties:
               role:
-                type: string
+                $ref: "#/components/schemas/CkanValueLabel"
               agent:
                 type: array
                 items:
@@ -553,7 +553,7 @@ components:
         rights:
           type: string
         status:
-          type: string
+          $ref: "#/components/schemas/CkanValueLabel"
         temporal_resolution:
           type: string
         name:

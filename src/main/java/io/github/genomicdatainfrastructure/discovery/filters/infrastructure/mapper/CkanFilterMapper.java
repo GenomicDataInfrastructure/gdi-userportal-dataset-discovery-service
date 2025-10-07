@@ -50,5 +50,6 @@ public interface CkanFilterMapper {
 
     @Mapping(target = "value", source = "name")
     @Mapping(target = "label", source = "displayName")
+    @Mapping(target = "count", source = "count")
     ValueLabel map(final CkanValueLabel valueLabel);
 }

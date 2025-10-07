@@ -116,6 +116,7 @@ public class CkanFilterBuilder implements FilterBuilder {
                 .map(value -> ValueLabel.builder()
                         .value(value.getName())
                         .label(value.getDisplayName())
+                        .count(value.getCount())
                         .build())
                 .toList();
 

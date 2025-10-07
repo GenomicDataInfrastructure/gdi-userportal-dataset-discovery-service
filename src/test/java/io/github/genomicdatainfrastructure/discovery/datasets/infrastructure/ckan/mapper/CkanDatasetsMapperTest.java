@@ -53,6 +53,14 @@ class CkanDatasetsMapperTest {
                     .provenanceActivity(List.of())
                     .qualifiedAttribution(List.of())
                     .qualityAnnotation(List.of())
+                    .publisherType(List.of())
+                    .purpose(List.of())
+                    .legalBasis(List.of())
+                    .codeValues(List.of())
+                    .codingSystem(List.of())
+                    .healthCategory(List.of())
+                    .healthTheme(List.of())
+                    .personalData(List.of())
                     .temporalCoverage(TimeWindow.builder().build())
                     .build();
 
@@ -70,29 +78,14 @@ class CkanDatasetsMapperTest {
                     .id("id")
                     .identifier("identifier")
                     .title("title")
-                    .dcatType(ValueLabel.builder()
-                            .value("type-uri")
-                            .label("type")
-                            .build())
+                    .dcatType(getValueLabel("type", "type-uri"))
                     .description("notes")
-                    .themes(List.of(
-                            ValueLabel.builder()
-                                    .value("theme-name")
-                                    .label("theme")
-                                    .build()))
+                    .themes(getValueLabels("theme", "theme-name", 3))
                     .createdAt(parse("2024-07-01T22:00:00+00:00"))
                     .modifiedAt(parse("2024-07-02T22:00:00+00:00"))
                     .url("url")
-                    .languages(List.of(
-                            ValueLabel.builder()
-                                    .value("en")
-                                    .label("language")
-                                    .build()))
-                    .hasVersions(List.of(
-                            ValueLabel.builder()
-                                    .value("1")
-                                    .label("version")
-                                    .build()))
+                    .languages(getValueLabels("language", "en", 2))
+                    .hasVersions(getValueLabels("version", "1"))
                     .creators(List.of(
                             Agent.builder()
                                     .name("creatorName")
@@ -129,24 +122,14 @@ class CkanDatasetsMapperTest {
                                     .type("type2")
                                     .build()
                     ))
-                    .accessRights(ValueLabel.builder()
-                            .value("public")
-                            .label("accessRights")
-                            .build())
-                    .conformsTo(List.of(
-                            ValueLabel.builder()
-                                    .value("conforms")
-                                    .label("conformsTo")
-                                    .build()))
+                    .accessRights(getValueLabel("accessRights", "public", 10))
+                    .conformsTo(getValueLabels("conformsTo", "conforms", 5))
                     .provenance("provenance")
                     .keywords(List.of(ValueLabel.builder()
                             .label("key-tag")
                             .value("key")
                             .build()))
-                    .spatial(ValueLabel.builder()
-                            .value("uri")
-                            .label("spatial")
-                            .build())
+                    .spatial(getValueLabel("spatial", "uri"))
                     .distributions(List.of(
                             RetrievedDistribution.builder()
                                     .id("resource_id")
@@ -154,17 +137,10 @@ class CkanDatasetsMapperTest {
                                     .description("resource_description")
                                     .createdAt(parse("2025-03-19T00:00Z"))
                                     .modifiedAt(parse("2025-03-19T13:37:05Z"))
-                                    .format(ValueLabel.builder()
-                                            .value("pdf")
-                                            .label("format")
-                                            .build())
+                                    .format(getValueLabel("format", "pdf", 1))
                                     .accessUrl(URI.create("https://accessUrl.com"))
                                     .downloadUrl(URI.create("https://downloadUrl.com"))
-                                    .languages(List.of(
-                                            ValueLabel.builder()
-                                                    .value("en")
-                                                    .label("language")
-                                                    .build()))
+                                    .languages(getValueLabels("language", "en", 2))
                                     .accessService(List.of())
 // FIXME: this line fails on the comparison at the end, expecting [] but receiving null
 //                                    .applicableLegislation(List.of())
@@ -205,38 +181,55 @@ class CkanDatasetsMapperTest {
                     .analytics(List.of("http://example.com/analytics"))
                     .applicableLegislation(List.of(URI.create(
                             "http://data.europa.eu/eli/reg/2022/868/oj")))
-                    .codeValues(List.of("http://example.com/code1", "http://example.com/code2"))
-                    .codingSystem(List.of("http://example.com/codingSystem"))
+                    .codeValues(List.of(
+                            getValueLabel("Code Label One", "http://example.com/code1", 7),
+                            getValueLabel("Code Label Two", "http://example.com/code2", 8)))
+                    .codingSystem(List.of(
+                            getValueLabel("Coding System", "http://example.com/codingSystem")))
                     .hdab(List.of(Agent.builder()
                             .name("EU Health Data Access Body")
                             .email("hdab@example.com")
                             .url("https://www.example.com/hdab")
                             .build()))
-                    .healthCategory(List.of("Genomics", "Medical Imaging",
-                            "Electronic Health Records"))
+                    .healthCategory(List.of(
+                            getValueLabel("Genomics",
+                                    "http://example.com/health-category/genomics", 6),
+                            getValueLabel("Medical Imaging",
+                                    "http://example.com/health-category/medical-imaging", 3),
+                            getValueLabel("Electronic Health Records",
+                                    "http://example.com/health-category/ehr", 1)))
                     .healthTheme(List.of(
-                            "http://www.wikidata.org/entity/Q58624061",
-                            "http://www.wikidata.org/entity/Q7907952"))
-                    .legalBasis(List.of("https://w3id.org/dpv#Consent"))
+                            getValueLabel("Health Theme 1",
+                                    "http://www.wikidata.org/entity/Q58624061", 4),
+                            getValueLabel("Health Theme 2",
+                                    "http://www.wikidata.org/entity/Q7907952", 2)))
+                    .legalBasis(List.of(
+                            getValueLabel("Consent", "https://w3id.org/dpv#Consent")))
                     .maxTypicalAge(100)
                     .minTypicalAge(0)
                     .numberOfRecords(123456789)
                     .numberOfUniqueIndividuals(123456789)
                     .personalData(List.of(
-                            "https://w3id.org/dpv/dpv-pd#Age",
-                            "https://w3id.org/dpv/dpv-pd#Gender",
-                            "https://w3id.org/dpv/dpv-pd#HealthRecord"))
+                            getValueLabel("Age", "https://w3id.org/dpv/dpv-pd#Age", 9),
+                            getValueLabel("Gender", "https://w3id.org/dpv/dpv-pd#Gender", 8),
+                            getValueLabel("Health Record",
+                                    "https://w3id.org/dpv/dpv-pd#HealthRecord", 7)))
                     .populationCoverage(List.of(
                             "This example includes a very non-descript population"))
                     .publisherNote(List.of(
                             "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation."))
-                    .publisherType(List.of("http://example.com/publisherType/undefined"))
+                    .publisherType(List.of(
+                            getValueLabel("Undefined",
+                                    "http://example.com/publisherType/undefined")))
                     .trustedDataHolder(true)
-                    .purpose(List.of("https://w3id.org/dpv#AcademicResearch"))
+                    .purpose(List.of(
+                            getValueLabel("Academic Research",
+                                    "https://w3id.org/dpv#AcademicResearch")))
                     .qualifiedRelation(List.of(
                             RetrievedDatasetQualifiedRelationInner.builder()
                                     .relation("http://example.com/dataset/3.141592")
-                                    .role("https://w3id.org/dpv#AcademicResearchRole")
+                                    .role(getValueLabel("Academic Research Role",
+                                            "https://w3id.org/dpv#AcademicResearchRole", 11))
                                     .uri("https://w3id.org/dpv#AcademicResearchUri")
                                     .build()))
                     .retentionPeriod(List.of(
@@ -277,15 +270,15 @@ class CkanDatasetsMapperTest {
                 .title("title")
                 .dcatType(getCkanValueLabel("type", "type-uri"))
                 .notes("notes")
-                .theme(getValueLabels("theme", "theme-name"))
+                .theme(getCkanValueLabels("theme", "theme-name", 3))
                 .issued("2024-07-01T22:00:00+00:00")
                 .modified("2024-07-02T22:00:00Z")
                 .tags(getCkanTags())
                 .url("url")
-                .language(getValueLabels("language", "en"))
-                .hasVersion(getValueLabels("version", "1"))
-                .accessRights(getCkanValueLabel("accessRights", "public"))
-                .conformsTo(getValueLabels("conformsTo", "conforms"))
+                .language(getCkanValueLabels("language", "en", 2))
+                .hasVersion(getCkanValueLabels("version", "1"))
+                .accessRights(getCkanValueLabel("accessRights", "public", 10))
+                .conformsTo(getCkanValueLabels("conformsTo", "conforms", 5))
                 .provenance("provenance")
                 .spatialUri(getCkanValueLabel("spatial", "uri"))
                 .resources(getCkanResources())
@@ -350,10 +343,19 @@ class CkanDatasetsMapperTest {
                         CkanDatasetDictionaryEntry.builder().name("Entry 2").type("Type 2")
                                 .description("Description 2").build()
                 ))
-                .healthTheme(List.of("http://www.wikidata.org/entity/Q58624061",
-                        "http://www.wikidata.org/entity/Q7907952"))
-                .healthCategory(List.of("Genomics", "Medical Imaging", "Electronic Health Records"))
-                .legalBasis(List.of("https://w3id.org/dpv#Consent"))
+                .healthTheme(List.of(
+                        getCkanValueLabel("Health Theme 1",
+                                "http://www.wikidata.org/entity/Q58624061", 4),
+                        getCkanValueLabel("Health Theme 2",
+                                "http://www.wikidata.org/entity/Q7907952", 2)))
+                .healthCategory(List.of(
+                        getCkanValueLabel("Genomics",
+                                "http://example.com/health-category/genomics", 6),
+                        getCkanValueLabel("Medical Imaging",
+                                "http://example.com/health-category/medical-imaging", 3),
+                        getCkanValueLabel("Electronic Health Records",
+                                "http://example.com/health-category/ehr", 1)))
+                .legalBasis(List.of(getCkanValueLabel("Consent", "https://w3id.org/dpv#Consent")))
                 .hdab(List.of(
                         CkanAgent.builder()
                                 .name("EU Health Data Access Body")
@@ -366,33 +368,37 @@ class CkanDatasetsMapperTest {
                 .maxTypicalAge(100)
                 .numberOfRecords(123456789)
                 .numberOfUniqueIndividuals(123456789)
-                .personalData(List.of("https://w3id.org/dpv/dpv-pd#Age",
-                        "https://w3id.org/dpv/dpv-pd#Gender",
-                        "https://w3id.org/dpv/dpv-pd#HealthRecord"))
-                .populationCoverage(List.of("This example includes a very non-descript population"))
-                .personalData(List.of("https://w3id.org/dpv/dpv-pd#Age",
-                        "https://w3id.org/dpv/dpv-pd#Gender",
-                        "https://w3id.org/dpv/dpv-pd#HealthRecord"))
+                .personalData(List.of(
+                        getCkanValueLabel("Age", "https://w3id.org/dpv/dpv-pd#Age", 9),
+                        getCkanValueLabel("Gender", "https://w3id.org/dpv/dpv-pd#Gender", 8),
+                        getCkanValueLabel("Health Record",
+                                "https://w3id.org/dpv/dpv-pd#HealthRecord", 7)))
                 .populationCoverage(List.of("This example includes a very non-descript population"))
                 .publisherNote(List.of(
                         "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation."))
-                .publisherType(List.of("http://example.com/publisherType/undefined"))
+                .publisherType(List.of(getCkanValueLabel("Undefined",
+                        "http://example.com/publisherType/undefined")))
                 .trustedDataHolder(true)
-                .purpose(List.of("https://w3id.org/dpv#AcademicResearch"))
+                .purpose(List.of(getCkanValueLabel("Academic Research",
+                        "https://w3id.org/dpv#AcademicResearch")))
                 .retentionPeriod(List.of(
                         CkanTimeWindow.builder()
                                 .start("2024-07-01T22:00:00+00:00")
                                 .end("2024-07-02T22:00:00+00:00")
                                 .build()
                 ))
-                .codeValues(List.of("http://example.com/code1", "http://example.com/code2"))
+                .codeValues(List.of(
+                        getCkanValueLabel("Code Label One", "http://example.com/code1", 7),
+                        getCkanValueLabel("Code Label Two", "http://example.com/code2", 8)))
                 .analytics(List.of("http://example.com/analytics"))
-                .codingSystem(List.of("http://example.com/codingSystem"))
+                .codingSystem(List.of(getCkanValueLabel("Coding System",
+                        "http://example.com/codingSystem")))
                 .applicableLegislation(List.of(URI.create(
                         "http://data.europa.eu/eli/reg/2022/868/oj")))
                 .qualifiedRelation(List.of(
                         CkanPackageQualifiedRelationInner.builder()
-                                .role("https://w3id.org/dpv#AcademicResearchRole")
+                                .role(getCkanValueLabel("Academic Research Role",
+                                        "https://w3id.org/dpv#AcademicResearchRole", 11))
                                 .relation("http://example.com/dataset/3.141592")
                                 .uri("https://w3id.org/dpv#AcademicResearchUri")
                                 .build()
@@ -461,10 +467,7 @@ class CkanDatasetsMapperTest {
                                     .identifier("publisherIdentifier2")
                                     .type("type2")
                                     .build()))
-                    .themes(List.of(ValueLabel.builder()
-                            .value("theme-name")
-                            .label("theme")
-                            .build()))
+                    .themes(getValueLabels("theme", "theme-name", 3))
                     .keywords(List.of(ValueLabel.builder()
                             .value("key")
                             .label("key-tag")
@@ -473,10 +476,7 @@ class CkanDatasetsMapperTest {
                     .createdAt(OffsetDateTime.parse("2024-07-01T22:00Z"))
                     .distributionsCount(1)
                     .numberOfUniqueIndividuals(123456789)
-                    .accessRights(ValueLabel.builder()
-                            .value("public")
-                            .label("accessRights")
-                            .build())
+                    .accessRights(getValueLabel("accessRights", "public", 10))
                     .temporalCoverage(TimeWindow.builder()
                             .start(parse("2024-07-12T22:00Z"))
                             .end(parse("2024-07-13T22:00Z"))
@@ -491,21 +491,38 @@ class CkanDatasetsMapperTest {
                         .id("resource_id")
                         .name("resource_name")
                         .description("resource_description")
-                        .format(getCkanValueLabel("format", "pdf"))
+                        .format(getCkanValueLabel("format", "pdf", 1))
                         .accessUrl(URI.create("https://accessUrl.com"))
                         .downloadUrl(URI.create("https://downloadUrl.com"))
                         .issuedDate("2025-03-19")
                         .modifiedDate("2025-03-19T13:37:05Z")
-                        .language(getValueLabels("language", "en"))
+                        .language(getCkanValueLabels("language", "en", 2))
                         .conformsTo(List.of())
                         .documentation(List.of())
                         .build());
     }
 
-    private static CkanValueLabel getCkanValueLabel(String spatial, String uri) {
+    private static CkanValueLabel getCkanValueLabel(String label, String value) {
+        return getCkanValueLabel(label, value, null);
+    }
+
+    private static CkanValueLabel getCkanValueLabel(String label, String value, Integer count) {
         return CkanValueLabel.builder()
-                .displayName(spatial)
-                .name(uri)
+                .displayName(label)
+                .name(value)
+                .count(count)
+                .build();
+    }
+
+    private static ValueLabel getValueLabel(String label, String value) {
+        return getValueLabel(label, value, null);
+    }
+
+    private static ValueLabel getValueLabel(String label, String value, Integer count) {
+        return ValueLabel.builder()
+                .label(label)
+                .value(value)
+                .count(count)
                 .build();
     }
 
@@ -517,7 +534,21 @@ class CkanDatasetsMapperTest {
                 .build());
     }
 
-    private static @NotNull List<CkanValueLabel> getValueLabels(String theme, String name) {
-        return List.of(getCkanValueLabel(theme, name));
+    private static @NotNull List<CkanValueLabel> getCkanValueLabels(String label, String value) {
+        return List.of(getCkanValueLabel(label, value));
+    }
+
+    private static @NotNull List<CkanValueLabel> getCkanValueLabels(String label, String value,
+            Integer count) {
+        return List.of(getCkanValueLabel(label, value, count));
+    }
+
+    private static @NotNull List<ValueLabel> getValueLabels(String label, String value) {
+        return List.of(getValueLabel(label, value));
+    }
+
+    private static @NotNull List<ValueLabel> getValueLabels(String label, String value,
+            Integer count) {
+        return List.of(getValueLabel(label, value, count));
     }
 }

@@ -68,7 +68,7 @@ public class CkanFacetsQueryBuilder {
                         !FilterType.NUMBER.equals(facet.getType()))
                 .map(DatasetSearchQueryFacet::getValue)
                 .filter(value -> nonNull(value) && !value.isBlank())
-                .map(value -> QUOTED_VALUE.formatted(value))
+                .map(QUOTED_VALUE::formatted)
                 .collect(joining(operator));
 
         if (values.isEmpty()) {

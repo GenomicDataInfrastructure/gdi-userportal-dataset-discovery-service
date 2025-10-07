@@ -149,9 +149,9 @@ class RetrieveFiltersQueryTest {
     @Test
     void shouldGroupFilters() {
         when(datasetsConfig.filterGroups()).thenReturn(List.of(
-                new MockFilterGroup("CKAN_GROUP", Set.of(new MockFilter("tags", false))),
+                new MockFilterGroup("CKAN_GROUP", Set.of(new MockFilter("tags", false, false))),
                 new MockFilterGroup("BEACON_GROUP",
-                        Set.of(new MockFilter("Human Phenotype Ontology", false)))
+                        Set.of(new MockFilter("Human Phenotype Ontology", false, false)))
         ));
         when(datasetsConfig.noGroupKey()).thenReturn("DUMMY");
 

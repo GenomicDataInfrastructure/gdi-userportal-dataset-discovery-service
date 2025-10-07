@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -80,7 +81,7 @@ public class CkanFilterBuilder implements FilterBuilder {
         facets.entrySet()
                 .stream()
                 .map(this::filter)
-                .filter(f -> f != null)
+                .filter(Objects::nonNull)
                 .forEach(filter -> filtersByKey.put(filter.getKey(), filter));
 
         filtersMetadata.forEach((filterKey, metadata) -> {

@@ -149,9 +149,9 @@ class RetrieveFiltersQueryTest {
     @Test
     void shouldGroupFilters() {
         when(datasetsConfig.filterGroups()).thenReturn(List.of(
-                new MockFilterGroup("CKAN_GROUP", Set.of(new MockFilter("tags", false))),
+                new MockFilterGroup("CKAN_GROUP", Set.of(new MockFilter("tags", false, false))),
                 new MockFilterGroup("BEACON_GROUP",
-                        Set.of(new MockFilter("Human Phenotype Ontology", false)))
+                        Set.of(new MockFilter("Human Phenotype Ontology", false, false)))
         ));
         when(datasetsConfig.noGroupKey()).thenReturn("DUMMY");
 
@@ -214,56 +214,11 @@ class RetrieveFiltersQueryTest {
                 );
     }
 
-    class MockFilterGroup implements FilterGroup {
 
-        private String key;
-        private Set<DatasetsConfig.Filter> filters;
-
-        MockFilterGroup(String key, Set<DatasetsConfig.Filter> filters) {
-            this.key = key;
-            this.filters = filters;
-        }
-
-        @Override
-        public String key() {
-            return key;
-        }
-
-        @Override
-        public Set<DatasetsConfig.Filter> filters() {
-            return filters;
-        }
+    record MockFilterGroup(String key, Set<DatasetsConfig.Filter> filters) implements FilterGroup {
     }
 
-    class MockFilter implements DatasetsConfig.Filter {
-
-        private final String key;
-        private final Boolean dateTime;
-        private final Boolean number;
-
-        MockFilter(String key, Boolean dateTime) {
-            this(key, dateTime, false);
-        }
-
-        MockFilter(String key, Boolean dateTime, Boolean number) {
-            this.key = key;
-            this.dateTime = dateTime;
-            this.number = number;
-        }
-
-        @Override
-        public String key() {
-            return key;
-        }
-
-        @Override
-        public Boolean isDateTime() {
-            return dateTime;
-        }
-
-        @Override
-        public Boolean isNumber() {
-            return number;
-        }
+    record MockFilter(String key, Boolean isDateTime, Boolean isNumber) implements
+            DatasetsConfig.Filter {
     }
 }

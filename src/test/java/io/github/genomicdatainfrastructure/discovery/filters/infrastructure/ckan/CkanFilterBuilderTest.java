@@ -104,7 +104,6 @@ class CkanFilterBuilderTest {
                                         .items(List.of(
                                                 CkanValueLabel.builder()
                                                         .name("not-a-number")
-                                                        .displayName("N/A")
                                                         .count(1)
                                                         .build()))
                                         .build()))

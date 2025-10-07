@@ -12,6 +12,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.18] - 2025-10-07
+
+### Added
+- feat(ValueLabel) add values label for more fields to be resolved by @Hans-Christian in b944430
+- feat(filters) support for datetime filters (#236) by @Hans-Christian in b06d3a3
+
+
+### Changed
+- Support number filters (#237) by @Hans-Christian in ca3b918
+- chore(deps): update dependency org.assertj:assertj-core to v3.27.6 by @Renovate Bot in 58828d7
+- chore(deps): update dependency org.apache.maven.plugins:maven-compiler-plugin to v3.14.1 by @Renovate Bot in c8a5a10
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.6-1758184547 by @Renovate Bot in 95ced69
+- chore(deps): update dependency org.assertj:assertj-core to v3.27.5 by @Renovate Bot in 6a50ef4
+- chore(deps): update quarkus.platform.version to v3.26.4 by @Renovate Bot in ef0da9e
+- doc: update CHANGELOG.md for v1.3.17 by @LNDS-Sysadmins in 2b95fa2
+
+
+### Fixed
+- fix(deps): update dependency org.projectlombok:lombok to v1.18.42 by @Renovate Bot in 36952a3
+
+
 ## [v1.3.17] - 2025-09-17
 
 ### Added

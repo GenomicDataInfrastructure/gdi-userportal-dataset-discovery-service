@@ -217,6 +217,7 @@ class RetrieveFiltersQueryTest {
     record MockFilterGroup(String key, Set<DatasetsConfig.Filter> filters) implements FilterGroup {
     }
 
-    record MockFilter(String key, Boolean isDateTime, Boolean isNumber) implements DatasetsConfig.Filter {
+    record MockFilter(String key, Boolean isDateTime, Boolean isNumber) implements
+            DatasetsConfig.Filter {
     }
 }

@@ -12,9 +12,6 @@ import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import jakarta.enterprise.inject.Instance;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -152,8 +149,9 @@ class RetrieveFiltersQueryTest {
     @Test
     void shouldGroupFilters() {
         when(datasetsConfig.filterGroups()).thenReturn(List.of(
-                new MockFilterGroup("CKAN_GROUP", Set.of("tags")),
-                new MockFilterGroup("BEACON_GROUP", Set.of("Human Phenotype Ontology"))
+                new MockFilterGroup("CKAN_GROUP", Set.of(new MockFilter("tags", false))),
+                new MockFilterGroup("BEACON_GROUP",
+                        Set.of(new MockFilter("Human Phenotype Ontology", false)))
         ));
         when(datasetsConfig.noGroupKey()).thenReturn("DUMMY");
 
@@ -216,21 +214,9 @@ class RetrieveFiltersQueryTest {
                 );
     }
 
-    @Data
-    @AllArgsConstructor
-    class MockFilterGroup implements FilterGroup {
+    record MockFilterGroup(String key, Set<DatasetsConfig.Filter> filters) implements FilterGroup {
+    }
 
-        private String key;
-        private Set<String> filters;
-
-        @Override
-        public String key() {
-            return key;
-        }
-
-        @Override
-        public Set<String> filters() {
-            return filters;
-        }
+    record MockFilter(String key, Boolean isDateTime) implements DatasetsConfig.Filter {
     }
 }

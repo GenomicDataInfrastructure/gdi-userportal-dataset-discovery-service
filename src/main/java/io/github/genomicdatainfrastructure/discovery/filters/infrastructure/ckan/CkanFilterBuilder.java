@@ -16,8 +16,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesS
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
 import static java.util.Optional.ofNullable;
@@ -29,6 +28,7 @@ public class CkanFilterBuilder implements FilterBuilder {
 
     private final CkanQueryApi ckanQueryApi;
     private final String selectedFacets;
+    private final Map<String, FilterMetadata> filtersMetadata;
 
     public CkanFilterBuilder(
             @RestClient CkanQueryApi ckanQueryApi,
@@ -39,6 +39,7 @@ public class CkanFilterBuilder implements FilterBuilder {
                 "\",\"",
                 datasetsConfig.filters().split(",")
         ));
+        this.filtersMetadata = extractFiltersMetadata(datasetsConfig);
     }
 
     @Override
@@ -63,35 +64,83 @@ public class CkanFilterBuilder implements FilterBuilder {
         return filters(nonNullSearchFacets);
     }
 
-    private List<Filter> filters(Map<String, CkanFacet> filters) {
-        return filters
-                .entrySet()
+    private List<Filter> filters(Map<String, CkanFacet> facets) {
+        var filtersByKey = new LinkedHashMap<String, Filter>();
+
+        facets.entrySet()
                 .stream()
                 .map(this::filter)
-                .toList();
+                .filter(Objects::nonNull)
+                .forEach(filter -> filtersByKey.put(filter.getKey(), filter));
+
+        filtersMetadata.entrySet().stream()
+                .filter(entry -> entry.getValue().isDateTime)
+                .forEach(entry -> filtersByKey.putIfAbsent(entry.getKey(),
+                        buildDateTimeFilter(entry.getKey(), null, entry.getValue().group)));
+
+        return List.copyOf(filtersByKey.values());
     }
 
     private Filter filter(Map.Entry<String, CkanFacet> entry) {
         var key = entry.getKey();
-        var filter = entry.getValue();
+        var facet = entry.getValue();
 
-        var values = ofNullable(filter.getItems())
+        var metadata = filtersMetadata.get(key);
+        if (metadata != null && metadata.isDateTime) {
+            return buildDateTimeFilter(key, facet.getTitle(), metadata.group);
+        }
+
+        var values = ofNullable(facet.getItems())
                 .orElseGet(List::of)
                 .stream()
                 .map(value -> ValueLabel.builder()
                         .value(value.getName())
                         .label(value.getDisplayName())
-                        .build()
-                )
+                        .build())
                 .toList();
 
-        return Filter
-                .builder()
+        return Filter.builder()
                 .source(CKAN_FILTER_SOURCE)
                 .type(FilterType.DROPDOWN)
                 .key(key)
-                .label(filter.getTitle())
+                .label(facet.getTitle())
                 .values(values)
+                .group(metadata != null ? metadata.group : null)
                 .build();
+    }
+
+    private Filter buildDateTimeFilter(String key, String ckanLabel, String group) {
+        return Filter.builder()
+                .source(CKAN_FILTER_SOURCE)
+                .type(FilterType.DATETIME)
+                .key(key)
+                .label(ckanLabel)
+                .group(group)
+                .build();
+    }
+
+    private Map<String, FilterMetadata> extractFiltersMetadata(DatasetsConfig datasetsConfig) {
+        return ofNullable(datasetsConfig.filterGroups())
+                .orElseGet(List::of)
+                .stream()
+                .flatMap(group -> ofNullable(group.filters()).orElseGet(Set::of)
+                        .stream()
+                        .map(filter -> Map.entry(filter.key(),
+                                new FilterMetadata(Boolean.TRUE.equals(filter.isDateTime()),
+                                        group.key()))))
+                .collect(LinkedHashMap::new,
+                        (map, entry) -> map.put(entry.getKey(), entry.getValue()),
+                        Map::putAll);
+    }
+
+    private static final class FilterMetadata {
+
+        private final boolean isDateTime;
+        private final String group;
+
+        private FilterMetadata(boolean isDateTime, String group) {
+            this.isDateTime = isDateTime;
+            this.group = group;
+        }
     }
 }

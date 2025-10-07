@@ -61,6 +61,7 @@ class RetrieveFiltersQueryTest {
                                 List.of(ValueLabel.builder()
                                         .label("genomics")
                                         .value("5")
+                                        .count(10)
                                         .build()))
                         .build());
 
@@ -76,6 +77,7 @@ class RetrieveFiltersQueryTest {
                                 List.of(ValueLabel.builder()
                                         .label("Motor delay")
                                         .value("3")
+                                        .count(7)
                                         .build()))
                         .build());
         when(filterBuilderBeacon.build(anyString(), any())).thenReturn(mockBeaconFilters);
@@ -93,6 +95,7 @@ class RetrieveFiltersQueryTest {
                                 List.of(ValueLabel.builder()
                                         .label("Motor delay")
                                         .value("3")
+                                        .count(7)
                                         .build()))
                         .build(),
                         Filter.builder()
@@ -105,6 +108,7 @@ class RetrieveFiltersQueryTest {
                                         List.of(ValueLabel.builder()
                                                 .label("genomics")
                                                 .value("5")
+                                                .count(10)
                                                 .build()))
                                 .build()
                 );
@@ -122,6 +126,7 @@ class RetrieveFiltersQueryTest {
                                 List.of(ValueLabel.builder()
                                         .label("genomics")
                                         .value("5")
+                                        .count(10)
                                         .build()))
                         .build());
 
@@ -142,6 +147,7 @@ class RetrieveFiltersQueryTest {
                                 List.of(ValueLabel.builder()
                                         .label("genomics")
                                         .value("5")
+                                        .count(10)
                                         .build()))
                         .build());
     }
@@ -165,6 +171,7 @@ class RetrieveFiltersQueryTest {
                                 List.of(ValueLabel.builder()
                                         .label("genomics")
                                         .value("5")
+                                        .count(10)
                                         .build()))
                         .build());
 
@@ -180,6 +187,7 @@ class RetrieveFiltersQueryTest {
                                 List.of(ValueLabel.builder()
                                         .label("Motor delay")
                                         .value("3")
+                                        .count(7)
                                         .build()))
                         .build());
         when(filterBuilderBeacon.build(anyString(), any())).thenReturn(mockBeaconFilters);
@@ -197,6 +205,7 @@ class RetrieveFiltersQueryTest {
                                 List.of(ValueLabel.builder()
                                         .label("Motor delay")
                                         .value("3")
+                                        .count(7)
                                         .build()))
                         .build(),
                         Filter.builder()
@@ -209,11 +218,11 @@ class RetrieveFiltersQueryTest {
                                         List.of(ValueLabel.builder()
                                                 .label("genomics")
                                                 .value("5")
+                                                .count(10)
                                                 .build()))
                                 .build()
                 );
     }
-
 
     record MockFilterGroup(String key, Set<DatasetsConfig.Filter> filters) implements FilterGroup {
     }

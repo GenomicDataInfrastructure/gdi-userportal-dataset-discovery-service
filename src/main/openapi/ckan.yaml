@@ -199,7 +199,7 @@ components:
         tags:
           type: array
           items:
-            $ref: "#/components/schemas/CkanTag"
+            type: string
         contact:
           type: array
           items:
@@ -265,9 +265,7 @@ components:
 
         # Below are properties from HealthDCAT
         publisher_note:
-          type: array
-          items:
-            type: string
+          type: string
         publisher_coverage:
           type: array
           items:
@@ -294,9 +292,7 @@ components:
         temporal_resolution:
           type: string
         population_coverage:
-          type: array
-          items:
-            type: string
+          type: string
         retention_period:
           type: array
           items:
@@ -392,7 +388,7 @@ components:
               body:
                 type: string
               motivated_by:
-                type: string
+                $ref: "#/components/schemas/CkanValueLabel"
               target:
                 type: string
             required:
@@ -537,7 +533,7 @@ components:
         conforms_to:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/CkanValueLabel"
         mimetype:
           type: string
         modified_date:
@@ -573,8 +569,7 @@ components:
             type: object
             properties:
               access_rights:
-                type: string
-                format: uri
+                $ref: "#/components/schemas/CkanValueLabel"
               applicable_legislation:
                 type: array
                 items:
@@ -583,8 +578,7 @@ components:
               conforms_to:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/CkanValueLabel"
               contact:
                 type: array
                 items:
@@ -609,8 +603,7 @@ components:
               format:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/CkanValueLabel"
               identifier:
                 type: string
               keyword:
@@ -624,8 +617,7 @@ components:
               language:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/CkanValueLabel"
               license:
                 type: string
               modified:
@@ -662,22 +654,6 @@ components:
           type: boolean
         result:
           $ref: "#/components/schemas/CkanPackage"
-    CkanTag:
-      type: object
-      properties:
-        id:
-          type: string
-        state:
-          type: string
-        display_name:
-          type: string
-        name:
-          type: string
-      required:
-        - id
-        - display_name
-        - name
-        - state
     CkanErrorResponse:
       type: object
       properties:

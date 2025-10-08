@@ -349,7 +349,7 @@ components:
         keywords:
           type: array
           items:
-            $ref: "#/components/schemas/ValueLabel"
+            type: string
           title: Keywords
         catalogue:
           type: string
@@ -461,7 +461,7 @@ components:
         keywords:
           type: array
           items:
-            $ref: "#/components/schemas/ValueLabel"
+            type: string
         provenance:
           type: string
           title: Provenance
@@ -476,9 +476,7 @@ components:
           $ref: "#/components/schemas/ValueLabel"
         # Below are properties from HealthDCAT
         publisherNote:
-          type: array
-          items:
-            type: string
+          type: string
         publisherCoverage:
           type: array
           items:
@@ -507,9 +505,7 @@ components:
         temporalResolution:
           type: string
         populationCoverage:
-          type: array
-          items:
-            type: string
+          type: string
         retentionPeriod:
           type: array
           items:
@@ -633,7 +629,7 @@ components:
               body:
                 type: string
               motivated_by:
-                type: string
+                $ref: "#/components/schemas/ValueLabel"
               target:
                 type: string
         qualifiedAttribution:
@@ -694,7 +690,7 @@ components:
         conformsTo:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/ValueLabel"
         mediaType:
           type: string
         modifiedAt:
@@ -737,8 +733,7 @@ components:
             type: object
             properties:
               accessRights:
-                type: string
-                format: uri
+                $ref: "#/components/schemas/ValueLabel"
               applicableLegislation:
                 type: array
                 items:
@@ -747,8 +742,7 @@ components:
               conformsTo:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/ValueLabel"
               contact:
                 type: array
                 items:
@@ -773,8 +767,7 @@ components:
               format:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/ValueLabel"
               id:
                 type: string
                 title: Data service internal ID
@@ -789,8 +782,7 @@ components:
               languages:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/ValueLabel"
               license:
                 type: string
               modified:

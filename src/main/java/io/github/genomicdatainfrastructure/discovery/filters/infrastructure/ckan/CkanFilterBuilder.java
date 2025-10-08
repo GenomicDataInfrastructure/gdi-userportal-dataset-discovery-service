@@ -36,6 +36,7 @@ import static java.util.Optional.ofNullable;
 public class CkanFilterBuilder implements FilterBuilder {
 
     private static final String SELECTED_FACETS_PATTERN = "[\"%s\"]";
+    private static final FilterType DEFAULT_FILTER_TYPE = FilterType.DROPDOWN;
 
     private final CkanQueryApi ckanQueryApi;
     private final String selectedFacets;
@@ -85,10 +86,12 @@ public class CkanFilterBuilder implements FilterBuilder {
                 .forEach(filter -> filtersByKey.put(filter.getKey(), filter));
 
         filtersMetadata.forEach((filterKey, metadata) -> {
-            if (metadata.isDateTime) {
+            if (FilterType.DATETIME.equals(metadata.type)) {
                 filtersByKey.putIfAbsent(filterKey, buildDateTimeFilter(filterKey, null,
                         metadata.group));
-            } else if (metadata.isNumber) {
+                return;
+            }
+            if (FilterType.NUMBER.equals(metadata.type)) {
                 filtersByKey.putIfAbsent(filterKey, buildNumberFilter(filterKey, null,
                         metadata.group));
             }
@@ -102,11 +105,11 @@ public class CkanFilterBuilder implements FilterBuilder {
         var facet = entry.getValue();
 
         var metadata = filtersMetadata.get(key);
-        if (metadata != null && metadata.isDateTime) {
+        if (metadata != null && FilterType.DATETIME.equals(metadata.type)) {
             return buildDateTimeFilter(key, facet, metadata.group);
         }
 
-        if (metadata != null && metadata.isNumber) {
+        if (metadata != null && FilterType.NUMBER.equals(metadata.type)) {
             return buildNumberFilter(key, facet, metadata.group);
         }
 
@@ -120,9 +123,13 @@ public class CkanFilterBuilder implements FilterBuilder {
                         .build())
                 .toList();
 
+        var type = Optional.ofNullable(metadata)
+                .map(m -> m.type)
+                .orElse(DEFAULT_FILTER_TYPE);
+
         return Filter.builder()
                 .source(CKAN_FILTER_SOURCE)
-                .type(FilterType.DROPDOWN)
+                .type(type)
                 .key(key)
                 .label(facet.getTitle())
                 .values(values)
@@ -169,16 +176,12 @@ public class CkanFilterBuilder implements FilterBuilder {
             return null;
         }
 
-        var min = bounds.stream().min(Comparator.naturalOrder()).orElse(null);
-        var max = bounds.stream().max(Comparator.naturalOrder()).orElse(null);
-
-        if (min == null && max == null) {
-            return null;
-        }
+        var min = bounds.stream().min(Comparator.naturalOrder()).orElseThrow();
+        var max = bounds.stream().max(Comparator.naturalOrder()).orElseThrow();
 
         return FilterRange.builder()
-                .min(min != null ? min.toString() : null)
-                .max(max != null ? max.toString() : null)
+                .min(min.toString())
+                .max(max.toString())
                 .build();
     }
 
@@ -257,24 +260,15 @@ public class CkanFilterBuilder implements FilterBuilder {
                 .flatMap(group -> ofNullable(group.filters()).orElseGet(Set::of)
                         .stream()
                         .map(filter -> Map.entry(filter.key(),
-                                new FilterMetadata(Boolean.TRUE.equals(filter.isDateTime()),
-                                        Boolean.TRUE.equals(filter.isNumber()), group.key()))))
+                                new FilterMetadata(Optional.ofNullable(filter.type())
+                                        .orElse(DEFAULT_FILTER_TYPE),
+                                        group.key()))))
                 .collect(LinkedHashMap::new,
                         (map, entry) -> map.put(entry.getKey(), entry.getValue()),
                         Map::putAll);
     }
 
-    private static final class FilterMetadata {
-
-        private final boolean isDateTime;
-        private final boolean isNumber;
-        private final String group;
-
-        private FilterMetadata(boolean isDateTime, boolean isNumber, String group) {
-            this.isDateTime = isDateTime;
-            this.isNumber = isNumber;
-            this.group = group;
-        }
+    private record FilterMetadata(FilterType type, String group) {
     }
 
     private record NumericBound(BigDecimal numeric, String raw) {

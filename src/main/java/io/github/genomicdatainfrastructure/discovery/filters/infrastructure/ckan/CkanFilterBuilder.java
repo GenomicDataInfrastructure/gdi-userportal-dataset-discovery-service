@@ -176,8 +176,8 @@ public class CkanFilterBuilder implements FilterBuilder {
             return null;
         }
 
-        var min = bounds.stream().min(Comparator.naturalOrder()).orElse(null);
-        var max = bounds.stream().max(Comparator.naturalOrder()).orElse(null);
+        var min = bounds.stream().min(Comparator.naturalOrder()).orElseThrow();
+        var max = bounds.stream().max(Comparator.naturalOrder()).orElseThrow();
 
         return FilterRange.builder()
                 .min(min.toString())

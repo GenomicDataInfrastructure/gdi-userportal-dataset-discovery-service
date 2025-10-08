@@ -123,9 +123,9 @@ public class CkanFilterBuilder implements FilterBuilder {
                         .build())
                 .toList();
 
-        var type = metadata != null && metadata.type != null
-                ? metadata.type
-                : DEFAULT_FILTER_TYPE;
+        var type = Optional.ofNullable(metadata)
+                .map(m -> m.type)
+                .orElse(DEFAULT_FILTER_TYPE);
 
         return Filter.builder()
                 .source(CKAN_FILTER_SOURCE)

@@ -179,13 +179,9 @@ public class CkanFilterBuilder implements FilterBuilder {
         var min = bounds.stream().min(Comparator.naturalOrder()).orElse(null);
         var max = bounds.stream().max(Comparator.naturalOrder()).orElse(null);
 
-        if (min == null && max == null) {
-            return null;
-        }
-
         return FilterRange.builder()
-                .min(min != null ? min.toString() : null)
-                .max(max != null ? max.toString() : null)
+                .min(min.toString())
+                .max(max.toString())
                 .build();
     }
 
@@ -272,15 +268,7 @@ public class CkanFilterBuilder implements FilterBuilder {
                         Map::putAll);
     }
 
-    private static final class FilterMetadata {
-
-        private final FilterType type;
-        private final String group;
-
-        private FilterMetadata(FilterType type, String group) {
-            this.type = type;
-            this.group = group;
-        }
+    private record FilterMetadata(FilterType type, String group) {
     }
 
     private record NumericBound(BigDecimal numeric, String raw) {

@@ -40,7 +40,6 @@ class CkanDatasetsMapperTest {
                     .hasVersions(List.of())
                     .languages(List.of())
                     .themes(List.of())
-                    .keywords(List.of())
                     .contacts(List.of())
                     .creators(List.of())
                     .publishers(List.of())
@@ -125,10 +124,7 @@ class CkanDatasetsMapperTest {
                     .accessRights(getValueLabel("accessRights", "public", 10))
                     .conformsTo(getValueLabels("conformsTo", "conforms", 5))
                     .provenance("provenance")
-                    .keywords(List.of(ValueLabel.builder()
-                            .label("key-tag")
-                            .value("key")
-                            .build()))
+                    .keywords(List.of("key-tag"))
                     .spatial(getValueLabel("spatial", "uri"))
                     .distributions(List.of(
                             RetrievedDistribution.builder()
@@ -214,10 +210,10 @@ class CkanDatasetsMapperTest {
                             getValueLabel("Gender", "https://w3id.org/dpv/dpv-pd#Gender", 8),
                             getValueLabel("Health Record",
                                     "https://w3id.org/dpv/dpv-pd#HealthRecord", 7)))
-                    .populationCoverage(List.of(
-                            "This example includes a very non-descript population"))
-                    .publisherNote(List.of(
-                            "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation."))
+                    .populationCoverage(
+                            "This example includes a very non-descript population")
+                    .publisherNote(
+                            "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
                     .publisherType(List.of(
                             getValueLabel("Undefined",
                                     "http://example.com/publisherType/undefined")))
@@ -373,9 +369,9 @@ class CkanDatasetsMapperTest {
                         getCkanValueLabel("Gender", "https://w3id.org/dpv/dpv-pd#Gender", 8),
                         getCkanValueLabel("Health Record",
                                 "https://w3id.org/dpv/dpv-pd#HealthRecord", 7)))
-                .populationCoverage(List.of("This example includes a very non-descript population"))
-                .publisherNote(List.of(
-                        "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation."))
+                .populationCoverage("This example includes a very non-descript population")
+                .publisherNote(
+                        "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
                 .publisherType(List.of(getCkanValueLabel("Undefined",
                         "http://example.com/publisherType/undefined")))
                 .trustedDataHolder(true)
@@ -468,10 +464,7 @@ class CkanDatasetsMapperTest {
                                     .type("type2")
                                     .build()))
                     .themes(getValueLabels("theme", "theme-name", 3))
-                    .keywords(List.of(ValueLabel.builder()
-                            .value("key")
-                            .label("key-tag")
-                            .build()))
+                    .keywords(List.of("key-tag"))
                     .modifiedAt(OffsetDateTime.parse("2024-07-02T22:00Z"))
                     .createdAt(OffsetDateTime.parse("2024-07-01T22:00Z"))
                     .distributionsCount(1)
@@ -526,12 +519,8 @@ class CkanDatasetsMapperTest {
                 .build();
     }
 
-    private static @NotNull List<CkanTag> getCkanTags() {
-        return List.of(CkanTag.builder()
-                .displayName("key-tag")
-                .id("tag-id")
-                .name("key")
-                .build());
+    private static @NotNull List<String> getCkanTags() {
+        return List.of("key-tag");
     }
 
     private static @NotNull List<CkanValueLabel> getCkanValueLabels(String label, String value) {

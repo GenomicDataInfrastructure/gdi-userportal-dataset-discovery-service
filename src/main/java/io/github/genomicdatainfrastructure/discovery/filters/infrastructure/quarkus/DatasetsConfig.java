@@ -4,6 +4,7 @@
 
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus;
 
+import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 import java.util.List;
@@ -30,10 +31,7 @@ public interface DatasetsConfig {
 
         String key();
 
-        @WithDefault("false")
-        Boolean isDateTime();
-
-        @WithDefault("false")
-        Boolean isNumber();
+        @WithDefault("DROPDOWN")
+        FilterType type();
     }
 }

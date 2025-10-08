@@ -117,6 +117,31 @@ class CkanFilterBuilderTest {
         assertThat(number.getRange()).isNull();
     }
 
+    @Test
+    void honoursConfiguredFilterType() {
+        var response = PackagesSearchResponse.builder()
+                .result(PackagesSearchResult.builder()
+                        .searchFacets(Map.of(
+                                "tags", CkanFacet.builder()
+                                        .title("Keywords")
+                                        .items(List.of(
+                                                CkanValueLabel.builder()
+                                                        .name("synthetic")
+                                                        .displayName("synthetic")
+                                                        .count(5)
+                                                        .build()))
+                                        .build()))
+                        .build())
+                .build();
+
+        var builder = new CkanFilterBuilder(new StubCkanQueryApi(response),
+                new FreeTextDatasetsConfig());
+        var filters = builder.build(null, "en");
+
+        var tags = findFilter(filters, "tags");
+        assertThat(tags.getType()).isEqualTo(FilterType.FREE_TEXT);
+    }
+
     private Filter findFilter(List<Filter> filters, String key) {
         return filters.stream()
                 .filter(filter -> key.equals(filter.getKey()))
@@ -155,9 +180,9 @@ class CkanFilterBuilderTest {
     private static final class TestDatasetsConfig implements DatasetsConfig {
 
         private static final Set<Filter> FILTERS = Set.of(
-                new TestFilter("modified", true, false),
-                new TestFilter("number_of_records", false, true),
-                new TestFilter("tags", false, false));
+                new TestFilter("modified", FilterType.DATETIME),
+                new TestFilter("number_of_records", FilterType.NUMBER),
+                new TestFilter("tags", FilterType.DROPDOWN));
 
         @Override
         public String filters() {
@@ -176,8 +201,27 @@ class CkanFilterBuilderTest {
     }
 
     @Vetoed
-    private record TestFilter(String key, Boolean isDateTime, Boolean isNumber) implements
-            DatasetsConfig.Filter {
+    private static final class FreeTextDatasetsConfig implements DatasetsConfig {
+
+        @Override
+        public String filters() {
+            return "tags";
+        }
+
+        @Override
+        public String noGroupKey() {
+            return "DEFAULT";
+        }
+
+        @Override
+        public List<FilterGroup> filterGroups() {
+            return List.of(new TestFilterGroup("DEFAULT",
+                    Set.of(new FreeTextFilter("tags"))));
+        }
+    }
+
+    @Vetoed
+    private record TestFilter(String key, FilterType type) implements DatasetsConfig.Filter {
 
         @Override
         public String key() {
@@ -185,13 +229,22 @@ class CkanFilterBuilderTest {
         }
 
         @Override
-        public Boolean isDateTime() {
-            return isDateTime;
+        public FilterType type() {
+            return type;
+        }
+    }
+
+    @Vetoed
+    private record FreeTextFilter(String key) implements DatasetsConfig.Filter {
+
+        @Override
+        public String key() {
+            return key;
         }
 
         @Override
-        public Boolean isNumber() {
-            return isNumber;
+        public FilterType type() {
+            return FilterType.FREE_TEXT;
         }
     }
 

@@ -529,7 +529,7 @@ components:
           items:
             $ref: "#/components/schemas/CkanValueLabel"
         license:
-          type: string
+          $ref: "#/components/schemas/CkanValueLabel"
         conforms_to:
           type: array
           items:
@@ -689,8 +689,7 @@ components:
       type: object
       properties:
         uri:
-          type: string
-          description: URI
+          $ref: "#/components/schemas/CkanValueLabel"
         text:
           type: string
           description: Label

@@ -235,7 +235,8 @@ class CkanDatasetsMapperTest {
                                     .build()))
                     .spatialCoverage(List.of(
                             SpatialCoverage.builder()
-                                    .uri("https://www.geonames.org/2745912/utrecht.html")
+                                    .uri(getValueLabel("Utrecht, Netherlands",
+                                            "https://www.geonames.org/2745912/utrecht.html"))
                                     .text("Utrecht, Netherlands")
                                     .geom("POLYGON((5.045 52.090, 5.145 52.090, 5.145 52.150, 5.045 52.150, 5.045 52.090))")
                                     .bbox("5.045,52.090,5.145,52.150")
@@ -405,7 +406,8 @@ class CkanDatasetsMapperTest {
                 .alternateIdentifier(List.of("internalURI:admsIdentifier0"))
                 .spatialCoverage(List.of(
                         CkanSpatialCoverage.builder()
-                                .uri("https://www.geonames.org/2745912/utrecht.html")
+                                .uri(getCkanValueLabel("Utrecht, Netherlands",
+                                        "https://www.geonames.org/2745912/utrecht.html"))
                                 .text("Utrecht, Netherlands")
                                 .geom("POLYGON((5.045 52.090, 5.145 52.090, 5.145 52.150, 5.045 52.150, 5.045 52.090))")
                                 .bbox("5.045,52.090,5.145,52.150")

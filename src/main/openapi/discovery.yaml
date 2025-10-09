@@ -686,7 +686,7 @@ components:
           items:
             $ref: "#/components/schemas/ValueLabel"
         license:
-          type: string
+          $ref: "#/components/schemas/ValueLabel"
         conformsTo:
           type: array
           items:
@@ -905,8 +905,7 @@ components:
       type: object
       properties:
         uri:
-          type: string
-          description: URI
+          $ref: "#/components/schemas/ValueLabel"
         text:
           type: string
           description: Label

@@ -14,10 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.3.19] - 2025-10-08
 
-### Changed
-- doc: update CHANGELOG.md for v1.3.18 (#240) by @github-actions[bot] in cbbd5ca
-
-
 ### Fixed
 - fix(model) CKAN <-> Discovery service and use type for filter by @Hans-Christian in 5b51efe
 

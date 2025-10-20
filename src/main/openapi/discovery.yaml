@@ -666,7 +666,7 @@ components:
         checksumAlgorithm:
           type: string
         compressionFormat:
-          $ref: "#/components/schemas/ValueLabel"
+          type: string
         description:
           type: string
           title: Description

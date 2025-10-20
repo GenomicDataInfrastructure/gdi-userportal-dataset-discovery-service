@@ -136,6 +136,7 @@ class CkanDatasetsMapperTest {
                                     .format(getValueLabel("format", "pdf", 1))
                                     .accessUrl(URI.create("https://accessUrl.com"))
                                     .downloadUrl(URI.create("https://downloadUrl.com"))
+                                    .compressionFormat("gzip")
                                     .languages(getValueLabels("language", "en", 2))
                                     .accessService(List.of())
 // FIXME: this line fails on the comparison at the end, expecting [] but receiving null
@@ -491,6 +492,7 @@ class CkanDatasetsMapperTest {
                         .downloadUrl(URI.create("https://downloadUrl.com"))
                         .issuedDate("2025-03-19")
                         .modifiedDate("2025-03-19T13:37:05Z")
+                        .compressFormat("gzip")
                         .language(getCkanValueLabels("language", "en", 2))
                         .conformsTo(List.of())
                         .documentation(List.of())

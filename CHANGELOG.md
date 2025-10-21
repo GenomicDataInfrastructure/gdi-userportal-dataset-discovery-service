@@ -12,6 +12,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.21] - 2025-10-21
+
+### Changed
+- doc: update CHANGELOG.md for v1.3.20 (#244) by @github-actions[bot] in ea3e2d2
+- chore(deps): update quarkus.platform.version to v3.28.4 by @Renovate Bot in 8e914c2
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.6-1760515502 by @Renovate Bot in 1bc5bd6
+- chore(deps): update quarkus.platform.version to v3.28.3 by @Renovate Bot in 3604bdf
+- chore(deps): update dependency org.jacoco:jacoco-maven-plugin to v0.8.14 by @Renovate Bot in bf20426
+
+
+### Fixed
+- fix(status) fix onttology by @Hans-christian in 174cb32
+
+
 ## [v1.3.20] - 2025-10-09
 
 ### Added

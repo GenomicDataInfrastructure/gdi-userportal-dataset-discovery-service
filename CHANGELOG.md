@@ -12,6 +12,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.20] - 2025-10-09
+
+### Added
+- feat(translate) more translated fields (#243) by @Hans-Christian in 7390a6e
+
+
+### Changed
+- chore(deps): update fsfe/reuse-action action to v6 (#239) by @LNDS-Sysadmins in f75eaf3
+- chore: update changelog for v1.3.19 (#242) by @github-actions[bot] in 64be5ee
+
+
 ## [v1.3.19] - 2025-10-08
 
 ### Fixed

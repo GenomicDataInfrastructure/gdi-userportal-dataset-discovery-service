@@ -511,7 +511,7 @@ components:
         hash_algorithm:
           type: string
         compress_format:
-          $ref: "#/components/schemas/CkanValueLabel"
+          type: string
         description:
           type: string
         documentation:

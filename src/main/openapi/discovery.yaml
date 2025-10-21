@@ -476,7 +476,7 @@ components:
           $ref: "#/components/schemas/ValueLabel"
         # Below are properties from HealthDCAT
         publisherNote:
-          type: string
+          type: object
         publisherCoverage:
           type: array
           items:

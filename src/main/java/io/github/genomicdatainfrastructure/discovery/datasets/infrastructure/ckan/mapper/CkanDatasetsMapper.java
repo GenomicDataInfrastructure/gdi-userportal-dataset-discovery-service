@@ -82,6 +82,11 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "count", source = "count")
     ValueLabel map(CkanValueLabel ckanValueLabel);
 
+    @Mapping(target = "label", source = "displayName")
+    @Mapping(target = "value", source = "name")
+    @Mapping(target = "count", ignore = true)
+    ValueLabel map(CkanTag ckanTag);
+
     @Mapping(target = "accessUrl", source = "accessUrl")
     @Mapping(target = "downloadUrl", source = "downloadUrl")
     @Mapping(target = "description", source = "description")

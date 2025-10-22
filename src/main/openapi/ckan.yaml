@@ -265,7 +265,7 @@ components:
 
         # Below are properties from HealthDCAT
         publisher_note:
-          type: string
+          type: object
         publisher_coverage:
           type: array
           items:

@@ -199,7 +199,7 @@ components:
         tags:
           type: array
           items:
-            $ref: "#/components/schemas/CkanTag"
+            type: string
         contact:
           type: array
           items:
@@ -292,7 +292,7 @@ components:
         temporal_resolution:
           type: string
         population_coverage:
-          type: object
+          type: string
         retention_period:
           type: array
           items:
@@ -654,22 +654,6 @@ components:
           type: boolean
         result:
           $ref: "#/components/schemas/CkanPackage"
-    CkanTag:
-      type: object
-      properties:
-        id:
-          type: string
-        state:
-          type: string
-        display_name:
-          type: string
-        name:
-          type: string
-      required:
-        - id
-        - display_name
-        - name
-        - state
     CkanErrorResponse:
       type: object
       properties:

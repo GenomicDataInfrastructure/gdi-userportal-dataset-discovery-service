@@ -42,7 +42,6 @@ class CkanDatasetsMapperTest {
                     .themes(List.of())
                     .contacts(List.of())
                     .creators(List.of())
-                    .keywords(List.of())
                     .publishers(List.of())
                     .datasetRelationships(List.of())
                     .dataDictionary(List.of())
@@ -125,7 +124,7 @@ class CkanDatasetsMapperTest {
                     .accessRights(getValueLabel("accessRights", "public", 10))
                     .conformsTo(getValueLabels("conformsTo", "conforms", 5))
                     .provenance("provenance")
-                    .keywords(List.of(getValueLabel("key-tag", "key")))
+                    .keywords(List.of("key-tag"))
                     .spatial(getValueLabel("spatial", "uri"))
                     .distributions(List.of(
                             RetrievedDistribution.builder()
@@ -468,10 +467,7 @@ class CkanDatasetsMapperTest {
                                     .type("type2")
                                     .build()))
                     .themes(getValueLabels("theme", "theme-name", 3))
-                    .keywords(List.of(ValueLabel.builder()
-                            .value("key")
-                            .label("key-tag")
-                            .build()))
+                    .keywords(List.of("key-tag"))
                     .modifiedAt(OffsetDateTime.parse("2024-07-02T22:00Z"))
                     .createdAt(OffsetDateTime.parse("2024-07-01T22:00Z"))
                     .distributionsCount(1)
@@ -527,12 +523,8 @@ class CkanDatasetsMapperTest {
                 .build();
     }
 
-    private static @NotNull List<CkanTag> getCkanTags() {
-        return List.of(CkanTag.builder()
-                .displayName("key-tag")
-                .id("tag-id")
-                .name("key")
-                .build());
+    private static @NotNull List<String> getCkanTags() {
+        return List.of("key-tag");
     }
 
     private static @NotNull List<CkanValueLabel> getCkanValueLabels(String label, String value) {

@@ -9,6 +9,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.NullValueMappingStrategy;
 
 import java.time.LocalDateTime;
@@ -69,7 +70,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "numberOfUniqueIndividuals", source = "numberOfUniqueIndividuals")
     @Mapping(target = "alternateIdentifier", source = "alternateIdentifier")
     @Mapping(target = "personalData", source = "personalData")
-    @Mapping(target = "populationCoverage", source = "populationCoverage")
+    @Mapping(target = "populationCoverage", source = "populationCoverage", qualifiedByName = "listToString")
     @Mapping(target = "purpose", source = "purpose")
     @Mapping(target = "qualifiedRelation", source = "qualifiedRelation")
     @Mapping(target = "temporalResolution", source = "temporalResolution")
@@ -173,6 +174,14 @@ public interface CkanDatasetsMapper {
         return values.stream()
                 .map(CkanValueLabel::getName)
                 .toList();
+    }
+
+    @Named("listToString")
+    default String listToString(List<String> list) {
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+        return String.join(", ", list);
     }
 
     default OffsetDateTime map(String date) {

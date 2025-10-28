@@ -292,7 +292,9 @@ components:
         temporal_resolution:
           type: string
         population_coverage:
-          type: string
+          type: array
+          items:
+            type: string
         retention_period:
           type: array
           items:

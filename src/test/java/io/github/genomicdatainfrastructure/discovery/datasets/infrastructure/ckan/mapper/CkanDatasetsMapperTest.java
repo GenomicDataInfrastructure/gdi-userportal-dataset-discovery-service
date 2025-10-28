@@ -372,7 +372,7 @@ class CkanDatasetsMapperTest {
                         getCkanValueLabel("Gender", "https://w3id.org/dpv/dpv-pd#Gender", 8),
                         getCkanValueLabel("Health Record",
                                 "https://w3id.org/dpv/dpv-pd#HealthRecord", 7)))
-                .populationCoverage("This example includes a very non-descript population")
+                .populationCoverage(List.of("This example includes a very non-descript population"))
                 .publisherNote(
                         "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
                 .publisherType(List.of(getCkanValueLabel("Undefined",

@@ -12,6 +12,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.24] - 2025-10-28
+
+### Changed
+- test: add keywords to expected empty collections test by @Inderpal Singh in 5da7ff2
+- doc: update CHANGELOG.md for v1.3.23 by @LNDS-Sysadmins in 5b71fe5
+
+
+### Fixed
+- fix: update test to use CkanValueLabel for tags instead of strings by @Inderpal Singh in 19e7795
+- fix: add mapper method for CkanValueLabel list to string list conversion by @Inderpal Singh in 337845c
+- fix: update CKAN integration for data structure changes by @Inderpal Singh in 5703d92
+
+
+## [v1.3.23] - 2025-10-28
+
+### Changed
+- chore(deps): update quarkus.platform.version to v3.28.5 by @Renovate Bot in 76e5e36
+- doc: update CHANGELOG.md for v1.3.22 by @LNDS-Sysadmins in cf394f2
+
+
+### Fixed
+- fix: enable HTTP redirect following for CKAN REST client by @Inderpal Singh in 70de3bd
+- Revert "fix(tags) reverts tags" by @Hans-christian in ecfd4c2
+- fix(pulbisher note) fix publisher note serialisation by @Hans-christian in e4500c4
+
+
 ## [v1.3.22] - 2025-10-21
 
 ### Changed

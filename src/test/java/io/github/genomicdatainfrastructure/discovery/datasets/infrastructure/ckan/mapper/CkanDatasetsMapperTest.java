@@ -43,6 +43,7 @@ class CkanDatasetsMapperTest {
                     .contacts(List.of())
                     .creators(List.of())
                     .publishers(List.of())
+                    .keywords(List.of())
                     .datasetRelationships(List.of())
                     .dataDictionary(List.of())
                     .hdab(List.of())
@@ -523,8 +524,8 @@ class CkanDatasetsMapperTest {
                 .build();
     }
 
-    private static @NotNull List<String> getCkanTags() {
-        return List.of("key-tag");
+    private static @NotNull List<CkanValueLabel> getCkanTags() {
+        return List.of(getCkanValueLabel("key-tag", "key-tag"));
     }
 
     private static @NotNull List<CkanValueLabel> getCkanValueLabels(String label, String value) {

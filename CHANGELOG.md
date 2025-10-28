@@ -12,6 +12,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.23] - 2025-10-28
+
+### Changed
+- chore(deps): update quarkus.platform.version to v3.28.5 by @Renovate Bot in 76e5e36
+- doc: update CHANGELOG.md for v1.3.22 by @LNDS-Sysadmins in cf394f2
+
+
+### Fixed
+- fix: enable HTTP redirect following for CKAN REST client by @Inderpal Singh in 70de3bd
+- Revert "fix(tags) reverts tags" by @Hans-christian in ecfd4c2
+- fix(pulbisher note) fix publisher note serialisation by @Hans-christian in e4500c4
+
+
 ## [v1.3.22] - 2025-10-21
 
 ### Changed

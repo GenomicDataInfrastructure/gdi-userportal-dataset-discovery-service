@@ -166,6 +166,15 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "centroid", source = "centroid")
     SpatialCoverage map(CkanSpatialCoverage spatialCoverage);
 
+    default List<String> map(List<CkanValueLabel> values) {
+        if (values == null) {
+            return Collections.emptyList();
+        }
+        return values.stream()
+                .map(CkanValueLabel::getName)
+                .toList();
+    }
+
     default OffsetDateTime map(String date) {
         if (StringUtils.isBlank(date)) {
             return null;

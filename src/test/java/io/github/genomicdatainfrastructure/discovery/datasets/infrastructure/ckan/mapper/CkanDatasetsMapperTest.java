@@ -523,8 +523,8 @@ class CkanDatasetsMapperTest {
                 .build();
     }
 
-    private static @NotNull List<String> getCkanTags() {
-        return List.of("key-tag");
+    private static @NotNull List<CkanValueLabel> getCkanTags() {
+        return List.of(getCkanValueLabel("key-tag", "key-tag"));
     }
 
     private static @NotNull List<CkanValueLabel> getCkanValueLabels(String label, String value) {

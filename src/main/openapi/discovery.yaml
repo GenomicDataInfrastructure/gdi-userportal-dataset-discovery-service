@@ -638,7 +638,7 @@ components:
             type: object
             properties:
               role:
-                $ref: "#/components/schemas/ValueLabel"
+                type: object
               agent:
                 type: array
                 items:

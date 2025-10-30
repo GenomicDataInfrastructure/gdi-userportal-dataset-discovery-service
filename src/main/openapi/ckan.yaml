@@ -199,7 +199,7 @@ components:
         tags:
           type: array
           items:
-            $ref: "#/components/schemas/CkanValueLabel"
+            type: string
         contact:
           type: array
           items:
@@ -292,9 +292,7 @@ components:
         temporal_resolution:
           type: string
         population_coverage:
-          type: array
-          items:
-            type: string
+          type: string
         retention_period:
           type: array
           items:

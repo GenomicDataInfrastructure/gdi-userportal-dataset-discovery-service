@@ -43,7 +43,6 @@ class CkanDatasetsMapperTest {
                     .contacts(List.of())
                     .creators(List.of())
                     .publishers(List.of())
-                    .keywords(List.of())
                     .datasetRelationships(List.of())
                     .dataDictionary(List.of())
                     .hdab(List.of())

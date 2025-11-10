@@ -227,7 +227,6 @@ class CkanDatasetsMapperTest {
                                     .relation("http://example.com/dataset/3.141592")
                                     .role(getValueLabel("Academic Research Role",
                                             "https://w3id.org/dpv#AcademicResearchRole", 11))
-                                    .uri("https://w3id.org/dpv#AcademicResearchUri")
                                     .build()))
                     .retentionPeriod(List.of(
                             TimeWindow.builder()
@@ -398,7 +397,6 @@ class CkanDatasetsMapperTest {
                                 .role(getCkanValueLabel("Academic Research Role",
                                         "https://w3id.org/dpv#AcademicResearchRole", 11))
                                 .relation("http://example.com/dataset/3.141592")
-                                .uri("https://w3id.org/dpv#AcademicResearchUri")
                                 .build()
                 ))
                 .temporalStart("2024-07-12T22:00:00+00:00")

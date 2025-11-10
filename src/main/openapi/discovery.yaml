@@ -566,8 +566,6 @@ components:
                 type: string
               role:
                 $ref: "#/components/schemas/ValueLabel"
-              uri:
-                type: string
         personalData:
           type: array
           items:

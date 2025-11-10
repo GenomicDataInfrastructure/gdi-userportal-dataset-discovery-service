@@ -14,10 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.3.25] - 2025-10-28
 
-### Changed
-- doc: update CHANGELOG.md for v1.3.24 by @LNDS-Sysadmins in bc7f93e
-
-
 ### Fixed
 - fix: update CKAN schema for array-type fields by @Inderpal Singh in 1740c0d
 

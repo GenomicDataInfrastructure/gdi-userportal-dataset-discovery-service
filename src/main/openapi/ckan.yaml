@@ -353,8 +353,6 @@ components:
                 type: string
               role:
                 $ref: "#/components/schemas/CkanValueLabel"
-              uri:
-                type: string
         personal_data:
           type: array
           items:

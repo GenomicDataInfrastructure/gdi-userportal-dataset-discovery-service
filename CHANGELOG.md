@@ -12,6 +12,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.27] - 2025-10-30
+
+### Fixed
+- fix(role-attribution) fix role attribution (#260) by @Hans-Christian in 3da9008
+- Revert "fix: update CKAN schema for array-type fields" (#259) by @Hans-Christian in 0120e0d
+
+
 ## [v1.3.25] - 2025-10-28
 
 ### Fixed

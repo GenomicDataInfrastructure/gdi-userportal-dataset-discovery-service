@@ -10,7 +10,7 @@
     <properties>
         <assertj.version>3.27.6</assertj.version>
         <checkstyle-maven-plugin.version>3.3.1</checkstyle-maven-plugin.version>
-        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <commons-lang3.version>3.19.0</commons-lang3.version>
         <compiler-plugin.version>3.14.1</compiler-plugin.version>
         <lombok.version>1.18.42</lombok.version>
         <maven.compiler.release>21</maven.compiler.release>

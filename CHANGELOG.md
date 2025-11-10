@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Revert "fix: update CKAN schema for array-type fields" (#259) by @Hans-Christian in 0120e0d
 
 
+## [v1.3.25] - 2025-10-28
+
+### Fixed
+- fix: update CKAN schema for array-type fields by @Inderpal Singh in 1740c0d
+
+
 ## [v1.3.24] - 2025-10-28
 
 ### Changed

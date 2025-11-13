@@ -521,8 +521,7 @@ components:
         applicableLegislation:
           type: array
           items:
-            type: string
-            format: uri
+            $ref: "#/components/schemas/ValueLabel"
         healthTheme:
           type: array
           items:
@@ -625,7 +624,7 @@ components:
               - target
             properties:
               body:
-                type: string
+                $ref: "#/components/schemas/ValueLabel"
               motivated_by:
                 $ref: "#/components/schemas/ValueLabel"
               target:
@@ -655,14 +654,13 @@ components:
         applicableLegislation:
           type: array
           items:
-            type: string
-            format: uri
+            $ref: "#/components/schemas/ValueLabel"
         byteSize:
           type: integer
         checksum:
           type: string
         checksumAlgorithm:
-          type: string
+          $ref: "#/components/schemas/ValueLabel"
         compressionFormat:
           type: string
         description:
@@ -735,8 +733,7 @@ components:
               applicableLegislation:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/ValueLabel"
               conformsTo:
                 type: array
                 items:
@@ -782,7 +779,7 @@ components:
                 items:
                   $ref: "#/components/schemas/ValueLabel"
               license:
-                type: string
+                $ref: "#/components/schemas/ValueLabel"
               modified:
                 type: string
                 format: date-time
@@ -858,8 +855,7 @@ components:
           type: string
           title: uri
         type:
-          type: string
-          title: type
+          $ref: "#/components/schemas/ValueLabel"
         identifier:
           type: string
           title: identifier

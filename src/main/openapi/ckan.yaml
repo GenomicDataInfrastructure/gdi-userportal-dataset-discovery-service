@@ -308,8 +308,7 @@ components:
         applicable_legislation:
           type: array
           items:
-            type: string
-            format: uri
+            $ref: "#/components/schemas/CkanValueLabel"
         health_theme:
           type: array
           items:
@@ -384,7 +383,7 @@ components:
             type: object
             properties:
               body:
-                type: string
+                $ref: "#/components/schemas/CkanValueLabel"
               motivated_by:
                 $ref: "#/components/schemas/CkanValueLabel"
               target:
@@ -463,8 +462,7 @@ components:
           type: string
           title: uri
         type:
-          type: string
-          title: type
+          $ref: "#/components/schemas/CkanValueLabel"
         identifier:
           type: string
           title: identifier
@@ -500,14 +498,13 @@ components:
         applicable_legislation:
           type: array
           items:
-            type: string
-            format: uri
+            $ref: "#/components/schemas/CkanValueLabel"
         size:
           type: integer
         hash:
           type: string
         hash_algorithm:
-          type: string
+          $ref: "#/components/schemas/CkanValueLabel"
         compress_format:
           type: string
         description:
@@ -571,8 +568,7 @@ components:
               applicable_legislation:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/CkanValueLabel"
               conforms_to:
                 type: array
                 items:
@@ -617,7 +613,7 @@ components:
                 items:
                   $ref: "#/components/schemas/CkanValueLabel"
               license:
-                type: string
+                $ref: "#/components/schemas/CkanValueLabel"
               modified:
                 type: string
               publisher:

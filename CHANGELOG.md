@@ -12,6 +12,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.28] - 2025-11-18
+
+### Added
+- feat(ValueLabel) add more fields which are resolvable by @Hans-christian in 1c6d1a0
+
+### Fixed
+- fix UT by @Hans-christian in 6c7da35
+- fix: docker pulls the latest version when creating the image by @Rania Hamdani in 88624bb
+- fix(qualified relation) remove obsolete uri by @Hans-christian in 9af5bc0
+- fix: upgrade from the implicit BOM version to 3.18.0 (#263) by @RaniaHamdani2 in 43f86cb
+- fix: upgrade from the implicit BOM version to 3.18.0 by @Rania Hamdani in 802a9ba
+
+
 ## [v1.3.27] - 2025-10-30
 
 ### Fixed

@@ -12,6 +12,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.28] - 2025-11-18
+
+### Added
+- feat(ValueLabel) add more fields which are resolvable by @Hans-christian in 1c6d1a0
+
+
+### Changed
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1763362218 by @Renovate Bot in f7f1371
+- chore(deps): update quarkus.platform.version to v3.29.3 by @Renovate Bot in 3852bf6
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1762956380 by @Renovate Bot in 18074ff
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1762180032 by @Renovate Bot in 9718d1b
+- chore(deps): update quarkus.platform.version to v3.29.2 by @Renovate Bot in 32ce62f
+- Update CHANGELOG.md by @Hans-Christian in 5fa8ce7
+- doc: update CHANGELOG.md for v1.3.27 by @LNDS-Sysadmins in cf5ac7d
+- doc: update CHANGELOG.md for v1.3.25 by @LNDS-Sysadmins in 067f09f
+
+
+### Fixed
+- fix(deps): update dependency org.apache.commons:commons-lang3 to v3.20.0 (#269) by @LNDS-Sysadmins in 21c5db1
+- fix UT by @Hans-christian in 6c7da35
+- fix: docker pulls the latest version when creating the image by @Rania Hamdani in 88624bb
+- fix(deps): update quarkus-openapi-generator.version to v2.13.0-lts by @Renovate Bot in 68a49e0
+- fix(deps): update dependency org.apache.commons:commons-lang3 to v3.19.0 by @Renovate Bot in 3c9be8f
+- fix(qualified relation) remove obsolete uri by @Hans-christian in 9af5bc0
+- fix: upgrade from the implicit BOM version to 3.18.0 (#263) by @RaniaHamdani2 in 43f86cb
+- fix: upgrade from the implicit BOM version to 3.18.0 by @Rania Hamdani in 802a9ba
+
+
 ## [v1.3.27] - 2025-10-30
 
 ### Fixed

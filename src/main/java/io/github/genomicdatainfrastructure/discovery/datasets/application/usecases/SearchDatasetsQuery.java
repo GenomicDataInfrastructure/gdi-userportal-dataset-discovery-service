@@ -47,9 +47,7 @@ public class SearchDatasetsQuery {
     private DatasetsSearchResponse searchCkanOnly(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
         var ckanCollector = collectors.stream()
-                .filter(collector -> collector.getClass()
-                        .getSimpleName()
-                        .equals("CkanDatasetIdsCollector"))
+                .filter(collector -> collector instanceof CkanDatasetIdsCollector)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("CKAN collector not found"));
 

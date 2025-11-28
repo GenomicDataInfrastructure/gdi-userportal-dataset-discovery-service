@@ -118,7 +118,9 @@ class SearchDatasetsQueryTest {
                 .build();
         var accessToken = "token";
 
-        var ckanCollector = new CkanDatasetIdsCollector();
+        var ckanCollector = mock(
+                io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanDatasetIdsCollector.class);
+        when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10, "id2", 20));
         when(collectors.stream()).thenReturn(Stream.of(ckanCollector));
 
         var dataset1 = mockDataset("id1");
@@ -134,6 +136,7 @@ class SearchDatasetsQueryTest {
 
         verify(repository).search(eq(Set.of("id1", "id2")), any(), any(), any(), eq(accessToken),
                 eq("en"));
+        verify(ckanCollector).collect(any(), any());
     }
 
     @Test
@@ -206,13 +209,5 @@ class SearchDatasetsQueryTest {
                 .identifier(id)
                 .recordsCount(null)
                 .build();
-    }
-
-    private static class CkanDatasetIdsCollector implements DatasetIdsCollector {
-
-        @Override
-        public Map<String, Integer> collect(DatasetSearchQuery query, String accessToken) {
-            return Map.of("id1", 10, "id2", 20);
-        }
     }
 }

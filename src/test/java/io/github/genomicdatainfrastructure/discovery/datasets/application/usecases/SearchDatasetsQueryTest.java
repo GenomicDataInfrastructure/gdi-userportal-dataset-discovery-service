@@ -118,7 +118,7 @@ class SearchDatasetsQueryTest {
                 .build();
         var accessToken = "token";
 
-        var ckanCollector = new CkanDatasetIdsCollectorMock();
+        var ckanCollector = new CkanDatasetIdsCollector();
         when(collectors.stream()).thenReturn(Stream.of(ckanCollector));
 
         var dataset1 = mockDataset("id1");
@@ -208,7 +208,7 @@ class SearchDatasetsQueryTest {
                 .build();
     }
 
-    private static class CkanDatasetIdsCollectorMock implements DatasetIdsCollector {
+    private static class CkanDatasetIdsCollector implements DatasetIdsCollector {
 
         @Override
         public Map<String, Integer> collect(DatasetSearchQuery query, String accessToken) {

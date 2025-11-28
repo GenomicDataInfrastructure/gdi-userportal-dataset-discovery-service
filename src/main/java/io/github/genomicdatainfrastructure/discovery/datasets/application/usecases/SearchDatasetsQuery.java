@@ -30,47 +30,33 @@ public class SearchDatasetsQuery {
 
     public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
-        // Check if Beacon should be included
-        // Default to true for backward compatibility with existing clients
-        boolean includeBeacon = query.getIncludeBeacon() == null
-                ? true
+        boolean includeBeacon = query.getIncludeBeacon() == null ? true
                 : query.getIncludeBeacon();
 
         if (!includeBeacon) {
-            // Fast path - CKAN only
             return searchCkanOnly(query, accessToken, preferredLanguage);
         }
 
-        // Original behavior - CKAN + Beacon intersection
         return searchWithBeacon(query, accessToken, preferredLanguage);
     }
 
     /**
      * Fast CKAN-only search without Beacon
      */
-    private DatasetsSearchResponse searchCkanOnly(
-            DatasetSearchQuery query,
-            String accessToken,
-            String preferredLanguage
-    ) {
-        // Get only CKAN collector (skip Beacon)
+    private DatasetsSearchResponse searchCkanOnly(DatasetSearchQuery query, String accessToken,
+            String preferredLanguage) {
         var ckanCollector = collectors.stream()
-                .filter(collector -> collector.getClass().getSimpleName().equals("CkanDatasetIdsCollector"))
+                .filter(collector -> collector.getClass()
+                        .getSimpleName()
+                        .equals("CkanDatasetIdsCollector"))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("CKAN collector not found"));
 
         var datasetIds = ckanCollector.collect(query, accessToken);
 
-        var datasets = repository.search(
-                datasetIds.keySet(),
-                query.getSort(),
-                query.getRows(),
-                query.getStart(),
-                accessToken,
-                preferredLanguage
-        );
+        var datasets = repository.search(datasetIds.keySet(), query.getSort(),
+                query.getRows(), query.getStart(), accessToken, preferredLanguage);
 
-        // Return datasets WITHOUT record counts (Beacon not queried)
         return DatasetsSearchResponse.builder()
                 .count(datasetIds.size())
                 .results(datasets)
@@ -80,11 +66,8 @@ public class SearchDatasetsQuery {
     /**
      * Comprehensive search with Beacon (intersection)
      */
-    private DatasetsSearchResponse searchWithBeacon(
-            DatasetSearchQuery query,
-            String accessToken,
-            String preferredLanguage
-    ) {
+    private DatasetsSearchResponse searchWithBeacon(DatasetSearchQuery query, String accessToken,
+            String preferredLanguage) {
         var datasetIdsByRecordCount = collectors
                 .stream()
                 .map(collector -> collector.collect(query, accessToken))
@@ -114,10 +97,8 @@ public class SearchDatasetsQuery {
                 .build();
     }
 
-    private Map<String, Integer> findIdsIntersection(
-            Map<String, Integer> a,
-            Map<String, Integer> b
-    ) {
+    private Map<String, Integer> findIdsIntersection(Map<String, Integer> a,
+            Map<String, Integer> b) {
         var newMap = new HashMap<String, Integer>();
         for (var entryA : a.entrySet()) {
 

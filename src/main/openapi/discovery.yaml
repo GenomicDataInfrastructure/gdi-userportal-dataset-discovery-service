@@ -260,6 +260,16 @@ components:
           type: string
           $ref: "#/components/schemas/QueryOperator"
           default: OR
+        includeBeacon:
+          type: boolean
+          title: Include Beacon Network in search
+          description: |
+            Whether to include Beacon Network results in the search.
+            - true (default): Search both CKAN and Beacon, return intersection with record counts
+            - false: Search CKAN only (faster, no Beacon query, no record counts)
+            
+            For backward compatibility, if not provided, defaults to true.
+          default: true
     DatasetSearchQueryFacet:
       type: object
       properties:

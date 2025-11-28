@@ -30,6 +30,61 @@ public class SearchDatasetsQuery {
 
     public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
+        // Check if Beacon should be included
+        // Default to true for backward compatibility with existing clients
+        boolean includeBeacon = query.getIncludeBeacon() == null
+                ? true
+                : query.getIncludeBeacon();
+
+        if (!includeBeacon) {
+            // Fast path - CKAN only
+            return searchCkanOnly(query, accessToken, preferredLanguage);
+        }
+
+        // Original behavior - CKAN + Beacon intersection
+        return searchWithBeacon(query, accessToken, preferredLanguage);
+    }
+
+    /**
+     * Fast CKAN-only search without Beacon
+     */
+    private DatasetsSearchResponse searchCkanOnly(
+            DatasetSearchQuery query,
+            String accessToken,
+            String preferredLanguage
+    ) {
+        // Get only CKAN collector (skip Beacon)
+        var ckanCollector = collectors.stream()
+                .filter(collector -> collector.getClass().getSimpleName().equals("CkanDatasetIdsCollector"))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("CKAN collector not found"));
+
+        var datasetIds = ckanCollector.collect(query, accessToken);
+
+        var datasets = repository.search(
+                datasetIds.keySet(),
+                query.getSort(),
+                query.getRows(),
+                query.getStart(),
+                accessToken,
+                preferredLanguage
+        );
+
+        // Return datasets WITHOUT record counts (Beacon not queried)
+        return DatasetsSearchResponse.builder()
+                .count(datasetIds.size())
+                .results(datasets)
+                .build();
+    }
+
+    /**
+     * Comprehensive search with Beacon (intersection)
+     */
+    private DatasetsSearchResponse searchWithBeacon(
+            DatasetSearchQuery query,
+            String accessToken,
+            String preferredLanguage
+    ) {
         var datasetIdsByRecordCount = collectors
                 .stream()
                 .map(collector -> collector.collect(query, accessToken))

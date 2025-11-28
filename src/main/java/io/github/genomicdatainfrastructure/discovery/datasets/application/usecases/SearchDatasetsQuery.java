@@ -6,6 +6,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.application.useca
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetsSearchResponse;
 
@@ -46,9 +47,7 @@ public class SearchDatasetsQuery {
     private DatasetsSearchResponse searchCkanOnly(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
         var ckanCollector = collectors.stream()
-                .filter(collector -> collector.getClass()
-                        .getSimpleName()
-                        .equals("CkanDatasetIdsCollector"))
+                .filter(collector -> collector instanceof CkanDatasetIdsCollector)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("CKAN collector not found"));
 

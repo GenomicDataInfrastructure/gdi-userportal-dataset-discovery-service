@@ -61,7 +61,7 @@ jobs:
           done
 
       - name: OSS Review Toolkit (ORT) Analysis
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: ${{ github.repository }}
 

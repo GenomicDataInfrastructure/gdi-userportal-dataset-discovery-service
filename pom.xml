@@ -110,6 +110,7 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-opentelemetry-logging</artifactId>
+            <version>${quarkus.platform.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

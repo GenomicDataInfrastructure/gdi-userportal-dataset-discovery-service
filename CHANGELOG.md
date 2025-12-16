@@ -12,6 +12,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.29] - 2025-12-01
+
+### Added
+- feat: add includeBeacon parameter for optional Beacon Network queries (#273) by @Inderpal Singh in 923d101
+
+
+### Changed
+- chore(deps): update quarkus.platform.version to v3.30.1 by @Renovate Bot in 3dbd59a
+- chore(deps): update quarkus.platform.version to v3.29.4 by @Renovate Bot in 03fe587
+- chore(deps): update quarkus-wiremock.version to v1.5.2 by @Renovate Bot in a481f80
+- Clean up CHANGELOG.md by removing old entries by @Quinten in a1460b5
+- doc: update CHANGELOG.md for v1.3.28 by @LNDS-Sysadmins in 9c8e2fe
+
+
 ## [v1.3.28] - 2025-11-18
 
 ### Added

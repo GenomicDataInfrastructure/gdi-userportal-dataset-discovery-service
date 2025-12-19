@@ -505,6 +505,9 @@ class CkanDatasetsMapperTest {
                     .distributionsCount(1)
                     .numberOfUniqueIndividuals(123456789)
                     .accessRights(getValueLabel("accessRights", "public", 10))
+                    .conformsTo(
+                            getValueLabels("DCAT-AP 3.0",
+                                    "https://data.europa.eu/dcat-ap/3.0"))
                     .temporalCoverage(TimeWindow.builder()
                             .start(parse("2024-07-12T22:00Z"))
                             .end(parse("2024-07-13T22:00Z"))

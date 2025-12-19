@@ -147,6 +147,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "createdAt", source = "issued")
     @Mapping(target = "accessRights", source = "accessRights")
+    @Mapping(target = "conformsTo", source = "conformsTo")
     @Mapping(target = "numberOfUniqueIndividuals", source = "numberOfUniqueIndividuals")
     @Mapping(target = "temporalCoverage.start", source = "temporalStart")
     @Mapping(target = "temporalCoverage.end", source = "temporalEnd")

@@ -51,23 +51,70 @@ class BeaconGVariantsRequestMapperTest {
         assertTrue(result.getQuery().getFilters().isEmpty(),
                 "Filters should be an empty list by default");
 
-        assertEquals(params, result.getQuery().getRequestParameters(),
-                "Request parameters should match those from the GVariantSearchQuery");
+        assertEquals(1, result.getQuery().getRequestParameters().size(),
+                "Request parameters should contain only the non-local parameters");
+        assertTrue(result.getQuery().getRequestParameters().containsKey("paramKey"),
+                "Request parameters should contain the provided paramKey");
+        assertEquals("paramValue", result.getQuery().getRequestParameters().get("paramKey"),
+                "Request parameters should preserve the provided param value");
     }
 
     @Test
-    @DisplayName("extractPopulationFilter should return pattern with sex and country")
-    void extractPopulationFilter_WithSexAndCountry_ReturnsPattern() {
+    @DisplayName("map(GVariantSearchQuery) should return a BeaconRequest with expected fields and strip local-only params")
+    void map_GVariantSearchQuery_ReturnsCorrectBeaconRequest_StripsLocalParams() {
         GVariantSearchQuery query = new GVariantSearchQuery();
         GVariantSearchQueryParams params = new GVariantSearchQueryParams();
-        params.setSex(GVariantSearchQueryParams.SexEnum.MALE);
-        params.setCountryOfBirth(GVariantSearchQueryParams.CountryOfBirthEnum.FIN);
+        params.put("paramKey", "paramValue");
+        params.put("sex", "male");
+        params.put("countryOfBirth", "FI");
         query.setParams(params);
 
-        Optional<String> result = BeaconGVariantsRequestMapper.extractPopulationFilter(query);
+        BeaconRequest result = BeaconGVariantsRequestMapper.map(query);
 
-        assertTrue(result.isPresent());
-        assertEquals("_M_FI", result.get());
+        assertTrue(result.getQuery().getFilters().isEmpty(),
+                "Filters should be an empty list by default");
+
+        assertEquals(1, result.getQuery().getRequestParameters().size(),
+                "Only non-local parameters should be present in requestParameters");
+        assertTrue(result.getQuery().getRequestParameters().containsKey("paramKey"),
+                "Normal parameter should be preserved in requestParameters");
+        assertFalse(result.getQuery().getRequestParameters().containsKey("sex"),
+                "Local-only parameter 'sex' should be stripped from requestParameters");
+        assertFalse(result.getQuery().getRequestParameters().containsKey("countryOfBirth"),
+                "Local-only parameter 'countryOfBirth' should be stripped from requestParameters");
+    }
+
+    @Test
+    @DisplayName("extractPopulationFilter should handle various cases")
+    void extractPopulationFilter_HandleCases() {
+        // Case 1: Null query
+        assertTrue(BeaconGVariantsRequestMapper.extractPopulationFilter(null).isEmpty());
+
+        // Case 2: Null params
+        GVariantSearchQuery queryWithoutParams = new GVariantSearchQuery();
+        assertTrue(BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithoutParams).isEmpty());
+
+        // Case 3: Only sex set
+        GVariantSearchQuery queryWithSex = new GVariantSearchQuery();
+        GVariantSearchQueryParams paramsWithSex = new GVariantSearchQueryParams();
+        paramsWithSex.setSex(GVariantSearchQueryParams.SexEnum.FEMALE);
+        queryWithSex.setParams(paramsWithSex);
+        assertEquals("_F", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithSex).orElse(null));
+
+        // Case 4: Only country set
+        GVariantSearchQuery queryWithCountry = new GVariantSearchQuery();
+        GVariantSearchQueryParams paramsWithCountry = new GVariantSearchQueryParams();
+        paramsWithCountry.setCountryOfBirth(GVariantSearchQueryParams.CountryOfBirthEnum.FIN);
+        queryWithCountry.setParams(paramsWithCountry);
+        assertEquals("_FI", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithCountry).orElse(null));
+
+        // Case 5: Both sex and country set
+        GVariantSearchQuery queryWithBoth = new GVariantSearchQuery();
+        GVariantSearchQueryParams paramsWithBoth = new GVariantSearchQueryParams();
+        paramsWithBoth.setSex(GVariantSearchQueryParams.SexEnum.MALE);
+        paramsWithBoth.setCountryOfBirth(GVariantSearchQueryParams.CountryOfBirthEnum.FIN);
+        queryWithBoth.setParams(paramsWithBoth);
+        assertEquals("_M_FI", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithBoth).orElse(null));
     }
 
     @Test
@@ -79,10 +126,10 @@ class BeaconGVariantsRequestMapperTest {
         );
 
         List<GVariantsSearchResponse> filtered = BeaconGVariantsRequestMapper
-                .filterByPopulation(results, Optional.of("_M_FI"));
+                .filterByPopulation(results, Optional.of("M_FI"));
 
-        assertEquals(1, filtered.size());
-        assertEquals("POPULATION_M_FI_dataset1", filtered.getFirst().getDataset());
+        assertEquals(1, filtered.size(), "Expected one dataset to match the population filter");
+        assertEquals("POPULATION_M_FI_dataset1", filtered.get(0).getDataset(), "Filtered dataset name should match");
     }
 
     @Test
@@ -114,6 +161,16 @@ class BeaconGVariantsRequestMapperTest {
                 "alleleCountHomozygous should match the mock frequency");
         assertEquals(BigDecimal.valueOf(95.0), variant.getAlleleCountHeterozygous(),
                 "alleleCountHeterozygous should match the mock frequency");
+    }
+
+    @Test
+    @DisplayName("iso3ToIso2 should fall back to uppercased ISO3 when mapping not found")
+    void iso3ToIso2_WithUnmappedCountry_ReturnsUppercaseIso3() {
+        String unmappedCountry = "XYZ";
+
+        String result = BeaconGVariantsRequestMapper.iso3ToIso2(unmappedCountry);
+
+        assertEquals("XYZ", result, "Unmapped country codes should return the uppercased ISO3 value");
     }
 
     public static BeaconResponse buildBeaconsResponse() {

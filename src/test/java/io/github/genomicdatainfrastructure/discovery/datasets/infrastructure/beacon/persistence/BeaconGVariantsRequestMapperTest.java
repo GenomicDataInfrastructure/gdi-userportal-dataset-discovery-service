@@ -5,6 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence;
 
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQuery;
+import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQueryParams;
 import io.github.genomicdatainfrastructure.discovery.model.GVariantsSearchResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.model.*;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import static io.github.genomicdatainfrastructure.discovery.model.GVariantsSearchResponse.PopulationEnum.FINLAND;
 import static io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.model.BeaconRequestQuery.IncludeResultsetResponsesEnum.HIT;
@@ -26,8 +27,9 @@ class BeaconGVariantsRequestMapperTest {
     @DisplayName("map(GVariantSearchQuery) should return a BeaconRequest with expected fields")
     void map_GVariantSearchQuery_ReturnsCorrectBeaconRequest() {
         GVariantSearchQuery query = new GVariantSearchQuery();
-
-        query.setParams(Map.of("paramKey", "paramValue"));
+        GVariantSearchQueryParams params = new GVariantSearchQueryParams();
+        params.put("paramKey", "paramValue");
+        query.setParams(params);
 
         BeaconRequest result = BeaconGVariantsRequestMapper.map(query);
 
@@ -49,8 +51,38 @@ class BeaconGVariantsRequestMapperTest {
         assertTrue(result.getQuery().getFilters().isEmpty(),
                 "Filters should be an empty list by default");
 
-        assertEquals(query.getParams(), result.getQuery().getRequestParameters(),
+        assertEquals(params, result.getQuery().getRequestParameters(),
                 "Request parameters should match those from the GVariantSearchQuery");
+    }
+
+    @Test
+    @DisplayName("extractPopulationFilter should return pattern with sex and country")
+    void extractPopulationFilter_WithSexAndCountry_ReturnsPattern() {
+        GVariantSearchQuery query = new GVariantSearchQuery();
+        GVariantSearchQueryParams params = new GVariantSearchQueryParams();
+        params.setSex(GVariantSearchQueryParams.SexEnum.MALE);
+        params.setCountryOfBirth(GVariantSearchQueryParams.CountryOfBirthEnum.FIN);
+        query.setParams(params);
+
+        Optional<String> result = BeaconGVariantsRequestMapper.extractPopulationFilter(query);
+
+        assertTrue(result.isPresent());
+        assertEquals("_M_FI", result.get());
+    }
+
+    @Test
+    @DisplayName("filterByPopulation should filter results by dataset name pattern")
+    void filterByPopulation_WithPattern_FiltersResults() {
+        List<GVariantsSearchResponse> results = List.of(
+                GVariantsSearchResponse.builder().dataset("POPULATION_M_FI_dataset1").build(),
+                GVariantsSearchResponse.builder().dataset("POPULATION_F_DE_dataset2").build()
+        );
+
+        List<GVariantsSearchResponse> filtered = BeaconGVariantsRequestMapper
+                .filterByPopulation(results, Optional.of("_M_FI"));
+
+        assertEquals(1, filtered.size());
+        assertEquals("POPULATION_M_FI_dataset1", filtered.getFirst().getDataset());
     }
 
     @Test

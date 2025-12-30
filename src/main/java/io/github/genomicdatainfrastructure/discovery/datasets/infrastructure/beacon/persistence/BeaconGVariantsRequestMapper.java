@@ -29,11 +29,12 @@ public class BeaconGVariantsRequestMapper {
 
     private static java.util.Map<String, String> buildIso3ToIso2Map() {
         var m = new java.util.HashMap<String, String>();
-        
+
         for (CountryOfBirthEnum c : CountryOfBirthEnum.values()) {
             try {
                 String iso3 = c.value(); // generated enum holds lowercase iso3 strings
-                if (iso3 == null || iso3.isBlank()) continue;
+                if (iso3 == null || iso3.isBlank())
+                    continue;
                 String iso3u = iso3.toUpperCase();
                 // find ISO2 by scanning available ISO countries
                 String foundIso2 = null;
@@ -56,7 +57,8 @@ public class BeaconGVariantsRequestMapper {
     }
 
     static String iso3ToIso2(String iso3) {
-        if (iso3 == null) return null;
+        if (iso3 == null)
+            return null;
         var key = iso3.toUpperCase();
         return ISO3_TO_ISO2.getOrDefault(key, key);
     }
@@ -65,38 +67,40 @@ public class BeaconGVariantsRequestMapper {
     }
 
     public static BeaconRequest map(GVariantSearchQuery query) {
-    var params = ofNullable(query).map(GVariantSearchQuery::getParams).orElse(new GVariantSearchQueryParams());
-    Map<String, Object> beaconParams = params.entrySet().stream()
-        .filter(e -> e.getValue() != null && !LOCAL_FILTER_PARAMS.contains(e.getKey()))
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        var params = ofNullable(query).map(GVariantSearchQuery::getParams).orElse(
+                new GVariantSearchQueryParams());
+        Map<String, Object> beaconParams = params.entrySet().stream()
+                .filter(e -> e.getValue() != null && !LOCAL_FILTER_PARAMS.contains(e.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    var filters = new java.util.ArrayList<BeaconRequestQueryFilter>();
-    ofNullable(params.getSex()).ifPresent(s -> filters.add(BeaconRequestQueryFilter.builder()
-        .id("sexFilter")
-        .operator(BeaconRequestQueryFilter.OperatorEnum.EQUAL_SYMBOL)
-        .value(s.value())
-        .scope("population")
-        .build()));
-    ofNullable(params.getCountryOfBirth()).ifPresent(c -> filters.add(BeaconRequestQueryFilter.builder()
-        .id("countryFilter")
-        .operator(BeaconRequestQueryFilter.OperatorEnum.EQUAL_SYMBOL)
-        .value(iso3ToIso2(c.value()))
-        .scope("population")
-        .build()));
+        var filters = new java.util.ArrayList<BeaconRequestQueryFilter>();
+        ofNullable(params.getSex()).ifPresent(s -> filters.add(BeaconRequestQueryFilter.builder()
+                .id("sexFilter")
+                .operator(BeaconRequestQueryFilter.OperatorEnum.EQUAL_SYMBOL)
+                .value(s.value())
+                .scope("population")
+                .build()));
+        ofNullable(params.getCountryOfBirth()).ifPresent(c -> filters.add(BeaconRequestQueryFilter
+                .builder()
+                .id("countryFilter")
+                .operator(BeaconRequestQueryFilter.OperatorEnum.EQUAL_SYMBOL)
+                .value(iso3ToIso2(c.value()))
+                .scope("population")
+                .build()));
 
-    var requestQuery = new BeaconRequestQuery();
-    requestQuery.setIncludeResultsetResponses(HIT);
-    requestQuery.setRequestedGranularity(RECORD);
-    requestQuery.setTestMode(false);
-    requestQuery.setPagination(new BeaconRequestQueryPagination());
-    requestQuery.setFilters(filters.isEmpty() ? Collections.emptyList() : filters);
-    requestQuery.setRequestParameters(beaconParams);
+        var requestQuery = new BeaconRequestQuery();
+        requestQuery.setIncludeResultsetResponses(HIT);
+        requestQuery.setRequestedGranularity(RECORD);
+        requestQuery.setTestMode(false);
+        requestQuery.setPagination(new BeaconRequestQueryPagination());
+        requestQuery.setFilters(filters.isEmpty() ? Collections.emptyList() : filters);
+        requestQuery.setRequestParameters(beaconParams);
 
-    var request = new BeaconRequest();
-    request.setMeta(new BeaconRequestMeta());
-    request.setQuery(requestQuery);
+        var request = new BeaconRequest();
+        request.setMeta(new BeaconRequestMeta());
+        request.setQuery(requestQuery);
 
-    return request;
+        return request;
     }
 
     public static Optional<String> extractPopulationFilter(GVariantSearchQuery query) {
@@ -108,11 +112,12 @@ public class BeaconGVariantsRequestMapper {
                     default -> null;
                 });
 
-    var countryOpt = params.map(GVariantSearchQueryParams::getCountryOfBirth)
-        .map(GVariantSearchQueryParams.CountryOfBirthEnum::name)
-        .map(BeaconGVariantsRequestMapper::iso3ToIso2);
+        var countryOpt = params.map(GVariantSearchQueryParams::getCountryOfBirth)
+                .map(GVariantSearchQueryParams.CountryOfBirthEnum::name)
+                .map(BeaconGVariantsRequestMapper::iso3ToIso2);
 
-        if (sexOpt.isEmpty() && countryOpt.isEmpty()) return Optional.empty();
+        if (sexOpt.isEmpty() && countryOpt.isEmpty())
+            return Optional.empty();
 
         var sb = new StringBuilder();
         sexOpt.ifPresent(s -> sb.append('_').append(s));
@@ -134,12 +139,14 @@ public class BeaconGVariantsRequestMapper {
     public static List<GVariantsSearchResponse> filterByPopulation(
             List<GVariantsSearchResponse> results,
             Optional<String> populationFilter) {
-    if (results == null || results.isEmpty() || populationFilter.isEmpty()) return results;
-    var filter = populationFilter.get().toUpperCase();
-    var pattern = java.util.regex.Pattern.compile("(?i)(?:^|_)(" + java.util.regex.Pattern.quote(filter) + ")(?:_|$)");
-    return results.stream()
-        .filter(r -> r.getDataset() != null && pattern.matcher(r.getDataset()).find())
-        .toList();
+        if (results == null || results.isEmpty() || populationFilter.isEmpty())
+            return results;
+        var filter = populationFilter.get().toUpperCase();
+        var pattern = java.util.regex.Pattern.compile("(?i)(?:^|_)(" + java.util.regex.Pattern
+                .quote(filter) + ")(?:_|$)");
+        return results.stream()
+                .filter(r -> r.getDataset() != null && pattern.matcher(r.getDataset()).find())
+                .toList();
     }
 
     private static GVariantsSearchResponse mapResultSetToVariant(BeaconResultSet resultSet) {
@@ -167,9 +174,11 @@ public class BeaconGVariantsRequestMapper {
     }
 
     private static PopulationEnum mapPopulation(String input) {
-        if (input == null) return PopulationEnum.LUXEMBOURG;
+        if (input == null)
+            return PopulationEnum.LUXEMBOURG;
         for (PopulationEnum population : PopulationEnum.values()) {
-            if (input.contains(population.value())) return population;
+            if (input.contains(population.value()))
+                return population;
         }
         return PopulationEnum.LUXEMBOURG;
     }

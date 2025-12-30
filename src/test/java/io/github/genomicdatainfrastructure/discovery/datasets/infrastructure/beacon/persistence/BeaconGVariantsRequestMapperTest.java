@@ -92,21 +92,24 @@ class BeaconGVariantsRequestMapperTest {
 
         // Case 2: Null params
         GVariantSearchQuery queryWithoutParams = new GVariantSearchQuery();
-        assertTrue(BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithoutParams).isEmpty());
+        assertTrue(BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithoutParams)
+                .isEmpty());
 
         // Case 3: Only sex set
         GVariantSearchQuery queryWithSex = new GVariantSearchQuery();
         GVariantSearchQueryParams paramsWithSex = new GVariantSearchQueryParams();
         paramsWithSex.setSex(GVariantSearchQueryParams.SexEnum.FEMALE);
         queryWithSex.setParams(paramsWithSex);
-        assertEquals("_F", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithSex).orElse(null));
+        assertEquals("_F", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithSex)
+                .orElse(null));
 
         // Case 4: Only country set
         GVariantSearchQuery queryWithCountry = new GVariantSearchQuery();
         GVariantSearchQueryParams paramsWithCountry = new GVariantSearchQueryParams();
         paramsWithCountry.setCountryOfBirth(GVariantSearchQueryParams.CountryOfBirthEnum.FIN);
         queryWithCountry.setParams(paramsWithCountry);
-        assertEquals("_FI", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithCountry).orElse(null));
+        assertEquals("_FI", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithCountry)
+                .orElse(null));
 
         // Case 5: Both sex and country set
         GVariantSearchQuery queryWithBoth = new GVariantSearchQuery();
@@ -114,7 +117,8 @@ class BeaconGVariantsRequestMapperTest {
         paramsWithBoth.setSex(GVariantSearchQueryParams.SexEnum.MALE);
         paramsWithBoth.setCountryOfBirth(GVariantSearchQueryParams.CountryOfBirthEnum.FIN);
         queryWithBoth.setParams(paramsWithBoth);
-        assertEquals("_M_FI", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithBoth).orElse(null));
+        assertEquals("_M_FI", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithBoth)
+                .orElse(null));
     }
 
     @Test
@@ -129,7 +133,8 @@ class BeaconGVariantsRequestMapperTest {
                 .filterByPopulation(results, Optional.of("M_FI"));
 
         assertEquals(1, filtered.size(), "Expected one dataset to match the population filter");
-        assertEquals("POPULATION_M_FI_dataset1", filtered.get(0).getDataset(), "Filtered dataset name should match");
+        assertEquals("POPULATION_M_FI_dataset1", filtered.get(0).getDataset(),
+                "Filtered dataset name should match");
     }
 
     @Test
@@ -170,7 +175,8 @@ class BeaconGVariantsRequestMapperTest {
 
         String result = BeaconGVariantsRequestMapper.iso3ToIso2(unmappedCountry);
 
-        assertEquals("XYZ", result, "Unmapped country codes should return the uppercased ISO3 value");
+        assertEquals("XYZ", result,
+                "Unmapped country codes should return the uppercased ISO3 value");
     }
 
     public static BeaconResponse buildBeaconsResponse() {

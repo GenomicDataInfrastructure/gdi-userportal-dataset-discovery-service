@@ -25,6 +25,7 @@
         <quarkus-wiremock.version>1.5.2</quarkus-wiremock.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -255,6 +256,11 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>

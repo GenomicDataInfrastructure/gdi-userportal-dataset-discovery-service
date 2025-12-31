@@ -374,11 +374,6 @@ components:
           title: Metadata for dataset created at
         accessRights:
           $ref: "#/components/schemas/ValueLabel"
-        conformsTo:
-          type: array
-          items:
-            $ref: "#/components/schemas/ValueLabel"
-          title: Conforms To
         numberOfUniqueIndividuals:
           type: integer
           minimum: 0
@@ -928,7 +923,6 @@ components:
           type: string
           description: Centroid
     Filter:
-      type: object
       properties:
         source:
           type: string
@@ -975,7 +969,6 @@ components:
           type: string
           title: maximum value supported by the filter
     FilterEntry:
-      type: object
       properties:
         key:
           type: string
@@ -987,7 +980,6 @@ components:
         - key
         - label
     ErrorResponse:
-      type: object
       properties:
         title:
           type: string
@@ -1007,6 +999,42 @@ components:
         params:
           type: object
           additionalProperties: true
+          properties:
+            sex:
+              type: string
+              enum:
+                - male
+                - female
+            countryOfBirth:
+              type: string
+              enum:
+                - aut
+                - bel
+                - bgr
+                - hrv
+                - cyp
+                - cze
+                - dnk
+                - est
+                - fin
+                - fra
+                - deu
+                - grc
+                - hun
+                - irl
+                - ita
+                - lva
+                - ltu
+                - lux
+                - mlt
+                - nld
+                - pol
+                - prt
+                - rou
+                - svk
+                - svn
+                - esp
+                - swe
       required:
         - params
     GVariantsSearchResponse:

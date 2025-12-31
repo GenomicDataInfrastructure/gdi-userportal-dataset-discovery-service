@@ -36,8 +36,10 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
             return Collections.emptyList();
         }
 
+        var populationFilter = BeaconGVariantsRequestMapper.extractPopulationFilter(query);
         var response = gVariantsApi.postGenomicVariationsRequest(beaconQuery);
+        var results = BeaconGVariantsRequestMapper.map(response);
 
-        return BeaconGVariantsRequestMapper.map(response);
+        return BeaconGVariantsRequestMapper.filterByPopulation(results, populationFilter);
     }
 }

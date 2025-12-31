@@ -61,7 +61,6 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "applicableLegislation", source = "applicableLegislation")
     @Mapping(target = "codeValues", source = "codeValues")
     @Mapping(target = "codingSystem", source = "codingSystem")
-    @Mapping(target = "conformsTo", source = "conformsTo")
     @Mapping(target = "legalBasis", source = "legalBasis")
     @Mapping(target = "maxTypicalAge", source = "maxTypicalAge")
     @Mapping(target = "minTypicalAge", source = "minTypicalAge")
@@ -104,7 +103,6 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "temporalResolution", source = "temporalResolution")
     @Mapping(target = "spatialResolutionInMeters", source = "spatialResolutionInMeters")
-    @Mapping(target = "conformsTo", source = "conformsTo")
     @Mapping(target = "applicableLegislation", source = "applicableLegislation")
     RetrievedDistribution map(CkanResource ckanResource);
 
@@ -114,7 +112,6 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "license", source = "license")
     @Mapping(target = "accessRights", source = "accessRights")
     @Mapping(target = "applicableLegislation", source = "applicableLegislation")
-    @Mapping(target = "conformsTo", source = "conformsTo")
     @Mapping(target = "contact", source = "contact")
     @Mapping(target = "creator", source = "creator")
     @Mapping(target = "rights", source = "rights")
@@ -147,7 +144,6 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "createdAt", source = "issued")
     @Mapping(target = "accessRights", source = "accessRights")
-    @Mapping(target = "conformsTo", source = "conformsTo")
     @Mapping(target = "numberOfUniqueIndividuals", source = "numberOfUniqueIndividuals")
     @Mapping(target = "temporalCoverage.start", source = "temporalStart")
     @Mapping(target = "temporalCoverage.end", source = "temporalEnd")

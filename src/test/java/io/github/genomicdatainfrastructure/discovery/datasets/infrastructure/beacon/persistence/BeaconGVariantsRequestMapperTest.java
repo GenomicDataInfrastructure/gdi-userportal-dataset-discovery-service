@@ -217,6 +217,22 @@ class BeaconGVariantsRequestMapperTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    @DisplayName("filterByPopulation should match datasets with population pattern")
+    void filterByPopulation_WithMatchingPattern_ReturnsFilteredResults() {
+        List<GVariantsSearchResponse> results = List.of(
+                GVariantsSearchResponse.builder().dataset("COVID_M_FI").build(),
+                GVariantsSearchResponse.builder().dataset("COVID_F_IT").build(),
+                GVariantsSearchResponse.builder().dataset("COVID_M_DE").build()
+        );
+
+        List<GVariantsSearchResponse> filtered = BeaconGVariantsRequestMapper
+                .filterByPopulation(results, Optional.of("M_FI"));
+
+        assertEquals(1, filtered.size());
+        assertEquals("COVID_M_FI", filtered.get(0).getDataset());
+    }
+
     public static BeaconResponse buildBeaconsResponse() {
         var freq = new Frequencies();
         freq.setPopulation("fin");

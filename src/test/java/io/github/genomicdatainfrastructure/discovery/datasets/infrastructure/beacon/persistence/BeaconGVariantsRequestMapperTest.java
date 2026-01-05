@@ -187,6 +187,36 @@ class BeaconGVariantsRequestMapperTest {
                 "Unmapped country codes should return the uppercased ISO3 value");
     }
 
+    @Test
+    @DisplayName("map should handle BeaconResponse with empty results")
+    void map_BeaconResponseWithEmptyResults_ReturnsEmptyList() {
+        BeaconResponse response = new BeaconResponse();
+        BeaconResponseContent content = new BeaconResponseContent();
+        content.setResultSets(Collections.emptyList());
+        response.setResponse(content);
+
+        List<GVariantsSearchResponse> result = BeaconGVariantsRequestMapper.map(response);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    @DisplayName("map should handle result set with null results")
+    void map_ResultSetWithNullResults_FiltersOut() {
+        BeaconResponse response = new BeaconResponse();
+        BeaconResponseContent content = new BeaconResponseContent();
+        BeaconResultSet resultSet = new BeaconResultSet();
+        resultSet.setResults(null);
+        content.setResultSets(Collections.singletonList(resultSet));
+        response.setResponse(content);
+
+        List<GVariantsSearchResponse> result = BeaconGVariantsRequestMapper.map(response);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
     public static BeaconResponse buildBeaconsResponse() {
         var freq = new Frequencies();
         freq.setPopulation("fin");

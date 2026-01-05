@@ -6,12 +6,10 @@ package io.github.genomicdatainfrastructure.discovery.api;
 
 import io.github.genomicdatainfrastructure.discovery.BaseTest;
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQuery;
+import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQueryParams;
 import io.quarkus.test.junit.QuarkusTest;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
@@ -71,7 +69,7 @@ class GVariantsApiIT extends BaseTest {
 
     private static @NotNull GVariantSearchQuery buildQuery() {
         GVariantSearchQuery query = new GVariantSearchQuery();
-        Map<String, Object> params = new HashMap<>();
+        GVariantSearchQueryParams params = new GVariantSearchQueryParams();
         params.put("alternateBases", "C");
         params.put("referenceBases", "T");
         params.put("start", new int[]{45864731});

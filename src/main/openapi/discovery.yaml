@@ -1003,8 +1003,9 @@ components:
             sex:
               type: string
               enum:
-                - male
-                - female
+                - MALE
+                - FEMALE
+                - OTHER
             countryOfBirth:
               type: string
               enum:

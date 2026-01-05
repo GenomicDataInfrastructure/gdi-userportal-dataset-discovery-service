@@ -109,6 +109,7 @@ public class BeaconGVariantsRequestMapper {
                 .map(s -> switch (s) {
                     case MALE -> "M";
                     case FEMALE -> "F";
+                    case OTHER -> "O";
                     default -> null;
                 });
 

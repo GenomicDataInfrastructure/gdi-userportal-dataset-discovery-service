@@ -119,6 +119,14 @@ class BeaconGVariantsRequestMapperTest {
         queryWithBoth.setParams(paramsWithBoth);
         assertEquals("_M_FI", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithBoth)
                 .orElse(null));
+
+        // Case 6: Other sex value
+        GVariantSearchQuery queryWithOther = new GVariantSearchQuery();
+        GVariantSearchQueryParams paramsWithOther = new GVariantSearchQueryParams();
+        paramsWithOther.setSex(GVariantSearchQueryParams.SexEnum.OTHER);
+        queryWithOther.setParams(paramsWithOther);
+        assertEquals("_O", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithOther)
+                .orElse(null));
     }
 
     @Test

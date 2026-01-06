@@ -31,25 +31,26 @@ class GVariantsApiIT extends BaseTest {
                 .post("/api/v1/g_variants")
                 .then()
                 .statusCode(200)
-                .body("$", hasSize(2))
+                .body("numberOfPopulations", equalTo(2))
+                .body("source", equalTo("The Genome of Europe"))
+                .body("sourceReference", equalTo("https://genomeofeurope.eu/"))
+                .body("populations", hasSize(2))
 
-                // 3) Verify the first element
-                .body("[0].beacon", equalTo("org.nbis.ga4gh-approval-beacon-test"))
-                .body("[0].population", equalTo("fin"))
-                .body("[0].alleleCount", equalTo(491.0F))
-                .body("[0].alleleNumber", equalTo(82998.0F))
-                .body("[0].alleleCountHomozygous", equalTo(8.0F))
-                .body("[0].alleleCountHeterozygous", equalTo(483.0F))
-                .body("[0].alleleFrequency", equalTo(0.005915809888392687F))
+                // 3) Verify the first population element
+                .body("populations[0].population", equalTo("FIN"))
+                .body("populations[0].alleleCount", equalTo("491"))
+                .body("populations[0].alleleNumber", equalTo("82998"))
+                .body("populations[0].alleleCountHomozygous", equalTo("8"))
+                .body("populations[0].alleleCountHeterozygous", equalTo("483"))
+                .body("populations[0].alleleFrequency", equalTo("0.005915809888392687"))
 
-                // 4) Verify the second element
-                .body("[1].beacon", equalTo("pt.biodata.gdi.beacon-alleles"))
-                .body("[1].population", equalTo("ita"))
-                .body("[1].alleleCount", equalTo(478.0F))
-                .body("[1].alleleNumber", equalTo(83028.0F))
-                .body("[1].alleleCountHomozygous", equalTo(4))
-                .body("[1].alleleCountHeterozygous", equalTo(474))
-                .body("[1].alleleFrequency", equalTo(0.004268940072506666F));
+                // 4) Verify the second population element
+                .body("populations[1].population", equalTo("ITA"))
+                .body("populations[1].alleleCount", equalTo("478"))
+                .body("populations[1].alleleNumber", equalTo("83028"))
+                .body("populations[1].alleleCountHomozygous", equalTo("4"))
+                .body("populations[1].alleleCountHeterozygous", equalTo("474"))
+                .body("populations[1].alleleFrequency", equalTo("0.004268940072506666"));
 
     }
 
@@ -63,7 +64,8 @@ class GVariantsApiIT extends BaseTest {
                 .post("/api/v1/g_variants")
                 .then()
                 .statusCode(200)
-                .body("$", hasSize(0));
+                .body("numberOfPopulations", equalTo(0))
+                .body("populations", hasSize(0));
 
     }
 

@@ -182,13 +182,11 @@ paths:
               $ref: "#/components/schemas/GVariantSearchQuery"
       responses:
         "200":
-          description: A list of datasets matching the search criteria
+          description: Allele frequency information with populations
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/GVariantsSearchResponse"
+                $ref: "#/components/schemas/GVariantAlleleFrequencyResponse"
         "400":
           description: Bad request
           content:
@@ -1005,7 +1003,6 @@ components:
               enum:
                 - MALE
                 - FEMALE
-                - OTHER
             countryOfBirth:
               type: string
               enum:
@@ -1115,6 +1112,63 @@ components:
           type: number
         alleleFrequency:
           type: number
+
+    PopulationFrequency:
+      type: object
+      properties:
+        population:
+          type: string
+          description: Population identifier (e.g., FR_M for France Male, FR_F for France Female)
+          example: FR_M
+        datasetId:
+          type: string
+          description: Dataset identifier
+          example: COVID_pop12_fra_2
+        alleleFrequency:
+          type: string
+          description: Allele frequency as a string
+          example: "0.13095"
+        alleleCount:
+          type: string
+          description: Allele count as a string
+          example: "7102"
+        alleleNumber:
+          type: string
+          description: Total number of alleles as a string
+          example: "54233"
+        alleleCountHomozygous:
+          type: string
+          description: Count of homozygous alleles as a string
+          example: "2400"
+        alleleCountHeterozygous:
+          type: string
+          description: Count of heterozygous alleles as a string
+          example: "4702"
+        alleleCountHemizygous:
+          type: string
+          description: Count of hemizygous alleles as a string
+          example: "0"
+
+    GVariantAlleleFrequencyResponse:
+      type: object
+      properties:
+        numberOfPopulations:
+          type: integer
+          description: Total number of populations in the response
+          example: 5
+        source:
+          type: string
+          description: Source database name
+          example: The Genome of Europe
+        sourceReference:
+          type: string
+          description: Reference URL to the source database
+          example: https://genomeofeurope.eu/
+        populations:
+          type: array
+          description: List of population frequencies
+          items:
+            $ref: "#/components/schemas/PopulationFrequency"
 
     QualifiedAttribution:
       type: object

@@ -6,12 +6,10 @@ package io.github.genomicdatainfrastructure.discovery.datasets.application.useca
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.GVariantsRepositoryPort;
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQuery;
-import io.github.genomicdatainfrastructure.discovery.model.GVariantsSearchResponse;
+import io.github.genomicdatainfrastructure.discovery.model.GVariantAlleleFrequencyResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @ApplicationScoped
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -19,7 +17,7 @@ public class GVariantsQuery {
 
     private final GVariantsRepositoryPort repository;
 
-    public List<GVariantsSearchResponse> execute(GVariantSearchQuery gVariantSearchQuery) {
+    public GVariantAlleleFrequencyResponse execute(GVariantSearchQuery gVariantSearchQuery) {
         return repository.search(gVariantSearchQuery);
     }
 }

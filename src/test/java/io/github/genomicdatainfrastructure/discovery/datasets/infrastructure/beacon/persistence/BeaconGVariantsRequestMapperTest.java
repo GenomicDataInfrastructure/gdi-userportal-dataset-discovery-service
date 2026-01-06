@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -119,14 +118,6 @@ class BeaconGVariantsRequestMapperTest {
         queryWithBoth.setParams(paramsWithBoth);
         assertEquals("_M_FI", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithBoth)
                 .orElse(null));
-
-        // Case 6: Other sex value
-        GVariantSearchQuery queryWithOther = new GVariantSearchQuery();
-        GVariantSearchQueryParams paramsWithOther = new GVariantSearchQueryParams();
-        paramsWithOther.setSex(GVariantSearchQueryParams.SexEnum.OTHER);
-        queryWithOther.setParams(paramsWithOther);
-        assertEquals("_O", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithOther)
-                .orElse(null));
     }
 
     @Test
@@ -192,7 +183,7 @@ class BeaconGVariantsRequestMapperTest {
     void map_BeaconResponseWithEmptyResults_ReturnsEmptyList() {
         BeaconResponse response = new BeaconResponse();
         BeaconResponseContent content = new BeaconResponseContent();
-        content.setResultSets(Collections.emptyList());
+        content.setResultSets(List.of());
         response.setResponse(content);
 
         List<GVariantsSearchResponse> result = BeaconGVariantsRequestMapper.map(response);
@@ -208,7 +199,7 @@ class BeaconGVariantsRequestMapperTest {
         BeaconResponseContent content = new BeaconResponseContent();
         BeaconResultSet resultSet = new BeaconResultSet();
         resultSet.setResults(null);
-        content.setResultSets(Collections.singletonList(resultSet));
+        content.setResultSets(List.of(resultSet));
         response.setResponse(content);
 
         List<GVariantsSearchResponse> result = BeaconGVariantsRequestMapper.map(response);
@@ -233,6 +224,54 @@ class BeaconGVariantsRequestMapperTest {
         assertEquals("COVID_M_FI", filtered.get(0).getDataset());
     }
 
+    @Test
+    @DisplayName("mapToAlleleFrequencyResponse should convert list to grouped allele frequency response")
+    void mapToAlleleFrequencyResponse_WithVariants_ReturnsGroupedResponse() {
+        List<GVariantsSearchResponse> results = List.of(
+                GVariantsSearchResponse.builder()
+                        .population(GVariantsSearchResponse.PopulationEnum.FINLAND)
+                        .alleleFrequency(BigDecimal.valueOf(0.1234))
+                        .alleleCount(BigDecimal.valueOf(100.0))
+                        .alleleNumber(BigDecimal.valueOf(200.0))
+                        .alleleCountHomozygous(BigDecimal.valueOf(5.0))
+                        .alleleCountHeterozygous(BigDecimal.valueOf(95.0))
+                        .dataset("dataset1")
+                        .build(),
+                GVariantsSearchResponse.builder()
+                        .population(GVariantsSearchResponse.PopulationEnum.ITALY)
+                        .alleleFrequency(BigDecimal.valueOf(0.5678))
+                        .alleleCount(BigDecimal.valueOf(200.0))
+                        .alleleNumber(BigDecimal.valueOf(400.0))
+                        .alleleCountHomozygous(BigDecimal.valueOf(10.0))
+                        .alleleCountHeterozygous(BigDecimal.valueOf(190.0))
+                        .dataset("dataset2")
+                        .build()
+        );
+
+        var response = BeaconGVariantsRequestMapper.mapToAlleleFrequencyResponse(results);
+
+        assertNotNull(response, "Response should not be null");
+        assertEquals(2, response.getNumberOfPopulations(), "Should have 2 populations");
+        assertEquals("The Genome of Europe", response.getSource(),
+                "Source should be 'The Genome of Europe'");
+        assertEquals("https://genomeofeurope.eu/", response.getSourceReference(),
+                "Source reference should be correct URL");
+        assertEquals(2, response.getPopulations().size(), "Should have 2 population frequencies");
+
+        // Check first population
+        var firstPop = response.getPopulations().get(0);
+        assertEquals("FIN", firstPop.getPopulation(), "Population should be FIN");
+        assertEquals("0.1234", firstPop.getAlleleFrequency(), "Allele frequency should match");
+        assertEquals("dataset1", firstPop.getDatasetId(), "Dataset ID should match");
+        assertEquals("100.0", firstPop.getAlleleCount(), "Allele count should match");
+
+        // Check second population
+        var secondPop = response.getPopulations().get(1);
+        assertEquals("ITA", secondPop.getPopulation(), "Population should be ITA");
+        assertEquals("0.5678", secondPop.getAlleleFrequency(), "Allele frequency should match");
+        assertEquals("dataset2", secondPop.getDatasetId(), "Dataset ID should match");
+    }
+
     public static BeaconResponse buildBeaconsResponse() {
         var freq = new Frequencies();
         freq.setPopulation("fin");
@@ -243,17 +282,18 @@ class BeaconGVariantsRequestMapperTest {
         freq.setAlleleCountHeterozygous(BigDecimal.valueOf(95.0));
 
         var freqInPop = new FrequencyInPopulations();
-        freqInPop.setFrequencies(Collections.singletonList(freq));
+        freqInPop.setFrequencies(List.of(freq));
 
         var beaconResult = new Result();
-        beaconResult.setFrequencyInPopulations(Collections.singletonList(freqInPop));
+        beaconResult.setFrequencyInPopulations(List.of(freqInPop));
 
         var resultSet = new BeaconResultSet();
         resultSet.setBeaconId("testBeaconId");
-        resultSet.setResults(Collections.singletonList(beaconResult));
+        resultSet.setId("testBeaconId");
+        resultSet.setResults(List.of(beaconResult));
 
         var responseContent = new BeaconResponseContent();
-        responseContent.setResultSets(Collections.singletonList(resultSet));
+        responseContent.setResultSets(List.of(resultSet));
 
         var responseData = new BeaconResponse();
         responseData.setResponse(responseContent);

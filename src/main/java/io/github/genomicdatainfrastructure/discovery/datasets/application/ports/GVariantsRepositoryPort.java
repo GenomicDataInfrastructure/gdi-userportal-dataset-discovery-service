@@ -5,12 +5,10 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.application.ports;
 
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQuery;
-import io.github.genomicdatainfrastructure.discovery.model.GVariantsSearchResponse;
-
-import java.util.List;
+import io.github.genomicdatainfrastructure.discovery.model.GVariantAlleleFrequencyResponse;
 
 public interface GVariantsRepositoryPort {
 
-    List<GVariantsSearchResponse> search(GVariantSearchQuery gVariantSearchQuery);
+    GVariantAlleleFrequencyResponse search(GVariantSearchQuery gVariantSearchQuery);
 
 }

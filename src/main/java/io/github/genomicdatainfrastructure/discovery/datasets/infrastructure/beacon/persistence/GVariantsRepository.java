@@ -6,15 +6,12 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.be
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.GVariantsRepositoryPort;
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQuery;
-import io.github.genomicdatainfrastructure.discovery.model.GVariantsSearchResponse;
+import io.github.genomicdatainfrastructure.discovery.model.GVariantAlleleFrequencyResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.api.GVariantsApi;
 import io.quarkus.arc.lookup.LookupIfProperty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-
-import java.util.Collections;
-import java.util.List;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
@@ -30,16 +27,18 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
     }
 
     @Override
-    public List<GVariantsSearchResponse> search(GVariantSearchQuery query) {
+    public GVariantAlleleFrequencyResponse search(GVariantSearchQuery query) {
         var beaconQuery = BeaconGVariantsRequestMapper.map(query);
         if (isEmpty(beaconQuery.getQuery().getRequestParameters())) {
-            return Collections.emptyList();
+            return new GVariantAlleleFrequencyResponse();
         }
 
         var populationFilter = BeaconGVariantsRequestMapper.extractPopulationFilter(query);
         var response = gVariantsApi.postGenomicVariationsRequest(beaconQuery);
         var results = BeaconGVariantsRequestMapper.map(response);
+        var filteredResults = BeaconGVariantsRequestMapper.filterByPopulation(results,
+                populationFilter);
 
-        return BeaconGVariantsRequestMapper.filterByPopulation(results, populationFilter);
+        return BeaconGVariantsRequestMapper.mapToAlleleFrequencyResponse(filteredResults);
     }
 }

@@ -6,7 +6,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.be
 
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQueryParams;
-import io.github.genomicdatainfrastructure.discovery.model.GVariantsSearchResponse;
+import io.github.genomicdatainfrastructure.discovery.model.GVariantAlleleFrequencyResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.api.GVariantsApi;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.model.BeaconResponse;
 import org.junit.jupiter.api.Test;
@@ -14,9 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.BeaconGVariantsRequestMapperTest.buildBeaconsResponse;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,15 +29,15 @@ class GVariantsRepositoryTest {
     private GVariantsRepository gVariantsRepository;
 
     @Test
-    void givenEmptyQueryParams_whenSearch_thenReturnsEmptyList() {
+    void givenEmptyQueryParams_whenSearch_thenReturnsEmptyResponse() {
         GVariantSearchQuery query = new GVariantSearchQuery();
         query.setParams(new GVariantSearchQueryParams());
 
-        List<GVariantsSearchResponse> result = gVariantsRepository.search(query);
+        GVariantAlleleFrequencyResponse result = gVariantsRepository.search(query);
 
         assertNotNull(result);
-        assertTrue(result.isEmpty(),
-                "Result should be an empty list because query params are empty");
+        assertNull(result.getNumberOfPopulations(),
+                "Result should have null numberOfPopulations when query params are empty");
         verify(gVariantsApi, never()).postGenomicVariationsRequest(any());
     }
 
@@ -56,17 +53,26 @@ class GVariantsRepositoryTest {
         when(gVariantsApi.postGenomicVariationsRequest(any()))
                 .thenReturn(mockBeaconResponse);
 
-        List<GVariantsSearchResponse> result = gVariantsRepository.search(query);
+        GVariantAlleleFrequencyResponse result = gVariantsRepository.search(query);
 
         assertNotNull(result, "Result should not be null");
-        assertFalse(result.isEmpty(), "Result should not be empty");
-        assertEquals(1, result.size(), "We expect 1 mapped variant response in this mock scenario");
+        assertNotNull(result.getNumberOfPopulations(), "numberOfPopulations should not be null");
+        assertEquals(1, result.getNumberOfPopulations(),
+                "We expect 1 population in this mock scenario");
+        assertEquals("The Genome of Europe", result.getSource(),
+                "Expected source to be 'The Genome of Europe'");
+        assertEquals("https://genomeofeurope.eu/", result.getSourceReference(),
+                "Expected source reference URL");
+        assertFalse(result.getPopulations().isEmpty(), "Populations list should not be empty");
+        assertEquals(1, result.getPopulations().size(),
+                "We expect 1 population response in this mock scenario");
 
         verify(gVariantsApi).postGenomicVariationsRequest(any());
 
-        GVariantsSearchResponse item = result.getFirst();
-        assertEquals("testBeaconId", item.getBeacon(), "Expected beacon ID from mock data");
-        assertEquals(BigDecimal.valueOf(0.1234), item.getAlleleFrequency(),
+        var population = result.getPopulations().getFirst();
+        assertEquals("testBeaconId", population.getDatasetId(),
+                "Expected dataset ID from mock data");
+        assertEquals("0.1234", population.getAlleleFrequency(),
                 "Expected allele frequency from mock data");
     }
 }

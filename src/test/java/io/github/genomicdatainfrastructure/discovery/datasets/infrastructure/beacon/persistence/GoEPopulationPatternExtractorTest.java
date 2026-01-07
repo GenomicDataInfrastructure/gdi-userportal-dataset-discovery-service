@@ -46,7 +46,7 @@ class GoEPopulationPatternExtractorTest {
     void testExtractPopulationNegativePosition() {
         when(config.separator()).thenReturn("_");
         when(config.countryPosition()).thenReturn(-1);
-        when(config.sexPosition()).thenReturn(0);
+        when(config.sexPosition()).thenReturn(1);
 
         assertEquals("M", extractor.extractPopulation("PT_M"));
     }

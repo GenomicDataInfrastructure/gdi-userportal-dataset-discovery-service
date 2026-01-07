@@ -22,29 +22,27 @@ public class GoEPopulationPatternExtractor {
             return null;
         }
 
-        try {
-            String[] parts = datasetName.split(Pattern.quote(config.separator()), -1);
-            String country = extractCountry(parts);
-            String sex = extractSex(parts);
-            return buildPopulationString(country, sex);
-        } catch (Exception e) {
-            return null;
-        }
+        String[] parts = datasetName.split(Pattern.quote(config.separator()), -1);
+        String country = extractCountry(parts);
+        String sex = extractSex(parts);
+        return buildPopulationString(country, sex);
     }
 
     private String extractCountry(String[] parts) {
-        if (config.countryPosition() >= parts.length) {
+        int position = config.countryPosition();
+        if (position < 0 || position >= parts.length) {
             return null;
         }
-        String candidate = parts[config.countryPosition()].trim();
+        String candidate = parts[position].trim();
         return candidate.isEmpty() ? null : candidate.toUpperCase();
     }
 
     private String extractSex(String[] parts) {
-        if (config.sexPosition() >= parts.length) {
+        int position = config.sexPosition();
+        if (position < 0 || position >= parts.length) {
             return null;
         }
-        String candidate = parts[config.sexPosition()].trim();
+        String candidate = parts[position].trim();
         return isSexCode(candidate) ? candidate.toUpperCase() : null;
     }
 

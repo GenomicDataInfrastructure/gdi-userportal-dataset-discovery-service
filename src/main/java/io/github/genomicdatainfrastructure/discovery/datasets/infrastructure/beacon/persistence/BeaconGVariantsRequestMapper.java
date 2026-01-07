@@ -5,7 +5,6 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence;
 
 import io.github.genomicdatainfrastructure.discovery.model.*;
-import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQueryParams.CountryOfBirthEnum;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.model.*;
 
 import java.math.BigDecimal;
@@ -32,44 +31,6 @@ public class BeaconGVariantsRequestMapper {
     private static final String POPULATION_SCOPE = "population";
     private static final String HEMIZYGOUS_COUNT = "0";
 
-    private static final java.util.Map<String, String> ISO3_TO_ISO2 = buildIso3ToIso2Map();
-
-    private static java.util.Map<String, String> buildIso3ToIso2Map() {
-        var m = new java.util.HashMap<String, String>();
-
-        for (CountryOfBirthEnum c : CountryOfBirthEnum.values()) {
-            try {
-                String iso3 = c.value(); // generated enum holds lowercase iso3 strings
-                if (iso3 == null || iso3.isBlank())
-                    continue;
-                String iso3u = iso3.toUpperCase();
-                // find ISO2 by scanning available ISO countries
-                String foundIso2 = null;
-                for (String iso2 : java.util.Locale.getISOCountries()) {
-                    try {
-                        var locale = new java.util.Locale.Builder().setRegion(iso2).build();
-                        String iso3candidate = locale.getISO3Country();
-                        if (iso3u.equalsIgnoreCase(iso3candidate)) {
-                            foundIso2 = iso2.toUpperCase();
-                            break;
-                        }
-                    } catch (Exception ignored) {
-                    }
-                }
-                m.put(iso3u, foundIso2 == null ? iso3u : foundIso2);
-            } catch (Exception ignored) {
-            }
-        }
-        return java.util.Collections.unmodifiableMap(m);
-    }
-
-    static String iso3ToIso2(String iso3) {
-        if (iso3 == null)
-            return null;
-        var key = iso3.toUpperCase();
-        return ISO3_TO_ISO2.getOrDefault(key, key);
-    }
-
     private BeaconGVariantsRequestMapper() {
     }
 
@@ -91,7 +52,7 @@ public class BeaconGVariantsRequestMapper {
                 .builder()
                 .id(COUNTRY_FILTER_ID)
                 .operator(BeaconRequestQueryFilter.OperatorEnum.EQUAL_SYMBOL)
-                .value(iso3ToIso2(c.value()))
+                .value(c.value().toUpperCase())
                 .scope(POPULATION_SCOPE)
                 .build()));
 
@@ -120,8 +81,8 @@ public class BeaconGVariantsRequestMapper {
                 });
 
         var countryOpt = params.map(GVariantSearchQueryParams::getCountryOfBirth)
-                .map(GVariantSearchQueryParams.CountryOfBirthEnum::name)
-                .map(BeaconGVariantsRequestMapper::iso3ToIso2);
+                .map(GVariantSearchQueryParams.CountryOfBirthEnum::value)
+                .map(String::toUpperCase);
 
         if (sexOpt.isEmpty() && countryOpt.isEmpty())
             return Optional.empty();
@@ -191,7 +152,7 @@ public class BeaconGVariantsRequestMapper {
     }
 
     public static GVariantAlleleFrequencyResponse mapToAlleleFrequencyResponse(
-            List<GVariantsSearchResponse> results) {
+            List<GVariantsSearchResponse> results, GoEPopulationPatternExtractor extractor) {
         if (results == null || results.isEmpty()) {
             return new GVariantAlleleFrequencyResponse();
         }
@@ -201,18 +162,18 @@ public class BeaconGVariantsRequestMapper {
                 .source(SOURCE_NAME)
                 .sourceReference(SOURCE_REFERENCE)
                 .populations(results.stream()
-                        .map(BeaconGVariantsRequestMapper::mapVariantToPopulationFrequency)
+                        .map(r -> mapVariantToPopulationFrequency(r, extractor))
                         .collect(Collectors.toList()))
                 .build();
     }
 
     private static PopulationFrequency mapVariantToPopulationFrequency(
-            GVariantsSearchResponse variant) {
+            GVariantsSearchResponse variant, GoEPopulationPatternExtractor extractor) {
         String population = ofNullable(variant.getPopulation())
                 .map(PopulationEnum::value)
                 .map(String::toUpperCase)
                 .or(() -> ofNullable(variant.getDataset())
-                        .map(BeaconGVariantsRequestMapper::extractPopulationFromDataset))
+                        .flatMap(dn -> ofNullable(extractor.extractPopulation(dn))))
                 .orElse(null);
 
         return PopulationFrequency.builder()
@@ -235,20 +196,5 @@ public class BeaconGVariantsRequestMapper {
                         .orElse(null))
                 .alleleCountHemizygous(HEMIZYGOUS_COUNT)
                 .build();
-    }
-
-    private static String extractPopulationFromDataset(String datasetName) {
-        String[] parts = datasetName.split("_");
-        if (parts.length < 2) {
-            return datasetName;
-        }
-
-        String countryCode = parts[1].toUpperCase();
-        for (int i = 2; i < parts.length; i++) {
-            if (parts[i].length() == 1 && (parts[i].equals("M") || parts[i].equals("F"))) {
-                return countryCode + "_" + parts[i];
-            }
-        }
-        return countryCode;
     }
 }

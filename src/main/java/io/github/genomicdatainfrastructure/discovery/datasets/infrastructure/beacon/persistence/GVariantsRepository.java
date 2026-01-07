@@ -20,10 +20,13 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 public class GVariantsRepository implements GVariantsRepositoryPort {
 
     private final GVariantsApi gVariantsApi;
+    private final GoEPopulationPatternExtractor populationExtractor;
 
     @Inject
-    public GVariantsRepository(@RestClient GVariantsApi gVariantsApi) {
+    public GVariantsRepository(@RestClient GVariantsApi gVariantsApi,
+            GoEPopulationPatternExtractor populationExtractor) {
         this.gVariantsApi = gVariantsApi;
+        this.populationExtractor = populationExtractor;
     }
 
     @Override
@@ -39,6 +42,7 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
         var filteredResults = BeaconGVariantsRequestMapper.filterByPopulation(results,
                 populationFilter);
 
-        return BeaconGVariantsRequestMapper.mapToAlleleFrequencyResponse(filteredResults);
+        return BeaconGVariantsRequestMapper.mapToAlleleFrequencyResponse(filteredResults,
+                populationExtractor);
     }
 }

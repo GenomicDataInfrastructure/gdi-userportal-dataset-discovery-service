@@ -7,6 +7,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.be
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQueryParams;
 import io.github.genomicdatainfrastructure.discovery.model.GVariantsSearchResponse;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.config.GoEPopulationPatternConfig;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.model.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -107,7 +108,7 @@ class BeaconGVariantsRequestMapperTest {
         GVariantSearchQueryParams paramsWithCountry = new GVariantSearchQueryParams();
         paramsWithCountry.setCountryOfBirth(GVariantSearchQueryParams.CountryOfBirthEnum.FIN);
         queryWithCountry.setParams(paramsWithCountry);
-        assertEquals("_FI", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithCountry)
+        assertEquals("_FIN", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithCountry)
                 .orElse(null));
 
         // Case 5: Both sex and country set
@@ -116,7 +117,7 @@ class BeaconGVariantsRequestMapperTest {
         paramsWithBoth.setSex(GVariantSearchQueryParams.SexEnum.MALE);
         paramsWithBoth.setCountryOfBirth(GVariantSearchQueryParams.CountryOfBirthEnum.FIN);
         queryWithBoth.setParams(paramsWithBoth);
-        assertEquals("_M_FI", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithBoth)
+        assertEquals("_M_FIN", BeaconGVariantsRequestMapper.extractPopulationFilter(queryWithBoth)
                 .orElse(null));
     }
 
@@ -165,17 +166,6 @@ class BeaconGVariantsRequestMapperTest {
                 "alleleCountHomozygous should match the mock frequency");
         assertEquals(BigDecimal.valueOf(95.0), variant.getAlleleCountHeterozygous(),
                 "alleleCountHeterozygous should match the mock frequency");
-    }
-
-    @Test
-    @DisplayName("iso3ToIso2 should fall back to uppercased ISO3 when mapping not found")
-    void iso3ToIso2_WithUnmappedCountry_ReturnsUppercaseIso3() {
-        String unmappedCountry = "XYZ";
-
-        String result = BeaconGVariantsRequestMapper.iso3ToIso2(unmappedCountry);
-
-        assertEquals("XYZ", result,
-                "Unmapped country codes should return the uppercased ISO3 value");
     }
 
     @Test
@@ -248,7 +238,33 @@ class BeaconGVariantsRequestMapperTest {
                         .build()
         );
 
-        var response = BeaconGVariantsRequestMapper.mapToAlleleFrequencyResponse(results);
+        // Mock extractor that returns null to test fallback to PopulationEnum mapping
+        GoEPopulationPatternExtractor extractor = new GoEPopulationPatternExtractor(
+                new GoEPopulationPatternConfig() {
+
+                    @Override
+                    public int countryPosition() {
+                        return 1;
+                    }
+
+                    @Override
+                    public int sexPosition() {
+                        return 2;
+                    }
+
+                    @Override
+                    public String separator() {
+                        return "_";
+                    }
+                }) {
+
+            @Override
+            public String extractPopulation(String datasetName) {
+                return null;
+            }
+        };
+        var response = BeaconGVariantsRequestMapper.mapToAlleleFrequencyResponse(results,
+                extractor);
 
         assertNotNull(response, "Response should not be null");
         assertEquals(2, response.getNumberOfPopulations(), "Should have 2 populations");

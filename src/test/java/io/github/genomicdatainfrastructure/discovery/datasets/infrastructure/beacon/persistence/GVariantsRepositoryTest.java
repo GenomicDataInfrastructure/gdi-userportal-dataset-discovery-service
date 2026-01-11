@@ -71,6 +71,28 @@ class GVariantsRepositoryTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    void givenCombinedFilters_whenSearch_thenFiltersExactMatch() {
+        var query = createQuery("3:45864731:T:C", "GRCh37", "FR", "M");
+        when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(
+                buildBeaconsResponseWithPopulation("FR_M"));
+
+        var result = gVariantsRepository.search(query);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void givenNullParams_whenSearch_thenReturnsAllVariants() {
+        var query = new GVariantSearchQuery();
+        query.setParams(null);
+        when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(buildBeaconsResponse());
+
+        var result = gVariantsRepository.search(query);
+
+        assertEquals(1, result.size());
+    }
+
     private GVariantSearchQuery createQuery(String variant, String refGenome, String country,
             String sex) {
         var query = new GVariantSearchQuery();

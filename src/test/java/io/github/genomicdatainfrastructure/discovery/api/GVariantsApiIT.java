@@ -80,11 +80,32 @@ class GVariantsApiIT extends BaseTest {
 
     }
 
+    @Test
+    void givenCombinedFilters_whenSearchGenomicVariants_thenReturnsExactMatch() {
+        GVariantSearchQuery query = buildQueryWithFilters("FR", "F");
+        given()
+                .contentType(JSON)
+                .body(query)
+                .when()
+                .post("/api/v1/g_variants")
+                .then()
+                .statusCode(200)
+                .body("$", hasSize(1))
+                .body("[0].countryOfBirth", equalTo("FR"))
+                .body("[0].sex", equalTo("F"));
+    }
+
     private static @NotNull GVariantSearchQuery buildQuery() {
+        return buildQueryWithFilters(null, null);
+    }
+
+    private static @NotNull GVariantSearchQuery buildQueryWithFilters(String countryOfBirth, String sex) {
         GVariantSearchQuery query = new GVariantSearchQuery();
         GVariantSearchQueryParams params = new GVariantSearchQueryParams();
         params.setVariant("3:45864731:T:C");
         params.setRefGenome("GRCh37");
+        params.setCountryOfBirth(countryOfBirth);
+        params.setSex(sex);
         query.setParams(params);
         return query;
     }

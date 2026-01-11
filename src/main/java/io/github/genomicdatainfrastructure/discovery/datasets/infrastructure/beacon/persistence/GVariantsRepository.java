@@ -47,6 +47,10 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
             List<GVariantsSearchResponse> variants, GVariantSearchQuery query) {
 
         var params = query.getParams();
+        if (params == null) {
+            return variants;
+        }
+        
         String countryOfBirth = params.getCountryOfBirth();
         String sex = params.getSex();
 

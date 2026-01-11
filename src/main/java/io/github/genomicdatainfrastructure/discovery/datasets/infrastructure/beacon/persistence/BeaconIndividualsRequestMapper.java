@@ -53,7 +53,11 @@ public class BeaconIndividualsRequestMapper {
                 .filter(it -> FilterType.ENTRIES.equals(it.getType()))
                 .map(BeaconIndividualsRequestMapper::buildBeaconRequestParameters)
                 .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey, 
+                    Map.Entry::getValue,
+                    (existing, replacement) -> existing // Keep the first value in case of duplicates
+                ));
 
         return BeaconRequest.builder()
                 .meta(new BeaconRequestMeta())

@@ -9,6 +9,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.mod
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.POPULATION_PATTERN;
@@ -52,7 +53,7 @@ public class BeaconGVariantsRequestMapper {
         return beaconRequest;
     }
 
-    private static void addIfNonNull(HashMap<String, Object> map, String key, Object value) {
+    private static void addIfNonNull(Map<String, Object> map, String key, Object value) {
         if (value != null) {
             map.put(key, value);
         }

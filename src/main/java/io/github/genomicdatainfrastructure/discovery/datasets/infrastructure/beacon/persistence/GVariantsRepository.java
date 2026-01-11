@@ -50,7 +50,7 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
         if (params == null) {
             return variants;
         }
-        
+
         String countryOfBirth = params.getCountryOfBirth();
         String sex = params.getSex();
 

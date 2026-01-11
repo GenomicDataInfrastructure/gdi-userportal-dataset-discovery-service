@@ -83,14 +83,14 @@ class GVariantsRepositoryTest {
     }
 
     @Test
-    void givenNullParams_whenSearch_thenReturnsAllVariants() {
+    void givenNullParams_whenSearch_thenReturnsEmptyList() {
         var query = new GVariantSearchQuery();
         query.setParams(null);
-        when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(buildBeaconsResponse());
 
         var result = gVariantsRepository.search(query);
 
-        assertEquals(1, result.size());
+        assertTrue(result.isEmpty());
+        verify(gVariantsApi, never()).postGenomicVariationsRequest(any());
     }
 
     private GVariantSearchQuery createQuery(String variant, String refGenome, String country,

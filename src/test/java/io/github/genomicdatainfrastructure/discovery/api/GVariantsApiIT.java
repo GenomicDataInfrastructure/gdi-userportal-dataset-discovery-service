@@ -99,7 +99,8 @@ class GVariantsApiIT extends BaseTest {
         return buildQueryWithFilters(null, null);
     }
 
-    private static @NotNull GVariantSearchQuery buildQueryWithFilters(String countryOfBirth, String sex) {
+    private static @NotNull GVariantSearchQuery buildQueryWithFilters(String countryOfBirth,
+            String sex) {
         GVariantSearchQuery query = new GVariantSearchQuery();
         GVariantSearchQueryParams params = new GVariantSearchQueryParams();
         params.setVariant("3:45864731:T:C");

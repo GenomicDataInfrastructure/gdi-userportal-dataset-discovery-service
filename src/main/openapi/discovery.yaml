@@ -256,10 +256,10 @@ components:
           default: 0
           minimum: 0
         operator:
-          title: Ckan query operator
-          type: string
-          $ref: "#/components/schemas/QueryOperator"
-          default: OR
+          allOf:
+            - $ref: "#/components/schemas/QueryOperator"
+            - title: Ckan query operator
+              default: OR
         includeBeacon:
           type: boolean
           title: Include Beacon Network in search
@@ -1005,10 +1005,37 @@ components:
       type: object
       properties:
         params:
-          type: object
-          additionalProperties: true
+          $ref: '#/components/schemas/GVariantSearchQueryParams'
       required:
         - params
+    GVariantSearchQueryParams:
+      type: object
+      properties:
+        variant:
+          type: string
+          title: Variant
+          description: Genomic variant in the format CHROMOSOME:POSITION:REFERENCE:ALTERNATE
+          example: "11:87202:G:T"
+        refGenome:
+          type: string
+          title: Reference Genome
+          description: Reference genome assembly identifier
+          example: "GRCh38"
+        cohort:
+          type: string
+          title: Cohort
+          description: Optional cohort identifier
+        sex:
+          type: string
+          title: Sex
+          description: Optional sex filter (M or F)
+        countryOfBirth:
+          type: string
+          title: Country of Birth
+          description: Optional country of birth (2-letter ISO code)
+      required:
+        - variant
+        - refGenome
     GVariantsSearchResponse:
       type: object
       properties:
@@ -1018,64 +1045,20 @@ components:
         dataset:
           type: string
           example: COVID_pop12_ita_2
+        datasetId:
+          type: string
+          description: The dataset identifier
+          example: GDID-italysub2-6666
         population:
           type: string
-          enum:
-            - aut
-            - bel
-            - bgr
-            - hrv
-            - cyp
-            - cze
-            - dnk
-            - est
-            - fin
-            - fra
-            - deu
-            - grc
-            - hun
-            - irl
-            - ita
-            - lva
-            - ltu
-            - lux
-            - mlt
-            - nld
-            - pol
-            - prt
-            - rou
-            - svk
-            - svn
-            - esp
-            - swe
-          x-enum-varnames:
-            - AUSTRIA
-            - BELGIUM
-            - BULGARIA
-            - CROATIA
-            - CYPRUS
-            - CZECH_REPUBLIC
-            - DENMARK
-            - ESTONIA
-            - FINLAND
-            - FRANCE
-            - GERMANY
-            - GREECE
-            - HUNGARY
-            - IRELAND
-            - ITALY
-            - LATVIA
-            - LITHUANIA
-            - LUXEMBOURG
-            - MALTA
-            - NETHERLANDS
-            - POLAND
-            - PORTUGAL
-            - ROMANIA
-            - SLOVAKIA
-            - SLOVENIA
-            - SPAIN
-            - SWEDEN
+          description: Population name in GoE format [COUNTRY]_[SEX] where COUNTRY is 2-letter ISO code and SEX is M or F. Examples FR_M, FR_F, FR, M, F
+          example: FR_M
+        sex:
+          type: string
+          title: Sex
+        countryOfBirth:
+          type: string
+          title: Country of Birth
         alleleCount:
           type: number
         alleleNumber:
@@ -1083,6 +1066,8 @@ components:
         alleleCountHomozygous:
           type: number
         alleleCountHeterozygous:
+          type: number
+        alleleCountHemizygous:
           type: number
         alleleFrequency:
           type: number

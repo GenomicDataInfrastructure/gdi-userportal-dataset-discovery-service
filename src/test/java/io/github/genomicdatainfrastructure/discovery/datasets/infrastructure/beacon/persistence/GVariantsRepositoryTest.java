@@ -5,6 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence;
 
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQuery;
+import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQueryParams;
 import io.github.genomicdatainfrastructure.discovery.model.GVariantsSearchResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.api.GVariantsApi;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.model.BeaconResponse;
@@ -15,9 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.BeaconGVariantsRequestMapperTest.buildBeaconsResponse;
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,22 +32,12 @@ class GVariantsRepositoryTest {
     private GVariantsRepository gVariantsRepository;
 
     @Test
-    void givenEmptyQueryParams_whenSearch_thenReturnsEmptyList() {
-        GVariantSearchQuery query = new GVariantSearchQuery();
-        query.setParams(Collections.emptyMap());
-
-        List<GVariantsSearchResponse> result = gVariantsRepository.search(query);
-
-        assertNotNull(result);
-        assertTrue(result.isEmpty(),
-                "Result should be an empty list because query params are empty");
-        verify(gVariantsApi, never()).postGenomicVariationsRequest(any());
-    }
-
-    @Test
     void givenNonEmptyQueryParams_whenSearch_thenReturnsMappedResponse() {
         GVariantSearchQuery query = new GVariantSearchQuery();
-        query.setParams(Map.of("key1", "value1"));
+        GVariantSearchQueryParams params = new GVariantSearchQueryParams();
+        params.setVariant("3:45864731:T:C");
+        params.setRefGenome("GRCh37");
+        query.setParams(params);
 
         BeaconResponse mockBeaconResponse = buildBeaconsResponse();
 

@@ -36,23 +36,24 @@
           {
             "beaconId": "org.nbis.ga4gh-approval-beacon-test",
             "exists": true,
-            "id": "COVID_pop11_fin_1",
+            "id": "EGAD50000000276",
             "results": [
               {
                 "frequencyInPopulations": [
                   {
                     "frequencies": [
                       {
-                        "alleleFrequency": 0.005915809888392687,
-                        "population": "COVID_pop11_fin_1",
-                        "alleleCount": 491.0,
-                        "alleleNumber": 82998.0,
-                        "alleleCountHomozygous": 8.0,
-                        "alleleCountHeterozygous": 483.0
+                        "alleleFrequency": 0.13095,
+                        "population": "FR_M",
+                        "alleleCount": 7102.0,
+                        "alleleNumber": 54233.0,
+                        "alleleCountHomozygous": 2400.0,
+                        "alleleCountHeterozygous": 4702.0,
+                        "alleleCountHemizygous": 0.0
                       }
                     ],
-                    "source": "The Genome Aggregation Database (gnomAD)",
-                    "sourceReference": "gnomad.broadinstitute.org/"
+                    "source": "The Genome of Europe",
+                    "sourceReference": "https://genomeofeurope.eu/"
                   }
                 ],
                 "identifiers": {
@@ -87,23 +88,24 @@
           {
             "beaconId": "pt.biodata.gdi.beacon-alleles",
             "exists": true,
-            "id": "COVID_pop12_ita_1",
+            "id": "GDID-becadf5a-a1b2",
             "results": [
               {
                 "frequencyInPopulations": [
                   {
                     "frequencies": [
                       {
-                        "alleleFrequency": 0.004268940072506666,
-                        "population": "COVID_pop12_ita_1",
+                        "alleleFrequency": 0.01588,
+                        "population": "FR_F",
                         "alleleCount": 478.0,
-                        "alleleNumber": 83028.0,
-                        "alleleCountHomozygous": 4,
-                        "alleleCountHeterozygous": 474
+                        "alleleNumber": 30153.0,
+                        "alleleCountHomozygous": 20.0,
+                        "alleleCountHeterozygous": 458.0,
+                        "alleleCountHemizygous": 0.0
                       }
                     ],
-                    "source": "The Genome Aggregation Database (gnomAD)",
-                    "sourceReference": "gnomad.broadinstitute.org/"
+                    "source": "The Genome of Europe",
+                    "sourceReference": "https://genomeofeurope.eu/"
                   }
                 ],
                 "identifiers": {

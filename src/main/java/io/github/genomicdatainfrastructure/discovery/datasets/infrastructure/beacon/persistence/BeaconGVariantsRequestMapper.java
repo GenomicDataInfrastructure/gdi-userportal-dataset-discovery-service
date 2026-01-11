@@ -91,6 +91,7 @@ public class BeaconGVariantsRequestMapper {
         variant.alleleNumber(freq.getAlleleNumber());
         variant.alleleCountHomozygous(freq.getAlleleCountHomozygous());
         variant.alleleCountHeterozygous(freq.getAlleleCountHeterozygous());
+        variant.alleleCountHemizygous(freq.getAlleleCountHemizygous());
 
         // Extract sex and countryOfBirth from population string in GoE format [COUNTRY]_[SEX]
         extractAndSetSexAndCountry(variant, freq.getPopulation());

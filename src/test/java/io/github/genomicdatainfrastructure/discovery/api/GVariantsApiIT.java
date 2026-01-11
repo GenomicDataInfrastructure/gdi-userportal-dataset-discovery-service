@@ -42,6 +42,7 @@ class GVariantsApiIT extends BaseTest {
                 .body("[0].alleleNumber", equalTo(54233.0F))
                 .body("[0].alleleCountHomozygous", equalTo(2400.0F))
                 .body("[0].alleleCountHeterozygous", equalTo(4702.0F))
+                .body("[0].alleleCountHemizygous", equalTo(0.0F))
                 .body("[0].alleleFrequency", equalTo(0.13095F))
 
                 // 4) Verify the second element
@@ -53,6 +54,7 @@ class GVariantsApiIT extends BaseTest {
                 .body("[1].alleleNumber", equalTo(30153.0F))
                 .body("[1].alleleCountHomozygous", equalTo(20.0F))
                 .body("[1].alleleCountHeterozygous", equalTo(458.0F))
+                .body("[1].alleleCountHemizygous", equalTo(0.0F))
                 .body("[1].alleleFrequency", equalTo(0.01588F));
 
     }

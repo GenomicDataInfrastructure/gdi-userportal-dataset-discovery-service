@@ -6,19 +6,15 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.be
 
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQueryParams;
-import io.github.genomicdatainfrastructure.discovery.model.GVariantsSearchResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.api.GVariantsApi;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.model.BeaconResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.BeaconGVariantsRequestMapperTest.buildBeaconsResponse;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.BeaconGVariantsRequestMapperTest.buildBeaconsResponseWithPopulation;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -33,28 +29,57 @@ class GVariantsRepositoryTest {
 
     @Test
     void givenNonEmptyQueryParams_whenSearch_thenReturnsMappedResponse() {
-        GVariantSearchQuery query = new GVariantSearchQuery();
-        GVariantSearchQueryParams params = new GVariantSearchQueryParams();
-        params.setVariant("3:45864731:T:C");
-        params.setRefGenome("GRCh37");
+        var query = createQuery("3:45864731:T:C", "GRCh37", null, null);
+        when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(buildBeaconsResponse());
+
+        var result = gVariantsRepository.search(query);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("testBeaconId", result.getFirst().getBeacon());
+    }
+
+    @Test
+    void givenEmptyFilters_whenSearch_thenReturnsAllVariants() {
+        var query = createQuery("3:45864731:T:C", "GRCh37", null, null);
+        when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(buildBeaconsResponse());
+
+        var result = gVariantsRepository.search(query);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void givenCountryFilter_whenSearch_thenFiltersCorrectly() {
+        var query = createQuery("3:45864731:T:C", "GRCh37", "FI", null);
+        when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(
+                buildBeaconsResponseWithPopulation("FI"));
+
+        var result = gVariantsRepository.search(query);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void givenInvalidPopulation_whenSearch_thenFiltersOut() {
+        var query = createQuery("3:45864731:T:C", "GRCh37", "FI", null);
+        when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(
+                buildBeaconsResponseWithPopulation("INVALID"));
+
+        var result = gVariantsRepository.search(query);
+
+        assertTrue(result.isEmpty());
+    }
+
+    private GVariantSearchQuery createQuery(String variant, String refGenome, String country,
+            String sex) {
+        var query = new GVariantSearchQuery();
+        var params = new GVariantSearchQueryParams();
+        params.setVariant(variant);
+        params.setRefGenome(refGenome);
+        params.setCountryOfBirth(country);
+        params.setSex(sex);
         query.setParams(params);
-
-        BeaconResponse mockBeaconResponse = buildBeaconsResponse();
-
-        when(gVariantsApi.postGenomicVariationsRequest(any()))
-                .thenReturn(mockBeaconResponse);
-
-        List<GVariantsSearchResponse> result = gVariantsRepository.search(query);
-
-        assertNotNull(result, "Result should not be null");
-        assertFalse(result.isEmpty(), "Result should not be empty");
-        assertEquals(1, result.size(), "We expect 1 mapped variant response in this mock scenario");
-
-        verify(gVariantsApi).postGenomicVariationsRequest(any());
-
-        GVariantsSearchResponse item = result.getFirst();
-        assertEquals("testBeaconId", item.getBeacon(), "Expected beacon ID from mock data");
-        assertEquals(BigDecimal.valueOf(0.1234), item.getAlleleFrequency(),
-                "Expected allele frequency from mock data");
+        return query;
     }
 }

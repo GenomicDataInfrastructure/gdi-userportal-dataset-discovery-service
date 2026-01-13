@@ -35,6 +35,8 @@ class GVariantsApiIT extends BaseTest {
 
                 // 3) Verify the first element
                 .body("[0].beacon", equalTo("org.nbis.ga4gh-approval-beacon-test"))
+                .body("[0].datasetId", equalTo("EGAD50000000276"))
+                .body("[0].dataset", equalTo("EGAD50000000276")) // deprecated field for backward compatibility
                 .body("[0].population", equalTo("FR_M"))
                 .body("[0].sex", equalTo("M"))
                 .body("[0].countryOfBirth", equalTo("FR"))
@@ -47,6 +49,8 @@ class GVariantsApiIT extends BaseTest {
 
                 // 4) Verify the second element
                 .body("[1].beacon", equalTo("pt.biodata.gdi.beacon-alleles"))
+                .body("[1].datasetId", equalTo("GDID-becadf5a-a1b2"))
+                .body("[1].dataset", equalTo("GDID-becadf5a-a1b2")) // deprecated field for backward compatibility
                 .body("[1].population", equalTo("FR_F"))
                 .body("[1].sex", equalTo("F"))
                 .body("[1].countryOfBirth", equalTo("FR"))

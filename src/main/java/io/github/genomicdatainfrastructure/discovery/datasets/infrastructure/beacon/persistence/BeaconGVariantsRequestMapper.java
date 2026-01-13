@@ -76,7 +76,8 @@ public class BeaconGVariantsRequestMapper {
         }
         GVariantsSearchResponse variant = new GVariantsSearchResponse();
         variant.beacon(resultSet.getBeaconId());
-        variant.dataset(resultSet.getId());
+        variant.datasetId(resultSet.getId());
+        variant.dataset(resultSet.getId()); // Keep for frontend compatibility, but deprecated
         resultSet.getResults().stream()
                 .flatMap(r -> r.getFrequencyInPopulations().stream())
                 .flatMap(fip -> fip.getFrequencies().stream())

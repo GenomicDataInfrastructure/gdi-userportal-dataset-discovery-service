@@ -1045,6 +1045,8 @@ components:
         dataset:
           type: string
           example: COVID_pop12_ita_2
+          deprecated: true
+          description: "This field is deprecated. Use datasetId instead."
         datasetId:
           type: string
           description: The dataset identifier

@@ -14,9 +14,12 @@ public final class PopulationConstants {
     public static final String MALE_CODE = "M";
     public static final String FEMALE_CODE = "F";
 
-    public static final String PARAM_VARIANT = "variant";
-    public static final String PARAM_REF_GENOME = "refGenome";
-    public static final String PARAM_COHORT = "cohort";
+    public static final String PARAM_REFERENCE_NAME = "referenceName";
+    public static final String PARAM_START = "start";
+    public static final String PARAM_END = "end";
+    public static final String PARAM_REFERENCE_BASES = "referenceBases";
+    public static final String PARAM_ALTERNATE_BASES = "alternateBases";
+    public static final String PARAM_ASSEMBLY_ID = "assemblyId";
     public static final String PARAM_SEX = "sex";
     public static final String PARAM_COUNTRY_OF_BIRTH = "countryOfBirth";
 

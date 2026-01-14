@@ -1011,31 +1011,56 @@ components:
     GVariantSearchQueryParams:
       type: object
       properties:
-        variant:
+        referenceName:
           type: string
-          title: Variant
-          description: Genomic variant in the format CHROMOSOME:POSITION:REFERENCE:ALTERNATE
-          example: "11:87202:G:T"
-        refGenome:
+          title: Reference Name
+          description: Chromosome name/identifier
+          example: "3"
+        start:
+          type: array
+          title: Start Position
+          description: Array of start positions on the reference sequence
+          items:
+            type: integer
+          example: [45864731]
+        end:
+          type: array
+          title: End Position
+          description: Array of end positions on the reference sequence (can be null)
+          items:
+            type: integer
+          nullable: true
+        referenceBases:
           type: string
-          title: Reference Genome
+          title: Reference Bases
+          description: The reference allele sequence
+          example: "T"
+        alternateBases:
+          type: string
+          title: Alternate Bases
+          description: The alternate allele sequence
+          example: "C"
+        assemblyId:
+          type: string
+          title: Assembly ID
           description: Reference genome assembly identifier
-          example: "GRCh38"
-        cohort:
-          type: string
-          title: Cohort
-          description: Optional cohort identifier
+          example: "GRCh37"
         sex:
           type: string
           title: Sex
           description: Optional sex filter (M or F)
+          example: "F"
         countryOfBirth:
           type: string
           title: Country of Birth
           description: Optional country of birth (2-letter ISO code)
+          example: "FR"
       required:
-        - variant
-        - refGenome
+        - referenceName
+        - start
+        - referenceBases
+        - alternateBases
+        - assemblyId
     GVariantsSearchResponse:
       type: object
       properties:

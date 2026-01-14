@@ -105,8 +105,11 @@ class GVariantsApiIT extends BaseTest {
             String sex) {
         GVariantSearchQuery query = new GVariantSearchQuery();
         GVariantSearchQueryParams params = new GVariantSearchQueryParams();
-        params.setVariant("3:45864731:T:C");
-        params.setRefGenome("GRCh37");
+        params.setReferenceName("3");
+        params.setStart(java.util.List.of(45864731));
+        params.setReferenceBases("T");
+        params.setAlternateBases("C");
+        params.setAssemblyId("GRCh37");
         params.setCountryOfBirth(countryOfBirth);
         params.setSex(sex);
         query.setParams(params);

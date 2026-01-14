@@ -243,11 +243,6 @@ components:
           type: string
         temporal_end:
           type: string
-        temporal_coverage:
-          type: array
-          description: The temporal period or periods the dataset covers.
-          items:
-            $ref: "#/components/schemas/CkanTimeWindow"
         url:
           type: string
         language:

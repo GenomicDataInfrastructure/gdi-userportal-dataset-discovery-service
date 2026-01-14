@@ -427,6 +427,10 @@ components:
           type: string
           title: License
           description: License identifier for the dataset.
+        ownerOrg:
+          type: string
+          title: Owner Organization
+          description: The CKAN organization the dataset belongs to.
         themes:
           type: array
           items:

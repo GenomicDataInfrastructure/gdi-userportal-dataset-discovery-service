@@ -161,10 +161,10 @@ class BeaconRequestMapperTest {
                                                 .scope("individual")
                                                 .build()
                                 ))
-                                .requestParameters(List.of(
+                                .requestParameters(
                                         Map.of("geneId", "KRAS",
                                                 "aminoacidChange", "p.R121H")
-                                ))
+                                )
                                 .build())
                         .build());
     }

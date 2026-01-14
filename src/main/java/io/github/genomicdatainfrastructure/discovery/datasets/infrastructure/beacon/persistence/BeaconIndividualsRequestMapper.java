@@ -15,15 +15,15 @@ import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequest;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestMeta;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQuery;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQuery.IncludeResultsetResponsesEnum;
-import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQuery.RequestedGranularityEnum;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQueryFilter;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQueryFilter.OperatorEnum;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQueryPagination;
 import io.smallrye.common.constraint.NotNull;
 import lombok.experimental.UtilityClass;
+
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -32,8 +32,6 @@ public class BeaconIndividualsRequestMapper {
 
     private static final String BEACON_FACET_GROUP = "beacon";
     private static final String SCOPE = "individual";
-    public static final IncludeResultsetResponsesEnum INCLUDE_RESULT_SET_RESPONSES = HIT;
-    private static final RequestedGranularityEnum REQUESTED_GRANULARITY = RECORD;
 
     public BeaconRequest from(
             DatasetSearchQuery query
@@ -54,13 +52,18 @@ public class BeaconIndividualsRequestMapper {
                 .filter(it -> BEACON_FACET_GROUP.equals(it.getSource()))
                 .filter(it -> FilterType.ENTRIES.equals(it.getType()))
                 .map(BeaconIndividualsRequestMapper::buildBeaconRequestParameters)
-                .toList();
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (existing, replacement) -> existing // Keep the first value in case of duplicates
+                ));
 
         return BeaconRequest.builder()
                 .meta(new BeaconRequestMeta())
                 .query(BeaconRequestQuery.builder()
-                        .includeResultsetResponses(INCLUDE_RESULT_SET_RESPONSES)
-                        .requestedGranularity(REQUESTED_GRANULARITY)
+                        .includeResultsetResponses(HIT)
+                        .requestedGranularity(RECORD)
                         .testMode(false)
                         .pagination(new BeaconRequestQueryPagination())
                         .filters(beaconFilters)

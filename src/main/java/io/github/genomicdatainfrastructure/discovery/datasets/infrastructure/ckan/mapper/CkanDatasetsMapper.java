@@ -75,6 +75,8 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "temporalResolution", source = "temporalResolution")
     @Mapping(target = "healthTheme", source = "healthTheme")
     @Mapping(target = "versionNotes", source = "versionNotes")
+    @Mapping(target = "version", source = "version")
+    @Mapping(target = "license", source = "licenseId")
     RetrievedDataset map(CkanPackage ckanPackage);
 
     @Mapping(target = "label", source = "displayName")
@@ -129,6 +131,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "theme", source = "theme")
     @Mapping(target = "uri", source = "uri")
     @Mapping(target = "title", source = "title")
+    @Mapping(target = "hvdCategory", source = "hvdCategory")
     AccessServiceInner map(CkanResourceAccessServicesInner source);
 
     default List<SearchedDataset> map(PackagesSearchResult result) {
@@ -166,6 +169,23 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "bbox", source = "bbox")
     @Mapping(target = "centroid", source = "centroid")
     SpatialCoverage map(CkanSpatialCoverage spatialCoverage);
+
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "uri", source = "uri")
+    @Mapping(target = "url", source = "url")
+    @Mapping(target = "identifier", source = "identifier")
+    ContactPoint map(CkanContactPoint ckanContactPoint);
+
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "url", source = "url")
+    @Mapping(target = "uri", source = "uri")
+    @Mapping(target = "homepage", source = "homepage")
+    @Mapping(target = "type", source = "type")
+    @Mapping(target = "identifier", source = "identifier")
+    @Mapping(target = "actedOnBehalfOf", source = "actedOnBehalfOf")
+    Agent map(CkanAgent ckanAgent);
 
     default OffsetDateTime map(String date) {
         if (StringUtils.isBlank(date)) {

@@ -419,6 +419,14 @@ components:
         description:
           type: string
           title: Description
+        version:
+          type: string
+          title: Version
+          description: Version number or other version designation of the dataset.
+        license:
+          type: string
+          title: License
+          description: License identifier for the dataset.
         themes:
           type: array
           items:
@@ -816,6 +824,11 @@ components:
                 format: uri
               title:
                 type: string
+              hvdCategory:
+                type: array
+                description: A data category defined in the High Value Dataset Implementing Regulation.
+                items:
+                  type: string
             required:
               - id
               - title
@@ -852,6 +865,14 @@ components:
         uri:
           type: string
           title: uri
+        url:
+          type: string
+          title: url
+          description: URL for more information about the contact point.
+        identifier:
+          type: string
+          title: identifier
+          description: Unique identifier for the contact point.
       required:
         - name
         - email
@@ -869,11 +890,21 @@ components:
         uri:
           type: string
           title: uri
+        homepage:
+          type: string
+          format: uri
+          title: homepage
+          description: Homepage URL for the agent.
         type:
           $ref: "#/components/schemas/ValueLabel"
         identifier:
           type: string
           title: identifier
+        actedOnBehalfOf:
+          type: array
+          description: Organization the agent acted on behalf of.
+          items:
+            $ref: "#/components/schemas/Agent"
       required:
         - name
     DatasetRelationEntry:

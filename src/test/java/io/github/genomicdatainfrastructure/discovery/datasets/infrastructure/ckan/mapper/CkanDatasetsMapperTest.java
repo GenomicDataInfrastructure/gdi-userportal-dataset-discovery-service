@@ -95,6 +95,7 @@ class CkanDatasetsMapperTest {
                                     .uri("uri")
                                     .type(getValueLabel("Creator Type",
                                             "http://example.com/creator/type"))
+                                    .actedOnBehalfOf(List.of())
                                     .build(),
                             Agent.builder()
                                     .name("creatorName2")
@@ -104,6 +105,7 @@ class CkanDatasetsMapperTest {
                                     .uri("uri2")
                                     .type(getValueLabel("Creator Type 2",
                                             "http://example.com/creator/type2"))
+                                    .actedOnBehalfOf(List.of())
                                     .build()
                     ))
                     .publishers(List.of(
@@ -115,6 +117,7 @@ class CkanDatasetsMapperTest {
                                     .uri("uri")
                                     .type(getValueLabel("Publisher Type",
                                             "http://example.com/publisher/type"))
+                                    .actedOnBehalfOf(List.of())
                                     .build(),
                             Agent.builder()
                                     .name("publisherName2")
@@ -124,6 +127,7 @@ class CkanDatasetsMapperTest {
                                     .uri("uri2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
+                                    .actedOnBehalfOf(List.of())
                                     .build()
                     ))
                     .accessRights(getValueLabel("accessRights", "public", 10))
@@ -159,11 +163,13 @@ class CkanDatasetsMapperTest {
                             ContactPoint.builder()
                                     .name("Contact 1")
                                     .email("contact1@example.com")
+                                    .identifier("contact-identifier-1")
                                     .build(),
                             ContactPoint.builder()
                                     .name("Contact 2")
                                     .email("contact2@example.com")
                                     .uri("http://example.com")
+                                    .identifier("contact-identifier-2")
                                     .build()
                     ))
                     .datasetRelationships(List.of(
@@ -198,6 +204,7 @@ class CkanDatasetsMapperTest {
                             .name("EU Health Data Access Body")
                             .email("hdab@example.com")
                             .url("https://www.example.com/hdab")
+                            .actedOnBehalfOf(List.of())
                             .build()))
                     .healthCategory(List.of(
                             getValueLabel("Genomics",
@@ -488,6 +495,7 @@ class CkanDatasetsMapperTest {
                             .identifier("publisherIdentifier")
                             .type(getValueLabel("Publisher Type",
                                     "http://example.com/publisher/type"))
+                            .actedOnBehalfOf(List.of())
                             .build(),
                             Agent.builder()
                                     .name("publisherName2")
@@ -497,6 +505,7 @@ class CkanDatasetsMapperTest {
                                     .identifier("publisherIdentifier2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
+                                    .actedOnBehalfOf(List.of())
                                     .build()))
                     .themes(getValueLabels("theme", "theme-name", 3))
                     .keywords(List.of("key-tag"))

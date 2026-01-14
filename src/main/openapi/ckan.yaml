@@ -192,6 +192,15 @@ components:
           type: string
         notes:
           type: string
+        version:
+          type: string
+          description: Version number or other version designation of the dataset.
+        license_id:
+          type: string
+          description: License identifier for the dataset.
+        owner_org:
+          type: string
+          description: The CKAN organization the dataset belongs to.
         theme:
           type: array
           items:
@@ -435,12 +444,22 @@ components:
         name:
           type: string
           title: name
+        name_translated:
+          type: object
+          title: name_translated
+          description: Name of the contact point in each language.
+          additionalProperties:
+            type: string
         email:
           type: string
           title: email
         uri:
           type: string
           title: uri
+        url:
+          type: string
+          title: url
+          description: URL for more information about the contact point.
         identifier:
           type: string
           title: identifier
@@ -452,6 +471,12 @@ components:
         name:
           type: string
           title: name
+        name_translated:
+          type: object
+          title: name_translated
+          description: Name of the agent in each language.
+          additionalProperties:
+            type: string
         email:
           type: string
           title: email
@@ -461,11 +486,21 @@ components:
         uri:
           type: string
           title: uri
+        homepage:
+          type: string
+          format: uri
+          title: homepage
+          description: Homepage URL for the agent.
         type:
           $ref: "#/components/schemas/CkanValueLabel"
         identifier:
           type: string
           title: identifier
+        actedOnBehalfOf:
+          type: array
+          description: Organization the agent acted on behalf of.
+          items:
+            $ref: "#/components/schemas/CkanAgent"
       required:
         - name
     CkanDatasetRelationEntry:
@@ -634,6 +669,11 @@ components:
                 format: uri
               title:
                 type: string
+              hvd_category:
+                type: array
+                description: A data category defined in the High Value Dataset Implementing Regulation.
+                items:
+                  type: string
       required:
         - id
         - name

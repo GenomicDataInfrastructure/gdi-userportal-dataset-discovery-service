@@ -97,8 +97,18 @@ class GVariantsRepositoryTest {
             String sex) {
         var query = new GVariantSearchQuery();
         var params = new GVariantSearchQueryParams();
-        params.setVariant(variant);
-        params.setRefGenome(refGenome);
+
+        if (variant != null) {
+            String[] parts = variant.split(":");
+            if (parts.length == 4) {
+                params.setReferenceName(parts[0]);
+                params.setStart(java.util.List.of(Integer.parseInt(parts[1])));
+                params.setReferenceBases(parts[2]);
+                params.setAlternateBases(parts[3]);
+            }
+        }
+
+        params.setAssemblyId(refGenome);
         params.setCountryOfBirth(country);
         params.setSex(sex);
         query.setParams(params);

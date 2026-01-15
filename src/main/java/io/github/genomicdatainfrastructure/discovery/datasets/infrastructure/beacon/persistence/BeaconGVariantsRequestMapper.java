@@ -14,9 +14,12 @@ import java.util.Objects;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.POPULATION_PATTERN;
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.hasValue;
-import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_VARIANT;
-import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_REF_GENOME;
-import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_COHORT;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_REFERENCE_NAME;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_START;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_END;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_REFERENCE_BASES;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_ALTERNATE_BASES;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_ASSEMBLY_ID;
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_SEX;
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_COUNTRY_OF_BIRTH;
 
@@ -31,9 +34,12 @@ public class BeaconGVariantsRequestMapper {
         var requestParams = new HashMap<String, Object>();
 
         if (params != null) {
-            addIfNonNull(requestParams, PARAM_VARIANT, params.getVariant());
-            addIfNonNull(requestParams, PARAM_REF_GENOME, params.getRefGenome());
-            addIfNonNull(requestParams, PARAM_COHORT, params.getCohort());
+            addIfNonNull(requestParams, PARAM_REFERENCE_NAME, params.getReferenceName());
+            addIfNonNull(requestParams, PARAM_START, params.getStart());
+            addIfNonNull(requestParams, PARAM_END, params.getEnd());
+            addIfNonNull(requestParams, PARAM_REFERENCE_BASES, params.getReferenceBases());
+            addIfNonNull(requestParams, PARAM_ALTERNATE_BASES, params.getAlternateBases());
+            addIfNonNull(requestParams, PARAM_ASSEMBLY_ID, params.getAssemblyId());
             addIfNonNull(requestParams, PARAM_SEX, params.getSex());
             addIfNonNull(requestParams, PARAM_COUNTRY_OF_BIRTH, params.getCountryOfBirth());
         }

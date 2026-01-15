@@ -662,8 +662,7 @@ components:
               theme:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/CkanValueLabel"
               uri:
                 type: string
                 format: uri

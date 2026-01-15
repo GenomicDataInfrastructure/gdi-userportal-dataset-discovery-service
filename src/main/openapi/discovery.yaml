@@ -821,8 +821,7 @@ components:
               theme:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/ValueLabel"
               uri:
                 type: string
                 format: uri

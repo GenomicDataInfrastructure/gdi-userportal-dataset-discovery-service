@@ -585,6 +585,7 @@ class CkanDatasetsMapperTest {
                 .id("access-service-id")
                 .conformsTo(getValueLabels("OGC API", "http://example.com/spec/ogc-api"))
                 .license(getValueLabel("Service License", "http://example.com/license/service"))
+                .theme(getValueLabel("Service Theme", "http://example.com/service/theme"))
                 .applicableLegislation(List.of())
                 .contact(List.of())
                 .creator(List.of())
@@ -600,6 +601,7 @@ class CkanDatasetsMapperTest {
                 .conformsTo(
                         getCkanValueLabels("OGC API", "http://example.com/spec/ogc-api"))
                 .license(getCkanValueLabel("Service License", "http://example.com/license/service"))
+                .theme(getCkanValueLabel("Service Theme", "http://example.com/service/theme"))
                 .build();
     }
 

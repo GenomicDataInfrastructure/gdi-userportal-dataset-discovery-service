@@ -298,9 +298,58 @@ class CkanDatasetsMapperTest {
                     .usingRecursiveComparison()
                     .isEqualTo(expected);
         }
+
+        @Test
+        void given_accessService_without_theme_should_map_to_empty_theme_list() {
+            final var ckanPackage = buildCkanPackageWithAccessService(
+                    buildCkanAccessServiceWithoutTheme());
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getDistributions())
+                    .hasSize(1);
+            assertThat(actual.getDistributions().get(0).getAccessService())
+                    .hasSize(1);
+            assertThat(actual.getDistributions().get(0).getAccessService().get(0).getTheme())
+                    .isEmpty();
+        }
+
+        @Test
+        void given_accessService_with_multiple_themes_should_map_all_theme_entries() {
+            final var ckanPackage = buildCkanPackageWithAccessService(
+                    buildCkanAccessServiceWithThemes());
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getDistributions())
+                    .hasSize(1);
+            assertThat(actual.getDistributions().get(0).getAccessService())
+                    .hasSize(1);
+            assertThat(actual.getDistributions().get(0).getAccessService().get(0).getTheme())
+                    .usingRecursiveComparison()
+                    .isEqualTo(List.of(
+                            getValueLabel("Service Theme 1",
+                                    "http://example.com/service/theme/1"),
+                            getValueLabel("Service Theme 2",
+                                    "http://example.com/service/theme/2")
+                    ));
+        }
     }
 
     private static CkanPackage buildCkanPackage() {
+        return baseCkanPackageBuilder()
+                .resources(getCkanResources())
+                .build();
+    }
+
+    private static CkanPackage buildCkanPackageWithAccessService(
+            CkanResourceAccessServicesInner accessService) {
+        return baseCkanPackageBuilder()
+                .resources(getCkanResourcesWithAccessService(accessService))
+                .build();
+    }
+
+    private static CkanPackage.CkanPackageBuilder baseCkanPackageBuilder() {
         return CkanPackage.builder()
                 .id("id")
                 .identifier("identifier")
@@ -322,7 +371,6 @@ class CkanDatasetsMapperTest {
                         getCkanValueLabels("DCAT-AP 3.0", "https://data.europa.eu/dcat-ap/3.0"))
                 .provenance("provenance")
                 .spatialUri(getCkanValueLabel("spatial", "uri"))
-                .resources(getCkanResources())
                 .contact(List.of(
                         CkanContactPoint.builder()
                                 .name("Contact 1")
@@ -483,8 +531,7 @@ class CkanDatasetsMapperTest {
                                 .build()
                 ))
                 .spatialResolutionInMeters(10.0f)
-                .alternateIdentifier(List.of("internalURI:admsIdentifier0"))
-                .build();
+                .alternateIdentifier(List.of("internalURI:admsIdentifier0"));
     }
 
     @Nested
@@ -558,6 +605,11 @@ class CkanDatasetsMapperTest {
     }
 
     private static @NotNull List<CkanResource> getCkanResources() {
+        return getCkanResourcesWithAccessService(buildCkanAccessService());
+    }
+
+    private static @NotNull List<CkanResource> getCkanResourcesWithAccessService(
+            CkanResourceAccessServicesInner accessService) {
         return List.of(
                 CkanResource.builder()
                         .id("resource_id")
@@ -570,7 +622,7 @@ class CkanDatasetsMapperTest {
                         .modifiedDate("2025-03-19T13:37:05Z")
                         .compressFormat("gzip")
                         .hashAlgorithm(getCkanValueLabel("SHA-256", "sha-256"))
-                        .accessServices(List.of(buildCkanAccessService()))
+                        .accessServices(List.of(accessService))
                         .applicableLegislation(List.of(getCkanValueLabel("Regulation (EU) 2022/868",
                                 "http://data.europa.eu/eli/reg/2022/868/oj")))
                         .language(getCkanValueLabels("language", "en", 2))
@@ -602,6 +654,30 @@ class CkanDatasetsMapperTest {
                         getCkanValueLabels("OGC API", "http://example.com/spec/ogc-api"))
                 .license(getCkanValueLabel("Service License", "http://example.com/license/service"))
                 .theme(getCkanValueLabels("Service Theme", "http://example.com/service/theme"))
+                .build();
+    }
+
+    private static CkanResourceAccessServicesInner buildCkanAccessServiceWithoutTheme() {
+        return CkanResourceAccessServicesInner.builder()
+                .identifier("access-service-id")
+                .conformsTo(
+                        getCkanValueLabels("OGC API", "http://example.com/spec/ogc-api"))
+                .license(getCkanValueLabel("Service License", "http://example.com/license/service"))
+                .build();
+    }
+
+    private static CkanResourceAccessServicesInner buildCkanAccessServiceWithThemes() {
+        return CkanResourceAccessServicesInner.builder()
+                .identifier("access-service-id")
+                .conformsTo(
+                        getCkanValueLabels("OGC API", "http://example.com/spec/ogc-api"))
+                .license(getCkanValueLabel("Service License", "http://example.com/license/service"))
+                .theme(List.of(
+                        getCkanValueLabel("Service Theme 1",
+                                "http://example.com/service/theme/1"),
+                        getCkanValueLabel("Service Theme 2",
+                                "http://example.com/service/theme/2")
+                ))
                 .build();
     }
 

@@ -684,6 +684,8 @@ components:
             $ref: "#/components/schemas/ValueLabel"
         byteSize:
           type: integer
+          format: int64
+          minimum: 0
         checksum:
           type: string
         checksumAlgorithm:
@@ -831,7 +833,7 @@ components:
                 type: array
                 description: A data category defined in the High Value Dataset Implementing Regulation.
                 items:
-                  type: string
+                  $ref: "#/components/schemas/ValueLabel"
             required:
               - id
               - title

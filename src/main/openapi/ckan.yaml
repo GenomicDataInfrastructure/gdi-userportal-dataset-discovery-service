@@ -536,6 +536,8 @@ components:
             $ref: "#/components/schemas/CkanValueLabel"
         size:
           type: integer
+          format: int64
+          minimum: 0
         hash:
           type: string
         hash_algorithm:
@@ -672,7 +674,7 @@ components:
                 type: array
                 description: A data category defined in the High Value Dataset Implementing Regulation.
                 items:
-                  type: string
+                  $ref: "#/components/schemas/CkanValueLabel"
       required:
         - id
         - name

@@ -12,6 +12,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.32] - 2026-01-21
+
+### Fixed
+- fix(redhat) Use correct container image (#293) by @Hans-Christian in fa4ce93
+
+
 ## [v1.3.29] - 2025-12-01
 
 ### Added

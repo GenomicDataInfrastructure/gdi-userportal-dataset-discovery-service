@@ -12,6 +12,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.34] - 2026-01-22
+
+### Changed
+- applied review comments by @Hans-christian in 307d05b
+
+
+### Fixed
+- fix(hvd_catagory) Unit tests are fixed now by @Hans-christian in 24a4ac9
+- fix(hvd) fix hvd catagory and property size by @Hans-christian in 3cd40a9
+- fix(redhat) Use correct container image by @Hans-christian in aca9b85
+
+
 ## [v1.3.32] - 2026-01-21
 
 ### Fixed

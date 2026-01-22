@@ -644,6 +644,7 @@ class CkanDatasetsMapperTest {
                 .format(List.of())
                 .languages(List.of())
                 .publisher(List.of())
+                .hvdCategory(List.of())
                 .build();
     }
 

@@ -57,7 +57,7 @@ public class SearchDatasetsQuery {
                 query.getRows(), query.getStart(), accessToken, preferredLanguage);
 
         return DatasetsSearchResponse.builder()
-                .count(datasetIds.size())
+                .count(datasets.size())
                 .results(datasets)
                 .build();
     }
@@ -91,7 +91,7 @@ public class SearchDatasetsQuery {
 
         return DatasetsSearchResponse
                 .builder()
-                .count(datasetIdsByRecordCount.size())
+                .count(enhancedDatasets.size())
                 .results(enhancedDatasets)
                 .build();
     }

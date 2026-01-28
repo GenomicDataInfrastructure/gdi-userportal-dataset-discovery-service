@@ -535,6 +535,71 @@ class CkanDatasetsMapperTest {
     }
 
     @Nested
+    class ContactPointMappingTest {
+
+        @Test
+        void given_contact_point_without_name_should_fallback_to_email() {
+            final var ckanContactPoint = CkanContactPoint.builder()
+                    .email("contact@example.com")
+                    .build();
+
+            final var actual = mapper.map(ckanContactPoint);
+
+            final var expected = ContactPoint.builder()
+                    .name("contact@example.com")
+                    .email("contact@example.com")
+                    .build();
+
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expected);
+        }
+
+        @Test
+        void given_contact_point_with_blank_name_should_fallback_to_email() {
+            final var ckanContactPoint = CkanContactPoint.builder()
+                    .name("   ")
+                    .email("contact@example.com")
+                    .build();
+            final var actual = mapper.map(ckanContactPoint);
+
+            final var expected = ContactPoint.builder()
+                    .name("contact@example.com")
+                    .email("contact@example.com")
+                    .build();
+
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expected);
+        }
+
+        @Test
+        void given_contact_point_with_name_should_use_name() {
+            final var ckanContactPoint = CkanContactPoint.builder()
+                    .name("Contact Name")
+                    .email("contact@example.com")
+                    .uri("http://example.com")
+                    .url("http://example.com/contact")
+                    .identifier("contact-id")
+                    .build();
+
+            final var actual = mapper.map(ckanContactPoint);
+
+            final var expected = ContactPoint.builder()
+                    .name("Contact Name")
+                    .email("contact@example.com")
+                    .uri("http://example.com")
+                    .url("http://example.com/contact")
+                    .identifier("contact-id")
+                    .build();
+
+            assertThat(actual)
+                    .usingRecursiveComparison()
+                    .isEqualTo(expected);
+        }
+    }
+
+    @Nested
     class SearchedDatasetTest {
 
         static Stream<Arguments> arguments() {

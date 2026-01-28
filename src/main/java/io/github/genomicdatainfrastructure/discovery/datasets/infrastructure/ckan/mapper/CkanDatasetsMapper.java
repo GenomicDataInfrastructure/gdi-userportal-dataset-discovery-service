@@ -171,12 +171,23 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "centroid", source = "centroid")
     SpatialCoverage map(CkanSpatialCoverage spatialCoverage);
 
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "email", source = "email")
-    @Mapping(target = "uri", source = "uri")
-    @Mapping(target = "url", source = "url")
-    @Mapping(target = "identifier", source = "identifier")
-    ContactPoint map(CkanContactPoint ckanContactPoint);
+    default ContactPoint map(CkanContactPoint source) {
+        if (source == null)
+            return null;
+
+        String displayName = source.getName();
+        if (displayName == null || displayName.isBlank()) {
+            displayName = source.getEmail();
+        }
+
+        return ContactPoint.builder()
+                .name(displayName)
+                .email(source.getEmail())
+                .uri(source.getUri())
+                .url(source.getUrl())
+                .identifier(source.getIdentifier())
+                .build();
+    }
 
     @Mapping(target = "name", source = "name")
     @Mapping(target = "email", source = "email")

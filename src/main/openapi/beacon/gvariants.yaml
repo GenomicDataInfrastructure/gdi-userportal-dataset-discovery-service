@@ -279,9 +279,6 @@ components:
           description: A name for the population. A population could an ethnic,
             geographical one or just the `members`of a study.
           type: string
-        # datasetId:
-        #   type: string
-        #   description: The dataset identifier
         alleleCount:
           type: number
         alleleNumber:

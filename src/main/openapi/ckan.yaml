@@ -274,7 +274,8 @@ components:
 
         # Below are properties from HealthDCAT
         publisher_note:
-          type: object
+          type: string
+          description: A note from the publisher about the dataset.
         publisher_coverage:
           type: array
           items:

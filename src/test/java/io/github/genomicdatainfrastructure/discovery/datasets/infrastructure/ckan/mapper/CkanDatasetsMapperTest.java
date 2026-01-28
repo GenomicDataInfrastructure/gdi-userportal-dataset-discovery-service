@@ -546,7 +546,7 @@ class CkanDatasetsMapperTest {
             final var actual = mapper.map(ckanContactPoint);
 
             final var expected = ContactPoint.builder()
-                    .name("contact@example.com")
+                    .name("contact")
                     .email("contact@example.com")
                     .build();
 
@@ -564,7 +564,7 @@ class CkanDatasetsMapperTest {
             final var actual = mapper.map(ckanContactPoint);
 
             final var expected = ContactPoint.builder()
-                    .name("contact@example.com")
+                    .name("contact")
                     .email("contact@example.com")
                     .build();
 

@@ -177,7 +177,7 @@ public interface CkanDatasetsMapper {
 
         String displayName = source.getName();
         if (displayName == null || displayName.isBlank()) {
-            displayName = source.getEmail();
+            displayName = source.getEmail().split("@")[0];
         }
 
         return ContactPoint.builder()

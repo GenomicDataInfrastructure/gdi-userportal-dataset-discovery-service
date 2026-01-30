@@ -267,7 +267,7 @@ components:
             Whether to include Beacon Network results in the search.
             - true (default): Search both CKAN and Beacon, return intersection with record counts
             - false: Search CKAN only (faster, no Beacon query, no record counts)
-            
+
             For backward compatibility, if not provided, defaults to true.
           default: true
     DatasetSearchQueryFacet:
@@ -523,7 +523,7 @@ components:
           type: array
           description: A geographic region that is covered by the dataset.
           items:
-            $ref: '#/components/schemas/SpatialCoverage'
+            $ref: "#/components/schemas/SpatialCoverage"
         spatialResolutionInMeters:
           type: number
           format: float
@@ -648,7 +648,6 @@ components:
             type: object
             required:
               - body
-              - motivated_by
               - target
             properties:
               body:
@@ -844,7 +843,6 @@ components:
         - id
         - title
         - description
-
 
     ValueLabel:
       properties:
@@ -1042,7 +1040,7 @@ components:
       type: object
       properties:
         params:
-          $ref: '#/components/schemas/GVariantSearchQueryParams'
+          $ref: "#/components/schemas/GVariantSearchQueryParams"
       required:
         - params
     GVariantSearchQueryParams:

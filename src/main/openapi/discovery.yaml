@@ -599,15 +599,12 @@ components:
             $ref: "#/components/schemas/ValueLabel"
         homepage:
           type: string
-          format: uri
         uri:
           type: string
-          format: uri
         documentation:
           type: array
           items:
             type: string
-            format: uri
         frequency:
           $ref: "#/components/schemas/ValueLabel"
         inSeries:
@@ -622,11 +619,6 @@ components:
           type: array
           items:
             type: object
-            required:
-              - dct_type
-              - label
-              - uri
-              - startedAtTime
             properties:
               dct_type:
                 type: string
@@ -646,13 +638,10 @@ components:
           type: array
           items:
             type: object
-            required:
-              - body
-              - target
             properties:
               body:
                 $ref: "#/components/schemas/ValueLabel"
-              motivated_by:
+              motivatedBy:
                 $ref: "#/components/schemas/ValueLabel"
               target:
                 type: string
@@ -677,7 +666,6 @@ components:
         accessUrl:
           type: string
           title: Access URL
-          format: uri
         applicableLegislation:
           type: array
           items:
@@ -699,11 +687,9 @@ components:
           type: array
           items:
             type: string
-            format: uri
         downloadUrl:
           type: string
           title: Download URL
-          format: uri
         format:
           $ref: "#/components/schemas/ValueLabel"
         languages:
@@ -787,7 +773,6 @@ components:
                 type: array
                 items:
                   type: string
-                  format: uri
               format:
                 type: array
                 items:
@@ -826,7 +811,6 @@ components:
                   $ref: "#/components/schemas/ValueLabel"
               uri:
                 type: string
-                format: uri
               title:
                 type: string
               hvdCategory:
@@ -896,7 +880,6 @@ components:
           title: uri
         homepage:
           type: string
-          format: uri
           title: homepage
           description: Homepage URL for the agent.
         type:
@@ -1146,11 +1129,6 @@ components:
 
     ProvenanceActivity:
       type: object
-      required:
-        - dct_type
-        - label
-        - uri
-        - startedAtTime
       properties:
         dct_type:
           type: string

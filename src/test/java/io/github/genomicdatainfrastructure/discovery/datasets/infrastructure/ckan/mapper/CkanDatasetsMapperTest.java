@@ -13,10 +13,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.time.OffsetDateTime.parse;
@@ -61,6 +61,7 @@ class CkanDatasetsMapperTest {
                     .healthCategory(List.of())
                     .healthTheme(List.of())
                     .personalData(List.of())
+                    .keywords(List.of())
                     .temporalCoverage(TimeWindow.builder().build())
                     .build();
 
@@ -96,7 +97,7 @@ class CkanDatasetsMapperTest {
                                     .email("email")
                                     .url("url")
                                     .uri("uri")
-                                    .homepage(URI.create("http://example.com/creator1"))
+                                    .homepage("http://example.com/creator1")
                                     .type(getValueLabel("Creator Type",
                                             "http://example.com/creator/type"))
                                     .actedOnBehalfOf(List.of(
@@ -113,7 +114,7 @@ class CkanDatasetsMapperTest {
                                     .email("email2")
                                     .url("url2")
                                     .uri("uri2")
-                                    .homepage(URI.create("http://example.com/creator2"))
+                                    .homepage("http://example.com/creator2")
                                     .type(getValueLabel("Creator Type 2",
                                             "http://example.com/creator/type2"))
                                     .actedOnBehalfOf(List.of())
@@ -126,7 +127,7 @@ class CkanDatasetsMapperTest {
                                     .email("email")
                                     .url("url")
                                     .uri("uri")
-                                    .homepage(URI.create("http://example.com/publisher1"))
+                                    .homepage("http://example.com/publisher1")
                                     .type(getValueLabel("Publisher Type",
                                             "http://example.com/publisher/type"))
                                     .actedOnBehalfOf(List.of())
@@ -137,7 +138,7 @@ class CkanDatasetsMapperTest {
                                     .email("email2")
                                     .url("url2")
                                     .uri("uri2")
-                                    .homepage(URI.create("http://example.com/publisher2"))
+                                    .homepage("http://example.com/publisher2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
                                     .actedOnBehalfOf(List.of())
@@ -157,8 +158,8 @@ class CkanDatasetsMapperTest {
                                     .createdAt(parse("2025-03-19T00:00Z"))
                                     .modifiedAt(parse("2025-03-19T13:37:05Z"))
                                     .format(getValueLabel("format", "pdf", 1))
-                                    .accessUrl(URI.create("https://accessUrl.com"))
-                                    .downloadUrl(URI.create("https://downloadUrl.com"))
+                                    .accessUrl("https://accessUrl.com")
+                                    .downloadUrl("https://downloadUrl.com")
                                     .compressionFormat("gzip")
                                     .checksumAlgorithm(getValueLabel("SHA-256", "sha-256"))
                                     .languages(getValueLabels("language", "en", 2))
@@ -392,7 +393,7 @@ class CkanDatasetsMapperTest {
                                 .identifier("creatorIdentifier")
                                 .email("email")
                                 .url("url")
-                                .homepage(URI.create("http://example.com/creator1"))
+                                .homepage("http://example.com/creator1")
                                 .type(getCkanValueLabel("Creator Type",
                                         "http://example.com/creator/type"))
                                 .uri("uri")
@@ -408,7 +409,7 @@ class CkanDatasetsMapperTest {
                                 .identifier("creatorIdentifier2")
                                 .email("email2")
                                 .url("url2")
-                                .homepage(URI.create("http://example.com/creator2"))
+                                .homepage("http://example.com/creator2")
                                 .type(getCkanValueLabel("Creator Type 2",
                                         "http://example.com/creator/type2"))
                                 .uri("uri2")
@@ -420,7 +421,7 @@ class CkanDatasetsMapperTest {
                                 .identifier("publisherIdentifier")
                                 .email("email")
                                 .url("url")
-                                .homepage(URI.create("http://example.com/publisher1"))
+                                .homepage("http://example.com/publisher1")
                                 .type(getCkanValueLabel("Publisher Type",
                                         "http://example.com/publisher/type"))
                                 .uri("uri")
@@ -430,7 +431,7 @@ class CkanDatasetsMapperTest {
                                 .identifier("publisherIdentifier2")
                                 .email("email2")
                                 .url("url2")
-                                .homepage(URI.create("http://example.com/publisher2"))
+                                .homepage("http://example.com/publisher2")
                                 .type(getCkanValueLabel("Publisher Type 2",
                                         "http://example.com/publisher/type2"))
                                 .uri("uri2")
@@ -569,7 +570,7 @@ class CkanDatasetsMapperTest {
                             .email("email")
                             .url("url")
                             .uri("uri")
-                            .homepage(URI.create("http://example.com/publisher1"))
+                            .homepage("http://example.com/publisher1")
                             .identifier("publisherIdentifier")
                             .type(getValueLabel("Publisher Type",
                                     "http://example.com/publisher/type"))
@@ -580,7 +581,7 @@ class CkanDatasetsMapperTest {
                                     .email("email2")
                                     .url("url2")
                                     .uri("uri2")
-                                    .homepage(URI.create("http://example.com/publisher2"))
+                                    .homepage("http://example.com/publisher2")
                                     .identifier("publisherIdentifier2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
@@ -604,6 +605,140 @@ class CkanDatasetsMapperTest {
         }
     }
 
+    @Nested
+    class MergeKeywordsTest {
+
+        @Test
+        void given_null_ckanPackage_returns_empty_list() {
+            var actual = mapper.mergeKeywords(null);
+
+            assertThat(actual).isEmpty();
+        }
+
+        @Test
+        void given_ckanPackage_with_null_tags_and_null_tagsTranslated_returns_empty_list() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(null)
+                    .tagsTranslated(null)
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).isEmpty();
+        }
+
+        @Test
+        void given_ckanPackage_with_only_tags_returns_tags() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("tag1", "tag2", "tag3"))
+                    .tagsTranslated(null)
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("tag1", "tag2", "tag3");
+        }
+
+        @Test
+        void given_ckanPackage_with_only_tagsTranslated_returns_translated_tags() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(null)
+                    .tagsTranslated(Map.of(
+                            "en", List.of("English Tag"),
+                            "nl", List.of("Dutch Tag")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactlyInAnyOrder("English Tag", "Dutch Tag");
+        }
+
+        @Test
+        void given_ckanPackage_with_both_tags_and_tagsTranslated_merges_both() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("harvested-tag"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("manual-tag-en"),
+                            "nl", List.of("manual-tag-nl")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactlyInAnyOrder(
+                    "harvested-tag", "manual-tag-en", "manual-tag-nl");
+        }
+
+        @Test
+        void given_ckanPackage_with_duplicate_tags_removes_duplicates() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("same-tag", "unique-tag"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("same-tag", "another-tag")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("same-tag", "unique-tag", "another-tag");
+        }
+
+        @Test
+        void given_ckanPackage_with_blank_tags_filters_them_out() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("valid-tag", "", "  ", "another-valid"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("", "  ", "valid-translated")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("valid-tag", "another-valid", "valid-translated");
+        }
+
+        @Test
+        void given_ckanPackage_with_whitespace_tags_trims_them() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("  spaced tag  ", "normal"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("  translated with spaces  ")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("spaced tag", "normal", "translated with spaces");
+        }
+
+        @Test
+        void given_ckanPackage_with_empty_tags_list_returns_only_translated() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of())
+                    .tagsTranslated(Map.of(
+                            "en", List.of("translated-only")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("translated-only");
+        }
+
+        @Test
+        void given_ckanPackage_with_empty_tagsTranslated_returns_only_tags() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("tags-only"))
+                    .tagsTranslated(Map.of())
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("tags-only");
+        }
+    }
+
     private static @NotNull List<CkanResource> getCkanResources() {
         return getCkanResourcesWithAccessService(buildCkanAccessService());
     }
@@ -616,8 +751,8 @@ class CkanDatasetsMapperTest {
                         .name("resource_name")
                         .description("resource_description")
                         .format(getCkanValueLabel("format", "pdf", 1))
-                        .accessUrl(URI.create("https://accessUrl.com"))
-                        .downloadUrl(URI.create("https://downloadUrl.com"))
+                        .accessUrl("https://accessUrl.com")
+                        .downloadUrl("https://downloadUrl.com")
                         .issuedDate("2025-03-19")
                         .modifiedDate("2025-03-19T13:37:05Z")
                         .compressFormat("gzip")

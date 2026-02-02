@@ -209,6 +209,13 @@ components:
           type: array
           items:
             type: string
+        tags_translated:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Multilingual tags with language codes as keys.
         contact:
           type: array
           items:
@@ -368,15 +375,12 @@ components:
             $ref: "#/components/schemas/CkanValueLabel"
         homepage:
           type: string
-          format: uri
         uri:
           type: string
-          format: uri
         documentation:
           type: array
           items:
             type: string
-            format: uri
         frequency:
           $ref: "#/components/schemas/CkanValueLabel"
         in_series:
@@ -398,19 +402,10 @@ components:
                 $ref: "#/components/schemas/CkanValueLabel"
               target:
                 type: string
-            required:
-              - body
-              - motivated_by
-              - target
         provenance_activity:
           type: array
           items:
             type: object
-            required:
-              - dct_type
-              - label
-              - uri
-              - startedAtTime
             properties:
               dct_type:
                 type: string
@@ -445,12 +440,6 @@ components:
         name:
           type: string
           title: name
-        name_translated:
-          type: object
-          title: name_translated
-          description: Name of the contact point in each language.
-          additionalProperties:
-            type: string
         email:
           type: string
           title: email
@@ -464,20 +453,11 @@ components:
         identifier:
           type: string
           title: identifier
-      required:
-        - name
-        - email
     CkanAgent:
       properties:
         name:
           type: string
           title: name
-        name_translated:
-          type: object
-          title: name_translated
-          description: Name of the agent in each language.
-          additionalProperties:
-            type: string
         email:
           type: string
           title: email
@@ -489,7 +469,6 @@ components:
           title: uri
         homepage:
           type: string
-          format: uri
           title: homepage
           description: Homepage URL for the agent.
         type:
@@ -502,8 +481,6 @@ components:
           description: Organization the agent acted on behalf of.
           items:
             $ref: "#/components/schemas/CkanAgent"
-      required:
-        - name
     CkanDatasetRelationEntry:
       properties:
         relation:
@@ -530,7 +507,6 @@ components:
       properties:
         access_url:
           type: string
-          format: uri
         applicable_legislation:
           type: array
           items:
@@ -551,10 +527,8 @@ components:
           type: array
           items:
             type: string
-            format: uri
         download_url:
           type: string
-          format: uri
         format:
           $ref: "#/components/schemas/CkanValueLabel"
         language:
@@ -631,7 +605,6 @@ components:
                 type: array
                 items:
                   type: string
-                  format: uri
               format:
                 type: array
                 items:
@@ -668,7 +641,6 @@ components:
                   $ref: "#/components/schemas/CkanValueLabel"
               uri:
                 type: string
-                format: uri
               title:
                 type: string
               hvd_category:

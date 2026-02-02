@@ -208,7 +208,14 @@ components:
         tags:
           type: array
           items:
-            $ref: "#/components/schemas/CkanValueLabel"
+            type: string
+        tags_translated:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Multilingual tags with language codes as keys.
         contact:
           type: array
           items:

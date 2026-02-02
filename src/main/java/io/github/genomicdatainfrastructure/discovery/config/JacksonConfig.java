@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.cfg.CoercionAction;
 import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import com.fasterxml.jackson.databind.type.LogicalType;
+import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanPackage;
 import io.quarkus.jackson.ObjectMapperCustomizer;
 import jakarta.inject.Singleton;
 
@@ -20,6 +21,10 @@ import jakarta.inject.Singleton;
  *
  * This configuration allows Jackson to coerce empty strings to null for POJO
  * types, preventing deserialization errors.
+ *
+ * Additionally, it registers a mix-in for CkanPackage to handle the tags field
+ * which CKAN returns in inconsistent formats (sometimes as strings, sometimes
+ * as objects with name/display_name fields).
  */
 @Singleton
 public class JacksonConfig implements ObjectMapperCustomizer {
@@ -40,5 +45,8 @@ public class JacksonConfig implements ObjectMapperCustomizer {
         // This handles array fields that CKAN returns as "" instead of []
         objectMapper.coercionConfigFor(LogicalType.Collection)
                 .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsEmpty);
+
+        // Register mix-in for CkanPackage to handle tags field with both string and object formats
+        objectMapper.addMixIn(CkanPackage.class, CkanPackageMixin.class);
     }
 }

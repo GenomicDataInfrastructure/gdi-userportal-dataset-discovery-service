@@ -9,6 +9,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.NullValueMappingStrategy;
 
 import java.time.LocalDateTime;
@@ -33,7 +34,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "themes", source = "theme")
     @Mapping(target = "contacts", source = "contact")
     @Mapping(target = "distributions", source = "resources")
-    @Mapping(target = "keywords", source = "tags")
+    @Mapping(target = "keywords", source = "tags", qualifiedByName = "tagsToKeywords")
     @Mapping(target = "spatial", source = "spatialUri")
     @Mapping(target = "createdAt", source = "issued")
     @Mapping(target = "modifiedAt", source = "modified")
@@ -147,7 +148,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "description", source = "notes")
     @Mapping(target = "themes", source = "theme")
     @Mapping(target = "publishers", source = "publisher")
-    @Mapping(target = "keywords", source = "tags")
+    @Mapping(target = "keywords", source = "tags", qualifiedByName = "tagsToKeywords")
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "createdAt", source = "issued")
     @Mapping(target = "accessRights", source = "accessRights")
@@ -204,5 +205,16 @@ public interface CkanDatasetsMapper {
                     .truncatedTo(ChronoUnit.SECONDS)
                     .atOffset(ZoneOffset.UTC);
         }
+    }
+
+    @Named("tagsToKeywords")
+    default List<String> tagsToKeywords(List<CkanValueLabel> tags) {
+        if (tags == null) {
+            return Collections.emptyList();
+        }
+        return tags.stream()
+                .map(CkanValueLabel::getDisplayName)
+                .filter(StringUtils::isNotBlank)
+                .toList();
     }
 }

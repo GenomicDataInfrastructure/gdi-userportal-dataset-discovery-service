@@ -208,7 +208,7 @@ components:
         tags:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/CkanValueLabel"
         contact:
           type: array
           items:

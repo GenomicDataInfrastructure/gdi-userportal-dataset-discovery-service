@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.time.OffsetDateTime.parse;
@@ -601,6 +602,140 @@ class CkanDatasetsMapperTest {
                             .end(parse("2024-07-13T22:00Z"))
                             .build())
                     .build();
+        }
+    }
+
+    @Nested
+    class MergeKeywordsTest {
+
+        @Test
+        void given_null_ckanPackage_returns_empty_list() {
+            var actual = mapper.mergeKeywords(null);
+
+            assertThat(actual).isEmpty();
+        }
+
+        @Test
+        void given_ckanPackage_with_null_tags_and_null_tagsTranslated_returns_empty_list() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(null)
+                    .tagsTranslated(null)
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).isEmpty();
+        }
+
+        @Test
+        void given_ckanPackage_with_only_tags_returns_tags() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("tag1", "tag2", "tag3"))
+                    .tagsTranslated(null)
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("tag1", "tag2", "tag3");
+        }
+
+        @Test
+        void given_ckanPackage_with_only_tagsTranslated_returns_translated_tags() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(null)
+                    .tagsTranslated(Map.of(
+                            "en", List.of("English Tag"),
+                            "nl", List.of("Dutch Tag")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactlyInAnyOrder("English Tag", "Dutch Tag");
+        }
+
+        @Test
+        void given_ckanPackage_with_both_tags_and_tagsTranslated_merges_both() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("harvested-tag"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("manual-tag-en"),
+                            "nl", List.of("manual-tag-nl")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactlyInAnyOrder(
+                    "harvested-tag", "manual-tag-en", "manual-tag-nl");
+        }
+
+        @Test
+        void given_ckanPackage_with_duplicate_tags_removes_duplicates() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("same-tag", "unique-tag"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("same-tag", "another-tag")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("same-tag", "unique-tag", "another-tag");
+        }
+
+        @Test
+        void given_ckanPackage_with_blank_tags_filters_them_out() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("valid-tag", "", "  ", "another-valid"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("", "  ", "valid-translated")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("valid-tag", "another-valid", "valid-translated");
+        }
+
+        @Test
+        void given_ckanPackage_with_whitespace_tags_trims_them() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("  spaced tag  ", "normal"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("  translated with spaces  ")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("spaced tag", "normal", "translated with spaces");
+        }
+
+        @Test
+        void given_ckanPackage_with_empty_tags_list_returns_only_translated() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of())
+                    .tagsTranslated(Map.of(
+                            "en", List.of("translated-only")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("translated-only");
+        }
+
+        @Test
+        void given_ckanPackage_with_empty_tagsTranslated_returns_only_tags() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("tags-only"))
+                    .tagsTranslated(Map.of())
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("tags-only");
         }
     }
 

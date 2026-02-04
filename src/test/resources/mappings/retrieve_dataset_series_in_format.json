@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/dataset_series/577f4d4b-a861-4178-91d5-f46019174193.ttl"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/turtle"
+    },
+    "body": "@prefix dcat: <http://www.w3.org/ns/dcat#> .\n@prefix dct: <http://purl.org/dc/terms/> .\n\n<> a dcat:DatasetSeries ;\n  dct:identifier \"577f4d4b-a861-4178-91d5-f46019174193\" .\n"
+  }
+}
+

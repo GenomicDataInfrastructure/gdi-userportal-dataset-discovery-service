@@ -6,6 +6,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ck
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
 import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.DatasetNotFoundException;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.client.CkanDatasetSeriesExportApi;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.mapper.CkanDatasetsMapper;
 import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
@@ -15,6 +16,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -25,13 +27,17 @@ import static io.github.genomicdatainfrastructure.discovery.datasets.infrastruct
 public class CkanDatasetsRepository implements DatasetsRepository {
 
     private final CkanQueryApi ckanQueryApi;
+    private final CkanDatasetSeriesExportApi ckanDatasetSeriesExportApi;
     private final CkanDatasetsMapper ckanDatasetsMapper;
 
     @Inject
     public CkanDatasetsRepository(
-            @RestClient CkanQueryApi ckanQueryApi, CkanDatasetsMapper ckanDatasetsMapper
+            @RestClient CkanQueryApi ckanQueryApi,
+            @RestClient CkanDatasetSeriesExportApi ckanDatasetSeriesExportApi,
+            CkanDatasetsMapper ckanDatasetsMapper
     ) {
         this.ckanQueryApi = ckanQueryApi;
+        this.ckanDatasetSeriesExportApi = ckanDatasetSeriesExportApi;
         this.ckanDatasetsMapper = ckanDatasetsMapper;
     }
 
@@ -96,10 +102,38 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         try {
             return ckanQueryApi.retrieveDatasetInFormat(id, format, accessToken);
         } catch (WebApplicationException e) {
+            if (e.getResponse() != null && e.getResponse().getStatus() == 308) {
+                var location = e.getResponse().getHeaderString("Location");
+                if (isDatasetSeriesRedirect(location)) {
+                    try {
+                        return ckanDatasetSeriesExportApi.retrieveDatasetSeriesInFormat(
+                                id, format, accessToken);
+                    } catch (WebApplicationException seriesException) {
+                        if (seriesException.getResponse() != null
+                                && seriesException.getResponse().getStatus() == 404) {
+                            throw new DatasetNotFoundException(id);
+                        }
+                        throw seriesException;
+                    }
+                }
+            }
             if (e.getResponse().getStatus() == 404) {
                 throw new DatasetNotFoundException(id);
             }
             throw e;
+        }
+    }
+
+    private static boolean isDatasetSeriesRedirect(String location) {
+        if (location == null || location.isBlank()) {
+            return false;
+        }
+        try {
+            var uri = URI.create(location);
+            var path = uri.isAbsolute() ? uri.getPath() : location;
+            return path != null && path.contains("/dataset_series/");
+        } catch (IllegalArgumentException ignored) {
+            return false;
         }
     }
 }

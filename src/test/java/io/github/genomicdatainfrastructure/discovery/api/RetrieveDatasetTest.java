@@ -10,6 +10,7 @@ import io.github.genomicdatainfrastructure.discovery.BaseTest;
 import io.quarkus.test.junit.QuarkusTest;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 @QuarkusTest
@@ -83,6 +84,16 @@ class RetrieveDatasetTest extends BaseTest {
                 .get("/api/v1/datasets/e1b3eff9-13eb-48b0-b180-7ecb76b84454.jsonld")
                 .then()
                 .statusCode(200);
+    }
+
+    @Test
+    void can_retrieve_dataset_series_in_format_without_following_redirects() {
+        given()
+                .when()
+                .get("/api/v1/datasets/577f4d4b-a861-4178-91d5-f46019174193.ttl")
+                .then()
+                .statusCode(200)
+                .body(containsString("DatasetSeries"));
     }
 
     @Test

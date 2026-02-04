@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/dataset/577f4d4b-a861-4178-91d5-f46019174193.ttl"
+  },
+  "response": {
+    "status": 308,
+    "headers": {
+      "Location": "/dataset_series/577f4d4b-a861-4178-91d5-f46019174193.ttl"
+    }
+  }
+}
+

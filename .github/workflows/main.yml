@@ -103,7 +103,6 @@ jobs:
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.33.1
-        continue-on-error: true  # Temporarily skip failure for base image vulnerabilities
         with:
           image-ref: "${{ steps.tag.outputs.last_tag }}"
           format: "table"

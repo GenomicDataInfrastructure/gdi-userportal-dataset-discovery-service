@@ -75,20 +75,21 @@ public class SearchDatasetsQuery {
     private DatasetsSearchResponse searchWithBeacon(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
 
-        final String[] beaconErrorHolder = new String[1];
+        var collectorList = collectors.stream().toList();
 
-        var datasetIdsByRecordCount = collectors
+        var datasetIdsByRecordCount = collectorList
                 .stream()
-                .peek(collector -> {
-                    // Capture beacon error if this is the beacon collector
-                    if (collector instanceof BeaconDatasetIdsCollector beaconCollector) {
-                        beaconErrorHolder[0] = beaconCollector.getLastError();
-                    }
-                })
                 .map(collector -> collector.collect(query, accessToken))
                 .filter(Objects::nonNull)
                 .reduce(this::findIdsIntersection)
                 .orElseGet(Map::of);
+
+        String beaconError = collectorList.stream()
+                .filter(collector -> collector instanceof BeaconDatasetIdsCollector)
+                .map(collector -> ((BeaconDatasetIdsCollector) collector).getLastError())
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
 
         var datasets = repository.search(datasetIdsByRecordCount.keySet(),
                 query.getSort(),
@@ -110,7 +111,7 @@ public class SearchDatasetsQuery {
                 .builder()
                 .count(enhancedDatasets.size())
                 .results(enhancedDatasets)
-                .beaconError(beaconErrorHolder[0])
+                .beaconError(beaconError)
                 .build();
     }
 

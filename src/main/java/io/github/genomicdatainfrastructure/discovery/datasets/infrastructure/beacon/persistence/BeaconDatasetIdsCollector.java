@@ -82,15 +82,13 @@ public class BeaconDatasetIdsCollector implements DatasetIdsCollector {
         } catch (WebApplicationException exception) {
             int status = exception.getResponse().getStatus();
             String message = exception.getMessage();
-            log.log(Level.WARNING,
-                    String.format(BEACON_QUERY_ERROR_MSG, status, message));
-            log.log(Level.WARNING, exception, exception::getMessage);
+            log.log(Level.WARNING, String.format(BEACON_QUERY_ERROR_MSG, status, message),
+                    exception);
             lastError.set(String.format("Beacon service error (HTTP %d): %s", status, message));
             return null;
         } catch (Exception exception) {
-            log.log(Level.SEVERE,
-                    String.format(BEACON_QUERY_UNEXPECTED_ERROR_MSG, exception.getMessage()));
-            log.log(Level.SEVERE, exception, exception::getMessage);
+            log.log(Level.SEVERE, String.format(BEACON_QUERY_UNEXPECTED_ERROR_MSG, exception
+                    .getMessage()), exception);
             lastError.set("Beacon service unavailable: " + exception.getMessage());
             return null;
         }

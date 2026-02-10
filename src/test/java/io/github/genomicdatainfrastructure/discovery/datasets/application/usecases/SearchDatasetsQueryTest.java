@@ -6,10 +6,13 @@ package io.github.genomicdatainfrastructure.discovery.datasets.application.useca
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.BeaconDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetsSearchResponse;
 import io.github.genomicdatainfrastructure.discovery.model.SearchedDataset;
 import jakarta.enterprise.inject.Instance;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -227,6 +229,28 @@ class SearchDatasetsQueryTest {
 
         verify(collector1).collect(any(), any());
         verify(collector2).collect(any(), any());
+    }
+
+    @Test
+    void testExecute_whenBeaconReturnsError_capturesError() {
+        var query = new DatasetSearchQuery();
+        var accessToken = "token";
+
+        var beaconCollector = mock(BeaconDatasetIdsCollector.class);
+
+        // Simulate what happens after catch block: collect returns null
+        when(beaconCollector.collect(any(), any())).thenReturn(null);
+        // Error is stored in lastError
+        when(beaconCollector.getLastError()).thenReturn(
+                "Beacon service error (HTTP 401): Unauthorized");
+
+        when(collectors.stream()).thenReturn(Stream.of(beaconCollector));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of());
+
+        var response = underTest.execute(query, accessToken, "en");
+
+        assertNotNull(response.getBeaconError());
+        assertEquals("Beacon service error (HTTP 401): Unauthorized", response.getBeaconError());
     }
 
     private SearchedDataset mockDataset(String id) {

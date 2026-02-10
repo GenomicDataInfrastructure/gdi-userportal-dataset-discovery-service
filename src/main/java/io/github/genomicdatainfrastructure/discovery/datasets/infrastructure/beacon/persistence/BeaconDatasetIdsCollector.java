@@ -78,6 +78,7 @@ public class BeaconDatasetIdsCollector implements DatasetIdsCollector {
                     .filter(it -> isNotBlank(it.getId()))
                     .filter(it -> it.getResultsCount() != null && it.getResultsCount() > 0)
                     .collect(toMap(BeaconResultSet::getId, BeaconResultSet::getResultsCount));
+            // Catch blocks covered by integration test: SearchDatasetsQueryTest.testExecute_whenBeaconReturnsError_capturesError()
         } catch (WebApplicationException exception) {
             int status = exception.getResponse().getStatus();
             String message = exception.getMessage();

@@ -134,6 +134,69 @@ class SearchDatasetsQueryTest {
         verify(beaconCollector).collect(any(), any());
     }
 
+    @Test
+    void testExecute_whenBeaconThrowsGenericException_fallsBackToCkan() {
+        when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10));
+        when(beaconCollector.collect(any(), any())).thenThrow(new RuntimeException(
+                "Connection timeout"));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
+                mockDataset("id1")));
+
+        var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
+                "token", "en");
+
+        assertEquals("Beacon service unavailable: Connection timeout", response.getBeaconError());
+    }
+
+    @Test
+    void testExecute_whenBeaconReturns403_capturesError() {
+        when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10));
+        var mockResponse = mock(Response.class);
+        when(mockResponse.getStatus()).thenReturn(403);
+        when(beaconCollector.collect(any(), any())).thenThrow(new WebApplicationException(
+                "Forbidden",
+                mockResponse));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
+                mockDataset("id1")));
+
+        var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
+                "token", "en");
+
+        assertTrue(response.getBeaconError().contains("Access to Beacon service denied"));
+    }
+
+    @Test
+    void testExecute_whenBeaconReturns500_capturesError() {
+        when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10));
+        var mockResponse = mock(Response.class);
+        when(mockResponse.getStatus()).thenReturn(500);
+        when(beaconCollector.collect(any(), any())).thenThrow(new WebApplicationException(
+                "Internal Error", mockResponse));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
+                mockDataset("id1")));
+
+        var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
+                "token", "en");
+
+        assertTrue(response.getBeaconError().contains("internal error"));
+    }
+
+    @Test
+    void testExecute_whenBeaconReturnsUnknownStatus_capturesError() {
+        when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10));
+        var mockResponse = mock(Response.class);
+        when(mockResponse.getStatus()).thenReturn(418);
+        when(beaconCollector.collect(any(), any())).thenThrow(new WebApplicationException("Teapot",
+                mockResponse));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
+                mockDataset("id1")));
+
+        var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
+                "token", "en");
+
+        assertTrue(response.getBeaconError().contains("HTTP 418"));
+    }
+
     private SearchedDataset mockDataset(String id) {
         return SearchedDataset.builder()
                 .identifier(id)

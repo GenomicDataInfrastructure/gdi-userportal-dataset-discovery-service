@@ -9,6 +9,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.NullValueMappingStrategy;
 
 import java.time.LocalDateTime;
@@ -17,8 +18,11 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.mapstruct.CollectionMappingStrategy.ADDER_PREFERRED;
 import static org.mapstruct.NullValueCheckStrategy.ALWAYS;
@@ -33,7 +37,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "themes", source = "theme")
     @Mapping(target = "contacts", source = "contact")
     @Mapping(target = "distributions", source = "resources")
-    @Mapping(target = "keywords", source = "tags")
+    @Mapping(target = "keywords", source = ".", qualifiedByName = "mergeKeywords")
     @Mapping(target = "spatial", source = "spatialUri")
     @Mapping(target = "createdAt", source = "issued")
     @Mapping(target = "modifiedAt", source = "modified")
@@ -75,6 +79,9 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "temporalResolution", source = "temporalResolution")
     @Mapping(target = "healthTheme", source = "healthTheme")
     @Mapping(target = "versionNotes", source = "versionNotes")
+    @Mapping(target = "version", source = "version")
+    @Mapping(target = "license", source = "licenseId")
+    @Mapping(target = "ownerOrg", source = "ownerOrg")
     RetrievedDataset map(CkanPackage ckanPackage);
 
     @Mapping(target = "label", source = "displayName")
@@ -129,6 +136,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "theme", source = "theme")
     @Mapping(target = "uri", source = "uri")
     @Mapping(target = "title", source = "title")
+    @Mapping(target = "hvdCategory", source = "hvdCategory")
     AccessServiceInner map(CkanResourceAccessServicesInner source);
 
     default List<SearchedDataset> map(PackagesSearchResult result) {
@@ -143,7 +151,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "description", source = "notes")
     @Mapping(target = "themes", source = "theme")
     @Mapping(target = "publishers", source = "publisher")
-    @Mapping(target = "keywords", source = "tags")
+    @Mapping(target = "keywords", source = ".", qualifiedByName = "mergeKeywords")
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "createdAt", source = "issued")
     @Mapping(target = "accessRights", source = "accessRights")
@@ -167,6 +175,23 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "centroid", source = "centroid")
     SpatialCoverage map(CkanSpatialCoverage spatialCoverage);
 
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "uri", source = "uri")
+    @Mapping(target = "url", source = "url")
+    @Mapping(target = "identifier", source = "identifier")
+    ContactPoint map(CkanContactPoint ckanContactPoint);
+
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "url", source = "url")
+    @Mapping(target = "uri", source = "uri")
+    @Mapping(target = "homepage", source = "homepage")
+    @Mapping(target = "type", source = "type")
+    @Mapping(target = "identifier", source = "identifier")
+    @Mapping(target = "actedOnBehalfOf", source = "actedOnBehalfOf")
+    Agent map(CkanAgent ckanAgent);
+
     default OffsetDateTime map(String date) {
         if (StringUtils.isBlank(date)) {
             return null;
@@ -184,4 +209,46 @@ public interface CkanDatasetsMapper {
                     .atOffset(ZoneOffset.UTC);
         }
     }
+
+    /**
+     * Merges keywords from both tags (array of strings) and tags_translated (multilingual map).
+     * CKAN stores tags differently depending on how they were added:
+     * - Harvested datasets have tags in the 'tags' field
+     * - Manually added tags via web UI are stored in 'tags_translated'
+     * This method combines both sources and removes duplicates.
+     */
+    @Named("mergeKeywords")
+    default List<String> mergeKeywords(CkanPackage ckanPackage) {
+        if (ckanPackage == null) {
+            return Collections.emptyList();
+        }
+
+        List<String> tagsFromField = ckanPackage.getTags();
+        Map<String, List<String>> tagsTranslated = ckanPackage.getTagsTranslated();
+
+        List<String> keywords = new ArrayList<>();
+
+        // Add tags from the standard tags field
+        if (tagsFromField != null) {
+            tagsFromField.stream()
+                    .filter(StringUtils::isNotBlank)
+                    .map(String::trim)
+                    .forEach(keywords::add);
+        }
+
+        // Add tags from tags_translated (all languages)
+        if (tagsTranslated != null) {
+            tagsTranslated.values().stream()
+                    .flatMap(List::stream)
+                    .filter(StringUtils::isNotBlank)
+                    .map(String::trim)
+                    .forEach(keywords::add);
+        }
+
+        // Remove duplicates while preserving order
+        return keywords.stream()
+                .distinct()
+                .toList();
+    }
+
 }

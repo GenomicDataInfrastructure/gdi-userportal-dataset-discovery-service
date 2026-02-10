@@ -256,10 +256,10 @@ components:
           default: 0
           minimum: 0
         operator:
-          title: Ckan query operator
-          type: string
-          $ref: "#/components/schemas/QueryOperator"
-          default: OR
+          allOf:
+            - $ref: "#/components/schemas/QueryOperator"
+            - title: Ckan query operator
+              default: OR
         includeBeacon:
           type: boolean
           title: Include Beacon Network in search
@@ -267,7 +267,7 @@ components:
             Whether to include Beacon Network results in the search.
             - true (default): Search both CKAN and Beacon, return intersection with record counts
             - false: Search CKAN only (faster, no Beacon query, no record counts)
-            
+
             For backward compatibility, if not provided, defaults to true.
           default: true
     DatasetSearchQueryFacet:
@@ -422,6 +422,18 @@ components:
         description:
           type: string
           title: Description
+        version:
+          type: string
+          title: Version
+          description: Version number or other version designation of the dataset.
+        license:
+          type: string
+          title: License
+          description: License identifier for the dataset.
+        ownerOrg:
+          type: string
+          title: Owner Organization
+          description: The CKAN organization the dataset belongs to.
         themes:
           type: array
           items:
@@ -494,7 +506,8 @@ components:
           $ref: "#/components/schemas/ValueLabel"
         # Below are properties from HealthDCAT
         publisherNote:
-          type: object
+          type: string
+          description: A note from the publisher about the dataset.
         publisherCoverage:
           type: array
           items:
@@ -513,7 +526,7 @@ components:
           type: array
           description: A geographic region that is covered by the dataset.
           items:
-            $ref: '#/components/schemas/SpatialCoverage'
+            $ref: "#/components/schemas/SpatialCoverage"
         spatialResolutionInMeters:
           type: number
           format: float
@@ -589,15 +602,12 @@ components:
             $ref: "#/components/schemas/ValueLabel"
         homepage:
           type: string
-          format: uri
         uri:
           type: string
-          format: uri
         documentation:
           type: array
           items:
             type: string
-            format: uri
         frequency:
           $ref: "#/components/schemas/ValueLabel"
         inSeries:
@@ -612,11 +622,6 @@ components:
           type: array
           items:
             type: object
-            required:
-              - dct_type
-              - label
-              - uri
-              - startedAtTime
             properties:
               dct_type:
                 type: string
@@ -636,14 +641,10 @@ components:
           type: array
           items:
             type: object
-            required:
-              - body
-              - motivated_by
-              - target
             properties:
               body:
                 $ref: "#/components/schemas/ValueLabel"
-              motivated_by:
+              motivatedBy:
                 $ref: "#/components/schemas/ValueLabel"
               target:
                 type: string
@@ -668,13 +669,14 @@ components:
         accessUrl:
           type: string
           title: Access URL
-          format: uri
         applicableLegislation:
           type: array
           items:
             $ref: "#/components/schemas/ValueLabel"
         byteSize:
           type: integer
+          format: int64
+          minimum: 0
         checksum:
           type: string
         checksumAlgorithm:
@@ -688,11 +690,9 @@ components:
           type: array
           items:
             type: string
-            format: uri
         downloadUrl:
           type: string
           title: Download URL
-          format: uri
         format:
           $ref: "#/components/schemas/ValueLabel"
         languages:
@@ -776,7 +776,6 @@ components:
                 type: array
                 items:
                   type: string
-                  format: uri
               format:
                 type: array
                 items:
@@ -812,13 +811,16 @@ components:
               theme:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/ValueLabel"
               uri:
                 type: string
-                format: uri
               title:
                 type: string
+              hvdCategory:
+                type: array
+                description: A data category defined in the High Value Dataset Implementing Regulation.
+                items:
+                  $ref: "#/components/schemas/ValueLabel"
             required:
               - id
               - title
@@ -828,7 +830,6 @@ components:
         - id
         - title
         - description
-
 
     ValueLabel:
       properties:
@@ -855,6 +856,14 @@ components:
         uri:
           type: string
           title: uri
+        url:
+          type: string
+          title: url
+          description: URL for more information about the contact point.
+        identifier:
+          type: string
+          title: identifier
+          description: Unique identifier for the contact point.
       required:
         - name
         - email
@@ -872,11 +881,20 @@ components:
         uri:
           type: string
           title: uri
+        homepage:
+          type: string
+          title: homepage
+          description: Homepage URL for the agent.
         type:
           $ref: "#/components/schemas/ValueLabel"
         identifier:
           type: string
           title: identifier
+        actedOnBehalfOf:
+          type: array
+          description: Organization the agent acted on behalf of.
+          items:
+            $ref: "#/components/schemas/Agent"
       required:
         - name
     DatasetRelationEntry:
@@ -1008,10 +1026,62 @@ components:
       type: object
       properties:
         params:
-          type: object
-          additionalProperties: true
+          $ref: "#/components/schemas/GVariantSearchQueryParams"
       required:
         - params
+    GVariantSearchQueryParams:
+      type: object
+      properties:
+        referenceName:
+          type: string
+          title: Reference Name
+          description: Chromosome name/identifier
+          example: "3"
+        start:
+          type: array
+          title: Start Position
+          description: Array of start positions on the reference sequence
+          items:
+            type: integer
+          example: [45864731]
+        end:
+          type: array
+          title: End Position
+          description: Array of end positions on the reference sequence (can be null)
+          items:
+            type: integer
+          nullable: true
+        referenceBases:
+          type: string
+          title: Reference Bases
+          description: The reference allele sequence
+          example: "T"
+        alternateBases:
+          type: string
+          title: Alternate Bases
+          description: The alternate allele sequence
+          example: "C"
+        assemblyId:
+          type: string
+          title: Assembly ID
+          description: Reference genome assembly identifier
+          example: "GRCh37"
+        sex:
+          type: string
+          title: Sex
+          description: Optional sex filter (M or F)
+          example: "F"
+        countryOfBirth:
+          type: string
+          title: Country of Birth
+          description: Optional country of birth (2-letter ISO code)
+          example: "FR"
+      required:
+        - referenceName
+        - start
+        - referenceBases
+        - alternateBases
+        - assemblyId
     GVariantsSearchResponse:
       type: object
       properties:
@@ -1021,64 +1091,22 @@ components:
         dataset:
           type: string
           example: COVID_pop12_ita_2
+          deprecated: true
+          description: "This field is deprecated. Use datasetId instead."
+        datasetId:
+          type: string
+          description: The dataset identifier
+          example: GDID-italysub2-6666
         population:
           type: string
-          enum:
-            - aut
-            - bel
-            - bgr
-            - hrv
-            - cyp
-            - cze
-            - dnk
-            - est
-            - fin
-            - fra
-            - deu
-            - grc
-            - hun
-            - irl
-            - ita
-            - lva
-            - ltu
-            - lux
-            - mlt
-            - nld
-            - pol
-            - prt
-            - rou
-            - svk
-            - svn
-            - esp
-            - swe
-          x-enum-varnames:
-            - AUSTRIA
-            - BELGIUM
-            - BULGARIA
-            - CROATIA
-            - CYPRUS
-            - CZECH_REPUBLIC
-            - DENMARK
-            - ESTONIA
-            - FINLAND
-            - FRANCE
-            - GERMANY
-            - GREECE
-            - HUNGARY
-            - IRELAND
-            - ITALY
-            - LATVIA
-            - LITHUANIA
-            - LUXEMBOURG
-            - MALTA
-            - NETHERLANDS
-            - POLAND
-            - PORTUGAL
-            - ROMANIA
-            - SLOVAKIA
-            - SLOVENIA
-            - SPAIN
-            - SWEDEN
+          description: Population name in GoE format [COUNTRY]_[SEX] where COUNTRY is 2-letter ISO code and SEX is M or F. Examples FR_M, FR_F, FR, M, F
+          example: FR_M
+        sex:
+          type: string
+          title: Sex
+        countryOfBirth:
+          type: string
+          title: Country of Birth
         alleleCount:
           type: number
         alleleNumber:
@@ -1086,6 +1114,8 @@ components:
         alleleCountHomozygous:
           type: number
         alleleCountHeterozygous:
+          type: number
+        alleleCountHemizygous:
           type: number
         alleleFrequency:
           type: number
@@ -1102,11 +1132,6 @@ components:
 
     ProvenanceActivity:
       type: object
-      required:
-        - dct_type
-        - label
-        - uri
-        - startedAtTime
       properties:
         dct_type:
           type: string

@@ -131,16 +131,10 @@ components:
                   type: string
                   example: ab0sc&fe1dd
             requestParameters:
-              properties:
-                "$schema":
-                  description: Added here to allow proper validation of the documents w/o providing specific values.
-                  type: string
-              type: array
-              items:
-                additionalProperties:
-                  description: The schema below is a placeholder for a dictionary 'key':'object'. The individual
-                    definitions depend on the model (e.g. beacon-v2-default-model) and entity (e.g. `genomicVariant`).
-                  type: string
+              type: object
+              additionalProperties:
+                description: The schema below is a placeholder for a dictionary 'key':'object'. The individual definitions depend on the model (e.g. beacon-v2-default-model) and entity (e.g. genomicVariant).
+                type: string
             requestedGranularity:
               type: string
               title: Requested Granularity

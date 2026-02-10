@@ -12,6 +12,62 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.35] - 2026-02-06
+
+### Added
+- feat: implement CKAN dataset series export API and handle redirects by @nolliia in 43ef865
+- feat: handle CKAN's inconsistent data formats and update OpenAPI schemas to remove unnecessary 'format: uri' and required fields by @nolliia in 4230e49
+
+
+### Changed
+- chore: remove continue-on-error for Trivy vulnerability scanner in workflows as dockerfile got updated by @nolliia in f3a5ab7
+- revert the implelentation as it's going to be handled in ckanext repo by @nolliia in 1051210
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1770267347 by @Renovate Bot in 61c1680
+- chore(deps): update quarkus.platform.version to v3.31.2 by @Renovate Bot in ce0d89f
+- add missing test so sonar gets happy by @nolliia in 815c899
+- add mising license for tests that got added by @nolliia in 1273772
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1770203734 by @Renovate Bot in 639ca31
+- chore: update Trivy vulnerability scanner to continue on error for base image vulnerabilities for 1 week by @nolliia in 489a68e
+- added missing tests by @nolliia in 65c8815
+- chore(deps): update dependency org.apache.maven.plugins:maven-compiler-plugin to v3.15.0 by @Renovate Bot in 5539ab8
+- chore(deps): update quarkus.platform.version to v3.31.1 (minor) by @nolliia in 57684ae
+- chore(deps): update quarkus.platform.version to v3.31.1 by @Renovate Bot in 8ce2b82
+- Remove commented datasetId field by @Bruno Pacheco in 3ff4ab8
+- chore: add sonar-project.properties for SonarCloud analysis configuration by @nolliia in 509d47b
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1769056855 by @Renovate Bot in e4344dc
+- chore(deps): update dependency org.assertj:assertj-core to v3.27.7 by @Renovate Bot in 8bd39e1
+- chore(deps): update quarkus.platform.version to v3.30.8 by @Renovate Bot in f6de851
+- doc: update CHANGELOG.md for v1.3.34 by @LNDS-Sysadmins in 3cf5f77
+
+
+### Fixed
+- fix: properly map CKAN tags to keywords finnal attempt by @nolliia in 2e9a714
+- fix: properly map CKAN tags to keywords attempt 2 by @nolliia in f37efbc
+- fix: properly map CKAN tags to keywords by @nolliia in 81694a5
+- fix(openapi): change publisherNote type from object to string and add description by @nolliia in 74d459c
+- fix(SearchDatasetsQuery): update dataset count references in response builder by @nolliia in 708c04c
+- fix(SearchDatasetsQuery): update dataset count references in response builder by @nolliia in b8ec46e
+- fix(deps): update quarkus-openapi-generator.version to v2.14.0-lts by @Renovate Bot in 7f68518
+
+
+## [v1.3.34] - 2026-01-22
+
+### Changed
+- applied review comments by @Hans-christian in 307d05b
+
+
+### Fixed
+- fix(hvd_catagory) Unit tests are fixed now by @Hans-christian in 24a4ac9
+- fix(hvd) fix hvd catagory and property size by @Hans-christian in 3cd40a9
+- fix(redhat) Use correct container image by @Hans-christian in aca9b85
+
+
+## [v1.3.32] - 2026-01-21
+
+### Fixed
+- fix(redhat) Use correct container image (#293) by @Hans-Christian in fa4ce93
+
+
 ## [v1.3.29] - 2025-12-01
 
 ### Added

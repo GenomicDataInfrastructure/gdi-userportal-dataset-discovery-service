@@ -13,10 +13,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.time.OffsetDateTime.parse;
@@ -61,6 +61,7 @@ class CkanDatasetsMapperTest {
                     .healthCategory(List.of())
                     .healthTheme(List.of())
                     .personalData(List.of())
+                    .keywords(List.of())
                     .temporalCoverage(TimeWindow.builder().build())
                     .build();
 
@@ -78,6 +79,9 @@ class CkanDatasetsMapperTest {
                     .id("id")
                     .identifier("identifier")
                     .title("title")
+                    .version("1.0.0")
+                    .license("CC-BY-4.0")
+                    .ownerOrg("test-organization")
                     .dcatType(getValueLabel("type", "type-uri"))
                     .description("notes")
                     .themes(getValueLabels("theme", "theme-name", 3))
@@ -93,8 +97,16 @@ class CkanDatasetsMapperTest {
                                     .email("email")
                                     .url("url")
                                     .uri("uri")
+                                    .homepage("http://example.com/creator1")
                                     .type(getValueLabel("Creator Type",
                                             "http://example.com/creator/type"))
+                                    .actedOnBehalfOf(List.of(
+                                            Agent.builder()
+                                                    .name("Parent Org 1")
+                                                    .uri("http://example.com/parent-org-1")
+                                                    .actedOnBehalfOf(List.of())
+                                                    .build()
+                                    ))
                                     .build(),
                             Agent.builder()
                                     .name("creatorName2")
@@ -102,8 +114,10 @@ class CkanDatasetsMapperTest {
                                     .email("email2")
                                     .url("url2")
                                     .uri("uri2")
+                                    .homepage("http://example.com/creator2")
                                     .type(getValueLabel("Creator Type 2",
                                             "http://example.com/creator/type2"))
+                                    .actedOnBehalfOf(List.of())
                                     .build()
                     ))
                     .publishers(List.of(
@@ -113,8 +127,10 @@ class CkanDatasetsMapperTest {
                                     .email("email")
                                     .url("url")
                                     .uri("uri")
+                                    .homepage("http://example.com/publisher1")
                                     .type(getValueLabel("Publisher Type",
                                             "http://example.com/publisher/type"))
+                                    .actedOnBehalfOf(List.of())
                                     .build(),
                             Agent.builder()
                                     .name("publisherName2")
@@ -122,8 +138,10 @@ class CkanDatasetsMapperTest {
                                     .email("email2")
                                     .url("url2")
                                     .uri("uri2")
+                                    .homepage("http://example.com/publisher2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
+                                    .actedOnBehalfOf(List.of())
                                     .build()
                     ))
                     .accessRights(getValueLabel("accessRights", "public", 10))
@@ -140,8 +158,8 @@ class CkanDatasetsMapperTest {
                                     .createdAt(parse("2025-03-19T00:00Z"))
                                     .modifiedAt(parse("2025-03-19T13:37:05Z"))
                                     .format(getValueLabel("format", "pdf", 1))
-                                    .accessUrl(URI.create("https://accessUrl.com"))
-                                    .downloadUrl(URI.create("https://downloadUrl.com"))
+                                    .accessUrl("https://accessUrl.com")
+                                    .downloadUrl("https://downloadUrl.com")
                                     .compressionFormat("gzip")
                                     .checksumAlgorithm(getValueLabel("SHA-256", "sha-256"))
                                     .languages(getValueLabels("language", "en", 2))
@@ -159,11 +177,15 @@ class CkanDatasetsMapperTest {
                             ContactPoint.builder()
                                     .name("Contact 1")
                                     .email("contact1@example.com")
+                                    .identifier("contact-identifier-1")
+                                    .url("http://example.com/contact-1")
                                     .build(),
                             ContactPoint.builder()
                                     .name("Contact 2")
                                     .email("contact2@example.com")
                                     .uri("http://example.com")
+                                    .identifier("contact-identifier-2")
+                                    .url("http://example.com/contact-2")
                                     .build()
                     ))
                     .datasetRelationships(List.of(
@@ -198,6 +220,7 @@ class CkanDatasetsMapperTest {
                             .name("EU Health Data Access Body")
                             .email("hdab@example.com")
                             .url("https://www.example.com/hdab")
+                            .actedOnBehalfOf(List.of())
                             .build()))
                     .healthCategory(List.of(
                             getValueLabel("Genomics",
@@ -276,13 +299,65 @@ class CkanDatasetsMapperTest {
                     .usingRecursiveComparison()
                     .isEqualTo(expected);
         }
+
+        @Test
+        void given_accessService_without_theme_should_map_to_empty_theme_list() {
+            final var ckanPackage = buildCkanPackageWithAccessService(
+                    buildCkanAccessServiceWithoutTheme());
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getDistributions())
+                    .hasSize(1);
+            assertThat(actual.getDistributions().get(0).getAccessService())
+                    .hasSize(1);
+            assertThat(actual.getDistributions().get(0).getAccessService().get(0).getTheme())
+                    .isEmpty();
+        }
+
+        @Test
+        void given_accessService_with_multiple_themes_should_map_all_theme_entries() {
+            final var ckanPackage = buildCkanPackageWithAccessService(
+                    buildCkanAccessServiceWithThemes());
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getDistributions())
+                    .hasSize(1);
+            assertThat(actual.getDistributions().get(0).getAccessService())
+                    .hasSize(1);
+            assertThat(actual.getDistributions().get(0).getAccessService().get(0).getTheme())
+                    .usingRecursiveComparison()
+                    .isEqualTo(List.of(
+                            getValueLabel("Service Theme 1",
+                                    "http://example.com/service/theme/1"),
+                            getValueLabel("Service Theme 2",
+                                    "http://example.com/service/theme/2")
+                    ));
+        }
     }
 
     private static CkanPackage buildCkanPackage() {
+        return baseCkanPackageBuilder()
+                .resources(getCkanResources())
+                .build();
+    }
+
+    private static CkanPackage buildCkanPackageWithAccessService(
+            CkanResourceAccessServicesInner accessService) {
+        return baseCkanPackageBuilder()
+                .resources(getCkanResourcesWithAccessService(accessService))
+                .build();
+    }
+
+    private static CkanPackage.CkanPackageBuilder baseCkanPackageBuilder() {
         return CkanPackage.builder()
                 .id("id")
                 .identifier("identifier")
                 .title("title")
+                .version("1.0.0")
+                .licenseId("CC-BY-4.0")
+                .ownerOrg("test-organization")
                 .dcatType(getCkanValueLabel("type", "type-uri"))
                 .notes("notes")
                 .theme(getCkanValueLabels("theme", "theme-name", 3))
@@ -297,18 +372,19 @@ class CkanDatasetsMapperTest {
                         getCkanValueLabels("DCAT-AP 3.0", "https://data.europa.eu/dcat-ap/3.0"))
                 .provenance("provenance")
                 .spatialUri(getCkanValueLabel("spatial", "uri"))
-                .resources(getCkanResources())
                 .contact(List.of(
                         CkanContactPoint.builder()
                                 .name("Contact 1")
                                 .email("contact1@example.com")
                                 .identifier("contact-identifier-1")
+                                .url("http://example.com/contact-1")
                                 .build(),
                         CkanContactPoint.builder()
                                 .name("Contact 2")
                                 .email("contact2@example.com")
                                 .uri("http://example.com")
                                 .identifier("contact-identifier-2")
+                                .url("http://example.com/contact-2")
                                 .build()
                 ))
                 .creator(List.of(
@@ -317,15 +393,23 @@ class CkanDatasetsMapperTest {
                                 .identifier("creatorIdentifier")
                                 .email("email")
                                 .url("url")
+                                .homepage("http://example.com/creator1")
                                 .type(getCkanValueLabel("Creator Type",
                                         "http://example.com/creator/type"))
                                 .uri("uri")
+                                .actedOnBehalfOf(List.of(
+                                        CkanAgent.builder()
+                                                .name("Parent Org 1")
+                                                .uri("http://example.com/parent-org-1")
+                                                .build()
+                                ))
                                 .build(),
                         CkanAgent.builder()
                                 .name("creatorName2")
                                 .identifier("creatorIdentifier2")
                                 .email("email2")
                                 .url("url2")
+                                .homepage("http://example.com/creator2")
                                 .type(getCkanValueLabel("Creator Type 2",
                                         "http://example.com/creator/type2"))
                                 .uri("uri2")
@@ -337,6 +421,7 @@ class CkanDatasetsMapperTest {
                                 .identifier("publisherIdentifier")
                                 .email("email")
                                 .url("url")
+                                .homepage("http://example.com/publisher1")
                                 .type(getCkanValueLabel("Publisher Type",
                                         "http://example.com/publisher/type"))
                                 .uri("uri")
@@ -346,6 +431,7 @@ class CkanDatasetsMapperTest {
                                 .identifier("publisherIdentifier2")
                                 .email("email2")
                                 .url("url2")
+                                .homepage("http://example.com/publisher2")
                                 .type(getCkanValueLabel("Publisher Type 2",
                                         "http://example.com/publisher/type2"))
                                 .uri("uri2")
@@ -446,8 +532,7 @@ class CkanDatasetsMapperTest {
                                 .build()
                 ))
                 .spatialResolutionInMeters(10.0f)
-                .alternateIdentifier(List.of("internalURI:admsIdentifier0"))
-                .build();
+                .alternateIdentifier(List.of("internalURI:admsIdentifier0"));
     }
 
     @Nested
@@ -485,18 +570,22 @@ class CkanDatasetsMapperTest {
                             .email("email")
                             .url("url")
                             .uri("uri")
+                            .homepage("http://example.com/publisher1")
                             .identifier("publisherIdentifier")
                             .type(getValueLabel("Publisher Type",
                                     "http://example.com/publisher/type"))
+                            .actedOnBehalfOf(List.of())
                             .build(),
                             Agent.builder()
                                     .name("publisherName2")
                                     .email("email2")
                                     .url("url2")
                                     .uri("uri2")
+                                    .homepage("http://example.com/publisher2")
                                     .identifier("publisherIdentifier2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
+                                    .actedOnBehalfOf(List.of())
                                     .build()))
                     .themes(getValueLabels("theme", "theme-name", 3))
                     .keywords(List.of("key-tag"))
@@ -516,20 +605,159 @@ class CkanDatasetsMapperTest {
         }
     }
 
+    @Nested
+    class MergeKeywordsTest {
+
+        @Test
+        void given_null_ckanPackage_returns_empty_list() {
+            var actual = mapper.mergeKeywords(null);
+
+            assertThat(actual).isEmpty();
+        }
+
+        @Test
+        void given_ckanPackage_with_null_tags_and_null_tagsTranslated_returns_empty_list() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(null)
+                    .tagsTranslated(null)
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).isEmpty();
+        }
+
+        @Test
+        void given_ckanPackage_with_only_tags_returns_tags() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("tag1", "tag2", "tag3"))
+                    .tagsTranslated(null)
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("tag1", "tag2", "tag3");
+        }
+
+        @Test
+        void given_ckanPackage_with_only_tagsTranslated_returns_translated_tags() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(null)
+                    .tagsTranslated(Map.of(
+                            "en", List.of("English Tag"),
+                            "nl", List.of("Dutch Tag")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactlyInAnyOrder("English Tag", "Dutch Tag");
+        }
+
+        @Test
+        void given_ckanPackage_with_both_tags_and_tagsTranslated_merges_both() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("harvested-tag"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("manual-tag-en"),
+                            "nl", List.of("manual-tag-nl")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactlyInAnyOrder(
+                    "harvested-tag", "manual-tag-en", "manual-tag-nl");
+        }
+
+        @Test
+        void given_ckanPackage_with_duplicate_tags_removes_duplicates() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("same-tag", "unique-tag"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("same-tag", "another-tag")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("same-tag", "unique-tag", "another-tag");
+        }
+
+        @Test
+        void given_ckanPackage_with_blank_tags_filters_them_out() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("valid-tag", "", "  ", "another-valid"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("", "  ", "valid-translated")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("valid-tag", "another-valid", "valid-translated");
+        }
+
+        @Test
+        void given_ckanPackage_with_whitespace_tags_trims_them() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("  spaced tag  ", "normal"))
+                    .tagsTranslated(Map.of(
+                            "en", List.of("  translated with spaces  ")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("spaced tag", "normal", "translated with spaces");
+        }
+
+        @Test
+        void given_ckanPackage_with_empty_tags_list_returns_only_translated() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of())
+                    .tagsTranslated(Map.of(
+                            "en", List.of("translated-only")
+                    ))
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("translated-only");
+        }
+
+        @Test
+        void given_ckanPackage_with_empty_tagsTranslated_returns_only_tags() {
+            var ckanPackage = CkanPackage.builder()
+                    .tags(List.of("tags-only"))
+                    .tagsTranslated(Map.of())
+                    .build();
+
+            var actual = mapper.mergeKeywords(ckanPackage);
+
+            assertThat(actual).containsExactly("tags-only");
+        }
+    }
+
     private static @NotNull List<CkanResource> getCkanResources() {
+        return getCkanResourcesWithAccessService(buildCkanAccessService());
+    }
+
+    private static @NotNull List<CkanResource> getCkanResourcesWithAccessService(
+            CkanResourceAccessServicesInner accessService) {
         return List.of(
                 CkanResource.builder()
                         .id("resource_id")
                         .name("resource_name")
                         .description("resource_description")
                         .format(getCkanValueLabel("format", "pdf", 1))
-                        .accessUrl(URI.create("https://accessUrl.com"))
-                        .downloadUrl(URI.create("https://downloadUrl.com"))
+                        .accessUrl("https://accessUrl.com")
+                        .downloadUrl("https://downloadUrl.com")
                         .issuedDate("2025-03-19")
                         .modifiedDate("2025-03-19T13:37:05Z")
                         .compressFormat("gzip")
                         .hashAlgorithm(getCkanValueLabel("SHA-256", "sha-256"))
-                        .accessServices(List.of(buildCkanAccessService()))
+                        .accessServices(List.of(accessService))
                         .applicableLegislation(List.of(getCkanValueLabel("Regulation (EU) 2022/868",
                                 "http://data.europa.eu/eli/reg/2022/868/oj")))
                         .language(getCkanValueLabels("language", "en", 2))
@@ -544,12 +772,14 @@ class CkanDatasetsMapperTest {
                 .id("access-service-id")
                 .conformsTo(getValueLabels("OGC API", "http://example.com/spec/ogc-api"))
                 .license(getValueLabel("Service License", "http://example.com/license/service"))
+                .theme(getValueLabels("Service Theme", "http://example.com/service/theme"))
                 .applicableLegislation(List.of())
                 .contact(List.of())
                 .creator(List.of())
                 .format(List.of())
                 .languages(List.of())
                 .publisher(List.of())
+                .hvdCategory(List.of())
                 .build();
     }
 
@@ -559,6 +789,31 @@ class CkanDatasetsMapperTest {
                 .conformsTo(
                         getCkanValueLabels("OGC API", "http://example.com/spec/ogc-api"))
                 .license(getCkanValueLabel("Service License", "http://example.com/license/service"))
+                .theme(getCkanValueLabels("Service Theme", "http://example.com/service/theme"))
+                .build();
+    }
+
+    private static CkanResourceAccessServicesInner buildCkanAccessServiceWithoutTheme() {
+        return CkanResourceAccessServicesInner.builder()
+                .identifier("access-service-id")
+                .conformsTo(
+                        getCkanValueLabels("OGC API", "http://example.com/spec/ogc-api"))
+                .license(getCkanValueLabel("Service License", "http://example.com/license/service"))
+                .build();
+    }
+
+    private static CkanResourceAccessServicesInner buildCkanAccessServiceWithThemes() {
+        return CkanResourceAccessServicesInner.builder()
+                .identifier("access-service-id")
+                .conformsTo(
+                        getCkanValueLabels("OGC API", "http://example.com/spec/ogc-api"))
+                .license(getCkanValueLabel("Service License", "http://example.com/license/service"))
+                .theme(List.of(
+                        getCkanValueLabel("Service Theme 1",
+                                "http://example.com/service/theme/1"),
+                        getCkanValueLabel("Service Theme 2",
+                                "http://example.com/service/theme/2")
+                ))
                 .build();
     }
 

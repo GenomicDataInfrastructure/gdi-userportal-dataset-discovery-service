@@ -8,18 +8,18 @@
     <version>0.0.0</version>
     <name>gdi-userportal-dataset-discovery-service</name>
     <properties>
-        <assertj.version>3.27.6</assertj.version>
+        <assertj.version>3.27.7</assertj.version>
         <checkstyle-maven-plugin.version>3.3.1</checkstyle-maven-plugin.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
-        <compiler-plugin.version>3.14.1</compiler-plugin.version>
+        <compiler-plugin.version>3.15.0</compiler-plugin.version>
         <lombok.version>1.18.42</lombok.version>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus-openapi-generator.version>2.13.0-lts</quarkus-openapi-generator.version>
+        <quarkus-openapi-generator.version>2.14.0-lts</quarkus-openapi-generator.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.30.5</quarkus.platform.version>
+        <quarkus.platform.version>3.31.2</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire.version>3.5.4</surefire.version>
         <quarkus-wiremock.version>1.5.3</quarkus-wiremock.version>
@@ -160,6 +160,12 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-mapstruct-binding</artifactId>
+            <version>0.2.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

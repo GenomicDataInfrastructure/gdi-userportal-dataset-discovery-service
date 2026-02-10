@@ -192,6 +192,15 @@ components:
           type: string
         notes:
           type: string
+        version:
+          type: string
+          description: Version number or other version designation of the dataset.
+        license_id:
+          type: string
+          description: License identifier for the dataset.
+        owner_org:
+          type: string
+          description: The CKAN organization the dataset belongs to.
         theme:
           type: array
           items:
@@ -200,6 +209,13 @@ components:
           type: array
           items:
             type: string
+        tags_translated:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Multilingual tags with language codes as keys.
         contact:
           type: array
           items:
@@ -265,7 +281,8 @@ components:
 
         # Below are properties from HealthDCAT
         publisher_note:
-          type: object
+          type: string
+          description: A note from the publisher about the dataset.
         publisher_coverage:
           type: array
           items:
@@ -358,15 +375,12 @@ components:
             $ref: "#/components/schemas/CkanValueLabel"
         homepage:
           type: string
-          format: uri
         uri:
           type: string
-          format: uri
         documentation:
           type: array
           items:
             type: string
-            format: uri
         frequency:
           $ref: "#/components/schemas/CkanValueLabel"
         in_series:
@@ -388,19 +402,10 @@ components:
                 $ref: "#/components/schemas/CkanValueLabel"
               target:
                 type: string
-            required:
-              - body
-              - motivated_by
-              - target
         provenance_activity:
           type: array
           items:
             type: object
-            required:
-              - dct_type
-              - label
-              - uri
-              - startedAtTime
             properties:
               dct_type:
                 type: string
@@ -441,12 +446,13 @@ components:
         uri:
           type: string
           title: uri
+        url:
+          type: string
+          title: url
+          description: URL for more information about the contact point.
         identifier:
           type: string
           title: identifier
-      required:
-        - name
-        - email
     CkanAgent:
       properties:
         name:
@@ -461,13 +467,20 @@ components:
         uri:
           type: string
           title: uri
+        homepage:
+          type: string
+          title: homepage
+          description: Homepage URL for the agent.
         type:
           $ref: "#/components/schemas/CkanValueLabel"
         identifier:
           type: string
           title: identifier
-      required:
-        - name
+        actedOnBehalfOf:
+          type: array
+          description: Organization the agent acted on behalf of.
+          items:
+            $ref: "#/components/schemas/CkanAgent"
     CkanDatasetRelationEntry:
       properties:
         relation:
@@ -494,13 +507,14 @@ components:
       properties:
         access_url:
           type: string
-          format: uri
         applicable_legislation:
           type: array
           items:
             $ref: "#/components/schemas/CkanValueLabel"
         size:
           type: integer
+          format: int64
+          minimum: 0
         hash:
           type: string
         hash_algorithm:
@@ -513,10 +527,8 @@ components:
           type: array
           items:
             type: string
-            format: uri
         download_url:
           type: string
-          format: uri
         format:
           $ref: "#/components/schemas/CkanValueLabel"
         language:
@@ -593,7 +605,6 @@ components:
                 type: array
                 items:
                   type: string
-                  format: uri
               format:
                 type: array
                 items:
@@ -627,13 +638,16 @@ components:
               theme:
                 type: array
                 items:
-                  type: string
-                  format: uri
+                  $ref: "#/components/schemas/CkanValueLabel"
               uri:
                 type: string
-                format: uri
               title:
                 type: string
+              hvd_category:
+                type: array
+                description: A data category defined in the High Value Dataset Implementing Regulation.
+                items:
+                  $ref: "#/components/schemas/CkanValueLabel"
       required:
         - id
         - name

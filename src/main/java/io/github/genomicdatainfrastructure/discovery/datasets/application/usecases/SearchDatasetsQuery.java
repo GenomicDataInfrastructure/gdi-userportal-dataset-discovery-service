@@ -70,19 +70,20 @@ public class SearchDatasetsQuery {
     private DatasetsSearchResponse searchWithBeacon(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
 
-        String beaconError = null;
-        Map<String, Integer> datasetIdsByRecordCount = new HashMap<>();
+        final String[] beaconErrorHolder = new String[1];
 
-        for (DatasetIdsCollector collector : collectors) {
-            var result = collector.collect(query, accessToken);
-            if (result != null) {
-                datasetIdsByRecordCount = findIdsIntersection(datasetIdsByRecordCount, result);
-            }
-            // Capture beacon error if this is the beacon collector
-            if (collector instanceof BeaconDatasetIdsCollector beaconCollector) {
-                beaconError = beaconCollector.getLastError();
-            }
-        }
+        var datasetIdsByRecordCount = collectors
+                .stream()
+                .peek(collector -> {
+                    // Capture beacon error if this is the beacon collector
+                    if (collector instanceof BeaconDatasetIdsCollector beaconCollector) {
+                        beaconErrorHolder[0] = beaconCollector.getLastError();
+                    }
+                })
+                .map(collector -> collector.collect(query, accessToken))
+                .filter(Objects::nonNull)
+                .reduce(this::findIdsIntersection)
+                .orElseGet(Map::of);
 
         var datasets = repository.search(datasetIdsByRecordCount.keySet(),
                 query.getSort(),
@@ -103,7 +104,7 @@ public class SearchDatasetsQuery {
                 .builder()
                 .count(datasetIdsByRecordCount.size())
                 .results(enhancedDatasets)
-                .beaconError(beaconError)
+                .beaconError(beaconErrorHolder[0])
                 .build();
     }
 

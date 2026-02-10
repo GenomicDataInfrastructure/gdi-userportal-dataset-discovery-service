@@ -6,6 +6,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.application.useca
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.BeaconDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetsSearchResponse;
@@ -59,6 +60,7 @@ public class SearchDatasetsQuery {
         return DatasetsSearchResponse.builder()
                 .count(datasetIds.size())
                 .results(datasets)
+                .beaconError(null)
                 .build();
     }
 
@@ -67,12 +69,20 @@ public class SearchDatasetsQuery {
      */
     private DatasetsSearchResponse searchWithBeacon(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
-        var datasetIdsByRecordCount = collectors
-                .stream()
-                .map(collector -> collector.collect(query, accessToken))
-                .filter(Objects::nonNull)
-                .reduce(this::findIdsIntersection)
-                .orElseGet(Map::of);
+
+        String beaconError = null;
+        Map<String, Integer> datasetIdsByRecordCount = new HashMap<>();
+
+        for (DatasetIdsCollector collector : collectors) {
+            var result = collector.collect(query, accessToken);
+            if (result != null) {
+                datasetIdsByRecordCount = findIdsIntersection(datasetIdsByRecordCount, result);
+            }
+            // Capture beacon error if this is the beacon collector
+            if (collector instanceof BeaconDatasetIdsCollector beaconCollector) {
+                beaconError = beaconCollector.getLastError();
+            }
+        }
 
         var datasets = repository.search(datasetIdsByRecordCount.keySet(),
                 query.getSort(),
@@ -93,6 +103,7 @@ public class SearchDatasetsQuery {
                 .builder()
                 .count(datasetIdsByRecordCount.size())
                 .results(enhancedDatasets)
+                .beaconError(beaconError)
                 .build();
     }
 

@@ -204,6 +204,31 @@ class SearchDatasetsQueryTest {
         assertEquals("CKAN collector not found", exception.getMessage());
     }
 
+    @Test
+    void testExecute_withBeaconCollectorReturningNull_shouldHandleGracefully() {
+        var query = DatasetSearchQuery.builder()
+                .includeBeacon(true)
+                .build();
+        var accessToken = "token";
+
+        when(collectors.stream()).thenReturn(Stream.of(collector1, collector2));
+        when(collector1.collect(any(), any())).thenReturn(Map.of("id1", 10));
+        when(collector2.collect(any(), any())).thenReturn(null);
+
+        var dataset1 = mockDataset("id1");
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
+                dataset1));
+
+        var response = underTest.execute(query, accessToken, "en");
+
+        assertEquals(1, response.getCount());
+        assertEquals("id1", response.getResults().getFirst().getIdentifier());
+        assertEquals(10, response.getResults().getFirst().getRecordsCount());
+
+        verify(collector1).collect(any(), any());
+        verify(collector2).collect(any(), any());
+    }
+
     private SearchedDataset mockDataset(String id) {
         return SearchedDataset.builder()
                 .identifier(id)

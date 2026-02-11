@@ -4,6 +4,8 @@
 
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence;
 
+import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQuery;
+import io.github.genomicdatainfrastructure.discovery.model.GVariantSearchQueryParams;
 import io.github.genomicdatainfrastructure.discovery.model.GVariantsSearchResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.model.*;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,52 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BeaconGVariantsRequestMapperTest {
+
+    @Test
+    @DisplayName("map(GVariantSearchQuery) should not include assemblyId when null")
+    void map_GVariantSearchQuery_WithNullAssemblyId_DoesNotIncludeAssemblyId() {
+        GVariantSearchQuery query = new GVariantSearchQuery();
+        GVariantSearchQueryParams params = new GVariantSearchQueryParams();
+        params.setReferenceName("3");
+        params.setStart(List.of(45864731));
+        params.setReferenceBases("T");
+        params.setAlternateBases("C");
+        params.setAssemblyId(null);
+        query.setParams(params);
+
+        var result = BeaconGVariantsRequestMapper.map(query);
+
+        assertNotNull(result);
+        assertNotNull(result.getQuery());
+        var requestParams = result.getQuery().getRequestParameters();
+        assertNotNull(requestParams);
+        assertFalse(requestParams.containsKey("assemblyId"),
+                "assemblyId should not be included when null");
+        assertEquals("3", requestParams.get("referenceName"));
+    }
+
+    @Test
+    @DisplayName("map(GVariantSearchQuery) should include assemblyId when set to specific value")
+    void map_GVariantSearchQuery_WithSpecificAssemblyId_IncludesAssemblyId() {
+        GVariantSearchQuery query = new GVariantSearchQuery();
+        GVariantSearchQueryParams params = new GVariantSearchQueryParams();
+        params.setReferenceName("3");
+        params.setStart(List.of(45864731));
+        params.setReferenceBases("T");
+        params.setAlternateBases("C");
+        params.setAssemblyId("GRCh37");
+        query.setParams(params);
+
+        var result = BeaconGVariantsRequestMapper.map(query);
+
+        assertNotNull(result);
+        assertNotNull(result.getQuery());
+        var requestParams = result.getQuery().getRequestParameters();
+        assertNotNull(requestParams);
+        assertTrue(requestParams.containsKey("assemblyId"),
+                "assemblyId should be included when set to a specific value");
+        assertEquals("GRCh37", requestParams.get("assemblyId"));
+    }
 
     // Note: BeaconRequest mapping test removed as it requires full query object setup
     // The response mapping test below covers the critical population parsing logic

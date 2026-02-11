@@ -97,19 +97,40 @@ class GVariantsApiIT extends BaseTest {
                 .body("[0].sex", equalTo("F"));
     }
 
+    @Test
+    void givenNoAssemblyId_whenSearchGenomicVariants_thenReturnsResultsAcrossAllAssemblies() {
+        GVariantSearchQuery query = buildQueryWithAssemblyId(null);
+        given()
+                .contentType(JSON)
+                .body(query)
+                .when()
+                .post("/api/v1/g_variants")
+                .then()
+                .statusCode(200);
+    }
+
     private static @NotNull GVariantSearchQuery buildQuery() {
         return buildQueryWithFilters(null, null);
     }
 
     private static @NotNull GVariantSearchQuery buildQueryWithFilters(String countryOfBirth,
             String sex) {
+        return buildQueryWithAssemblyId("GRCh37", countryOfBirth, sex);
+    }
+
+    private static @NotNull GVariantSearchQuery buildQueryWithAssemblyId(String assemblyId) {
+        return buildQueryWithAssemblyId(assemblyId, null, null);
+    }
+
+    private static @NotNull GVariantSearchQuery buildQueryWithAssemblyId(String assemblyId,
+            String countryOfBirth, String sex) {
         GVariantSearchQuery query = new GVariantSearchQuery();
         GVariantSearchQueryParams params = new GVariantSearchQueryParams();
         params.setReferenceName("3");
         params.setStart(java.util.List.of(45864731));
         params.setReferenceBases("T");
         params.setAlternateBases("C");
-        params.setAssemblyId("GRCh37");
+        params.setAssemblyId(assemblyId);
         params.setCountryOfBirth(countryOfBirth);
         params.setSex(sex);
         query.setParams(params);

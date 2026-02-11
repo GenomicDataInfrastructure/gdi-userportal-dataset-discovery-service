@@ -20,6 +20,8 @@ public interface DatasetsRepository {
             String accessToken,
             String preferredLanguage);
 
+    int count(Set<String> datasetIds, String accessToken, String preferredLanguage);
+
     RetrievedDataset findById(String id, String accessToken, String preferredLanguage);
 
     String retrieveDatasetInFormat(String id, String format, String accessToken);

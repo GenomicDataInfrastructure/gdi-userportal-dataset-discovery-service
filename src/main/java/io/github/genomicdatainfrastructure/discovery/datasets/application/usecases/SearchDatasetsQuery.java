@@ -61,7 +61,7 @@ public class SearchDatasetsQuery {
                 .toList();
 
         return DatasetsSearchResponse.builder()
-                .count(filteredDatasets.size())
+                .count(resolveCount(datasetIds.keySet(), accessToken, preferredLanguage))
                 .results(filteredDatasets)
                 .build();
     }
@@ -115,7 +115,8 @@ public class SearchDatasetsQuery {
 
         return DatasetsSearchResponse
                 .builder()
-                .count(enhancedDatasets.size())
+                .count(resolveCount(datasetIdsByRecordCount.keySet(), accessToken,
+                        preferredLanguage))
                 .results(enhancedDatasets)
                 .beaconError(beaconError)
                 .build();

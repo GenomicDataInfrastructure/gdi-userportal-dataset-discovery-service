@@ -35,26 +35,39 @@ public class CkanDatasetIdsCollector implements DatasetIdsCollector {
     public Map<String, Integer> collect(DatasetSearchQuery query, String accessToken) {
         var facetsQuery = CkanFacetsQueryBuilder.buildFacetQuery(query);
 
-        var request = PackageSearchRequest.builder()
-                .q(query.getQuery())
-                .fq(facetsQuery)
-                .rows(CKAN_PAGINATION_MAX_SIZE)
-                .start(0)
-                .build();
-
-        var response = ckanQueryApi.packageSearch(
-                null,
-                request
-        );
-
         var datasetIdsByRecordCount = new HashMap<String, Integer>();
+        var start = 0;
+        var totalCount = Integer.MAX_VALUE;
 
-        response.getResult()
-                .getResults()
-                .stream()
-                .map(CkanPackage::getIdentifier)
-                .filter(Objects::nonNull)
-                .forEach(id -> datasetIdsByRecordCount.put(id, null));
+        while (start < totalCount) {
+            var request = PackageSearchRequest.builder()
+                    .q(query.getQuery())
+                    .fq(facetsQuery)
+                    .rows(CKAN_PAGINATION_MAX_SIZE)
+                    .start(start)
+                    .build();
+
+            var response = ckanQueryApi.packageSearch(
+                    null,
+                    request
+            );
+
+            if (response.getResult() == null || response.getResult().getResults() == null ||
+                    response.getResult().getResults().isEmpty()) {
+                break;
+            }
+
+            response.getResult()
+                    .getResults()
+                    .stream()
+                    .map(CkanPackage::getIdentifier)
+                    .filter(Objects::nonNull)
+                    .forEach(id -> datasetIdsByRecordCount.put(id, null));
+
+            totalCount = Objects.requireNonNullElse(response.getResult().getCount(),
+                    start + response.getResult().getResults().size());
+            start += response.getResult().getResults().size();
+        }
 
         return datasetIdsByRecordCount;
     }

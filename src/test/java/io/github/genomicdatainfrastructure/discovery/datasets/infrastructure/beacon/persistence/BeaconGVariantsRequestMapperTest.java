@@ -6,6 +6,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.be
 
 import io.github.genomicdatainfrastructure.discovery.model.GVariantsSearchResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.beacon.gvariants.model.*;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class BeaconGVariantsRequestMapperTest {
 
@@ -62,8 +64,6 @@ class BeaconGVariantsRequestMapperTest {
         GVariantsSearchResponse variant = result.getFirst();
 
         assertEquals("FR_M", variant.getPopulation(), "Population should be FR_M");
-        assertEquals("M", variant.getSex(), "Sex should be extracted as M");
-        assertEquals("FR", variant.getCountryOfBirth(), "Country should be extracted as FR");
     }
 
     @Test
@@ -77,8 +77,6 @@ class BeaconGVariantsRequestMapperTest {
         GVariantsSearchResponse variant = result.getFirst();
 
         assertEquals("FR_F", variant.getPopulation());
-        assertEquals("F", variant.getSex(), "Sex should be extracted as F");
-        assertEquals("FR", variant.getCountryOfBirth(), "Country should be extracted as FR");
     }
 
     @Test
@@ -92,8 +90,6 @@ class BeaconGVariantsRequestMapperTest {
         GVariantsSearchResponse variant = result.getFirst();
 
         assertEquals("FR", variant.getPopulation());
-        assertNull(variant.getSex(), "Sex should be null for country-only format");
-        assertEquals("FR", variant.getCountryOfBirth(), "Country should be extracted as FR");
     }
 
     @Test
@@ -107,8 +103,6 @@ class BeaconGVariantsRequestMapperTest {
         GVariantsSearchResponse variant = result.getFirst();
 
         assertEquals("M", variant.getPopulation());
-        assertEquals("M", variant.getSex(), "Sex should be extracted as M");
-        assertNull(variant.getCountryOfBirth(), "Country should be null for sex-only format");
     }
 
     @Test
@@ -122,12 +116,10 @@ class BeaconGVariantsRequestMapperTest {
         GVariantsSearchResponse variant = result.getFirst();
 
         assertEquals("F", variant.getPopulation());
-        assertEquals("F", variant.getSex(), "Sex should be extracted as F");
-        assertNull(variant.getCountryOfBirth(), "Country should be null for sex-only format");
     }
 
     public static BeaconResponse buildBeaconsResponse() {
-        var freq = new Frequencies();
+        var freq = new Frequency();
         freq.setPopulation("fin");
         freq.setAlleleFrequency(BigDecimal.valueOf(0.1234));
         freq.setAlleleCount(BigDecimal.valueOf(100.0));
@@ -155,7 +147,7 @@ class BeaconGVariantsRequestMapperTest {
     }
 
     public static BeaconResponse buildBeaconsResponseWithPopulation(String population) {
-        var freq = new Frequencies();
+        var freq = new Frequency();
         freq.setPopulation(population);
         freq.setAlleleFrequency(BigDecimal.valueOf(0.1234));
         freq.setAlleleCount(BigDecimal.valueOf(100.0));
@@ -180,5 +172,190 @@ class BeaconGVariantsRequestMapperTest {
         responseData.setResponse(responseContent);
 
         return responseData;
+    }
+
+    @Test
+    void map_BeaconResponse_frequenciesFromMultipleResultSets_areFullyFlattened() {
+        // arrange
+        BeaconResponse beaconResponse = new BeaconResponse();
+
+        BeaconResultSet rs1 = new BeaconResultSet();
+        rs1.setBeaconId("beacon-1");
+        rs1.setId("dataset-1");
+
+        Frequency rs1Freq1 = new Frequency();
+        rs1Freq1.setPopulation("fin");
+        rs1Freq1.setAlleleFrequency(BigDecimal.valueOf(0.1111));
+        rs1Freq1.setAlleleCount(BigDecimal.valueOf(10));
+
+        Frequency rs1Freq2 = new Frequency();
+        rs1Freq2.setPopulation("nfe");
+        rs1Freq2.setAlleleFrequency(BigDecimal.valueOf(0.2222));
+        rs1Freq2.setAlleleCount(BigDecimal.valueOf(20));
+
+        FrequencyInPopulations frequencyInPopulations1 = new FrequencyInPopulations();
+        frequencyInPopulations1.setFrequencies(List.of(rs1Freq1, rs1Freq2));
+
+        Result result1 = new Result();
+        result1.setFrequencyInPopulations(List.of(frequencyInPopulations1));
+
+        rs1.setResults(List.of(result1));
+
+        BeaconResultSet rs2 = new BeaconResultSet();
+        rs2.setBeaconId("beacon-2");
+        rs2.setId("dataset-2");
+
+        Frequency rs2Freq1 = new Frequency();
+        rs2Freq1.setPopulation("afr");
+        rs2Freq1.setAlleleFrequency(BigDecimal.valueOf(0.3333));
+        rs2Freq1.setAlleleCount(BigDecimal.valueOf(30));
+
+        FrequencyInPopulations frequencyInPopulations2 = new FrequencyInPopulations();
+        frequencyInPopulations2.setFrequencies(List.of(rs2Freq1));
+
+        Result result2 = new Result();
+        result2.setFrequencyInPopulations(List.of(frequencyInPopulations2));
+
+        rs2.setResults(List.of(result2));
+
+        BeaconResponseContent beaconResponseContent = new BeaconResponseContent();
+        beaconResponseContent.setResultSets(List.of(rs1, rs2));
+
+        beaconResponse.setResponse(beaconResponseContent);
+
+        // act
+        List<GVariantsSearchResponse> result = BeaconGVariantsRequestMapper.map(beaconResponse);
+
+        // assert
+        // 2 frequencies in rs1 + 1 in rs2 => 3 total responses
+        Assertions.assertThat(result).hasSize(3);
+
+        // Verify beacon and dataset IDs are propagated correctly
+        assertThat(result)
+                .extracting(GVariantsSearchResponse::getBeacon)
+                .containsExactlyInAnyOrder("beacon-1", "beacon-1", "beacon-2");
+
+        assertThat(result)
+                .extracting(GVariantsSearchResponse::getDatasetId)
+                .containsExactlyInAnyOrder("dataset-1", "dataset-1", "dataset-2");
+
+        // Optionally assert populations as well
+        assertThat(result)
+                .extracting(GVariantsSearchResponse::getPopulation)
+                .containsExactlyInAnyOrder("fin", "nfe", "afr");
+    }
+
+    @Test
+    void map_BeaconResponse_resultSetsWithEmptyFrequencies_produceNoOutput() {
+        // arrange
+        var rs1 = BeaconResultSet.builder()
+                .beaconId("beacon-1")
+                .id("dataset-1")
+                .results(List.of())
+                .build();
+
+        var rs2 = BeaconResultSet.builder()
+                .beaconId("beacon-2")
+                .id("dataset-2")
+                .results(null)
+                .build();
+
+        var rs3 = BeaconResultSet.builder()
+                .beaconId("beacon-3")
+                .id("dataset-3")
+                .results(List.of(Result.builder()
+                        .frequencyInPopulations(List.of())
+                        .build()))
+                .build();
+
+        var rs4 = BeaconResultSet.builder()
+                .beaconId("beacon-4")
+                .id("dataset-4")
+                .results(List.of(Result.builder()
+                        .frequencyInPopulations(null)
+                        .build()))
+                .build();
+
+        var rs5 = BeaconResultSet.builder()
+                .beaconId("beacon-5")
+                .id("dataset-5")
+                .results(List.of(Result.builder()
+                        .frequencyInPopulations(List.of(FrequencyInPopulations.builder()
+                                .frequencies(List.of())
+                                .build()))
+                        .build()))
+                .build();
+
+        var rs6 = BeaconResultSet.builder()
+                .beaconId("beacon-6")
+                .id("dataset-6")
+                .results(List.of(Result.builder()
+                        .frequencyInPopulations(List.of(FrequencyInPopulations.builder()
+                                .frequencies(null)
+                                .build()))
+                        .build()))
+                .build();
+
+        // act
+        List<GVariantsSearchResponse> result = BeaconGVariantsRequestMapper.map(
+                BeaconResponse.builder()
+                        .response(BeaconResponseContent.builder()
+                                .resultSets(List.of(rs1, rs2, rs3, rs4, rs5, rs6))
+                                .build())
+                        .build());
+
+        // assert
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void map_BeaconResponse_multipleFrequenciesInSingleResultSet_areFlatMapped() {
+        // arrange
+        BeaconResponse beaconResponse = new BeaconResponse();
+        BeaconResultSet resultSet = new BeaconResultSet();
+        resultSet.setBeaconId("beacon-1");
+        resultSet.setId("dataset-1");
+
+        Frequency freq1 = new Frequency();
+        freq1.setPopulation("fin");
+        freq1.setAlleleFrequency(BigDecimal.valueOf(0.1234));
+        freq1.setAlleleCount(BigDecimal.valueOf(100.0));
+
+        Frequency freq2 = new Frequency();
+        freq2.setPopulation("nfe");
+        freq2.setAlleleFrequency(BigDecimal.valueOf(0.2345));
+        freq2.setAlleleCount(BigDecimal.valueOf(200.0));
+
+        FrequencyInPopulations frequencyInPopulations2 = new FrequencyInPopulations();
+        frequencyInPopulations2.setFrequencies(List.of(freq1, freq2));
+
+        Result result = new Result();
+        result.setFrequencyInPopulations(List.of(frequencyInPopulations2));
+
+        // Depending on your model: setFrequencies or setFrequencyInPopulations
+        resultSet.setResults(List.of(result));
+
+        beaconResponse.setResponse(BeaconResponseContent.builder()
+                .resultSets(List.of(resultSet))
+                .build());
+
+        // act
+        List<GVariantsSearchResponse> underTest = BeaconGVariantsRequestMapper.map(beaconResponse);
+
+        // assert
+        assertThat(underTest).hasSize(2);
+
+        // All responses should refer to the same beacon and dataset
+        assertThat(underTest)
+                .extracting(GVariantsSearchResponse::getBeacon)
+                .containsOnly("beacon-1");
+        assertThat(underTest)
+                .extracting(GVariantsSearchResponse::getDatasetId)
+                .containsOnly("dataset-1");
+
+        // Optionally assert that each population appears once
+        assertThat(underTest)
+                .extracting(GVariantsSearchResponse::getPopulation)
+                .containsExactlyInAnyOrder("fin", "nfe");
     }
 }

@@ -246,30 +246,20 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/FrequencyInPopulations"
-        identifiers:
-          type: object
-          properties:
-            genomicHGVSId:
-              type: string
-        variantInternalId:
-          type: string
     FrequencyInPopulations:
       type: object
       properties:
         frequencies:
           type: array
           items:
-            $ref: "#/components/schemas/Frequencies"
+            $ref: "#/components/schemas/Frequency"
         source:
           description: The study
           type: string
         sourceReference:
           description: A reference to further documentation or details.
           type: string
-        version:
-          description: version of the source data.
-          type: string
-    Frequencies:
+    Frequency:
       type: object
       properties:
         alleleFrequency:
@@ -289,5 +279,3 @@ components:
           type: number
         alleleCountHemizygous:
           type: number
-
-

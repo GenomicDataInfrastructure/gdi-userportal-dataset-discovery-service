@@ -6,6 +6,8 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.qu
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.containsString;
 
 import io.github.genomicdatainfrastructure.discovery.BaseTest;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
@@ -105,5 +107,86 @@ class DatasetSearchTest extends BaseTest {
                 .then()
                 .statusCode(200)
                 .body("count", equalTo(0));
+    }
+
+    @Test
+    void shouldCaptureBeaconError_when401Unauthorized() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("beacon")
+                                .type(FilterType.DROPDOWN)
+                                .key("dummy")
+                                .value("BEACON_ERROR_401")
+                                .build()
+                ))
+                .build();
+
+        given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .contentType("application/json")
+                .body(query)
+                .when()
+                .post("/api/v1/datasets/search")
+                .then()
+                .statusCode(200)
+                .body("beaconError", notNullValue())
+                .body("beaconError", containsString("not recognised as a Researcher"))
+                .body("count", equalTo(3)); // Falls back to CKAN results
+    }
+
+    @Test
+    void shouldCaptureBeaconError_when403Forbidden() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("beacon")
+                                .type(FilterType.DROPDOWN)
+                                .key("dummy")
+                                .value("BEACON_ERROR_403")
+                                .build()
+                ))
+                .build();
+
+        given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .contentType("application/json")
+                .body(query)
+                .when()
+                .post("/api/v1/datasets/search")
+                .then()
+                .statusCode(200)
+                .body("beaconError", notNullValue())
+                .body("beaconError", containsString("not recognised as a Researcher"))
+                .body("count", equalTo(3)); // Falls back to CKAN results
+    }
+
+    @Test
+    void shouldCaptureBeaconError_when500InternalServerError() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("beacon")
+                                .type(FilterType.DROPDOWN)
+                                .key("dummy")
+                                .value("BEACON_ERROR_500")
+                                .build()
+                ))
+                .build();
+
+        given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .contentType("application/json")
+                .body(query)
+                .when()
+                .post("/api/v1/datasets/search")
+                .then()
+                .statusCode(200)
+                .body("beaconError", notNullValue())
+                .body("beaconError", containsString("unexpected remote exception"))
+                .body("count", equalTo(3)); // Falls back to CKAN results
     }
 }

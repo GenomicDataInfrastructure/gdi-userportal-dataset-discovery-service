@@ -126,26 +126,11 @@ class SearchDatasetsQueryTest {
 
         // Should capture the error message
         assertNotNull(response.getBeaconError());
-        assertEquals("Beacon service authentication failed. Please check your credentials.",
-                response.getBeaconError());
+        assertTrue(response.getBeaconError().contains("not recognised as a Researcher"));
 
         // Verify both collectors were called
         verify(ckanCollector).collect(any(), any());
         verify(beaconCollector).collect(any(), any());
-    }
-
-    @Test
-    void testExecute_whenBeaconThrowsGenericException_fallsBackToCkan() {
-        when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10));
-        when(beaconCollector.collect(any(), any())).thenThrow(new RuntimeException(
-                "Connection timeout"));
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
-                mockDataset("id1")));
-
-        var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
-                "token", "en");
-
-        assertEquals("Beacon service unavailable: Connection timeout", response.getBeaconError());
     }
 
     @Test
@@ -162,7 +147,7 @@ class SearchDatasetsQueryTest {
         var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
                 "token", "en");
 
-        assertTrue(response.getBeaconError().contains("Access to Beacon service denied"));
+        assertTrue(response.getBeaconError().contains("not recognised as a Researcher"));
     }
 
     @Test
@@ -178,7 +163,7 @@ class SearchDatasetsQueryTest {
         var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
                 "token", "en");
 
-        assertTrue(response.getBeaconError().contains("internal error"));
+        assertTrue(response.getBeaconError().contains("unexpected remote exception"));
     }
 
     @Test
@@ -194,7 +179,7 @@ class SearchDatasetsQueryTest {
         var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
                 "token", "en");
 
-        assertTrue(response.getBeaconError().contains("HTTP 418"));
+        assertTrue(response.getBeaconError().contains("unexpected remote exception"));
     }
 
     private SearchedDataset mockDataset(String id) {

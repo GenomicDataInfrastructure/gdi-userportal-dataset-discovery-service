@@ -55,9 +55,14 @@ public class SearchDatasetsQuery {
         var datasets = repository.search(datasetIds.keySet(), query.getSort(),
                 query.getRows(), query.getStart(), accessToken, preferredLanguage);
 
+        var filteredDatasets = datasets
+                .stream()
+                .filter(dataset -> datasetIds.containsKey(dataset.getIdentifier()))
+                .toList();
+
         return DatasetsSearchResponse.builder()
-                .count(datasetIds.size())
-                .results(datasets)
+                .count(filteredDatasets.size())
+                .results(filteredDatasets)
                 .build();
     }
 
@@ -78,15 +83,9 @@ public class SearchDatasetsQuery {
             beaconDatasetIds = beaconDatasetIdsCollector.collect(query, accessToken);
         } catch (WebApplicationException exception) {
             int status = exception.getResponse().getStatus();
-            String message = exception.getMessage();
 
-            beaconError = createBeaconErrorMessage(status, message);
-            log.log(Level.WARNING, String.format("Beacon query failed with HTTP %d: %s", status,
-                    message), exception);
-        } catch (Exception exception) {
-            beaconError = "Beacon service unavailable: " + exception.getMessage();
-            log.log(Level.SEVERE, "Unexpected error during beacon query: " + exception.getMessage(),
-                    exception);
+            beaconError = createBeaconErrorMessage(status);
+            log.log(Level.WARNING, exception.getMessage(), exception);
         }
 
         // Calculate intersection: if beacon failed, use CKAN-only results
@@ -125,20 +124,12 @@ public class SearchDatasetsQuery {
     /**
      * Create user-friendly error message based on HTTP status code
      */
-    private String createBeaconErrorMessage(int status, String originalMessage) {
+    private String createBeaconErrorMessage(int status) {
         return switch (status) {
-            case 401 -> "Beacon service authentication failed. Please check your credentials.";
-            case 403 ->
-                "Access to Beacon service denied. You may not have permission to access this resource.";
-            case 404 -> "Beacon service endpoint not found. The service may be misconfigured.";
-            case 500 -> "Beacon service encountered an internal error. Please try again later.";
-            case 502 ->
-                "Beacon service is temporarily unavailable (Bad Gateway). Please try again later.";
-            case 503 ->
-                "Beacon service is temporarily unavailable (Service Unavailable). Please try again later.";
-            case 504 ->
-                "Beacon service request timed out (Gateway Timeout). Please try again later.";
-            default -> String.format("Beacon service error (HTTP %d): %s", status, originalMessage);
+            case 401, 403 ->
+                "The user is not recognised as a Researcher or may not have accepted the latest version of the terms and conditions for subject-level data discovery, please contact the signing official of your home organisation.";
+            default ->
+                "An unexpected remote exception has happened, please try again. If the error persists, please report it to the helpdesk.";
         };
     }
 

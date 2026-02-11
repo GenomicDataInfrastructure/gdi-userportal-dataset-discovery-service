@@ -1034,14 +1034,14 @@ components:
           type: string
           title: Reference Name
           description: Optional chromosome name/identifier.
-          example: "3"
+          example: "21"
         start:
           type: array
           title: Start Position
           description: Optional array of start positions on the reference sequence
           items:
             type: integer
-          example: [45864731]
+          example: [9411448]
         end:
           type: array
           title: End Position
@@ -1053,15 +1053,17 @@ components:
           type: string
           title: Reference Bases
           description: Optional reference allele sequence.
+          example: "G"
         alternateBases:
           type: string
           title: Alternate Bases
           description: Optional alternate allele sequence.
-          example: "C"
+          example: "T"
         assemblyId:
           type: string
           title: Assembly ID
-          description: Optional reference genome assembly identifier (e.g., "GRCh37", "GRCh38"). 
+          description: Optional reference genome assembly identifier (e.g., "GRCh37", "GRCh38").
+          example: "GRCh37" 
         sex:
           type: string
           title: Sex

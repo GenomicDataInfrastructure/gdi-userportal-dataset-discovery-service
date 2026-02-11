@@ -126,10 +126,10 @@ class GVariantsApiIT extends BaseTest {
             String countryOfBirth, String sex) {
         GVariantSearchQuery query = new GVariantSearchQuery();
         GVariantSearchQueryParams params = new GVariantSearchQueryParams();
-        params.setReferenceName("3");
-        params.setStart(java.util.List.of(45864731));
-        params.setReferenceBases("T");
-        params.setAlternateBases("C");
+        params.setReferenceName("21");
+        params.setStart(java.util.List.of(9411448));
+        params.setReferenceBases("G");
+        params.setAlternateBases("T");
         params.setAssemblyId(assemblyId);
         params.setCountryOfBirth(countryOfBirth);
         params.setSex(sex);

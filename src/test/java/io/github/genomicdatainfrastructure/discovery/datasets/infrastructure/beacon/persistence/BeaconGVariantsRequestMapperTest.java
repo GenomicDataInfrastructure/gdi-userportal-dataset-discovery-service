@@ -24,10 +24,10 @@ class BeaconGVariantsRequestMapperTest {
     void map_GVariantSearchQuery_WithNullAssemblyId_DoesNotIncludeAssemblyId() {
         GVariantSearchQuery query = new GVariantSearchQuery();
         GVariantSearchQueryParams params = new GVariantSearchQueryParams();
-        params.setReferenceName("3");
-        params.setStart(List.of(45864731));
-        params.setReferenceBases("T");
-        params.setAlternateBases("C");
+        params.setReferenceName("21");
+        params.setStart(List.of(9411448));
+        params.setReferenceBases("G");
+        params.setAlternateBases("T");
         params.setAssemblyId(null);
         query.setParams(params);
 
@@ -39,7 +39,7 @@ class BeaconGVariantsRequestMapperTest {
         assertNotNull(requestParams);
         assertFalse(requestParams.containsKey("assemblyId"),
                 "assemblyId should not be included when null");
-        assertEquals("3", requestParams.get("referenceName"));
+        assertEquals("21", requestParams.get("referenceName"));
     }
 
     @Test
@@ -47,10 +47,10 @@ class BeaconGVariantsRequestMapperTest {
     void map_GVariantSearchQuery_WithSpecificAssemblyId_IncludesAssemblyId() {
         GVariantSearchQuery query = new GVariantSearchQuery();
         GVariantSearchQueryParams params = new GVariantSearchQueryParams();
-        params.setReferenceName("3");
-        params.setStart(List.of(45864731));
-        params.setReferenceBases("T");
-        params.setAlternateBases("C");
+        params.setReferenceName("21");
+        params.setStart(List.of(9411448));
+        params.setReferenceBases("G");
+        params.setAlternateBases("T");
         params.setAssemblyId("GRCh37");
         query.setParams(params);
 

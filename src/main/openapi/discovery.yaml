@@ -404,6 +404,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SearchedDataset"
+        beaconError:
+          type: string
+          description: Error message if beacon query failed
     RetrievedDataset:
       type: object
       properties:

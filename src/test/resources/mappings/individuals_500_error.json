@@ -1,0 +1,21 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "POST",
+        "url": "/v2.0.0/individuals",
+        "bodyPatterns": [
+            {
+                "matchesJsonPath": "$.query.filters[?(@.id == 'BEACON_ERROR_500')]"
+            }
+        ]
+    },
+    "response": {
+        "status": 500,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "error": "Internal Server Error"
+        }
+    }
+}

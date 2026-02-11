@@ -1027,23 +1027,21 @@ components:
       properties:
         params:
           $ref: "#/components/schemas/GVariantSearchQueryParams"
-      required:
-        - params
     GVariantSearchQueryParams:
       type: object
       properties:
         referenceName:
           type: string
           title: Reference Name
-          description: Chromosome name/identifier
-          example: "3"
+          description: Optional chromosome name/identifier.
+          example: "21"
         start:
           type: array
           title: Start Position
-          description: Array of start positions on the reference sequence
+          description: Optional array of start positions on the reference sequence
           items:
             type: integer
-          example: [45864731]
+          example: [9411448]
         end:
           type: array
           title: End Position
@@ -1054,27 +1052,27 @@ components:
         referenceBases:
           type: string
           title: Reference Bases
-          description: The reference allele sequence
-          example: "T"
+          description: Optional reference allele sequence.
+          example: "G"
         alternateBases:
           type: string
           title: Alternate Bases
-          description: The alternate allele sequence
-          example: "C"
+          description: Optional alternate allele sequence.
+          example: "T"
         assemblyId:
           type: string
           title: Assembly ID
-          description: Reference genome assembly identifier
-          example: "GRCh37"
+          description: Optional reference genome assembly identifier (e.g., "GRCh37", "GRCh38").
+          example: "GRCh37" 
         sex:
           type: string
           title: Sex
-          description: Optional sex filter (M or F)
+          description: Optional sex filter (M or F).
           example: "F"
         countryOfBirth:
           type: string
           title: Country of Birth
-          description: Optional country of birth (2-letter ISO code)
+          description: Optional country of birth (2-letter ISO code). 
           example: "FR"
     GVariantsSearchResponse:
       type: object

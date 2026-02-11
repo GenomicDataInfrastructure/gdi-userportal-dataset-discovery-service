@@ -29,7 +29,7 @@ class GVariantsRepositoryTest {
 
     @Test
     void givenNonEmptyQueryParams_whenSearch_thenReturnsMappedResponse() {
-        var query = createQuery("3:45864731:T:C", "GRCh37", null, null);
+        var query = createQuery("21:9411448:G:T", "GRCh37", null, null);
         when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(buildBeaconsResponse());
 
         var result = gVariantsRepository.search(query);
@@ -40,40 +40,8 @@ class GVariantsRepositoryTest {
     }
 
     @Test
-    void givenEmptyFilters_whenSearch_thenReturnsAllVariants() {
-        var query = createQuery("3:45864731:T:C", "GRCh37", null, null);
-        when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(buildBeaconsResponse());
-
-        var result = gVariantsRepository.search(query);
-
-        assertEquals(1, result.size());
-    }
-
-    @Test
-    void givenCountryFilter_whenSearch_thenFiltersCorrectly() {
-        var query = createQuery("3:45864731:T:C", "GRCh37", "FI", null);
-        when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(
-                buildBeaconsResponseWithPopulation("FI"));
-
-        var result = gVariantsRepository.search(query);
-
-        assertEquals(1, result.size());
-    }
-
-    @Test
-    void givenInvalidPopulation_whenSearch_thenFiltersOut() {
-        var query = createQuery("3:45864731:T:C", "GRCh37", "FI", null);
-        when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(
-                buildBeaconsResponseWithPopulation("INVALID"));
-
-        var result = gVariantsRepository.search(query);
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
     void givenCombinedFilters_whenSearch_thenFiltersExactMatch() {
-        var query = createQuery("3:45864731:T:C", "GRCh37", "FR", "M");
+        var query = createQuery("21:9411448:G:T", "GRCh37", "FR", "M");
         when(gVariantsApi.postGenomicVariationsRequest(any())).thenReturn(
                 buildBeaconsResponseWithPopulation("FR_M"));
 

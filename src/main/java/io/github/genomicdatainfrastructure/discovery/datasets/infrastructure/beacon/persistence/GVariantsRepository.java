@@ -33,9 +33,6 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
     @Override
     public List<GVariantsSearchResponse> search(GVariantSearchQuery query) {
         var beaconQuery = BeaconGVariantsRequestMapper.map(query);
-        if (isEmpty(beaconQuery.getQuery().getRequestParameters())) {
-            return Collections.emptyList();
-        }
 
         var response = gVariantsApi.postGenomicVariationsRequest(beaconQuery);
         var unfilteredResponse = BeaconGVariantsRequestMapper.map(response);
@@ -65,9 +62,6 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
 
     private boolean matchesFilters(GVariantsSearchResponse variant, String countryOfBirth,
             String sex) {
-        if (variant.getPopulation() == null) {
-            return false;
-        }
 
         var matcher = POPULATION_PATTERN.matcher(variant.getPopulation());
         if (!matcher.matches()) {
@@ -84,11 +78,7 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
             return false;
         }
 
-        if (!isEmpty(sex) &&
-                !sex.toUpperCase().equals(extractedSex)) {
-            return false;
-        }
-
-        return true;
+        return isEmpty(sex) ||
+                sex.toUpperCase().equals(extractedSex);
     }
 }

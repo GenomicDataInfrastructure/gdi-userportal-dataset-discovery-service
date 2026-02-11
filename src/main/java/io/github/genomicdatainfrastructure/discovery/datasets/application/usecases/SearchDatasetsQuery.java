@@ -35,8 +35,7 @@ public class SearchDatasetsQuery {
 
     public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
-        boolean includeBeacon = query.getIncludeBeacon() == null ? true
-                : query.getIncludeBeacon();
+        boolean includeBeacon = query.getIncludeBeacon() == null || query.getIncludeBeacon();
 
         if (!includeBeacon) {
             return searchCkanOnly(query, accessToken, preferredLanguage);

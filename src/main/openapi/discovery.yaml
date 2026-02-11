@@ -1076,12 +1076,6 @@ components:
           title: Country of Birth
           description: Optional country of birth (2-letter ISO code)
           example: "FR"
-      required:
-        - referenceName
-        - start
-        - referenceBases
-        - alternateBases
-        - assemblyId
     GVariantsSearchResponse:
       type: object
       properties:
@@ -1101,12 +1095,6 @@ components:
           type: string
           description: Population name in GoE format [COUNTRY]_[SEX] where COUNTRY is 2-letter ISO code and SEX is M or F. Examples FR_M, FR_F, FR, M, F
           example: FR_M
-        sex:
-          type: string
-          title: Sex
-        countryOfBirth:
-          type: string
-          title: Country of Birth
         alleleCount:
           type: number
         alleleNumber:

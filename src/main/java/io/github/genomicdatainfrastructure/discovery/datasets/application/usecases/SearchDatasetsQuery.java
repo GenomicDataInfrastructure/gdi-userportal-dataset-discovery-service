@@ -18,6 +18,7 @@ import lombok.extern.java.Log;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import static java.lang.Math.min;
@@ -132,6 +133,20 @@ public class SearchDatasetsQuery {
             default ->
                 "An unexpected remote exception has happened, please try again. If the error persists, please report it to the helpdesk.";
         };
+    }
+
+    private int resolveCount(Set<String> datasetIds, String accessToken, String preferredLanguage) {
+        if (datasetIds.isEmpty()) {
+            return 0;
+        }
+
+        var totalCount = repository.count(datasetIds, accessToken, preferredLanguage);
+        if (totalCount > 0) {
+            return totalCount;
+        }
+
+        // Fallback keeps count stable if downstream returns null/0 unexpectedly.
+        return datasetIds.size();
     }
 
     private Map<String, Integer> findIdsIntersection(Map<String, Integer> a,

@@ -5,7 +5,7 @@
         "urlPattern": "/api/3/action/enhanced_package_search",
         "bodyPatterns": [
             {
-                "matchesJsonPath": "fq[?(@ =='identifier:(27866022694497975)')]"
+                "matchesJsonPath": "$[?(@.fq == 'identifier:(\"27866022694497975\")')]"
             }
         ]
     },

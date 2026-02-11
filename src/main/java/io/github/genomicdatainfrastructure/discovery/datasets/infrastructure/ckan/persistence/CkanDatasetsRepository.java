@@ -16,6 +16,7 @@ import jakarta.ws.rs.WebApplicationException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
@@ -48,20 +49,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
             return List.of();
         }
 
-        var facets = datasetIds
-                .stream()
-                .map(id -> DatasetSearchQueryFacet
-                        .builder()
-                        .source(CKAN_FILTER_SOURCE)
-                        .key(CKAN_IDENTIFIER_FIELD)
-                        .value(id)
-                        .build())
-                .toList();
-
-        var facetsQuery = CkanFacetsQueryBuilder.buildFacetQuery(DatasetSearchQuery
-                .builder()
-                .facets(facets)
-                .build());
+        var facetsQuery = buildFacetQuery(datasetIds);
 
         var request = PackageSearchRequest.builder()
                 .fq(facetsQuery)
@@ -76,6 +64,29 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         );
 
         return ckanDatasetsMapper.map(response.getResult());
+    }
+
+    @Override
+    public int count(Set<String> datasetIds, String accessToken, String preferredLanguage) {
+        if (datasetIds == null || datasetIds.isEmpty()) {
+            return 0;
+        }
+
+        var request = PackageSearchRequest.builder()
+                .fq(buildFacetQuery(datasetIds))
+                .rows(0)
+                .start(0)
+                .build();
+
+        var response = ckanQueryApi.packageSearch(
+                preferredLanguage,
+                request
+        );
+
+        return Objects.requireNonNullElse(
+                response.getResult().getCount(),
+                0
+        );
     }
 
     @Override
@@ -101,5 +112,22 @@ public class CkanDatasetsRepository implements DatasetsRepository {
             }
             throw e;
         }
+    }
+
+    private String buildFacetQuery(Set<String> datasetIds) {
+        var facets = datasetIds
+                .stream()
+                .map(id -> DatasetSearchQueryFacet
+                        .builder()
+                        .source(CKAN_FILTER_SOURCE)
+                        .key(CKAN_IDENTIFIER_FIELD)
+                        .value(id)
+                        .build())
+                .toList();
+
+        return CkanFacetsQueryBuilder.buildFacetQuery(DatasetSearchQuery
+                .builder()
+                .facets(facets)
+                .build());
     }
 }

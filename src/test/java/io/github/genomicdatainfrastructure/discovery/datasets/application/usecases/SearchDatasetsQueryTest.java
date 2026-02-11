@@ -189,6 +189,49 @@ class SearchDatasetsQueryTest {
     }
 
     @Test
+    void testExecute_ckanOnlyCountShouldReflectTotalMatchesNotPageSize() {
+        var query = DatasetSearchQuery.builder()
+                .includeBeacon(false)
+                .build();
+        var accessToken = "token";
+
+        var ckanCollector = mock(
+                io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanDatasetIdsCollector.class);
+        when(collectors.stream()).thenReturn(Stream.of(ckanCollector));
+        when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10, "id2", 20));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
+                mockDataset("id1"),
+                mockDataset("id2")));
+        when(repository.count(any(), any(), any())).thenReturn(3);
+
+        var response = underTest.execute(query, accessToken, "en");
+
+        assertEquals(3, response.getCount());
+        assertEquals(2, response.getResults().size());
+    }
+
+    @Test
+    void testExecute_withBeaconCountShouldReflectIntersectionSizeNotPageSize() {
+        var query = DatasetSearchQuery.builder()
+                .includeBeacon(true)
+                .build();
+        var accessToken = "token";
+
+        when(collectors.stream()).thenReturn(Stream.of(collector1, collector2));
+        when(collector1.collect(any(), any())).thenReturn(Map.of("id1", 10, "id2", 20, "id3", 30));
+        when(collector2.collect(any(), any())).thenReturn(Map.of("id1", 15, "id2", 5, "id4", 7));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
+                mockDataset("id1")));
+        when(repository.count(any(), any(), any())).thenReturn(4);
+
+        var response = underTest.execute(query, accessToken, "en");
+
+        assertEquals(4, response.getCount());
+        assertEquals(1, response.getResults().size());
+        assertEquals(10, response.getResults().getFirst().getRecordsCount());
+    }
+
+    @Test
     void testExecute_ckanOnlyWithNoCkanCollector_shouldThrowException() {
         var query = DatasetSearchQuery.builder()
                 .includeBeacon(false)

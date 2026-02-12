@@ -36,6 +36,29 @@ public class CkanDatasetsRepository implements DatasetsRepository {
     }
 
     @Override
+    public SearchResult search(DatasetSearchQuery query, String accessToken,
+            String preferredLanguage) {
+        var request = PackageSearchRequest.builder()
+                .q(query.getQuery())
+                .fq(CkanFacetsQueryBuilder.buildFacetQuery(query))
+                .sort(query.getSort())
+                .rows(query.getRows())
+                .start(query.getStart())
+                .build();
+
+        var response = ckanQueryApi.packageSearch(
+                preferredLanguage,
+                request
+        );
+
+        var mappedResults = ckanDatasetsMapper.map(response.getResult());
+        var totalCount = response.getResult() != null && response.getResult().getCount() != null
+                ? response.getResult().getCount()
+                : mappedResults.size();
+        return new SearchResult(totalCount, mappedResults);
+    }
+
+    @Override
     public SearchResult search(
             Set<String> datasetIds,
             String sort,

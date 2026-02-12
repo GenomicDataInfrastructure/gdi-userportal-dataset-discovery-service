@@ -50,13 +50,12 @@ class SearchDatasetsQueryTest {
                 .build();
         var accessToken = "token";
 
-        when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10, "id2", 20));
-
         var dataset1 = mockDataset("id1");
         var dataset2 = mockDataset("id2");
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResult(
-                2,
-                List.of(dataset1, dataset2)));
+        when(repository.search(any(DatasetSearchQuery.class), any(), any())).thenReturn(
+                searchResult(
+                        2,
+                        List.of(dataset1, dataset2)));
 
         var response = underTest.execute(query, accessToken, "en");
 
@@ -64,9 +63,8 @@ class SearchDatasetsQueryTest {
         assertEquals(2, response.getResults().size());
         assertEquals(null, response.getResults().get(0).getRecordsCount());
 
-        verify(repository).search(eq(Set.of("id1", "id2")), any(), any(), any(), eq(accessToken),
-                eq("en"));
-        verify(ckanCollector).collect(any(), any());
+        verify(repository).search(eq(query), eq(accessToken), eq("en"));
+        verifyNoInteractions(ckanCollector);
         verifyNoInteractions(beaconCollector); // Beacon should not be called
     }
 
@@ -144,8 +142,9 @@ class SearchDatasetsQueryTest {
         when(beaconCollector.collect(any(), any())).thenThrow(new WebApplicationException(
                 "Forbidden",
                 mockResponse));
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
-                mockDataset("id1")));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResult(
+                1,
+                List.of(mockDataset("id1"))));
 
         var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
                 "token", "en");
@@ -160,8 +159,9 @@ class SearchDatasetsQueryTest {
         when(mockResponse.getStatus()).thenReturn(500);
         when(beaconCollector.collect(any(), any())).thenThrow(new WebApplicationException(
                 "Internal Error", mockResponse));
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
-                mockDataset("id1")));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResult(
+                1,
+                List.of(mockDataset("id1"))));
 
         var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
                 "token", "en");
@@ -176,8 +176,9 @@ class SearchDatasetsQueryTest {
         when(mockResponse.getStatus()).thenReturn(418);
         when(beaconCollector.collect(any(), any())).thenThrow(new WebApplicationException("Teapot",
                 mockResponse));
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
-                mockDataset("id1")));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResult(
+                1,
+                List.of(mockDataset("id1"))));
 
         var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
                 "token", "en");

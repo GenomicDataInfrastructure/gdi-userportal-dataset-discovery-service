@@ -108,10 +108,10 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJCNXUyN0
     "query": {
         "filters": [],
         "requestParameters": {
-          "alternateBases": "C" ,
-          "referenceBases": "T" ,
-          "start": [45864731],
-          "referenceName": "3",
+          "alternateBases": "T" ,
+          "referenceBases": "G" ,
+          "start": [9411448],
+          "referenceName": "21",
           "assemblyId": "GRCh37"
         },
         "includeResultsetResponses": "HIT",
@@ -125,4 +125,4 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJCNXUyN0
 }
 
 ### G_VARAINRTS
-GET https://af-gdi-bn-api-demo.ega-archive.org/beacon-network/v2.0.0/g_variants?start=45864731&alternateBases=C&referenceBases=T&referenceName=3&limit=1&assemblyId=GRCh37
+GET https://af-gdi-bn-api-demo.ega-archive.org/beacon-network/v2.0.0/g_variants?start=9411448&alternateBases=T&referenceBases=G&referenceName=21&limit=1&assemblyId=GRCh37

@@ -4,16 +4,17 @@
 
 package io.github.genomicdatainfrastructure.discovery.datasets.application.usecases;
 
-import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.BeaconDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetsSearchResponse;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,17 +23,18 @@ import java.util.Objects;
 import static java.lang.Math.min;
 import static java.util.Objects.nonNull;
 
+@Log
 @ApplicationScoped
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class SearchDatasetsQuery {
 
     private final DatasetsRepository repository;
-    private final Instance<DatasetIdsCollector> collectors;
+    private final BeaconDatasetIdsCollector beaconDatasetIdsCollector;
+    private final CkanDatasetIdsCollector ckanDatasetIdsCollector;
 
     public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
-        boolean includeBeacon = query.getIncludeBeacon() == null ? true
-                : query.getIncludeBeacon();
+        boolean includeBeacon = query.getIncludeBeacon() == null || query.getIncludeBeacon();
 
         if (!includeBeacon) {
             return searchCkanOnly(query, accessToken, preferredLanguage);
@@ -46,12 +48,8 @@ public class SearchDatasetsQuery {
      */
     private DatasetsSearchResponse searchCkanOnly(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
-        var ckanCollector = collectors.stream()
-                .filter(collector -> collector instanceof CkanDatasetIdsCollector)
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("CKAN collector not found"));
 
-        var datasetIds = ckanCollector.collect(query, accessToken);
+        var datasetIds = ckanDatasetIdsCollector.collect(query, accessToken);
 
         var searchResult = repository.search(datasetIds.keySet(), query.getSort(),
                 query.getRows(), query.getStart(), accessToken, preferredLanguage);
@@ -72,12 +70,31 @@ public class SearchDatasetsQuery {
      */
     private DatasetsSearchResponse searchWithBeacon(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
-        var datasetIdsByRecordCount = collectors
-                .stream()
-                .map(collector -> collector.collect(query, accessToken))
-                .filter(Objects::nonNull)
-                .reduce(this::findIdsIntersection)
-                .orElseGet(Map::of);
+
+        // Collect CKAN datasets
+        Map<String, Integer> ckanDatasetIds = ckanDatasetIdsCollector.collect(query, accessToken);
+
+        // Try to collect Beacon datasets and capture any errors
+        Map<String, Integer> beaconDatasetIds = null;
+        String beaconError = null;
+
+        try {
+            beaconDatasetIds = beaconDatasetIdsCollector.collect(query, accessToken);
+        } catch (WebApplicationException exception) {
+            int status = exception.getResponse().getStatus();
+
+            beaconError = createBeaconErrorMessage(status);
+            log.log(Level.WARNING, exception.getMessage(), exception);
+        }
+
+        // Calculate intersection: if beacon failed, use CKAN-only results
+        Map<String, Integer> datasetIdsByRecordCount;
+        if (beaconDatasetIds != null) {
+            datasetIdsByRecordCount = findIdsIntersection(ckanDatasetIds, beaconDatasetIds);
+        } else {
+            // Beacon failed, fall back to CKAN-only results
+            datasetIdsByRecordCount = ckanDatasetIds;
+        }
 
         var searchResult = repository.search(datasetIdsByRecordCount.keySet(),
                 query.getSort(),
@@ -99,7 +116,34 @@ public class SearchDatasetsQuery {
                 .builder()
                 .count(searchResult.count())
                 .results(enhancedDatasets)
+                .beaconError(beaconError)
                 .build();
+    }
+
+    /**
+     * Create user-friendly error message based on HTTP status code
+     */
+    private String createBeaconErrorMessage(int status) {
+        return switch (status) {
+            case 401, 403 ->
+                "The user is not recognised as a Researcher or may not have accepted the latest version of the terms and conditions for subject-level data discovery, please contact the signing official of your home organisation.";
+            default ->
+                "An unexpected remote exception has happened, please try again. If the error persists, please report it to the helpdesk.";
+        };
+    }
+
+    private int resolveCount(Set<String> datasetIds, String accessToken, String preferredLanguage) {
+        if (datasetIds.isEmpty()) {
+            return 0;
+        }
+
+        var totalCount = repository.count(datasetIds, accessToken, preferredLanguage);
+        if (totalCount > 0) {
+            return totalCount;
+        }
+
+        // Fallback keeps count stable if downstream returns null/0 unexpectedly.
+        return datasetIds.size();
     }
 
     private Map<String, Integer> findIdsIntersection(Map<String, Integer> a,

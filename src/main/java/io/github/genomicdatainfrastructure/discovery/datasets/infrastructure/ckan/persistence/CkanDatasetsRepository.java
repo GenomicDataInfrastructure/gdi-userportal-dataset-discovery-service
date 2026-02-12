@@ -16,11 +16,11 @@ import jakarta.ws.rs.WebApplicationException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_IDENTIFIER_FIELD;
+import static java.util.Optional.ofNullable;
 
 @ApplicationScoped
 public class CkanDatasetsRepository implements DatasetsRepository {
@@ -37,7 +37,33 @@ public class CkanDatasetsRepository implements DatasetsRepository {
     }
 
     @Override
-    public List<SearchedDataset> search(
+    public DatasetsSearchResponse search(DatasetSearchQuery query, String accessToken,
+            String preferredLanguage) {
+        var request = PackageSearchRequest.builder()
+                .q(query.getQuery())
+                .fq(CkanFacetsQueryBuilder.buildFacetQuery(query))
+                .sort(query.getSort())
+                .rows(query.getRows())
+                .start(query.getStart())
+                .build();
+
+        var response = ckanQueryApi.packageSearch(
+                preferredLanguage,
+                request
+        );
+
+        var mappedResults = ckanDatasetsMapper.map(response.getResult());
+        var totalCount = ofNullable(response.getResult())
+                .map(PackagesSearchResult::getCount)
+                .orElse(mappedResults.size());
+        return DatasetsSearchResponse.builder()
+                .count(totalCount)
+                .results(mappedResults)
+                .build();
+    }
+
+    @Override
+    public DatasetsSearchResponse search(
             Set<String> datasetIds,
             String sort,
             Integer rows,
@@ -46,7 +72,10 @@ public class CkanDatasetsRepository implements DatasetsRepository {
             String preferredLanguage) {
 
         if (datasetIds == null || datasetIds.isEmpty()) {
-            return List.of();
+            return DatasetsSearchResponse.builder()
+                    .count(0)
+                    .results(List.of())
+                    .build();
         }
 
         var facetsQuery = buildFacetQuery(datasetIds);
@@ -63,30 +92,14 @@ public class CkanDatasetsRepository implements DatasetsRepository {
                 request
         );
 
-        return ckanDatasetsMapper.map(response.getResult());
-    }
-
-    @Override
-    public int count(Set<String> datasetIds, String accessToken, String preferredLanguage) {
-        if (datasetIds == null || datasetIds.isEmpty()) {
-            return 0;
-        }
-
-        var request = PackageSearchRequest.builder()
-                .fq(buildFacetQuery(datasetIds))
-                .rows(0)
-                .start(0)
+        var mappedResults = ckanDatasetsMapper.map(response.getResult());
+        var totalCount = ofNullable(response.getResult())
+                .map(PackagesSearchResult::getCount)
+                .orElse(mappedResults.size());
+        return DatasetsSearchResponse.builder()
+                .count(totalCount)
+                .results(mappedResults)
                 .build();
-
-        var response = ckanQueryApi.packageSearch(
-                preferredLanguage,
-                request
-        );
-
-        return Objects.requireNonNullElse(
-                response.getResult().getCount(),
-                0
-        );
     }
 
     @Override

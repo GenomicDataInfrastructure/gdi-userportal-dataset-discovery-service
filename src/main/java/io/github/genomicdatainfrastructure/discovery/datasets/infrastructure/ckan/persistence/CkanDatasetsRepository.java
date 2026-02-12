@@ -20,6 +20,7 @@ import java.util.Set;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_IDENTIFIER_FIELD;
+import static java.util.Optional.ofNullable;
 
 @ApplicationScoped
 public class CkanDatasetsRepository implements DatasetsRepository {
@@ -36,7 +37,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
     }
 
     @Override
-    public SearchResult search(DatasetSearchQuery query, String accessToken,
+    public DatasetsSearchResponse search(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
         var request = PackageSearchRequest.builder()
                 .q(query.getQuery())
@@ -52,14 +53,17 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         );
 
         var mappedResults = ckanDatasetsMapper.map(response.getResult());
-        var totalCount = response.getResult() != null && response.getResult().getCount() != null
-                ? response.getResult().getCount()
-                : mappedResults.size();
-        return new SearchResult(totalCount, mappedResults);
+        var totalCount = ofNullable(response.getResult())
+                .map(PackagesSearchResult::getCount)
+                .orElse(mappedResults.size());
+        return DatasetsSearchResponse.builder()
+                .count(totalCount)
+                .results(mappedResults)
+                .build();
     }
 
     @Override
-    public SearchResult search(
+    public DatasetsSearchResponse search(
             Set<String> datasetIds,
             String sort,
             Integer rows,
@@ -68,7 +72,10 @@ public class CkanDatasetsRepository implements DatasetsRepository {
             String preferredLanguage) {
 
         if (datasetIds == null || datasetIds.isEmpty()) {
-            return new SearchResult(0, List.of());
+            return DatasetsSearchResponse.builder()
+                    .count(0)
+                    .results(List.of())
+                    .build();
         }
 
         var facetsQuery = buildFacetQuery(datasetIds);
@@ -86,10 +93,13 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         );
 
         var mappedResults = ckanDatasetsMapper.map(response.getResult());
-        var totalCount = response.getResult() != null && response.getResult().getCount() != null
-                ? response.getResult().getCount()
-                : mappedResults.size();
-        return new SearchResult(totalCount, mappedResults);
+        var totalCount = ofNullable(response.getResult())
+                .map(PackagesSearchResult::getCount)
+                .orElse(mappedResults.size());
+        return DatasetsSearchResponse.builder()
+                .count(totalCount)
+                .results(mappedResults)
+                .build();
     }
 
     @Override

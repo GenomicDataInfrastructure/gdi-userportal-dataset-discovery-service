@@ -52,10 +52,7 @@ public class SearchDatasetsQuery {
 
         var searchResult = repository.search(query, accessToken, preferredLanguage);
 
-        return DatasetsSearchResponse.builder()
-                .count(searchResult.count())
-                .results(searchResult.results())
-                .build();
+        return searchResult;
     }
 
     /**
@@ -96,7 +93,7 @@ public class SearchDatasetsQuery {
                 accessToken,
                 preferredLanguage);
 
-        var enhancedDatasets = searchResult.results()
+        var enhancedDatasets = searchResult.getResults()
                 .stream()
                 .filter(dataset -> datasetIdsByRecordCount.containsKey(dataset.getIdentifier()))
                 .map(dataset -> dataset
@@ -107,7 +104,7 @@ public class SearchDatasetsQuery {
 
         return DatasetsSearchResponse
                 .builder()
-                .count(searchResult.count())
+                .count(searchResult.getCount())
                 .results(enhancedDatasets)
                 .beaconError(beaconError)
                 .build();

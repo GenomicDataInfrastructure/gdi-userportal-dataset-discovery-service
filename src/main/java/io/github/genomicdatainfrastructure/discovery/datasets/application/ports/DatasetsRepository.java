@@ -5,20 +5,19 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.application.ports;
 
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
+import io.github.genomicdatainfrastructure.discovery.model.DatasetsSearchResponse;
 import io.github.genomicdatainfrastructure.discovery.model.RetrievedDataset;
-import io.github.genomicdatainfrastructure.discovery.model.SearchedDataset;
 
-import java.util.List;
 import java.util.Set;
 
 public interface DatasetsRepository {
 
-    SearchResult search(
+    DatasetsSearchResponse search(
             DatasetSearchQuery query,
             String accessToken,
             String preferredLanguage);
 
-    SearchResult search(
+    DatasetsSearchResponse search(
             Set<String> datasetIds,
             String sort,
             Integer rows,
@@ -29,7 +28,4 @@ public interface DatasetsRepository {
     RetrievedDataset findById(String id, String accessToken, String preferredLanguage);
 
     String retrieveDatasetInFormat(String id, String format, String accessToken);
-
-    record SearchResult(int count, List<SearchedDataset> results) {
-    }
 }

@@ -42,6 +42,8 @@ class SearchDatasetsQueryTest {
         collector1 = mock(DatasetIdsCollector.class);
         collector2 = mock(DatasetIdsCollector.class);
         collectors = mock(Instance.class);
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(
+                searchResult(0, List.of()));
 
         underTest = new SearchDatasetsQuery(repository, collectors);
     }
@@ -73,9 +75,9 @@ class SearchDatasetsQueryTest {
 
         var dataset1 = mockDataset("id1");
         var dataset2 = mockDataset("id2");
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
-                dataset1,
-                dataset2));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResult(
+                1,
+                List.of(dataset1, dataset2)));
 
         var response = underTest.execute(query, accessToken, "en");
 
@@ -98,8 +100,9 @@ class SearchDatasetsQueryTest {
         when(collector1.collect(any(), any())).thenReturn(returnValue);
 
         var dataset1 = mockDataset("id1");
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
-                dataset1));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResult(
+                1,
+                List.of(dataset1)));
 
         DatasetsSearchResponse response = underTest.execute(query, accessToken, null);
 
@@ -125,8 +128,9 @@ class SearchDatasetsQueryTest {
 
         var dataset1 = mockDataset("id1");
         var dataset2 = mockDataset("id2");
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
-                dataset1, dataset2));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResult(
+                2,
+                List.of(dataset1, dataset2)));
 
         var response = underTest.execute(query, accessToken, "en");
 
@@ -151,8 +155,9 @@ class SearchDatasetsQueryTest {
         when(collector2.collect(any(), any())).thenReturn(Map.of("id1", 15, "id3", 30));
 
         var dataset1 = mockDataset("id1");
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
-                dataset1));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResult(
+                1,
+                List.of(dataset1)));
 
         var response = underTest.execute(query, accessToken, "en");
 
@@ -177,8 +182,9 @@ class SearchDatasetsQueryTest {
         when(collector1.collect(any(), any())).thenReturn(Map.of("id1", 10));
 
         var dataset1 = mockDataset("id1");
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
-                dataset1));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResult(
+                1,
+                List.of(dataset1)));
 
         var response = underTest.execute(query, accessToken, null);
 
@@ -198,11 +204,11 @@ class SearchDatasetsQueryTest {
         var ckanCollector = mock(
                 io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanDatasetIdsCollector.class);
         when(collectors.stream()).thenReturn(Stream.of(ckanCollector));
-        when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10, "id2", 20));
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
-                mockDataset("id1"),
-                mockDataset("id2")));
-        when(repository.count(any(), any(), any())).thenReturn(3);
+        when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10, "id2", 20, "id3",
+                30));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResult(
+                3,
+                List.of(mockDataset("id1"), mockDataset("id2"))));
 
         var response = underTest.execute(query, accessToken, "en");
 
@@ -220,9 +226,9 @@ class SearchDatasetsQueryTest {
         when(collectors.stream()).thenReturn(Stream.of(collector1, collector2));
         when(collector1.collect(any(), any())).thenReturn(Map.of("id1", 10, "id2", 20, "id3", 30));
         when(collector2.collect(any(), any())).thenReturn(Map.of("id1", 15, "id2", 5, "id4", 7));
-        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(List.of(
-                mockDataset("id1")));
-        when(repository.count(any(), any(), any())).thenReturn(4);
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResult(
+                4,
+                List.of(mockDataset("id1"))));
 
         var response = underTest.execute(query, accessToken, "en");
 
@@ -252,5 +258,9 @@ class SearchDatasetsQueryTest {
                 .identifier(id)
                 .recordsCount(null)
                 .build();
+    }
+
+    private DatasetsRepository.SearchResult searchResult(int count, List<SearchedDataset> results) {
+        return new DatasetsRepository.SearchResult(count, results);
     }
 }

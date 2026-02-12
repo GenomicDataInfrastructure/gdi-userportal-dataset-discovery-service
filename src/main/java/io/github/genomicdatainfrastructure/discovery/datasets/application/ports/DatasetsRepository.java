@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface DatasetsRepository {
 
-    List<SearchedDataset> search(
+    SearchResult search(
             Set<String> datasetIds,
             String sort,
             Integer rows,
@@ -20,9 +20,10 @@ public interface DatasetsRepository {
             String accessToken,
             String preferredLanguage);
 
-    int count(Set<String> datasetIds, String accessToken, String preferredLanguage);
-
     RetrievedDataset findById(String id, String accessToken, String preferredLanguage);
 
     String retrieveDatasetInFormat(String id, String format, String accessToken);
+
+    record SearchResult(int count, List<SearchedDataset> results) {
+    }
 }

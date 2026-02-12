@@ -16,7 +16,6 @@ import jakarta.ws.rs.WebApplicationException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
@@ -37,7 +36,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
     }
 
     @Override
-    public List<SearchedDataset> search(
+    public SearchResult search(
             Set<String> datasetIds,
             String sort,
             Integer rows,
@@ -46,7 +45,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
             String preferredLanguage) {
 
         if (datasetIds == null || datasetIds.isEmpty()) {
-            return List.of();
+            return new SearchResult(0, List.of());
         }
 
         var facetsQuery = buildFacetQuery(datasetIds);
@@ -63,30 +62,11 @@ public class CkanDatasetsRepository implements DatasetsRepository {
                 request
         );
 
-        return ckanDatasetsMapper.map(response.getResult());
-    }
-
-    @Override
-    public int count(Set<String> datasetIds, String accessToken, String preferredLanguage) {
-        if (datasetIds == null || datasetIds.isEmpty()) {
-            return 0;
-        }
-
-        var request = PackageSearchRequest.builder()
-                .fq(buildFacetQuery(datasetIds))
-                .rows(0)
-                .start(0)
-                .build();
-
-        var response = ckanQueryApi.packageSearch(
-                preferredLanguage,
-                request
-        );
-
-        return Objects.requireNonNullElse(
-                response.getResult().getCount(),
-                0
-        );
+        var mappedResults = ckanDatasetsMapper.map(response.getResult());
+        var totalCount = response.getResult() != null && response.getResult().getCount() != null
+                ? response.getResult().getCount()
+                : mappedResults.size();
+        return new SearchResult(totalCount, mappedResults);
     }
 
     @Override

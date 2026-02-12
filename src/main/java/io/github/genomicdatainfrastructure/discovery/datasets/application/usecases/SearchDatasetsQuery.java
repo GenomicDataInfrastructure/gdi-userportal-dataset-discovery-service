@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import static java.lang.Math.min;
 import static java.util.Objects.nonNull;
@@ -54,16 +53,16 @@ public class SearchDatasetsQuery {
 
         var datasetIds = ckanCollector.collect(query, accessToken);
 
-        var datasets = repository.search(datasetIds.keySet(), query.getSort(),
+        var searchResult = repository.search(datasetIds.keySet(), query.getSort(),
                 query.getRows(), query.getStart(), accessToken, preferredLanguage);
 
-        var filteredDatasets = datasets
+        var filteredDatasets = searchResult.results()
                 .stream()
                 .filter(dataset -> datasetIds.containsKey(dataset.getIdentifier()))
                 .toList();
 
         return DatasetsSearchResponse.builder()
-                .count(resolveCount(datasetIds.keySet(), accessToken, preferredLanguage))
+                .count(searchResult.count())
                 .results(filteredDatasets)
                 .build();
     }
@@ -80,14 +79,14 @@ public class SearchDatasetsQuery {
                 .reduce(this::findIdsIntersection)
                 .orElseGet(Map::of);
 
-        var datasets = repository.search(datasetIdsByRecordCount.keySet(),
+        var searchResult = repository.search(datasetIdsByRecordCount.keySet(),
                 query.getSort(),
                 query.getRows(),
                 query.getStart(),
                 accessToken,
                 preferredLanguage);
 
-        var enhancedDatasets = datasets
+        var enhancedDatasets = searchResult.results()
                 .stream()
                 .filter(dataset -> datasetIdsByRecordCount.containsKey(dataset.getIdentifier()))
                 .map(dataset -> dataset
@@ -98,24 +97,9 @@ public class SearchDatasetsQuery {
 
         return DatasetsSearchResponse
                 .builder()
-                .count(resolveCount(datasetIdsByRecordCount.keySet(), accessToken,
-                        preferredLanguage))
+                .count(searchResult.count())
                 .results(enhancedDatasets)
                 .build();
-    }
-
-    private int resolveCount(Set<String> datasetIds, String accessToken, String preferredLanguage) {
-        if (datasetIds.isEmpty()) {
-            return 0;
-        }
-
-        var totalCount = repository.count(datasetIds, accessToken, preferredLanguage);
-        if (totalCount > 0) {
-            return totalCount;
-        }
-
-        // Fallback keeps count stable if downstream returns null/0 unexpectedly.
-        return datasetIds.size();
     }
 
     private Map<String, Integer> findIdsIntersection(Map<String, Integer> a,

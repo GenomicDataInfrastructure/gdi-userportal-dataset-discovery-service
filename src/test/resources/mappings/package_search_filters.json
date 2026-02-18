@@ -1,11 +1,12 @@
 {
-  "priority": 1,
+  "priority": 2,
   "request": {
     "method": "POST",
     "urlPattern": "/api/3/action/enhanced_package_search",
     "bodyPatterns": [
       {
-        "matchesJsonPath": "['facet.field']"
+        "equalToJson": "{\"rows\":0,\"start\":0,\"facet.field\":\"[\\\"access_rights\\\",\\\"theme\\\",\\\"tags\\\",\\\"publisher_name\\\",\\\"res_format\\\",\\\"modified\\\",\\\"number_of_records\\\"]\",\"facet.limit\":-1}",
+        "ignoreExtraElements": true
       }
     ]
   },

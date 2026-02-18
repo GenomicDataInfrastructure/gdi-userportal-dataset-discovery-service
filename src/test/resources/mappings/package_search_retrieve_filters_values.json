@@ -2,16 +2,11 @@
   "priority": 1,
   "request": {
     "method": "POST",
-    "headers": {
-      "Content-Length": {
-        "contains": "55"
-      }
-    },
     "urlPattern": "/api/3/action/enhanced_package_search",
     "bodyPatterns": [
       {
-        "matchesJsonPath": "['facet.field']",
-        "equalToJson": ["theme"]
+        "equalToJson": "{\"rows\":0,\"facet.field\":\"[\\\"theme\\\"]\",\"facet.limit\":-1}",
+        "ignoreExtraElements": true
       }
     ]
   },

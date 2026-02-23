@@ -20,8 +20,10 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.mapstruct.CollectionMappingStrategy.ADDER_PREFERRED;
@@ -36,7 +38,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "description", source = "notes")
     @Mapping(target = "themes", source = "theme")
     @Mapping(target = "contacts", source = "contact")
-    @Mapping(target = "distributions", source = "resources")
+    @Mapping(target = "distributions", source = ".", qualifiedByName = "filterDistributions")
     @Mapping(target = "keywords", source = ".", qualifiedByName = "mergeKeywords")
     @Mapping(target = "spatial", source = "spatialUri")
     @Mapping(target = "createdAt", source = "issued")
@@ -61,7 +63,8 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "retentionPeriod", source = "retentionPeriod")
     @Mapping(target = "spatialCoverage", source = "spatialCoverage")
     @Mapping(target = "accessRights", source = "accessRights")
-    @Mapping(target = "analytics", source = "analytics")
+    @Mapping(target = "analytics", source = ".", qualifiedByName = "extractAnalytics")
+    @Mapping(target = "samples", source = ".", qualifiedByName = "extractSamples")
     @Mapping(target = "applicableLegislation", source = "applicableLegislation")
     @Mapping(target = "codeValues", source = "codeValues")
     @Mapping(target = "codingSystem", source = "codingSystem")
@@ -159,7 +162,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "numberOfUniqueIndividuals", source = "numberOfUniqueIndividuals")
     @Mapping(target = "temporalCoverage.start", source = "temporalStart")
     @Mapping(target = "temporalCoverage.end", source = "temporalEnd")
-    @Mapping(target = "distributionsCount", expression = "java(ckanPackage.getResources()!= null ? ckanPackage.getResources().size():0)")
+    @Mapping(target = "distributionsCount", source = ".", qualifiedByName = "countDistributions")
     @Mapping(target = "catalogue", ignore = true)
     @Mapping(target = "recordsCount", ignore = true)
     SearchedDataset mapToSearchedDataset(CkanPackage ckanPackage);
@@ -249,6 +252,106 @@ public interface CkanDatasetsMapper {
         return keywords.stream()
                 .distinct()
                 .toList();
+    }
+
+    /**
+     * Filters the distributions list to exclude samples and analytics distributions.
+     * Returns only the distributions that are not referenced in the sample or analytics arrays.
+     */
+    @Named("filterDistributions")
+    default List<RetrievedDistribution> filterDistributions(CkanPackage ckanPackage) {
+        if (ckanPackage == null || ckanPackage.getResources() == null) {
+            return Collections.emptyList();
+        }
+
+        List<String> sampleUris = ckanPackage.getSample() != null ? ckanPackage.getSample()
+                : Collections.emptyList();
+        List<String> analyticsUris = ckanPackage.getAnalytics() != null ? ckanPackage.getAnalytics()
+                : Collections.emptyList();
+
+        // Combine all excluded URIs
+        Stream<String> excludedUris = Stream.concat(sampleUris.stream(), analyticsUris.stream());
+        Set<String> excludedUriSet = excludedUris.collect(java.util.stream.Collectors.toSet());
+
+        // Map and filter resources
+        return ckanPackage.getResources().stream()
+                .filter(resource -> !excludedUriSet.contains(resource.getUri()))
+                .map(this::map)
+                .toList();
+    }
+
+    /**
+     * Extracts the sample distributions.
+     * Maps the sample URIs to their corresponding distribution objects.
+     */
+    @Named("extractSamples")
+    default List<RetrievedDistribution> extractSamples(CkanPackage ckanPackage) {
+        if (ckanPackage == null || ckanPackage.getSample() == null
+                || ckanPackage.getSample().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<String> sampleUris = ckanPackage.getSample();
+        List<CkanResource> resources = ckanPackage.getResources() != null ? ckanPackage
+                .getResources()
+                : Collections.emptyList();
+
+        Set<String> sampleUriSet = new HashSet<>(sampleUris);
+
+        return resources.stream()
+                .filter(resource -> sampleUriSet.contains(resource.getUri()))
+                .map(this::map)
+                .toList();
+    }
+
+    /**
+     * Extracts the analytics distributions.
+     * Maps the analytics URIs to their corresponding distribution objects.
+     */
+    @Named("extractAnalytics")
+    default List<RetrievedDistribution> extractAnalytics(CkanPackage ckanPackage) {
+        if (ckanPackage == null || ckanPackage.getAnalytics() == null
+                || ckanPackage.getAnalytics().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<String> analyticsUris = ckanPackage.getAnalytics();
+        List<CkanResource> resources = ckanPackage.getResources() != null ? ckanPackage
+                .getResources()
+                : Collections.emptyList();
+
+        Set<String> analyticsUriSet = new HashSet<>(analyticsUris);
+
+        return resources.stream()
+                .filter(resource -> analyticsUriSet.contains(resource.getUri()))
+                .map(this::map)
+                .toList();
+    }
+
+    /**
+     * Counts the number of distributions, excluding samples and analytics.
+     * This is used for the SearchedDataset mapping which needs a count of regular distributions
+     * only.
+     */
+    @Named("countDistributions")
+    default int countDistributions(CkanPackage ckanPackage) {
+        if (ckanPackage == null || ckanPackage.getResources() == null) {
+            return 0;
+        }
+
+        List<String> sampleUris = ckanPackage.getSample() != null ? ckanPackage.getSample()
+                : Collections.emptyList();
+        List<String> analyticsUris = ckanPackage.getAnalytics() != null ? ckanPackage.getAnalytics()
+                : Collections.emptyList();
+
+        // Combine all excluded URIs
+        Set<String> excludedUriSet = Stream.concat(sampleUris.stream(), analyticsUris.stream())
+                .collect(java.util.stream.Collectors.toSet());
+
+        // Count only resources that are not samples or analytics
+        return (int) ckanPackage.getResources().stream()
+                .filter(resource -> !excludedUriSet.contains(resource.getUri()))
+                .count();
     }
 
 }

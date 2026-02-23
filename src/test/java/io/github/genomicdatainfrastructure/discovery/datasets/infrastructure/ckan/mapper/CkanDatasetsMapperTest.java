@@ -162,7 +162,7 @@ class CkanDatasetsMapperTest {
                                     .format(getValueLabel("format", "pdf", 1))
                                     .accessUrl("https://accessUrl.com")
                                     .downloadUrl("https://downloadUrl.com")
-                                    .compressionFormat("gzip")
+                                    .compressionFormat(getValueLabel("gzip", "gzip"))
                                     .checksumAlgorithm(getValueLabel("SHA-256", "sha-256"))
                                     .languages(getValueLabels("language", "en", 2))
                                     .accessService(List.of(buildAccessService()))
@@ -399,8 +399,9 @@ class CkanDatasetsMapperTest {
                         .downloadUrl("https://downloadUrl.com")
                         .issuedDate("2025-03-19")
                         .modifiedDate("2025-03-19T13:37:05Z")
-                        .compressFormat("gzip")
+                        .compressFormat(getCkanValueLabel("gzip", "gzip"))
                         .hashAlgorithm(getCkanValueLabel("SHA-256", "sha-256"))
+                        .accessServices(List.of(buildCkanAccessService()))
                         .language(getCkanValueLabels("language", "en", 2))
                         .applicableLegislation(List.of(getCkanValueLabel("Regulation (EU) 2022/868",
                                 "http://data.europa.eu/eli/reg/2022/868/oj")))
@@ -841,7 +842,7 @@ class CkanDatasetsMapperTest {
                         .downloadUrl("https://downloadUrl.com")
                         .issuedDate("2025-03-19")
                         .modifiedDate("2025-03-19T13:37:05Z")
-                        .compressFormat("gzip")
+                        .compressFormat(getCkanValueLabel("gzip", "gzip"))
                         .hashAlgorithm(getCkanValueLabel("SHA-256", "sha-256"))
                         .accessServices(List.of(accessService))
                         .applicableLegislation(List.of(getCkanValueLabel("Regulation (EU) 2022/868",

@@ -286,22 +286,14 @@ public interface CkanDatasetsMapper {
      */
     @Named("extractSamples")
     default List<RetrievedDistribution> extractSamples(CkanPackage ckanPackage) {
-        if (ckanPackage == null || ckanPackage.getSample() == null
-                || ckanPackage.getSample().isEmpty()) {
+        if (ckanPackage == null) {
             return Collections.emptyList();
         }
 
         List<String> sampleUris = ckanPackage.getSample();
-        List<CkanResource> resources = ckanPackage.getResources() != null ? ckanPackage
-                .getResources()
-                : Collections.emptyList();
-
-        Set<String> sampleUriSet = new HashSet<>(sampleUris);
-
-        return resources.stream()
-                .filter(resource -> sampleUriSet.contains(resource.getUri()))
-                .map(this::map)
-                .toList();
+        return extractByUris(
+                ckanPackage,
+                sampleUris != null ? sampleUris : Collections.emptyList());
     }
 
     /**
@@ -310,48 +302,45 @@ public interface CkanDatasetsMapper {
      */
     @Named("extractAnalytics")
     default List<RetrievedDistribution> extractAnalytics(CkanPackage ckanPackage) {
-        if (ckanPackage == null || ckanPackage.getAnalytics() == null
-                || ckanPackage.getAnalytics().isEmpty()) {
+        if (ckanPackage == null) {
             return Collections.emptyList();
         }
 
         List<String> analyticsUris = ckanPackage.getAnalytics();
+        return extractByUris(
+                ckanPackage,
+                analyticsUris != null ? analyticsUris : Collections.emptyList());
+    }
+
+    /**
+     * Counts the distributions excluding samples and analytics distributions.
+     * Delegates to {@link #filterDistributions(CkanPackage)} to ensure the
+     * exclusion rules are defined in a single place.
+     */
+    @Named("countDistributions")
+    default int countDistributions(CkanPackage ckanPackage) {
+        return filterDistributions(ckanPackage).size();
+    }
+
+    /**
+     * Extracts distributions whose URIs are listed in the provided collection.
+     * Shared helper used by extractSamples and extractAnalytics.
+     */
+    default List<RetrievedDistribution> extractByUris(CkanPackage ckanPackage,
+            List<String> uris) {
+        if (ckanPackage == null || uris == null || uris.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         List<CkanResource> resources = ckanPackage.getResources() != null ? ckanPackage
                 .getResources()
                 : Collections.emptyList();
 
-        Set<String> analyticsUriSet = new HashSet<>(analyticsUris);
+        Set<String> uriSet = new HashSet<>(uris);
 
         return resources.stream()
-                .filter(resource -> analyticsUriSet.contains(resource.getUri()))
+                .filter(resource -> uriSet.contains(resource.getUri()))
                 .map(this::map)
                 .toList();
     }
-
-    /**
-     * Counts the number of distributions, excluding samples and analytics.
-     * This is used for the SearchedDataset mapping which needs a count of regular distributions
-     * only.
-     */
-    @Named("countDistributions")
-    default int countDistributions(CkanPackage ckanPackage) {
-        if (ckanPackage == null || ckanPackage.getResources() == null) {
-            return 0;
-        }
-
-        List<String> sampleUris = ckanPackage.getSample() != null ? ckanPackage.getSample()
-                : Collections.emptyList();
-        List<String> analyticsUris = ckanPackage.getAnalytics() != null ? ckanPackage.getAnalytics()
-                : Collections.emptyList();
-
-        // Combine all excluded URIs
-        Set<String> excludedUriSet = Stream.concat(sampleUris.stream(), analyticsUris.stream())
-                .collect(java.util.stream.Collectors.toSet());
-
-        // Count only resources that are not samples or analytics
-        return (int) ckanPackage.getResources().stream()
-                .filter(resource -> !excludedUriSet.contains(resource.getUri()))
-                .count();
-    }
-
 }

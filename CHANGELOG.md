@@ -12,6 +12,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.37] - 2026-02-26
+
+### Added
+- feat: make variant and assembly id optional by @Rania Hamdani in dbcdb70
+
+
+### Changed
+- Feedback Sourcery by @Quinten in f89581c
+- Update CkanDatasetsMapperTest.java by @Quinten in 47fc070
+- Filter samples/analytics from CKAN distributions by @Quinten in d354220
+- chore(deps): update surefire.version to v3.5.5 by @Renovate Bot in d3300a5
+- chore(deps): update aquasecurity/trivy-action action to v0.34.1 by @Renovate Bot in a1a1b3b
+- chore(deps): update quarkus.platform.version to v3.31.4 by @Renovate Bot in bd7dce5
+- chore(deps): update quarkus.platform.version to v3.31.3 by @Renovate Bot in 98db0b0
+- chore(deps): update aquasecurity/trivy-action action to v0.34.0 by @Renovate Bot in 47d38ce
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1771346502 by @Renovate Bot in 72e87d6
+- address comments by @nolliia in 1c2f3db
+- refactor: update DatasetsRepository to return SearchResult and simplify search logic by @nolliia in fa5d34c
+- doc: update CHANGELOG.md for v1.3.36 by @LNDS-Sysadmins in 58773ec
+- Direct injection of collectors and try-catch in SearchDatasetsQuery by @Rania Hamdani in 89e6438
+
+
+### Fixed
+- fix flaky logic by @Kacem Bechka in d8259ea
+- fix: test by @nolliia in b8e92a9
+- fix: update variant example by @Rania Hamdani in 4334a11
+- fix: flatmap populations per dataset id, and access empty params. by @Bruno Pacheco in 548b5d3
+- Fix merge conflict: restore missing resolveCount method by @Rania Hamdani in ea0bcd1
+- fix: add wiremock for integration tests by @Rania Hamdani in 5eac095
+- fix: reviews by @Rania Hamdani in a8f7a29
+- fix: sonar code by @Rania Hamdani in 0b9a16a
+- fix: sourcery comments by @Rania Hamdani in 486bedd
+- fix: sonar code by @Rania Hamdani in 3ca529a
+- fix: sonar code coverage by @Rania Hamdani in e864a6a
+- fix: search datat query by @Rania Hamdani in 26aff7f
+- fix: add beacon safe fail by @Rania Hamdani in f19c8d4
+
+
 ## [v1.3.36] - 2026-02-11
 
 ### Added

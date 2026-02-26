@@ -572,7 +572,11 @@ components:
         analytics:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/RetrievedDistribution"
+        samples:
+          type: array
+          items:
+            $ref: "#/components/schemas/RetrievedDistribution"
         codeValues:
           type: array
           items:
@@ -682,7 +686,7 @@ components:
         checksumAlgorithm:
           $ref: "#/components/schemas/ValueLabel"
         compressionFormat:
-          type: string
+          $ref: "#/components/schemas/ValueLabel"
         description:
           type: string
           title: Description
@@ -706,13 +710,13 @@ components:
           items:
             $ref: "#/components/schemas/ValueLabel"
         mediaType:
-          type: string
+          $ref: "#/components/schemas/ValueLabel"
         modifiedAt:
           type: string
           format: date-time
           title: Distribution modified at
         packagingFormat:
-          type: string
+          $ref: "#/components/schemas/ValueLabel"
         createdAt:
           type: string
           format: date-time

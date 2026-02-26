@@ -61,6 +61,8 @@ class CkanDatasetsMapperTest {
                     .healthCategory(List.of())
                     .healthTheme(List.of())
                     .personalData(List.of())
+                    .analytics(List.of())
+                    .samples(List.of())
                     .keywords(List.of())
                     .temporalCoverage(TimeWindow.builder().build())
                     .build();
@@ -160,7 +162,7 @@ class CkanDatasetsMapperTest {
                                     .format(getValueLabel("format", "pdf", 1))
                                     .accessUrl("https://accessUrl.com")
                                     .downloadUrl("https://downloadUrl.com")
-                                    .compressionFormat("gzip")
+                                    .compressionFormat(getValueLabel("gzip", "gzip"))
                                     .checksumAlgorithm(getValueLabel("SHA-256", "sha-256"))
                                     .languages(getValueLabels("language", "en", 2))
                                     .accessService(List.of(buildAccessService()))
@@ -207,7 +209,42 @@ class CkanDatasetsMapperTest {
                                     .build()
                     ))
                     .alternateIdentifier(List.of("internalURI:admsIdentifier0"))
-                    .analytics(List.of("http://example.com/analytics"))
+                    .analytics(List.of(
+                            RetrievedDistribution.builder()
+                                    .id("analytics_resource_id")
+                                    .title("analytics_resource_name")
+                                    .description("analytics_resource_description")
+                                    .uri("http://example.com/analytics")
+                                    .createdAt(parse("2025-03-19T00:00Z"))
+                                    .modifiedAt(parse("2025-03-19T13:37:05Z"))
+                                    .format(getValueLabel("format", "json", 1))
+                                    .accessUrl("https://analytics-accessUrl.com")
+                                    .downloadUrl("https://analytics-downloadUrl.com")
+                                    .languages(List.of())
+                                    .conformsTo(List.of())
+                                    .applicableLegislation(List.of())
+                                    .documentation(null)
+                                    .retentionPeriod(List.of())
+                                    .accessService(List.of())
+                                    .build()))
+                    .samples(List.of(
+                            RetrievedDistribution.builder()
+                                    .id("sample_resource_id")
+                                    .title("sample_resource_name")
+                                    .description("sample_resource_description")
+                                    .uri("http://example.com/sample")
+                                    .createdAt(parse("2025-03-19T00:00Z"))
+                                    .modifiedAt(parse("2025-03-19T13:37:05Z"))
+                                    .format(getValueLabel("format", "csv", 1))
+                                    .accessUrl("https://sample-accessUrl.com")
+                                    .downloadUrl("https://sample-downloadUrl.com")
+                                    .languages(List.of())
+                                    .conformsTo(List.of())
+                                    .applicableLegislation(List.of())
+                                    .documentation(null)
+                                    .retentionPeriod(List.of())
+                                    .accessService(List.of())
+                                    .build()))
                     .applicableLegislation(List.of(
                             getValueLabel("Regulation (EU) 2022/868",
                                     "http://data.europa.eu/eli/reg/2022/868/oj")))
@@ -339,7 +376,7 @@ class CkanDatasetsMapperTest {
 
     private static CkanPackage buildCkanPackage() {
         return baseCkanPackageBuilder()
-                .resources(getCkanResources())
+                .resources(getCkanResourcesWithAnalyticsAndSamples())
                 .build();
     }
 
@@ -348,6 +385,55 @@ class CkanDatasetsMapperTest {
         return baseCkanPackageBuilder()
                 .resources(getCkanResourcesWithAccessService(accessService))
                 .build();
+    }
+
+    private static @NotNull List<CkanResource> getCkanResourcesWithAnalyticsAndSamples() {
+        return List.of(
+                // Regular distribution resource
+                CkanResource.builder()
+                        .id("resource_id")
+                        .name("resource_name")
+                        .description("resource_description")
+                        .format(getCkanValueLabel("format", "pdf", 1))
+                        .accessUrl("https://accessUrl.com")
+                        .downloadUrl("https://downloadUrl.com")
+                        .issuedDate("2025-03-19")
+                        .modifiedDate("2025-03-19T13:37:05Z")
+                        .compressFormat(getCkanValueLabel("gzip", "gzip"))
+                        .hashAlgorithm(getCkanValueLabel("SHA-256", "sha-256"))
+                        .accessServices(List.of(buildCkanAccessService()))
+                        .language(getCkanValueLabels("language", "en", 2))
+                        .applicableLegislation(List.of(getCkanValueLabel("Regulation (EU) 2022/868",
+                                "http://data.europa.eu/eli/reg/2022/868/oj")))
+                        .conformsTo(getCkanValueLabels("DCAT-AP 3.0",
+                                "https://data.europa.eu/dcat-ap/3.0"))
+                        .documentation(List.of())
+                        .build(),
+                // Analytics distribution resource
+                CkanResource.builder()
+                        .id("analytics_resource_id")
+                        .name("analytics_resource_name")
+                        .uri("http://example.com/analytics")
+                        .description("analytics_resource_description")
+                        .format(getCkanValueLabel("format", "json", 1))
+                        .accessUrl("https://analytics-accessUrl.com")
+                        .downloadUrl("https://analytics-downloadUrl.com")
+                        .issuedDate("2025-03-19")
+                        .modifiedDate("2025-03-19T13:37:05Z")
+                        .build(),
+                // Sample distribution resource
+                CkanResource.builder()
+                        .id("sample_resource_id")
+                        .name("sample_resource_name")
+                        .uri("http://example.com/sample")
+                        .description("sample_resource_description")
+                        .format(getCkanValueLabel("format", "csv", 1))
+                        .accessUrl("https://sample-accessUrl.com")
+                        .downloadUrl("https://sample-downloadUrl.com")
+                        .issuedDate("2025-03-19")
+                        .modifiedDate("2025-03-19T13:37:05Z")
+                        .build()
+        );
     }
 
     private static CkanPackage.CkanPackageBuilder baseCkanPackageBuilder() {
@@ -497,6 +583,7 @@ class CkanDatasetsMapperTest {
                         getCkanValueLabel("Code Label One", "http://example.com/code1", 7),
                         getCkanValueLabel("Code Label Two", "http://example.com/code2", 8)))
                 .analytics(List.of("http://example.com/analytics"))
+                .sample(List.of("http://example.com/sample"))
                 .codingSystem(List.of(getCkanValueLabel("Coding System",
                         "http://example.com/codingSystem")))
                 .applicableLegislation(List.of(getCkanValueLabel(
@@ -755,7 +842,7 @@ class CkanDatasetsMapperTest {
                         .downloadUrl("https://downloadUrl.com")
                         .issuedDate("2025-03-19")
                         .modifiedDate("2025-03-19T13:37:05Z")
-                        .compressFormat("gzip")
+                        .compressFormat(getCkanValueLabel("gzip", "gzip"))
                         .hashAlgorithm(getCkanValueLabel("SHA-256", "sha-256"))
                         .accessServices(List.of(accessService))
                         .applicableLegislation(List.of(getCkanValueLabel("Regulation (EU) 2022/868",

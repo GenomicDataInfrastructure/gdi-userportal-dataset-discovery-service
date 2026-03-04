@@ -12,6 +12,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.39] - 2026-03-04
+
+### Changed
+- chore(deps): update docker/login-action action to v4 by @Renovate Bot in 6455b0f
+- chore(deps): update aquasecurity/trivy-action action to v0.34.2 by @Renovate Bot in 3ab6e89
+- doc: update CHANGELOG.md for v1.3.38 by @LNDS-Sysadmins in 16b0de5
+
+
+### Fixed
+- fix: mimetype and mediatype are value label type by @Bruno Pacheco in dee4b39
+- fix: mimetype and mediatype are value label type by @Bruno Pacheco in fd23b7c
+- fix: mimetype and mediatype are value label type by @Bruno Pacheco in f44fdb0
+
+
 ## [v1.3.38] - 2026-03-02
 
 ### Changed

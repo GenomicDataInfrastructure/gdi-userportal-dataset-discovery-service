@@ -12,6 +12,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.38] - 2026-03-02
+
+### Changed
+- chore(deps): update quarkus.platform.version to v3.32.1 by @Renovate Bot in 4c04929
+- doc: update CHANGELOG.md for v1.3.37 by @LNDS-Sysadmins in 1d3dd33
+
+
 ## [v1.3.37] - 2026-02-26
 
 ### Added

@@ -542,7 +542,7 @@ components:
           items:
             $ref: "#/components/schemas/CkanValueLabel"
         mimetype:
-          type: string
+          $ref: "#/components/schemas/CkanValueLabel"
         modified_date:
           type: string
         package_format:

@@ -35,12 +35,22 @@ class RetrieveFiltersValuesQueryTest extends BaseTest {
                         ValueLabel.builder()
                                 .value("https://publications.europa.eu/resource/authority/data-theme/TECH")
                                 .label("Science and technology")
-                                .count(4)
+                                .count(5)
                                 .build(),
                         ValueLabel.builder()
                                 .value("https://gdi.onemilliongenomes.eu")
                                 .label("GDI")
                                 .count(1)
+                                .build(),
+                        ValueLabel.builder()
+                                .value("https://en.wikipedia.org/wiki/Colorectal_cancer")
+                                .label("Colorectal cancer")
+                                .count(1)
+                                .build(),
+                        ValueLabel.builder()
+                                .value("http://publications.europa.eu/resource/authority/data-theme/HEAL")
+                                .label("Health")
+                                .count(2)
                                 .build()
                 );
     }

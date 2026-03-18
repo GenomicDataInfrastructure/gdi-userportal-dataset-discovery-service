@@ -83,7 +83,6 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "healthTheme", source = "healthTheme")
     @Mapping(target = "versionNotes", source = "versionNotes")
     @Mapping(target = "version", source = "version")
-    @Mapping(target = "license", source = "licenseId")
     @Mapping(target = "ownerOrg", source = "ownerOrg")
     RetrievedDataset map(CkanPackage ckanPackage);
 

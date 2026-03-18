@@ -82,7 +82,6 @@ class CkanDatasetsMapperTest {
                     .identifier("identifier")
                     .title("title")
                     .version("1.0.0")
-                    .license("CC-BY-4.0")
                     .ownerOrg("test-organization")
                     .dcatType(getValueLabel("type", "type-uri"))
                     .description("notes")

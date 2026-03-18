@@ -426,10 +426,6 @@ components:
           type: string
           title: Version
           description: Version number or other version designation of the dataset.
-        license:
-          type: string
-          title: License
-          description: License identifier for the dataset.
         ownerOrg:
           type: string
           title: Owner Organization

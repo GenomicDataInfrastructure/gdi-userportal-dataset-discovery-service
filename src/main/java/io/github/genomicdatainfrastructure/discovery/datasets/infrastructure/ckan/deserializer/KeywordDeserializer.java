@@ -66,7 +66,7 @@ public class KeywordDeserializer extends JsonDeserializer<List<String>> {
 
         return new ArrayList<>();
     }
-    
+
     @Override
     public List<String> getNullValue(DeserializationContext ctxt) {
         return new ArrayList<>();

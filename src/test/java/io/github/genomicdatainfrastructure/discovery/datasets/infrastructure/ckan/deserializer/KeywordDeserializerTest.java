@@ -65,7 +65,7 @@ class KeywordDeserializerTest {
 
         TestObject result = objectMapper.readValue(json, TestObject.class);
 
-        assertThat(result.keyword).isEmpty();
+        assertThat(result.keyword).isNotNull().isEmpty();
     }
 
     @Test

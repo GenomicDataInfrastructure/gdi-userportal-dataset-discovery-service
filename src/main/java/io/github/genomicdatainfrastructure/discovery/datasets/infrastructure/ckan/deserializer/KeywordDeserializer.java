@@ -33,7 +33,7 @@ public class KeywordDeserializer extends JsonDeserializer<List<String>> {
             DeserializationContext context) throws IOException {
         JsonNode node = parser.getCodec().readTree(parser);
 
-        if (node == null || node.isNull()) {
+        if (node == null || node.isNull() || node.isMissingNode()) {
             return new ArrayList<>();
         }
 
@@ -64,6 +64,11 @@ public class KeywordDeserializer extends JsonDeserializer<List<String>> {
                     .toList();
         }
 
+        return new ArrayList<>();
+    }
+    
+    @Override
+    public List<String> getNullValue(DeserializationContext ctxt) {
         return new ArrayList<>();
     }
 }

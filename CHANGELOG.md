@@ -12,6 +12,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.40] - 2026-03-19
+
+### Changed
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1773895075 by @Renovate Bot in c12be85
+- chore(deps): update quarkus.platform.version to v3.32.3 by @Renovate Bot in 5b9385f
+- chore(deps): update dependency org.projectlombok:lombok to v1.18.44 by @Renovate Bot in c6d27e0
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1773204619 by @Renovate Bot in 283edc9
+- chore(deps): update aquasecurity/trivy-action action to v0.35.0 by @Renovate Bot in 0f036c7
+- chore(deps): update docker/metadata-action action to v6 by @Renovate Bot in 03d49a5
+- chore(deps): update docker/build-push-action action to v7 by @Renovate Bot in 5faf340
+- chore(deps): update quarkus.platform.version to v3.32.2 by @Renovate Bot in ae3e78d
+- doc: update CHANGELOG.md for v1.3.39 by @LNDS-Sysadmins in ba3a1b1
+
+
+### Fixed
+- fix: use commit SHA for all remaining GitHub Actions (#336) by @Inderpal Singh in 1bc83b7
+- fix: use commit SHA for GitHub Actions in test workflow (#335) by @Inderpal Singh in 07a0500
+- fix: resolve all GitHub Actions security hotspots (#334) by @Inderpal Singh in f3ca561
+- fix: use commit SHA for GitHub Actions dependencies (#333) by @Inderpal Singh in 4489b87
+- fix: prevent script injection in GitHub Actions workflow (#332) by @Inderpal Singh in 20ff54d
+- fix: handle CKAN keyword field as both string and array (#331) by @Inderpal Singh in 99b23f2
+- fix: remove dataset license from API response by @Hans-christian in 416339b
+
+
 ## [v1.3.39] - 2026-03-04
 
 ### Changed

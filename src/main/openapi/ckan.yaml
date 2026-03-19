@@ -619,6 +619,7 @@ components:
                 type: array
                 items:
                   type: string
+                x-field-extra-annotation: "@com.fasterxml.jackson.databind.annotation.JsonDeserialize(using = io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.deserializer.KeywordDeserializer.class)"
               landing_page:
                 type: array
                 items:

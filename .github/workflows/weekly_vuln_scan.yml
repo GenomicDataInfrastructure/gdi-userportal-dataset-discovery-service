@@ -21,17 +21,19 @@ jobs:
         run: sudo service docker start
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: List Docker Image Tags and Fetch Latest Two
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           IMAGE="ghcr.io/genomicdatainfrastructure/gdi-userportal-dataset-discovery-service"
           echo "Fetching Docker image tags..."
-          RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/orgs/genomicdatainfrastructure/packages/container/gdi-userportal-dataset-discovery-service/versions")
+          RESPONSE=$(curl -s -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/orgs/genomicdatainfrastructure/packages/container/gdi-userportal-dataset-discovery-service/versions")
 
           # Log the response for debugging
           echo "Response from curl: $RESPONSE"
@@ -61,11 +63,11 @@ jobs:
           done
 
       - name: OSS Review Toolkit (ORT) Analysis
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           repository: ${{ github.repository }}
 
-      - uses: oss-review-toolkit/ort-ci-github-action@v1
+      - uses: oss-review-toolkit/ort-ci-github-action@1805edcf1f4f55f35ae6e4d2d9795ccfb29b6021 # v1
         with:
           allow-dynamic-versions: "true"
           fail-on: "issues"

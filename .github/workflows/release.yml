@@ -25,8 +25,8 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v6
-      - uses: oss-review-toolkit/ort-ci-github-action@v1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: oss-review-toolkit/ort-ci-github-action@1805edcf1f4f55f35ae6e4d2d9795ccfb29b6021 # v1
         with:
           allow-dynamic-versions: "true"
           fail-on: "issues"
@@ -39,7 +39,7 @@ jobs:
       new_tag: ${{ steps.tagging.outputs.new_tag }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
 
@@ -79,7 +79,7 @@ jobs:
     needs: versioning
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Install GitHub CLI
         run: sudo apt-get install -y gh
@@ -87,14 +87,14 @@ jobs:
       - name: Generate and Publish GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_TAG: ${{ needs.versioning.outputs.new_tag }}
         run: |
-          LATEST_TAG="${{ needs.versioning.outputs.new_tag }}"
           PREVIOUS_TAG=$(git tag --sort=-creatordate | sed -n '2p')
 
-          echo "Creating GitHub release for $LATEST_TAG from previous release $PREVIOUS_TAG"
+          echo "Creating GitHub release for $NEW_TAG from previous release $PREVIOUS_TAG"
           
-          gh release create "$LATEST_TAG" \
-            --title "Release $LATEST_TAG" \
+          gh release create "$NEW_TAG" \
+            --title "Release $NEW_TAG" \
             --generate-notes \
             --notes-start-tag "$PREVIOUS_TAG"
 
@@ -106,19 +106,19 @@ jobs:
       packages: write
     steps:
       - name: Log in to the Container Registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up GraalVM JDK 21
-        uses: graalvm/setup-graalvm@v1
+        uses: graalvm/setup-graalvm@03e8abf916fd0e281b2efe7b2da3378bb0a1d085 # v1
         with:
           java-version: "21"
 
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Set BUILD_DATE
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
@@ -128,7 +128,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v6
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6
         with:
           images: ${{ env.IMAGE_NAME }}
           tags: |
@@ -159,7 +159,7 @@ jobs:
           echo "last_tag=${TAGS[LAST_INDEX]}" >> $GITHUB_OUTPUT
 
       - name: Build Docker image for scanning
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
         with:
           context: .
           load: true
@@ -167,7 +167,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Run Trivy Vulnerability Scanner
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
         with:
           image-ref: "${{ steps.tag.outputs.last_tag }}"
           format: "table"
@@ -180,7 +180,7 @@ jobs:
           TRIVY_SKIP_JAVA_DB_UPDATE: true
 
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
         with:
           context: .
           push: true

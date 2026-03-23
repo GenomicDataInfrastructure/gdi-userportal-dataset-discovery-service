@@ -5,6 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_DATASET_TYPE_FILTER;
 
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus.DatasetsConfig;
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
@@ -142,6 +143,21 @@ class CkanFilterBuilderTest {
         assertThat(tags.getType()).isEqualTo(FilterType.FREE_TEXT);
     }
 
+    @Test
+    void limitsFilterDiscoveryToDatasets() {
+        var response = PackagesSearchResponse.builder()
+                .result(PackagesSearchResult.builder().searchFacets(Map.of()).build())
+                .build();
+
+        var stubApi = new StubCkanQueryApi(response);
+        var builder = new CkanFilterBuilder(stubApi, datasetsConfig);
+
+        builder.build(null, "en");
+
+        assertThat(stubApi.getLastRequest()).isNotNull();
+        assertThat(stubApi.getLastRequest().getFq()).isEqualTo(CKAN_DATASET_TYPE_FILTER);
+    }
+
     private Filter findFilter(List<Filter> filters, String key) {
         return filters.stream()
                 .filter(filter -> key.equals(filter.getKey()))
@@ -153,6 +169,7 @@ class CkanFilterBuilderTest {
     private static final class StubCkanQueryApi implements CkanQueryApi {
 
         private final PackagesSearchResponse response;
+        private PackageSearchRequest lastRequest;
 
         private StubCkanQueryApi(PackagesSearchResponse response) {
             this.response = response;
@@ -161,6 +178,7 @@ class CkanFilterBuilderTest {
         @Override
         public PackagesSearchResponse packageSearch(String acceptLanguage,
                 PackageSearchRequest packageSearchRequest) {
+            this.lastRequest = packageSearchRequest;
             return response;
         }
 
@@ -173,6 +191,10 @@ class CkanFilterBuilderTest {
         @Override
         public String retrieveDatasetInFormat(String id, String format, String authorization) {
             throw new UnsupportedOperationException();
+        }
+
+        private PackageSearchRequest getLastRequest() {
+            return lastRequest;
         }
     }
 

@@ -14,6 +14,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
 
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.withDatasetTypeFilter;
+
 @ApplicationScoped
 public class CkanFiltersRepository implements FiltersRepository {
 
@@ -38,6 +40,7 @@ public class CkanFiltersRepository implements FiltersRepository {
                 .facetField(facetField)
                 .rows(0)
                 .facetLimit(-1)
+                .fq(withDatasetTypeFilter(null))
                 .build();
 
         final var response = ckanQueryApi.packageSearch(

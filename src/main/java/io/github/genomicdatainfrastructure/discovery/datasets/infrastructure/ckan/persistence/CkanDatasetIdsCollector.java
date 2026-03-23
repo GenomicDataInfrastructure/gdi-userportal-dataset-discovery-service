@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_PAGINATION_MAX_SIZE;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.withDatasetTypeFilter;
 
 @ApplicationScoped
 public class CkanDatasetIdsCollector implements DatasetIdsCollector {
@@ -33,7 +34,7 @@ public class CkanDatasetIdsCollector implements DatasetIdsCollector {
 
     @Override
     public Map<String, Integer> collect(DatasetSearchQuery query, String accessToken) {
-        var facetsQuery = CkanFacetsQueryBuilder.buildFacetQuery(query);
+        var facetsQuery = withDatasetTypeFilter(CkanFacetsQueryBuilder.buildFacetQuery(query));
 
         var datasetIdsByRecordCount = new HashMap<String, Integer>();
         var start = 0;

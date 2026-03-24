@@ -93,7 +93,8 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "modified", source = "modified")
     @Mapping(target = "publisher", source = ".", qualifiedByName = "mapSinglePublisherWithMetadata")
     @Mapping(target = "issued", source = "issued")
-    @Mapping(target = "temporalCoverage", source = ".", qualifiedByName = "toTemporalCoverageSeries")
+    @Mapping(target = "temporalCoverage.start", source = "temporalStart")
+    @Mapping(target = "temporalCoverage.end", source = "temporalEnd")
     @Mapping(target = "uri", source = "uri")
     @Mapping(target = "applicableLegislation", source = "applicableLegislation")
     DatasetSeries mapToDatasetSeries(CkanPackage ckanPackage);
@@ -421,18 +422,5 @@ public interface CkanDatasetsMapper {
     default Agent mapSinglePublisherWithMetadata(CkanPackage ckanPackage) {
         var publishers = mapPublishersWithMetadata(ckanPackage);
         return publishers.isEmpty() ? null : publishers.getFirst();
-    }
-
-    @Named("toTemporalCoverageSeries")
-    default List<TimeWindow> toTemporalCoverageSeries(CkanPackage ckanPackage) {
-        if (ckanPackage == null || (StringUtils.isBlank(ckanPackage.getTemporalStart())
-                && StringUtils.isBlank(ckanPackage.getTemporalEnd()))) {
-            return Collections.emptyList();
-        }
-
-        return List.of(TimeWindow.builder()
-                .start(map(ckanPackage.getTemporalStart()))
-                .end(map(ckanPackage.getTemporalEnd()))
-                .build());
     }
 }

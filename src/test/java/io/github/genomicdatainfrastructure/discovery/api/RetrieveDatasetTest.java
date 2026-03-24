@@ -57,6 +57,45 @@ class RetrieveDatasetTest extends BaseTest {
     }
 
     @Test
+    void filters_out_null_or_blank_in_series_ids() {
+        given()
+                .when()
+                .get("/api/v1/datasets/dataset-inseries-null-or-blank")
+                .then()
+                .statusCode(200)
+                .body("inSeries.size()", equalTo(1))
+                .body("inSeries[0].id", equalTo("series-valid-1"))
+                .body("inSeries[0].identifier", equalTo("series-valid-1"))
+                .body("inSeries[0].title", equalTo("series-valid-1"));
+    }
+
+    @Test
+    void falls_back_when_package_show_returns_null_or_empty() {
+        given()
+                .when()
+                .get("/api/v1/datasets/dataset-inseries-missing-series")
+                .then()
+                .statusCode(200)
+                .body("inSeries.size()", equalTo(1))
+                .body("inSeries[0].id", equalTo("series-missing-1"))
+                .body("inSeries[0].identifier", equalTo("series-missing-1"))
+                .body("inSeries[0].title", equalTo("series-missing-1"));
+    }
+
+    @Test
+    void falls_back_when_package_show_throws_web_application_exception() {
+        given()
+                .when()
+                .get("/api/v1/datasets/dataset-inseries-error-series")
+                .then()
+                .statusCode(200)
+                .body("inSeries.size()", equalTo(1))
+                .body("inSeries[0].id", equalTo("series-error-1"))
+                .body("inSeries[0].identifier", equalTo("series-error-1"))
+                .body("inSeries[0].title", equalTo("series-error-1"));
+    }
+
+    @Test
     void retrieves_404_when_not_found() {
         given()
                 .auth()

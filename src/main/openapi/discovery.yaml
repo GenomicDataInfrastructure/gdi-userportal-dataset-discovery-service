@@ -694,9 +694,7 @@ components:
           type: string
           format: date-time
         temporalCoverage:
-          type: array
-          items:
-            $ref: "#/components/schemas/TimeWindow"
+          $ref: "#/components/schemas/TimeWindow"
         uri:
           type: string
           title: URI

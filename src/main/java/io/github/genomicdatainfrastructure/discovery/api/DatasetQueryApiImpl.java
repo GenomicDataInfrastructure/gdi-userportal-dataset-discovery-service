@@ -37,8 +37,10 @@ public class DatasetQueryApiImpl implements DatasetQueryApi {
     @Override
     public Response datasetSearch(String acceptLanguage, DatasetSearchQuery datasetSearchQuery) {
         var preferredLanguage = preferredLanguage();
-        var content = searchDatasetsQuery.execute(datasetSearchQuery, accessToken(),
-                preferredLanguage);
+        var query = datasetSearchQuery != null
+                ? datasetSearchQuery
+                : DatasetSearchQuery.builder().build();
+        var content = searchDatasetsQuery.execute(query, accessToken(), preferredLanguage);
         return Response.ok(content).build();
     }
 

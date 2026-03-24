@@ -52,7 +52,6 @@ class CkanDatasetsMapperTest {
                     .provenanceActivity(List.of())
                     .qualifiedAttribution(List.of())
                     .qualityAnnotation(List.of())
-                    .publisherType(List.of())
                     .purpose(List.of())
                     .legalBasis(List.of())
                     .applicableLegislation(List.of())
@@ -283,11 +282,6 @@ class CkanDatasetsMapperTest {
                                     "https://w3id.org/dpv/dpv-pd#HealthRecord", 7)))
                     .populationCoverage(
                             "This example includes a very non-descript population")
-                    .publisherNote(
-                            "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
-                    .publisherType(List.of(
-                            getValueLabel("Undefined",
-                                    "http://example.com/publisherType/undefined")))
                     .trustedDataHolder(true)
                     .purpose(List.of(
                             getValueLabel("Academic Research",
@@ -371,6 +365,7 @@ class CkanDatasetsMapperTest {
                                     "http://example.com/service/theme/2")
                     ));
         }
+
     }
 
     private static CkanPackage buildCkanPackage() {
@@ -565,10 +560,6 @@ class CkanDatasetsMapperTest {
                         getCkanValueLabel("Health Record",
                                 "https://w3id.org/dpv/dpv-pd#HealthRecord", 7)))
                 .populationCoverage("This example includes a very non-descript population")
-                .publisherNote(
-                        "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
-                .publisherType(List.of(getCkanValueLabel("Undefined",
-                        "http://example.com/publisherType/undefined")))
                 .trustedDataHolder(true)
                 .purpose(List.of(getCkanValueLabel("Academic Research",
                         "https://w3id.org/dpv#AcademicResearch")))

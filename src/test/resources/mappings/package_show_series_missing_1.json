@@ -1,0 +1,17 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPattern": "/api/3/action/(enhanced_)?package_show\\?id=series-missing-1"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "help": "https://ckan-test.healthdata.nl/api/3/action/help_show?name=package_show",
+            "success": true,
+            "result": null
+        }
+    }
+}

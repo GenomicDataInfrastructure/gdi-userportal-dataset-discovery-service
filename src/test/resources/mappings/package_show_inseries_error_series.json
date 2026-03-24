@@ -1,0 +1,23 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPattern": "/api/3/action/(enhanced_)?package_show\\?id=dataset-inseries-error-series"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "help": "https://ckan-test.healthdata.nl/api/3/action/help_show?name=package_show",
+            "success": true,
+            "result": {
+                "id": "dataset-inseries-error-series",
+                "identifier": "dataset-inseries-error-series",
+                "title": "Dataset with error series",
+                "in_series": ["series-error-1"],
+                "resources": []
+            }
+        }
+    }
+}

@@ -501,17 +501,10 @@ components:
         dcatType:
           $ref: "#/components/schemas/ValueLabel"
         # Below are properties from HealthDCAT
-        publisherNote:
-          type: string
-          description: A note from the publisher about the dataset.
         publisherCoverage:
           type: array
           items:
             type: string
-        publisherType:
-          type: array
-          items:
-            $ref: "#/components/schemas/ValueLabel"
         trustedDataHolder:
           type: boolean
         hdab:
@@ -613,7 +606,7 @@ components:
         inSeries:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/DatasetSeries"
         isReferencedBy:
           type: array
           items:
@@ -663,6 +656,53 @@ components:
         - id
         - title
         - description
+    DatasetSeries:
+      type: object
+      properties:
+        id:
+          type: string
+          title: Dataset internal ID
+        identifier:
+          type: string
+          title: Identifier
+        title:
+          type: string
+          title: Title
+        description:
+          type: string
+          title: Description
+        applicableLegislation:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValueLabel"
+        contacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactPoint"
+        frequency:
+          $ref: "#/components/schemas/ValueLabel"
+        spatial:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValueLabel"
+        modified:
+          type: string
+          format: date-time
+        publishers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"
+        issued:
+          type: string
+          format: date-time
+        temporalCoverage:
+          $ref: "#/components/schemas/TimeWindow"
+        uri:
+          type: string
+          title: URI
+      required:
+        - id
+        - title
     RetrievedDistribution:
       type: object
       properties:
@@ -895,6 +935,11 @@ components:
           description: Organization the agent acted on behalf of.
           items:
             $ref: "#/components/schemas/Agent"
+        spatial:
+          type: array
+          description: Publisher spatial coverage.
+          items:
+            $ref: "#/components/schemas/ValueLabel"
       required:
         - name
     DatasetRelationEntry:
@@ -1063,7 +1108,7 @@ components:
           type: string
           title: Assembly ID
           description: Optional reference genome assembly identifier (e.g., "GRCh37", "GRCh38").
-          example: "GRCh37" 
+          example: "GRCh37"
         sex:
           type: string
           title: Sex
@@ -1072,7 +1117,7 @@ components:
         countryOfBirth:
           type: string
           title: Country of Birth
-          description: Optional country of birth (2-letter ISO code). 
+          description: Optional country of birth (2-letter ISO code).
           example: "FR"
     GVariantsSearchResponse:
       type: object

@@ -1,0 +1,20 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPattern": "/api/3/action/(enhanced_)?package_show\\?id=series-error-1"
+    },
+    "response": {
+        "status": 404,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "help": "https://ckan-test.healthdata.nl/api/3/action/help_show?name=package_show",
+            "error": {
+                "__type": "Not Found Error",
+                "message": "Not found"
+            },
+            "success": false
+        }
+    }
+}

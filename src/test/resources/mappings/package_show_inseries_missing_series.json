@@ -1,0 +1,23 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPattern": "/api/3/action/(enhanced_)?package_show\\?id=dataset-inseries-missing-series"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "help": "https://ckan-test.healthdata.nl/api/3/action/help_show?name=package_show",
+            "success": true,
+            "result": {
+                "id": "dataset-inseries-missing-series",
+                "identifier": "dataset-inseries-missing-series",
+                "title": "Dataset with missing series",
+                "in_series": ["series-missing-1"],
+                "resources": []
+            }
+        }
+    }
+}

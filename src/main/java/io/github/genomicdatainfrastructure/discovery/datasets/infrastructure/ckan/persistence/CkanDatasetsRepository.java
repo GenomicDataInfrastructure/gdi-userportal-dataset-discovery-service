@@ -106,13 +106,42 @@ public class CkanDatasetsRepository implements DatasetsRepository {
     public RetrievedDataset findById(String id, String accessToken, String preferredLanguage) {
         try {
             var ckanPackage = ckanQueryApi.packageShow(id, preferredLanguage);
-            return ckanDatasetsMapper.map(ckanPackage.getResult());
+            var mappedDataset = ckanDatasetsMapper.map(ckanPackage.getResult());
+            var inSeries = ofNullable(ckanPackage.getResult().getInSeries())
+                    .orElse(List.of())
+                    .stream()
+                    .filter(seriesId -> seriesId != null && !seriesId.isBlank())
+                    .map(seriesId -> resolveSeriesDataset(seriesId, preferredLanguage))
+                    .toList();
+            mappedDataset.setInSeries(inSeries);
+            return mappedDataset;
         } catch (WebApplicationException e) {
             if (e.getResponse().getStatus() == 404) {
                 throw new DatasetNotFoundException(id);
             }
             throw e;
         }
+    }
+
+    private DatasetSeries resolveSeriesDataset(String seriesId, String preferredLanguage) {
+        try {
+            var response = ckanQueryApi.packageShow(seriesId, preferredLanguage);
+            if (response == null || response.getResult() == null) {
+                return fallbackSeries(seriesId);
+            }
+            return ckanDatasetsMapper.mapToDatasetSeries(response.getResult());
+        } catch (WebApplicationException ignored) {
+            // Keep the API response resilient even when related series cannot be resolved.
+            return fallbackSeries(seriesId);
+        }
+    }
+
+    private DatasetSeries fallbackSeries(String seriesId) {
+        return DatasetSeries.builder()
+                .id(seriesId)
+                .identifier(seriesId)
+                .title(seriesId)
+                .build();
     }
 
     @Override

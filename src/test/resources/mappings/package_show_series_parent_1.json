@@ -1,0 +1,56 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPattern": "/api/3/action/(enhanced_)?package_show\\?id=series-parent-1"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "help": "https://ckan-test.healthdata.nl/api/3/action/help_show?name=package_show",
+            "success": true,
+            "result": {
+                "id": "series-parent-1",
+                "identifier": "series-parent-identifier",
+                "title": "Parent series dataset",
+                "notes": "The parent series",
+                "issued": "2023-01-15T10:30:00Z",
+                "modified": "2024-03-20T13:00:00Z",
+                "temporal_start": "2020-01-01",
+                "temporal_end": "2023-12-31",
+                "contact": [
+                    {
+                        "name": "Series Desk",
+                        "email": "series@example.org",
+                        "uri": "https://example.org/contact/series"
+                    }
+                ],
+                "publisher": [
+                    {
+                        "name": "Series Publisher",
+                        "identifier": "publisher-1",
+                        "uri": "https://example.org/publisher/1"
+                    }
+                ],
+                "frequency": {
+                    "display_name": "Monthly",
+                    "name": "http://publications.europa.eu/resource/authority/frequency/MONTHLY"
+                },
+                "spatial_uri": {
+                    "display_name": "Netherlands",
+                    "name": "http://publications.europa.eu/resource/authority/country/NLD"
+                },
+                "applicable_legislation": [
+                    {
+                        "display_name": "Data Act",
+                        "name": "http://data.europa.eu/eli/reg/2023/2854/oj"
+                    }
+                ],
+                "uri": "https://example.org/datasets/series-parent-1",
+                "resources": []
+            }
+        }
+    }
+}

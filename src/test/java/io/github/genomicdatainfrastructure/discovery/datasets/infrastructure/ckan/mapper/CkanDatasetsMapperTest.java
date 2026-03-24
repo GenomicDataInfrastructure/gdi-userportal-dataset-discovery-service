@@ -131,6 +131,12 @@ class CkanDatasetsMapperTest {
                                     .homepage("http://example.com/publisher1")
                                     .type(getValueLabel("Publisher Type",
                                             "http://example.com/publisher/type"))
+                                    .spatial(List.of(getValueLabel("Utrecht, Netherlands",
+                                            "https://www.geonames.org/2745912/utrecht.html")))
+                                    .publisherType(List.of(getValueLabel("Undefined",
+                                            "http://example.com/publisherType/undefined")))
+                                    .publisherNote(
+                                            "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
                                     .actedOnBehalfOf(List.of())
                                     .build(),
                             Agent.builder()
@@ -142,6 +148,12 @@ class CkanDatasetsMapperTest {
                                     .homepage("http://example.com/publisher2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
+                                    .spatial(List.of(getValueLabel("Utrecht, Netherlands",
+                                            "https://www.geonames.org/2745912/utrecht.html")))
+                                    .publisherType(List.of(getValueLabel("Undefined",
+                                            "http://example.com/publisherType/undefined")))
+                                    .publisherNote(
+                                            "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
                                     .actedOnBehalfOf(List.of())
                                     .build()
                     ))
@@ -371,6 +383,7 @@ class CkanDatasetsMapperTest {
                                     "http://example.com/service/theme/2")
                     ));
         }
+
     }
 
     private static CkanPackage buildCkanPackage() {
@@ -660,6 +673,12 @@ class CkanDatasetsMapperTest {
                             .identifier("publisherIdentifier")
                             .type(getValueLabel("Publisher Type",
                                     "http://example.com/publisher/type"))
+                            .spatial(List.of(getValueLabel("Utrecht, Netherlands",
+                                    "https://www.geonames.org/2745912/utrecht.html")))
+                            .publisherType(List.of(getValueLabel("Undefined",
+                                    "http://example.com/publisherType/undefined")))
+                            .publisherNote(
+                                    "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
                             .actedOnBehalfOf(List.of())
                             .build(),
                             Agent.builder()
@@ -671,6 +690,12 @@ class CkanDatasetsMapperTest {
                                     .identifier("publisherIdentifier2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
+                                    .spatial(List.of(getValueLabel("Utrecht, Netherlands",
+                                            "https://www.geonames.org/2745912/utrecht.html")))
+                                    .publisherType(List.of(getValueLabel("Undefined",
+                                            "http://example.com/publisherType/undefined")))
+                                    .publisherNote(
+                                            "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
                                     .actedOnBehalfOf(List.of())
                                     .build()))
                     .themes(getValueLabels("theme", "theme-name", 3))

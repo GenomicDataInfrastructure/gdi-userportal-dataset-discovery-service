@@ -45,7 +45,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "creators", source = "creator")
     @Mapping(target = "hasVersions", source = "hasVersion")
-    @Mapping(target = "publishers", source = "publisher")
+    @Mapping(target = "publishers", source = ".", qualifiedByName = "mapPublishersWithMetadata")
     @Mapping(target = "languages", source = "language")
     @Mapping(target = "dcatType", source = "dcatType")
     @Mapping(target = "catalogue", ignore = true)
@@ -56,7 +56,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "uri", source = "uri")
     @Mapping(target = "documentation", source = "documentation")
     @Mapping(target = "frequency", source = "frequency")
-    @Mapping(target = "inSeries", source = "inSeries")
+    @Mapping(target = "inSeries", ignore = true)
     @Mapping(target = "isReferencedBy", source = "isReferencedBy")
     @Mapping(target = "temporalCoverage.start", source = "temporalStart")
     @Mapping(target = "temporalCoverage.end", source = "temporalEnd")
@@ -85,6 +85,18 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "version", source = "version")
     @Mapping(target = "ownerOrg", source = "ownerOrg")
     RetrievedDataset map(CkanPackage ckanPackage);
+
+    @Mapping(target = "contacts", source = "contact")
+    @Mapping(target = "description", source = "notes")
+    @Mapping(target = "frequency", source = "frequency")
+    @Mapping(target = "spatial", source = ".", qualifiedByName = "toGeographicalCoverageFromPackage")
+    @Mapping(target = "modified", source = "modified")
+    @Mapping(target = "publisher", source = ".", qualifiedByName = "mapSinglePublisherWithMetadata")
+    @Mapping(target = "issued", source = "issued")
+    @Mapping(target = "temporalCoverage", source = ".", qualifiedByName = "toTemporalCoverageSeries")
+    @Mapping(target = "uri", source = "uri")
+    @Mapping(target = "applicableLegislation", source = "applicableLegislation")
+    DatasetSeries mapToDatasetSeries(CkanPackage ckanPackage);
 
     @Mapping(target = "label", source = "displayName")
     @Mapping(target = "value", source = "name")
@@ -152,7 +164,7 @@ public interface CkanDatasetsMapper {
 
     @Mapping(target = "description", source = "notes")
     @Mapping(target = "themes", source = "theme")
-    @Mapping(target = "publishers", source = "publisher")
+    @Mapping(target = "publishers", source = ".", qualifiedByName = "mapPublishersWithMetadata")
     @Mapping(target = "keywords", source = ".", qualifiedByName = "mergeKeywords")
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "createdAt", source = "issued")
@@ -192,6 +204,9 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "type", source = "type")
     @Mapping(target = "identifier", source = "identifier")
     @Mapping(target = "actedOnBehalfOf", source = "actedOnBehalfOf")
+    @Mapping(target = "spatial", ignore = true)
+    @Mapping(target = "publisherType", ignore = true)
+    @Mapping(target = "publisherNote", ignore = true)
     Agent map(CkanAgent ckanAgent);
 
     default OffsetDateTime map(String date) {
@@ -341,5 +356,91 @@ public interface CkanDatasetsMapper {
                 .filter(resource -> uriSet.contains(resource.getUri()))
                 .map(this::map)
                 .toList();
+    }
+
+    @Named("toGeographicalCoverageFromPackage")
+    default List<ValueLabel> toGeographicalCoverageFromPackage(CkanPackage ckanPackage) {
+        if (ckanPackage == null) {
+            return Collections.emptyList();
+        }
+
+        var fromSpatialCoverage = java.util.Optional.ofNullable(ckanPackage.getSpatialCoverage())
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(this::mapSpatialCoverageToValueLabel)
+                .filter(v -> v != null && (StringUtils.isNotBlank(v.getValue()) || StringUtils
+                        .isNotBlank(v.getLabel())))
+                .toList();
+
+        if (!fromSpatialCoverage.isEmpty()) {
+            return fromSpatialCoverage;
+        }
+
+        if (ckanPackage.getSpatialUri() == null) {
+            return Collections.emptyList();
+        }
+
+        return List.of(map(ckanPackage.getSpatialUri()));
+    }
+
+    default ValueLabel mapSpatialCoverageToValueLabel(CkanSpatialCoverage spatialCoverage) {
+        if (spatialCoverage == null) {
+            return null;
+        }
+
+        var uri = spatialCoverage.getUri();
+        var value = uri != null ? uri.getName() : spatialCoverage.getText();
+        var label = uri != null ? uri.getDisplayName() : spatialCoverage.getText();
+
+        return ValueLabel.builder()
+                .value(value)
+                .label(label)
+                .build();
+    }
+
+    @Named("mapPublishersWithMetadata")
+    default List<Agent> mapPublishersWithMetadata(CkanPackage ckanPackage) {
+        if (ckanPackage == null || ckanPackage.getPublisher() == null) {
+            return Collections.emptyList();
+        }
+
+        return ckanPackage.getPublisher().stream()
+                .map(this::map)
+                .map(publisher -> enrichPublisherMetadata(publisher, ckanPackage))
+                .toList();
+    }
+
+    default Agent enrichPublisherMetadata(Agent agent, CkanPackage ckanPackage) {
+        if (agent == null || ckanPackage == null) {
+            return agent;
+        }
+
+        agent.setSpatial(toGeographicalCoverageFromPackage(ckanPackage));
+        agent.setPublisherType(ckanPackage.getPublisherType() == null
+                ? Collections.emptyList()
+                : ckanPackage.getPublisherType().stream().map(this::map).toList());
+        agent.setPublisherNote(StringUtils.isBlank(ckanPackage.getPublisherNote())
+                ? null
+                : ckanPackage.getPublisherNote());
+        return agent;
+    }
+
+    @Named("mapSinglePublisherWithMetadata")
+    default Agent mapSinglePublisherWithMetadata(CkanPackage ckanPackage) {
+        var publishers = mapPublishersWithMetadata(ckanPackage);
+        return publishers.isEmpty() ? null : publishers.getFirst();
+    }
+
+    @Named("toTemporalCoverageSeries")
+    default List<TimeWindow> toTemporalCoverageSeries(CkanPackage ckanPackage) {
+        if (ckanPackage == null || (StringUtils.isBlank(ckanPackage.getTemporalStart())
+                && StringUtils.isBlank(ckanPackage.getTemporalEnd()))) {
+            return Collections.emptyList();
+        }
+
+        return List.of(TimeWindow.builder()
+                .start(map(ckanPackage.getTemporalStart()))
+                .end(map(ckanPackage.getTemporalEnd()))
+                .build());
     }
 }

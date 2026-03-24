@@ -280,17 +280,10 @@ components:
           $ref: "#/components/schemas/CkanValueLabel"
 
         # Below are properties from HealthDCAT
-        publisher_note:
-          type: string
-          description: A note from the publisher about the dataset.
         publisher_coverage:
           type: array
           items:
             type: string
-        publisher_type:
-          type: array
-          items:
-            $ref: "#/components/schemas/CkanValueLabel"
         trusted_data_holder:
           type: boolean
         hdab:

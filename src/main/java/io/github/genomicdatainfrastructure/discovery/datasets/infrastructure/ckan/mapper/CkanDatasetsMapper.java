@@ -205,8 +205,6 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "identifier", source = "identifier")
     @Mapping(target = "actedOnBehalfOf", source = "actedOnBehalfOf")
     @Mapping(target = "spatial", ignore = true)
-    @Mapping(target = "publisherType", ignore = true)
-    @Mapping(target = "publisherNote", ignore = true)
     Agent map(CkanAgent ckanAgent);
 
     default OffsetDateTime map(String date) {
@@ -416,12 +414,6 @@ public interface CkanDatasetsMapper {
         }
 
         agent.setSpatial(toGeographicalCoverageFromPackage(ckanPackage));
-        agent.setPublisherType(ckanPackage.getPublisherType() == null
-                ? Collections.emptyList()
-                : ckanPackage.getPublisherType().stream().map(this::map).toList());
-        agent.setPublisherNote(StringUtils.isBlank(ckanPackage.getPublisherNote())
-                ? null
-                : ckanPackage.getPublisherNote());
         return agent;
     }
 

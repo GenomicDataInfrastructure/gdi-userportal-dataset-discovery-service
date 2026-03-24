@@ -52,7 +52,6 @@ class CkanDatasetsMapperTest {
                     .provenanceActivity(List.of())
                     .qualifiedAttribution(List.of())
                     .qualityAnnotation(List.of())
-                    .publisherType(List.of())
                     .purpose(List.of())
                     .legalBasis(List.of())
                     .applicableLegislation(List.of())
@@ -133,10 +132,6 @@ class CkanDatasetsMapperTest {
                                             "http://example.com/publisher/type"))
                                     .spatial(List.of(getValueLabel("Utrecht, Netherlands",
                                             "https://www.geonames.org/2745912/utrecht.html")))
-                                    .publisherType(List.of(getValueLabel("Undefined",
-                                            "http://example.com/publisherType/undefined")))
-                                    .publisherNote(
-                                            "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
                                     .actedOnBehalfOf(List.of())
                                     .build(),
                             Agent.builder()
@@ -150,10 +145,6 @@ class CkanDatasetsMapperTest {
                                             "http://example.com/publisher/type2"))
                                     .spatial(List.of(getValueLabel("Utrecht, Netherlands",
                                             "https://www.geonames.org/2745912/utrecht.html")))
-                                    .publisherType(List.of(getValueLabel("Undefined",
-                                            "http://example.com/publisherType/undefined")))
-                                    .publisherNote(
-                                            "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
                                     .actedOnBehalfOf(List.of())
                                     .build()
                     ))
@@ -295,11 +286,6 @@ class CkanDatasetsMapperTest {
                                     "https://w3id.org/dpv/dpv-pd#HealthRecord", 7)))
                     .populationCoverage(
                             "This example includes a very non-descript population")
-                    .publisherNote(
-                            "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
-                    .publisherType(List.of(
-                            getValueLabel("Undefined",
-                                    "http://example.com/publisherType/undefined")))
                     .trustedDataHolder(true)
                     .purpose(List.of(
                             getValueLabel("Academic Research",
@@ -578,10 +564,6 @@ class CkanDatasetsMapperTest {
                         getCkanValueLabel("Health Record",
                                 "https://w3id.org/dpv/dpv-pd#HealthRecord", 7)))
                 .populationCoverage("This example includes a very non-descript population")
-                .publisherNote(
-                        "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
-                .publisherType(List.of(getCkanValueLabel("Undefined",
-                        "http://example.com/publisherType/undefined")))
                 .trustedDataHolder(true)
                 .purpose(List.of(getCkanValueLabel("Academic Research",
                         "https://w3id.org/dpv#AcademicResearch")))
@@ -675,10 +657,6 @@ class CkanDatasetsMapperTest {
                                     "http://example.com/publisher/type"))
                             .spatial(List.of(getValueLabel("Utrecht, Netherlands",
                                     "https://www.geonames.org/2745912/utrecht.html")))
-                            .publisherType(List.of(getValueLabel("Undefined",
-                                    "http://example.com/publisherType/undefined")))
-                            .publisherNote(
-                                    "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
                             .actedOnBehalfOf(List.of())
                             .build(),
                             Agent.builder()
@@ -692,10 +670,6 @@ class CkanDatasetsMapperTest {
                                             "http://example.com/publisher/type2"))
                                     .spatial(List.of(getValueLabel("Utrecht, Netherlands",
                                             "https://www.geonames.org/2745912/utrecht.html")))
-                                    .publisherType(List.of(getValueLabel("Undefined",
-                                            "http://example.com/publisherType/undefined")))
-                                    .publisherNote(
-                                            "Health-RI is the Dutch health care initiative to build an integrated health data infrastructure for research and innovation.")
                                     .actedOnBehalfOf(List.of())
                                     .build()))
                     .themes(getValueLabels("theme", "theme-name", 3))

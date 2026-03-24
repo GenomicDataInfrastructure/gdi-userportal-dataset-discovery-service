@@ -688,8 +688,10 @@ components:
         modified:
           type: string
           format: date-time
-        publisher:
-          $ref: "#/components/schemas/Agent"
+        publishers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"
         issued:
           type: string
           format: date-time

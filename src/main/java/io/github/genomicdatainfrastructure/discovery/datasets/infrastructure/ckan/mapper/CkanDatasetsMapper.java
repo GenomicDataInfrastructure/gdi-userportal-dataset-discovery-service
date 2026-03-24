@@ -45,7 +45,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "creators", source = "creator")
     @Mapping(target = "hasVersions", source = "hasVersion")
-    @Mapping(target = "publishers", source = ".", qualifiedByName = "mapPublishersWithMetadata")
+    @Mapping(target = "publishers", source = "publisher")
     @Mapping(target = "languages", source = "language")
     @Mapping(target = "dcatType", source = "dcatType")
     @Mapping(target = "catalogue", ignore = true)
@@ -91,7 +91,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "frequency", source = "frequency")
     @Mapping(target = "spatial", source = ".", qualifiedByName = "toGeographicalCoverageFromPackage")
     @Mapping(target = "modified", source = "modified")
-    @Mapping(target = "publisher", source = ".", qualifiedByName = "mapSinglePublisherWithMetadata")
+    @Mapping(target = "publishers", source = "publisher")
     @Mapping(target = "issued", source = "issued")
     @Mapping(target = "temporalCoverage.start", source = "temporalStart")
     @Mapping(target = "temporalCoverage.end", source = "temporalEnd")
@@ -165,7 +165,7 @@ public interface CkanDatasetsMapper {
 
     @Mapping(target = "description", source = "notes")
     @Mapping(target = "themes", source = "theme")
-    @Mapping(target = "publishers", source = ".", qualifiedByName = "mapPublishersWithMetadata")
+    @Mapping(target = "publishers", source = "publisher")
     @Mapping(target = "keywords", source = ".", qualifiedByName = "mergeKeywords")
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "createdAt", source = "issued")
@@ -395,32 +395,5 @@ public interface CkanDatasetsMapper {
                 .value(value)
                 .label(label)
                 .build();
-    }
-
-    @Named("mapPublishersWithMetadata")
-    default List<Agent> mapPublishersWithMetadata(CkanPackage ckanPackage) {
-        if (ckanPackage == null || ckanPackage.getPublisher() == null) {
-            return Collections.emptyList();
-        }
-
-        return ckanPackage.getPublisher().stream()
-                .map(this::map)
-                .map(publisher -> enrichPublisherMetadata(publisher, ckanPackage))
-                .toList();
-    }
-
-    default Agent enrichPublisherMetadata(Agent agent, CkanPackage ckanPackage) {
-        if (agent == null || ckanPackage == null) {
-            return agent;
-        }
-
-        agent.setSpatial(toGeographicalCoverageFromPackage(ckanPackage));
-        return agent;
-    }
-
-    @Named("mapSinglePublisherWithMetadata")
-    default Agent mapSinglePublisherWithMetadata(CkanPackage ckanPackage) {
-        var publishers = mapPublishersWithMetadata(ckanPackage);
-        return publishers.isEmpty() ? null : publishers.getFirst();
     }
 }

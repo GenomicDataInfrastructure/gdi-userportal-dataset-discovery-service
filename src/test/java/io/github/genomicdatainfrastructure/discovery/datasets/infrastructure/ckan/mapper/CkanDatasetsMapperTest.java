@@ -63,12 +63,32 @@ class CkanDatasetsMapperTest {
                     .analytics(List.of())
                     .samples(List.of())
                     .keywords(List.of())
-                    .temporalCoverage(TimeWindow.builder().build())
+                    .temporalCoverage(List.of())
                     .build();
 
             assertThat(actual)
                     .usingRecursiveComparison()
                     .isEqualTo(expected);
+        }
+
+        @Test
+        void given_temporalCoverage_split_across_multiple_objects_it_should_keep_all_as_separate_entries() {
+            final var ckanPackage = CkanPackage.builder()
+                    .temporalCoverage(List.of(
+                            CkanTimeWindow.builder().start("2015-02-02T00:00:00+00:00").build(),
+                            CkanTimeWindow.builder().end("2018-11-30T00:00:00+00:00").build()))
+                    .build();
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getTemporalCoverage())
+                    .isEqualTo(List.of(
+                            TimeWindow.builder()
+                                    .start(parse("2015-02-02T00:00:00+00:00"))
+                                    .build(),
+                            TimeWindow.builder()
+                                    .end(parse("2018-11-30T00:00:00+00:00"))
+                                    .build()));
         }
 
         @Test
@@ -178,14 +198,14 @@ class CkanDatasetsMapperTest {
                                     .name("Contact 1")
                                     .email("contact1@example.com")
                                     .identifier("contact-identifier-1")
-                                    .url("http://example.com/contact-1")
+                                    .url(List.of("http://example.com/contact-1"))
                                     .build(),
                             ContactPoint.builder()
                                     .name("Contact 2")
                                     .email("contact2@example.com")
                                     .uri("http://example.com")
                                     .identifier("contact-identifier-2")
-                                    .url("http://example.com/contact-2")
+                                    .url(List.of("http://example.com/contact-2"))
                                     .build()
                     ))
                     .datasetRelationships(List.of(
@@ -307,11 +327,11 @@ class CkanDatasetsMapperTest {
                                     .centroid("5.095,52.120")
                                     .build()))
                     .spatialResolutionInMeters(10.0f)
-                    .temporalCoverage(
+                    .temporalCoverage(List.of(
                             TimeWindow.builder()
                                     .start(parse("2024-07-12T22:00:00+00:00"))
                                     .end(parse("2024-07-13T22:00:00+00:00"))
-                                    .build())
+                                    .build()))
                     .temporalResolution("P1D")
                     .provenanceActivity(List.of())
                     .qualifiedAttribution(List.of())
@@ -457,14 +477,14 @@ class CkanDatasetsMapperTest {
                                 .name("Contact 1")
                                 .email("contact1@example.com")
                                 .identifier("contact-identifier-1")
-                                .url("http://example.com/contact-1")
+                                .url(List.of("http://example.com/contact-1"))
                                 .build(),
                         CkanContactPoint.builder()
                                 .name("Contact 2")
                                 .email("contact2@example.com")
                                 .uri("http://example.com")
                                 .identifier("contact-identifier-2")
-                                .url("http://example.com/contact-2")
+                                .url(List.of("http://example.com/contact-2"))
                                 .build()
                 ))
                 .creator(List.of(
@@ -594,8 +614,11 @@ class CkanDatasetsMapperTest {
                                 .target("http://example.com/quality-target")
                                 .build()
                 ))
-                .temporalStart("2024-07-12T22:00:00+00:00")
-                .temporalEnd("2024-07-13T22:00:00+00:00")
+                .temporalCoverage(List.of(
+                        CkanTimeWindow.builder()
+                                .start("2024-07-12T22:00:00+00:00")
+                                .end("2024-07-13T22:00:00+00:00")
+                                .build()))
                 .temporalResolution("P1D")
                 .alternateIdentifier(List.of("internalURI:admsIdentifier0"))
                 .spatialCoverage(List.of(
@@ -674,10 +697,11 @@ class CkanDatasetsMapperTest {
                     .conformsTo(
                             getValueLabels("DCAT-AP 3.0",
                                     "https://data.europa.eu/dcat-ap/3.0"))
-                    .temporalCoverage(TimeWindow.builder()
-                            .start(parse("2024-07-12T22:00Z"))
-                            .end(parse("2024-07-13T22:00Z"))
-                            .build())
+                    .temporalCoverage(List.of(
+                            TimeWindow.builder()
+                                    .start(parse("2024-07-12T22:00Z"))
+                                    .end(parse("2024-07-13T22:00Z"))
+                                    .build()))
                     .build();
         }
     }

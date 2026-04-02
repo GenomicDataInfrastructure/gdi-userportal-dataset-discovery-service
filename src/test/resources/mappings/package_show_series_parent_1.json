@@ -18,8 +18,12 @@
                 "notes": "The parent series",
                 "issued": "2023-01-15T10:30:00Z",
                 "modified": "2024-03-20T13:00:00Z",
-                "temporal_start": "2020-01-01",
-                "temporal_end": "2023-12-31",
+                "temporal_coverage": [
+                    {
+                        "start": "2020-01-01T00:00:00+00:00",
+                        "end": "2023-12-31T00:00:00+00:00"
+                    }
+                ],
                 "contact": [
                     {
                         "name": "Series Desk",

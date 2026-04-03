@@ -333,7 +333,8 @@ class CkanDatasetsMapperTest {
                     .hasSize(1);
             assertThat(actual.getDistributions().getFirst().getAccessService())
                     .hasSize(1);
-            assertThat(actual.getDistributions().getFirst().getAccessService().getFirst().getTheme())
+            assertThat(actual.getDistributions().getFirst().getAccessService().getFirst()
+                    .getTheme())
                     .isEmpty();
         }
 
@@ -348,7 +349,8 @@ class CkanDatasetsMapperTest {
                     .hasSize(1);
             assertThat(actual.getDistributions().getFirst().getAccessService())
                     .hasSize(1);
-            assertThat(actual.getDistributions().getFirst().getAccessService().getFirst().getTheme())
+            assertThat(actual.getDistributions().getFirst().getAccessService().getFirst()
+                    .getTheme())
                     .usingRecursiveComparison()
                     .isEqualTo(List.of(
                             getValueLabel("Service Theme 1",

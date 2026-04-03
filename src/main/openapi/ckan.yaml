@@ -372,6 +372,8 @@ components:
             $ref: "#/components/schemas/CkanValueLabel"
         homepage:
           type: string
+        uri:
+          type: string
         documentation:
           type: array
           items:

@@ -595,6 +595,8 @@ components:
             $ref: "#/components/schemas/ValueLabel"
         homepage:
           type: string
+        uri:
+          type: string
         documentation:
           type: array
           items:

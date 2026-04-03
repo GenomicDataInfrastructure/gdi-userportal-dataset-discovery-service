@@ -53,6 +53,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "provenanceActivity", source = "provenanceActivity")
     @Mapping(target = "qualityAnnotation", source = "qualityAnnotation")
     @Mapping(target = "homepage", source = "homepage")
+    @Mapping(target = "uri", source = "uri")
     @Mapping(target = "documentation", source = "documentation")
     @Mapping(target = "frequency", source = "frequency")
     @Mapping(target = "inSeries", ignore = true)

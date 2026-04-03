@@ -96,14 +96,12 @@ class CkanDatasetsMapperTest {
                                     .identifier("creatorIdentifier")
                                     .email("email")
                                     .url("url")
-                                    .uri("uri")
                                     .homepage("http://example.com/creator1")
                                     .type(getValueLabel("Creator Type",
                                             "http://example.com/creator/type"))
                                     .actedOnBehalfOf(List.of(
                                             Agent.builder()
                                                     .name("Parent Org 1")
-                                                    .uri("http://example.com/parent-org-1")
                                                     .actedOnBehalfOf(List.of())
                                                     .build()
                                     ))
@@ -113,7 +111,6 @@ class CkanDatasetsMapperTest {
                                     .identifier("creatorIdentifier2")
                                     .email("email2")
                                     .url("url2")
-                                    .uri("uri2")
                                     .homepage("http://example.com/creator2")
                                     .type(getValueLabel("Creator Type 2",
                                             "http://example.com/creator/type2"))
@@ -126,7 +123,6 @@ class CkanDatasetsMapperTest {
                                     .identifier("publisherIdentifier")
                                     .email("email")
                                     .url("url")
-                                    .uri("uri")
                                     .homepage("http://example.com/publisher1")
                                     .type(getValueLabel("Publisher Type",
                                             "http://example.com/publisher/type"))
@@ -137,7 +133,6 @@ class CkanDatasetsMapperTest {
                                     .identifier("publisherIdentifier2")
                                     .email("email2")
                                     .url("url2")
-                                    .uri("uri2")
                                     .homepage("http://example.com/publisher2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
@@ -183,7 +178,6 @@ class CkanDatasetsMapperTest {
                             ContactPoint.builder()
                                     .name("Contact 2")
                                     .email("contact2@example.com")
-                                    .uri("http://example.com")
                                     .identifier("contact-identifier-2")
                                     .url("http://example.com/contact-2")
                                     .build()
@@ -212,7 +206,6 @@ class CkanDatasetsMapperTest {
                                     .id("analytics_resource_id")
                                     .title("analytics_resource_name")
                                     .description("analytics_resource_description")
-                                    .uri("http://example.com/analytics")
                                     .createdAt(parse("2025-03-19T00:00Z"))
                                     .modifiedAt(parse("2025-03-19T13:37:05Z"))
                                     .format(getValueLabel("format", "json", 1))
@@ -230,7 +223,6 @@ class CkanDatasetsMapperTest {
                                     .id("sample_resource_id")
                                     .title("sample_resource_name")
                                     .description("sample_resource_description")
-                                    .uri("http://example.com/sample")
                                     .createdAt(parse("2025-03-19T00:00Z"))
                                     .modifiedAt(parse("2025-03-19T13:37:05Z"))
                                     .format(getValueLabel("format", "csv", 1))
@@ -339,9 +331,10 @@ class CkanDatasetsMapperTest {
 
             assertThat(actual.getDistributions())
                     .hasSize(1);
-            assertThat(actual.getDistributions().get(0).getAccessService())
+            assertThat(actual.getDistributions().getFirst().getAccessService())
                     .hasSize(1);
-            assertThat(actual.getDistributions().get(0).getAccessService().get(0).getTheme())
+            assertThat(actual.getDistributions().getFirst().getAccessService().getFirst()
+                    .getTheme())
                     .isEmpty();
         }
 
@@ -354,9 +347,10 @@ class CkanDatasetsMapperTest {
 
             assertThat(actual.getDistributions())
                     .hasSize(1);
-            assertThat(actual.getDistributions().get(0).getAccessService())
+            assertThat(actual.getDistributions().getFirst().getAccessService())
                     .hasSize(1);
-            assertThat(actual.getDistributions().get(0).getAccessService().get(0).getTheme())
+            assertThat(actual.getDistributions().getFirst().getAccessService().getFirst()
+                    .getTheme())
                     .usingRecursiveComparison()
                     .isEqualTo(List.of(
                             getValueLabel("Service Theme 1",
@@ -462,7 +456,6 @@ class CkanDatasetsMapperTest {
                         CkanContactPoint.builder()
                                 .name("Contact 2")
                                 .email("contact2@example.com")
-                                .uri("http://example.com")
                                 .identifier("contact-identifier-2")
                                 .url("http://example.com/contact-2")
                                 .build()
@@ -476,11 +469,9 @@ class CkanDatasetsMapperTest {
                                 .homepage("http://example.com/creator1")
                                 .type(getCkanValueLabel("Creator Type",
                                         "http://example.com/creator/type"))
-                                .uri("uri")
                                 .actedOnBehalfOf(List.of(
                                         CkanAgent.builder()
                                                 .name("Parent Org 1")
-                                                .uri("http://example.com/parent-org-1")
                                                 .build()
                                 ))
                                 .build(),
@@ -492,7 +483,6 @@ class CkanDatasetsMapperTest {
                                 .homepage("http://example.com/creator2")
                                 .type(getCkanValueLabel("Creator Type 2",
                                         "http://example.com/creator/type2"))
-                                .uri("uri2")
                                 .build()
                 ))
                 .publisher(List.of(
@@ -504,7 +494,6 @@ class CkanDatasetsMapperTest {
                                 .homepage("http://example.com/publisher1")
                                 .type(getCkanValueLabel("Publisher Type",
                                         "http://example.com/publisher/type"))
-                                .uri("uri")
                                 .build(),
                         CkanAgent.builder()
                                 .name("publisherName2")
@@ -514,7 +503,6 @@ class CkanDatasetsMapperTest {
                                 .homepage("http://example.com/publisher2")
                                 .type(getCkanValueLabel("Publisher Type 2",
                                         "http://example.com/publisher/type2"))
-                                .uri("uri2")
                                 .build()
                 ))
                 .datasetRelationships(List.of(
@@ -646,7 +634,6 @@ class CkanDatasetsMapperTest {
                             .name("publisherName")
                             .email("email")
                             .url("url")
-                            .uri("uri")
                             .homepage("http://example.com/publisher1")
                             .identifier("publisherIdentifier")
                             .type(getValueLabel("Publisher Type",
@@ -657,7 +644,6 @@ class CkanDatasetsMapperTest {
                                     .name("publisherName2")
                                     .email("email2")
                                     .url("url2")
-                                    .uri("uri2")
                                     .homepage("http://example.com/publisher2")
                                     .identifier("publisherIdentifier2")
                                     .type(getValueLabel("Publisher Type 2",
@@ -814,10 +800,6 @@ class CkanDatasetsMapperTest {
 
             assertThat(actual).containsExactly("tags-only");
         }
-    }
-
-    private static @NotNull List<CkanResource> getCkanResources() {
-        return getCkanResourcesWithAccessService(buildCkanAccessService());
     }
 
     private static @NotNull List<CkanResource> getCkanResourcesWithAccessService(

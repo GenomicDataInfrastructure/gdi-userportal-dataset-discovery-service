@@ -46,7 +46,6 @@ class RetrieveDatasetTest extends BaseTest {
                 .body("inSeries[0].identifier", equalTo("series-parent-identifier"))
                 .body("inSeries[0].title", equalTo("Parent series dataset"))
                 .body("inSeries[0].description", equalTo("The parent series"))
-                .body("inSeries[0].uri", equalTo("https://example.org/datasets/series-parent-1"))
                 .body("inSeries[0].applicableLegislation[0].label", equalTo("Data Act"))
                 .body("inSeries[0].contacts[0].name", equalTo("Series Desk"))
                 .body("inSeries[0].frequency.label", equalTo("Monthly"))

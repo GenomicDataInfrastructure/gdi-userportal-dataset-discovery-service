@@ -628,8 +628,6 @@ components:
                 type: string
               startedAtTime:
                 type: string
-              uri:
-                type: string
               wasAssociatedWith:
                 type: array
                 items:
@@ -703,9 +701,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TimeWindow"
-        uri:
-          type: string
-          title: URI
       required:
         - id
         - title
@@ -784,8 +779,6 @@ components:
         spatialResolutionInMeters:
           type: number
           format: float
-        uri:
-          type: string
         accessService:
           type: array
           title: Access service
@@ -858,8 +851,6 @@ components:
                 type: array
                 items:
                   $ref: "#/components/schemas/ValueLabel"
-              uri:
-                type: string
               title:
                 type: string
               hvdCategory:
@@ -899,9 +890,6 @@ components:
         email:
           type: string
           title: email
-        uri:
-          type: string
-          title: uri
         url:
           type: array
           title: url
@@ -926,9 +914,6 @@ components:
         url:
           type: string
           title: url
-        uri:
-          type: string
-          title: uri
         homepage:
           type: string
           title: homepage
@@ -1179,8 +1164,6 @@ components:
         seeAlso:
           type: string
         startedAtTime:
-          type: string
-        uri:
           type: string
         wasAssociatedWith:
           type: array

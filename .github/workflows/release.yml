@@ -12,20 +12,25 @@ on:
         required: true
         default: 'patch'
 
+permissions: {}
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ghcr.io/genomicdatainfrastructure/gdi-userportal-dataset-discovery-service
   REPOSITORY_URL: ${{ github.server_url }}/${{ github.repository }}
   REPO: ${{ github.repository }}
-  BUILD_DATE: ""
 
 jobs:
   ort:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
       - uses: oss-review-toolkit/ort-ci-github-action@1805edcf1f4f55f35ae6e4d2d9795ccfb29b6021 # v1
         with:
           allow-dynamic-versions: "true"
@@ -35,6 +40,8 @@ jobs:
   versioning:
     runs-on: ubuntu-latest
     needs: ort
+    permissions:
+      contents: write
     outputs:
       new_tag: ${{ steps.tagging.outputs.new_tag }}
     steps:
@@ -42,6 +49,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set Git User Identity
         run: |
@@ -50,13 +58,22 @@ jobs:
 
       - name: Fetch Latest Tag and Increment Version
         id: tagging
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION_INCREMENT: ${{ github.event.inputs.version }}
+          REPOSITORY: ${{ github.repository }}
         run: |
+          git remote set-url origin "https://x-access-token:$GH_TOKEN@github.com/$REPOSITORY.git"
           LATEST_TAG=$(git tag --sort=-creatordate | head -n 1)
           echo "Latest tag: $LATEST_TAG"
           
           # Extract Major, Minor, Patch
           IFS='.' read -r MAJOR MINOR PATCH <<<"${LATEST_TAG//v/}"
-          INCREMENT=${{ github.event.inputs.version }}
+          INCREMENT="$VERSION_INCREMENT"
+          if [[ "$INCREMENT" != "major" && "$INCREMENT" != "minor" && "$INCREMENT" != "patch" ]]; then
+            echo "Invalid version increment: $INCREMENT"
+            exit 1
+          fi
           echo "Updating : $INCREMENT version"
           
           case "$INCREMENT" in
@@ -77,9 +94,13 @@ jobs:
   publish-release:
     runs-on: ubuntu-latest
     needs: versioning
+    permissions:
+      contents: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
 
       - name: Install GitHub CLI
         run: sudo apt-get install -y gh
@@ -106,7 +127,7 @@ jobs:
       packages: write
     steps:
       - name: Log in to the Container Registry
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -119,9 +140,12 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
 
       - name: Set BUILD_DATE
-        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+        id: build_date
+        run: echo "value=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
 
       - name: Build Project
         run: mvn package -Dnative
@@ -139,9 +163,9 @@ jobs:
             type=sha,priority=1000
           labels: |
             vcs-ref=${{env.GITHUB_SHA}}
-            build-date=${{env.BUILD_DATE}}
-            org.opencontainers.image.created=${{env.BUILD_DATE}}
-            release=${{env.BUILD_DATE}}
+            build-date=${{steps.build_date.outputs.value}}
+            org.opencontainers.image.created=${{steps.build_date.outputs.value}}
+            release=${{steps.build_date.outputs.value}}
             version=${{env.GITHUB_REF_NAME}}
             org.opencontainers.image.version=${{env.GITHUB_REF_NAME}}
             org.opencontainers.image.url=${{env.REPOSITORY_URL}}
@@ -153,8 +177,10 @@ jobs:
 
       - name: Extract last tag
         id: tag
+        env:
+          META_TAGS: ${{ steps.meta.outputs.tags }}
         run: |
-          IFS=',' read -ra TAGS <<< "${{ steps.meta.outputs.tags }}"
+          IFS=',' read -ra TAGS <<< "$META_TAGS"
           LAST_INDEX=$((${#TAGS[@]} - 1))
           echo "last_tag=${TAGS[LAST_INDEX]}" >> $GITHUB_OUTPUT
 
@@ -189,6 +215,9 @@ jobs:
 
   call-generate-changelog:
     needs: [versioning, publish-docker-image]  # or versioning if gh release create is there
+    permissions:
+      contents: write
+      pull-requests: write
     uses: ./.github/workflows/generate_changelog.yml
     with:
       tag: ${{ needs.versioning.outputs.new_tag }}

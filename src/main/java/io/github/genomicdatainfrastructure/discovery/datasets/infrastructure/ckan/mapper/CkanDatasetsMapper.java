@@ -94,7 +94,6 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "publishers", source = "publisher")
     @Mapping(target = "issued", source = "issued")
     @Mapping(target = "temporalCoverage", source = "temporalCoverage")
-    @Mapping(target = "uri", source = "uri")
     @Mapping(target = "applicableLegislation", source = "applicableLegislation")
     DatasetSeries mapToDatasetSeries(CkanPackage ckanPackage);
 
@@ -148,7 +147,6 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "publisher", source = "publisher")
     @Mapping(target = "servesDataset", source = "servesDataset")
     @Mapping(target = "theme", source = "theme")
-    @Mapping(target = "uri", source = "uri")
     @Mapping(target = "title", source = "title")
     @Mapping(target = "hvdCategory", source = "hvdCategory")
     AccessServiceInner map(CkanResourceAccessServicesInner source);
@@ -201,7 +199,6 @@ public interface CkanDatasetsMapper {
 
     @Mapping(target = "name", source = "name")
     @Mapping(target = "email", source = "email")
-    @Mapping(target = "uri", source = "uri")
     @Mapping(target = "url", source = "url")
     @Mapping(target = "identifier", source = "identifier")
     ContactPoint map(CkanContactPoint ckanContactPoint);
@@ -209,7 +206,6 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "name", source = "name")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "url", source = "url")
-    @Mapping(target = "uri", source = "uri")
     @Mapping(target = "homepage", source = "homepage")
     @Mapping(target = "type", source = "type")
     @Mapping(target = "identifier", source = "identifier")

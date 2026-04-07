@@ -8,14 +8,18 @@ on:
     - cron: "0 14 * * 1" # Works on Every Monday at 14:00 UTC
   workflow_dispatch:
 
+permissions: {}
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ghcr.io/genomicdatainfrastructure/gdi-userportal-dataset-discovery-service
-  LATEST_PATCHES: ""
 
 jobs:
   fetch-and-scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     steps:
       - name: Setup Docker
         run: sudo service docker start
@@ -28,6 +32,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: List Docker Image Tags and Fetch Latest Two
+        id: latest_tags
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -47,11 +52,13 @@ jobs:
           # Print the results
           echo "Tags fetched: $LATEST_TAGS"
 
-          echo "LATEST_PATCHES=$LATEST_TAGS" >> $GITHUB_ENV
+          echo "tags=$LATEST_TAGS" >> "$GITHUB_OUTPUT"
 
       - name: Pull and Scan Docker Images with Trivy
+        env:
+          LATEST_PATCHES: ${{ steps.latest_tags.outputs.tags }}
         run: |
-          IFS=' ' read -ra TAGS <<< "${{ env.LATEST_PATCHES }}"
+          IFS=' ' read -ra TAGS <<< "$LATEST_PATCHES"
           for TAG in "${TAGS[@]}"
           do
             IMAGE_TAG="ghcr.io/genomicdatainfrastructure/gdi-userportal-dataset-discovery-service:$TAG"
@@ -66,6 +73,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           repository: ${{ github.repository }}
+          persist-credentials: false
 
       - uses: oss-review-toolkit/ort-ci-github-action@1805edcf1f4f55f35ae6e4d2d9795ccfb29b6021 # v1
         with:

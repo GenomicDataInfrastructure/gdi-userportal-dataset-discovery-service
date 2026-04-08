@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -58,8 +59,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "frequency", source = "frequency")
     @Mapping(target = "inSeries", ignore = true)
     @Mapping(target = "isReferencedBy", source = "isReferencedBy")
-    @Mapping(target = "temporalCoverage.start", source = "temporalStart")
-    @Mapping(target = "temporalCoverage.end", source = "temporalEnd")
+    @Mapping(target = "temporalCoverage", source = "temporalCoverage")
     @Mapping(target = "retentionPeriod", source = "retentionPeriod")
     @Mapping(target = "spatialCoverage", source = "spatialCoverage")
     @Mapping(target = "accessRights", source = "accessRights")
@@ -93,8 +93,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "modified", source = "modified")
     @Mapping(target = "publishers", source = "publisher")
     @Mapping(target = "issued", source = "issued")
-    @Mapping(target = "temporalCoverage.start", source = "temporalStart")
-    @Mapping(target = "temporalCoverage.end", source = "temporalEnd")
+    @Mapping(target = "temporalCoverage", source = "temporalCoverage")
     @Mapping(target = "applicableLegislation", source = "applicableLegislation")
     DatasetSeries mapToDatasetSeries(CkanPackage ckanPackage);
 
@@ -170,12 +169,22 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "accessRights", source = "accessRights")
     @Mapping(target = "conformsTo", source = "conformsTo")
     @Mapping(target = "numberOfUniqueIndividuals", source = "numberOfUniqueIndividuals")
-    @Mapping(target = "temporalCoverage.start", source = "temporalStart")
-    @Mapping(target = "temporalCoverage.end", source = "temporalEnd")
+    @Mapping(target = "temporalCoverage", source = "temporalCoverage")
     @Mapping(target = "distributionsCount", source = ".", qualifiedByName = "countDistributions")
     @Mapping(target = "catalogue", ignore = true)
     @Mapping(target = "recordsCount", ignore = true)
     SearchedDataset mapToSearchedDataset(CkanPackage ckanPackage);
+
+    default List<TimeWindow> map(List<CkanTimeWindow> temporalCoverage) {
+        if (temporalCoverage == null || temporalCoverage.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return temporalCoverage.stream()
+                .filter(Objects::nonNull)
+                .map(this::map)
+                .toList();
+    }
 
     @Mapping(target = "start", source = "start")
     @Mapping(target = "end", source = "end")

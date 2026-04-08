@@ -383,7 +383,9 @@ components:
           type: integer
           minimum: 0
         temporalCoverage:
-          $ref: "#/components/schemas/TimeWindow"
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeWindow"
         recordsCount:
           type: integer
           title: Records count
@@ -521,7 +523,9 @@ components:
           format: float
           description: Minimum spatial separation resolvable in a dataset, measured in meters.
         temporalCoverage:
-          $ref: "#/components/schemas/TimeWindow"
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeWindow"
         temporalResolution:
           type: string
         populationCoverage:
@@ -694,7 +698,9 @@ components:
           type: string
           format: date-time
         temporalCoverage:
-          $ref: "#/components/schemas/TimeWindow"
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeWindow"
       required:
         - id
         - title
@@ -885,9 +891,11 @@ components:
           type: string
           title: email
         url:
-          type: string
+          type: array
           title: url
-          description: URL for more information about the contact point.
+          description: URLs for more information about the contact point.
+          items:
+            type: string
         identifier:
           type: string
           title: identifier

@@ -51,8 +51,8 @@ class RetrieveDatasetTest extends BaseTest {
                 .body("inSeries[0].frequency.label", equalTo("Monthly"))
                 .body("inSeries[0].spatial[0].label", equalTo("Netherlands"))
                 .body("inSeries[0].publishers[0].name", equalTo("Series Publisher"))
-                .body("inSeries[0].temporalCoverage.start", equalTo("2020-01-01T00:00:00Z"))
-                .body("inSeries[0].temporalCoverage.end", equalTo("2023-12-31T00:00:00Z"));
+                .body("inSeries[0].temporalCoverage[0].start", equalTo("2020-01-01T00:00:00Z"))
+                .body("inSeries[0].temporalCoverage[0].end", equalTo("2023-12-31T00:00:00Z"));
     }
 
     @Test

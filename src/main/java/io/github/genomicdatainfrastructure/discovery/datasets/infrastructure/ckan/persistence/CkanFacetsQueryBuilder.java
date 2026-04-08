@@ -29,6 +29,7 @@ public class CkanFacetsQueryBuilder {
     private static final String RANGE_PATTERN = "%s:[%s TO %s]";
     private static final String RANGE_WILDCARD = "*";
     private static final String AND = " AND ";
+    private static final String TYPICAL_AGE_KEY = "typical_age";
 
     public String buildFacetQuery(DatasetSearchQuery query) {
         var operator = CkanQueryOperatorMapper.getOperator(query.getOperator());
@@ -118,8 +119,55 @@ public class CkanFacetsQueryBuilder {
 
     private Optional<String> buildNumberRangeQuery(String key,
             List<DatasetSearchQueryFacet> facets) {
+        if (TYPICAL_AGE_KEY.equals(key)) {
+            return buildTypicalAgeQuery(facets);
+        }
+
         return resolveNumberCondition(facets)
                 .flatMap(condition -> condition.toSolrQuery(key));
+    }
+
+    private Optional<String> buildTypicalAgeQuery(List<DatasetSearchQueryFacet> facets) {
+        var numericFacets = facets.stream()
+                .filter(facet -> FilterType.NUMBER.equals(facet.getType()))
+                .toList();
+        var lower = findValueByOperator(numericFacets, Operator.GREATER_THAN_SYMBOL,
+                Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL);
+        var upper = findValueByOperator(numericFacets, Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL,
+                Operator.LESS_THAN_SYMBOL);
+
+        // since we're dealing with the range overlap explained below, both lower and upper bounds are needed
+        if (lower.isEmpty() || upper.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var sb = new StringBuilder();
+
+        // The mapping of lower/upper search bounds to max/min_typical_age respectively is intentional,
+        // and is required to correctly identify datasets whose typical age range overlaps with the search range.
+        //
+        // A naive approach would map the search lower bound to min_typical_age and the search upper bound to
+        // max_typical_age — but this would only match datasets whose age range is fully contained within the
+        // search range, missing datasets that only partially overlap.
+        //
+        // Instead, we use the overlap condition: two ranges [A, B] and [C, D] overlap if and only if A <= D && C <= B.
+        // Applied here: the search range is [lower, upper] and the dataset range is [min_typical_age, max_typical_age].
+        // Overlap occurs when:
+        //   - lower <= max_typical_age  (the search range starts before the dataset range ends)
+        //   - min_typical_age <= upper  (the dataset range starts before the search range ends)
+        upper.flatMap(value -> new NumberCondition(null, value, null).toSolrQuery(
+                "min_typical_age"))
+                .ifPresent(sb::append);
+        lower.flatMap(value -> new NumberCondition(value, null, null).toSolrQuery(
+                "max_typical_age"))
+                .ifPresent(value -> {
+                    if (!sb.isEmpty()) {
+                        sb.append(AND);
+                    }
+                    sb.append(value);
+                });
+
+        return Optional.of(sb.toString());
     }
 
     private Optional<NumberCondition> resolveNumberCondition(List<DatasetSearchQueryFacet> facets) {

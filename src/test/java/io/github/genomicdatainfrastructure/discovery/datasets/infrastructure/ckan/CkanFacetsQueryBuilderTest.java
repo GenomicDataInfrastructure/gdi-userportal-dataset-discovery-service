@@ -321,4 +321,105 @@ class CkanFacetsQueryBuilderTest {
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    void canParse_withTypicalAgeRangeFacet() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.NUMBER)
+                                .key("typical_age")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("0")
+                                .build(),
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.NUMBER)
+                                .key("typical_age")
+                                .operator(Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("100")
+                                .build()
+                ))
+                .build();
+
+        var expected = "min_typical_age:[* TO 100] AND max_typical_age:[0 TO *]";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withTypicalAgeRangeAndNumberOfRecordsFacet() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.NUMBER)
+                                .key("typical_age")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("0")
+                                .build(),
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.NUMBER)
+                                .key("typical_age")
+                                .operator(Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("100")
+                                .build(),
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.NUMBER)
+                                .key("number_of_records")
+                                .operator(Operator.EQUAL_SYMBOL)
+                                .value("15")
+                                .build()
+                ))
+                .build();
+
+        var expected = "min_typical_age:[* TO 100] AND max_typical_age:[0 TO *] AND number_of_records:(15)";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withTypicalAgeLowerBoundFacet() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.NUMBER)
+                                .key("typical_age")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("0")
+                                .build()
+                ))
+                .build();
+
+        var expected = "";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withTypicalAgeUpperBoundFacet() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.NUMBER)
+                                .key("typical_age")
+                                .operator(Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("0")
+                                .build()
+                ))
+                .build();
+
+        var expected = "";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
 }

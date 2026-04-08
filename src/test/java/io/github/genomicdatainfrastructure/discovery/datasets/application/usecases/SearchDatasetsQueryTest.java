@@ -97,6 +97,27 @@ class SearchDatasetsQueryTest {
     }
 
     @Test
+    void testExecute_withIncludeBeaconTrue_shouldCountIntersectedDatasets() {
+        var query = DatasetSearchQuery.builder()
+                .includeBeacon(true)
+                .build();
+
+        when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10, "id2", 20, "id3",
+                30));
+        when(beaconCollector.collect(any(), any())).thenReturn(Map.of("id1", 64));
+        when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResponse(
+                3,
+                List.of(mockDataset("id1"), mockDataset("id2"), mockDataset("id3"))));
+
+        var response = underTest.execute(query, "token", "en");
+
+        assertEquals(1, response.getCount());
+        assertEquals(1, response.getResults().size());
+        assertEquals("id1", response.getResults().get(0).getIdentifier());
+        assertEquals(10, response.getResults().get(0).getRecordsCount());
+    }
+
+    @Test
     void testExecute_whenBeaconReturnsError_capturesError() {
         var query = DatasetSearchQuery.builder()
                 .includeBeacon(true)

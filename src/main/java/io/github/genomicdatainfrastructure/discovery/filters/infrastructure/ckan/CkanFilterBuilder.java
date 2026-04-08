@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.withDatasetTypeFilter;
 import static java.util.Optional.ofNullable;
 
 @ApplicationScoped
@@ -61,6 +62,7 @@ public class CkanFilterBuilder implements FilterBuilder {
                 .rows(0)
                 .start(0)
                 .facetLimit(-1)
+                .fq(withDatasetTypeFilter(null))
                 .facetField(selectedFacets)
                 .build();
 

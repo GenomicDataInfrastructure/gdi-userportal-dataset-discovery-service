@@ -104,7 +104,7 @@ public class SearchDatasetsQuery {
 
         return DatasetsSearchResponse
                 .builder()
-                .count(searchResult.getCount())
+                .count(datasetIdsByRecordCount.size())
                 .results(enhancedDatasets)
                 .beaconError(beaconError)
                 .build();

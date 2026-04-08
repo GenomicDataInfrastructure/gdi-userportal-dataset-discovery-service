@@ -20,6 +20,7 @@ import java.util.Set;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_IDENTIFIER_FIELD;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.withDatasetTypeFilter;
 import static java.util.Optional.ofNullable;
 
 @ApplicationScoped
@@ -39,9 +40,11 @@ public class CkanDatasetsRepository implements DatasetsRepository {
     @Override
     public DatasetsSearchResponse search(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
+        var facetsQuery = withDatasetTypeFilter(CkanFacetsQueryBuilder.buildFacetQuery(query));
+
         var request = PackageSearchRequest.builder()
                 .q(query.getQuery())
-                .fq(CkanFacetsQueryBuilder.buildFacetQuery(query))
+                .fq(facetsQuery)
                 .sort(query.getSort())
                 .rows(query.getRows())
                 .start(query.getStart())
@@ -167,9 +170,9 @@ public class CkanDatasetsRepository implements DatasetsRepository {
                         .build())
                 .toList();
 
-        return CkanFacetsQueryBuilder.buildFacetQuery(DatasetSearchQuery
+        return withDatasetTypeFilter(CkanFacetsQueryBuilder.buildFacetQuery(DatasetSearchQuery
                 .builder()
                 .facets(facets)
-                .build());
+                .build()));
     }
 }

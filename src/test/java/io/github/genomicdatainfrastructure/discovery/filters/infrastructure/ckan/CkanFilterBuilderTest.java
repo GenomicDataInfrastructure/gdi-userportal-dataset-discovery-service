@@ -142,6 +142,42 @@ class CkanFilterBuilderTest {
         assertThat(tags.getType()).isEqualTo(FilterType.FREE_TEXT);
     }
 
+    @Test
+    void buildsBooleanSyntheticTypeFilter() {
+        var response = PackagesSearchResponse.builder()
+                .result(PackagesSearchResult.builder()
+                        .count(16)
+                        .searchFacets(Map.of(
+                                "dcat_type", CkanFacet.builder()
+                                        .title("Type")
+                                        .items(List.of(
+                                                CkanValueLabel.builder()
+                                                        .name("http://publications.europa.eu/resource/authority/dataset-type/SYNTHETIC_DATA")
+                                                        .displayName("Synthetic")
+                                                        .count(3)
+                                                        .build(),
+                                                CkanValueLabel.builder()
+                                                        .name("https://example.org/non-synthetic")
+                                                        .displayName("Observed")
+                                                        .count(7)
+                                                        .build()))
+                                        .build()))
+                        .build())
+                .build();
+
+        var builder = new CkanFilterBuilder(new StubCkanQueryApi(response), datasetsConfig);
+        var filters = builder.build(null, "en");
+
+        var type = findFilter(filters, "dcat_type");
+        assertThat(type.getType()).isEqualTo(FilterType.BOOLEAN);
+        assertThat(type.getValues())
+                .extracting(ValueLabel::getValue)
+                .containsExactly("true", "false");
+        assertThat(type.getValues())
+                .extracting(ValueLabel::getCount)
+                .containsExactly(3, 13);
+    }
+
     private Filter findFilter(List<Filter> filters, String key) {
         return filters.stream()
                 .filter(filter -> key.equals(filter.getKey()))
@@ -182,11 +218,12 @@ class CkanFilterBuilderTest {
         private static final Set<Filter> FILTERS = Set.of(
                 new TestFilter("modified", FilterType.DATETIME),
                 new TestFilter("number_of_records", FilterType.NUMBER),
+                new TestFilter("dcat_type", FilterType.BOOLEAN),
                 new TestFilter("tags", FilterType.DROPDOWN));
 
         @Override
         public String filters() {
-            return "modified,number_of_records,tags";
+            return "modified,number_of_records,dcat_type,tags";
         }
 
         @Override

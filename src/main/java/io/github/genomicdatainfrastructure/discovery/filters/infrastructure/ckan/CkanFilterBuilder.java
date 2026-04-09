@@ -4,6 +4,7 @@
 
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan;
 
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.SyntheticDataFacetConfig;
 import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus.DatasetsConfig;
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
 import static java.util.Optional.ofNullable;
@@ -73,15 +75,19 @@ public class CkanFilterBuilder implements FilterBuilder {
                 .map(PackagesSearchResult::getSearchFacets)
                 .orElseGet(Map::of);
 
-        return filters(nonNullSearchFacets);
+        var totalCount = ofNullable(response.getResult())
+                .map(PackagesSearchResult::getCount)
+                .orElse(null);
+
+        return filters(nonNullSearchFacets, totalCount);
     }
 
-    private List<Filter> filters(Map<String, CkanFacet> facets) {
+    private List<Filter> filters(Map<String, CkanFacet> facets, Integer totalCount) {
         var filtersByKey = new LinkedHashMap<String, Filter>();
 
         facets.entrySet()
                 .stream()
-                .map(this::filter)
+                .map(entry -> filter(entry, totalCount))
                 .filter(Objects::nonNull)
                 .forEach(filter -> filtersByKey.put(filter.getKey(), filter));
 
@@ -100,7 +106,7 @@ public class CkanFilterBuilder implements FilterBuilder {
         return List.copyOf(filtersByKey.values());
     }
 
-    private Filter filter(Map.Entry<String, CkanFacet> entry) {
+    private Filter filter(Map.Entry<String, CkanFacet> entry, Integer totalCount) {
         var key = entry.getKey();
         var facet = entry.getValue();
 
@@ -113,19 +119,11 @@ public class CkanFilterBuilder implements FilterBuilder {
             return buildNumberFilter(key, facet, metadata.group);
         }
 
-        var values = ofNullable(facet.getItems())
-                .orElseGet(List::of)
-                .stream()
-                .map(value -> ValueLabel.builder()
-                        .value(value.getName())
-                        .label(value.getDisplayName())
-                        .count(value.getCount())
-                        .build())
-                .toList();
-
         var type = Optional.ofNullable(metadata)
                 .map(m -> m.type)
                 .orElse(DEFAULT_FILTER_TYPE);
+
+        var values = buildValuesForFilterType(type, key, facet, totalCount);
 
         return Filter.builder()
                 .source(CKAN_FILTER_SOURCE)
@@ -135,6 +133,56 @@ public class CkanFilterBuilder implements FilterBuilder {
                 .values(values)
                 .group(metadata != null ? metadata.group : null)
                 .build();
+    }
+
+    private List<ValueLabel> buildValuesForFilterType(FilterType type, String key,
+            CkanFacet facet, Integer totalCount) {
+        if (FilterType.BOOLEAN.equals(type) && SyntheticDataFacetConfig.TYPE_FACET_KEY.equals(
+                key)) {
+            return buildSyntheticDataBooleanValues(facet, totalCount);
+        }
+
+        return ofNullable(facet.getItems())
+                .orElseGet(List::of)
+                .stream()
+                .map(value -> ValueLabel.builder()
+                        .value(value.getName())
+                        .label(value.getDisplayName())
+                        .count(value.getCount())
+                        .build())
+                .toList();
+    }
+
+    private List<ValueLabel> buildSyntheticDataBooleanValues(CkanFacet facet, Integer totalCount) {
+        var items = ofNullable(facet)
+                .map(CkanFacet::getItems)
+                .orElseGet(List::of);
+
+        var groupedCounts = items.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.partitioningBy(
+                        item -> SyntheticDataFacetConfig.isSyntheticDatasetType(item.getName()),
+                        Collectors.summingInt(item -> Optional.ofNullable(item.getCount())
+                                .orElse(0))));
+
+        var syntheticCount = groupedCounts.getOrDefault(true, 0);
+        var nonSyntheticCount = groupedCounts.getOrDefault(false, 0);
+        var effectiveNonSyntheticCount = totalCount != null
+                ? Math.max(0, totalCount - syntheticCount)
+                : nonSyntheticCount;
+
+        return List.of(
+                ValueLabel.builder()
+                        .value("true")
+                        .label("Synthetic data")
+                        .count(syntheticCount)
+                        .build(),
+                ValueLabel.builder()
+                        .value("false")
+                        .label("Non-synthetic data")
+                        .count(effectiveNonSyntheticCount)
+                        .build()
+        );
     }
 
     private Filter buildDateTimeFilter(String key, CkanFacet facet, String group) {

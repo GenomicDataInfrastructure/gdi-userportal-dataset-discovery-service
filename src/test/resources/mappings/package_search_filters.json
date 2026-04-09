@@ -5,7 +5,7 @@
     "urlPattern": "/api/3/action/enhanced_package_search",
     "bodyPatterns": [
       {
-        "equalToJson": "{\"rows\":0,\"start\":0,\"facet.field\":\"[\\\"access_rights\\\",\\\"theme\\\",\\\"tags\\\",\\\"publisher_name\\\",\\\"res_format\\\",\\\"modified\\\",\\\"number_of_records\\\"]\",\"facet.limit\":-1}",
+        "equalToJson": "{\"rows\":0,\"start\":0,\"facet.field\":\"[\\\"access_rights\\\",\\\"theme\\\",\\\"tags\\\",\\\"publisher_name\\\",\\\"res_format\\\",\\\"modified\\\",\\\"number_of_records\\\",\\\"dcat_type\\\"]\",\"facet.limit\":-1}",
         "ignoreExtraElements": true
       }
     ]
@@ -76,6 +76,10 @@
             "http://publications.europa.eu/resource/authority/data-theme/HEAL": 2,
             "https://en.wikipedia.org/wiki/Colorectal_cancer": 1,
             "https://gdi.onemilliongenomes.eu": 1
+          },
+          "dcat_type": {
+            "http://publications.europa.eu/resource/authority/dataset-type/SYNTHETIC_DATA": 3,
+            "https://example.org/non-synthetic": 7
           }
         },
         "results": [],
@@ -503,6 +507,21 @@
                 "name": "",
                 "display_name": "",
                 "count": 1
+              }
+            ]
+          },
+          "dcat_type": {
+            "title": "Type",
+            "items": [
+              {
+                "name": "http://publications.europa.eu/resource/authority/dataset-type/SYNTHETIC_DATA",
+                "display_name": "Synthetic",
+                "count": 3
+              },
+              {
+                "name": "https://example.org/non-synthetic",
+                "display_name": "Observed",
+                "count": 7
               }
             ]
           }

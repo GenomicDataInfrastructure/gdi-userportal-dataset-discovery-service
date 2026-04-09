@@ -321,4 +321,42 @@ class CkanFacetsQueryBuilderTest {
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    void canParse_withSyntheticDataBooleanTrueFacet() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.BOOLEAN)
+                                .key("dcat_type")
+                                .value("true")
+                                .build()
+                ))
+                .build();
+
+        var expected = "dcat_type:(\"http://publications.europa.eu/resource/authority/dataset-type/SYNTHETIC_DATA\")";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withSyntheticDataBooleanFalseFacet() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.BOOLEAN)
+                                .key("dcat_type")
+                                .value("false")
+                                .build()
+                ))
+                .build();
+
+        var expected = "-dcat_type:(\"http://publications.europa.eu/resource/authority/dataset-type/SYNTHETIC_DATA\")";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
 }

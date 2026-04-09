@@ -302,6 +302,7 @@ components:
         - ENTRIES
         - DATETIME
         - NUMBER
+        - BOOLEAN
       title: Filter type
     Operator:
       default: "="

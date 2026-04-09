@@ -4,6 +4,7 @@
 
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence;
 
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.SyntheticDataFacetConfig;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.CkanQueryOperatorMapper;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQueryFacet;
@@ -26,6 +27,7 @@ public class CkanFacetsQueryBuilder {
     private static final String CKAN_FACET_GROUP = "ckan";
     private static final String QUOTED_VALUE = "\"%s\"";
     private static final String FACET_PATTERN = "%s:(%s)";
+    private static final String NEGATED_FACET_PATTERN = "-%s:(%s)";
     private static final String RANGE_PATTERN = "%s:[%s TO %s]";
     private static final String RANGE_WILDCARD = "*";
     private static final String AND = " AND ";
@@ -63,9 +65,15 @@ public class CkanFacetsQueryBuilder {
             return rangeQuery;
         }
 
+        var booleanQuery = buildBooleanQuery(key, facets, operator);
+        if (booleanQuery.isPresent()) {
+            return booleanQuery;
+        }
+
         var values = facets.stream()
                 .filter(facet -> !FilterType.DATETIME.equals(facet.getType()) &&
-                        !FilterType.NUMBER.equals(facet.getType()))
+                        !FilterType.NUMBER.equals(facet.getType()) &&
+                        !FilterType.BOOLEAN.equals(facet.getType()))
                 .map(DatasetSearchQueryFacet::getValue)
                 .filter(value -> nonNull(value) && !value.isBlank())
                 .map(QUOTED_VALUE::formatted)
@@ -81,6 +89,79 @@ public class CkanFacetsQueryBuilder {
     private Optional<String> buildRangeQuery(String key, List<DatasetSearchQueryFacet> facets) {
         return buildDateTimeRangeQuery(key, facets)
                 .or(() -> buildNumberRangeQuery(key, facets));
+    }
+
+    private Optional<String> buildBooleanQuery(
+            String key,
+            List<DatasetSearchQueryFacet> facets,
+            String operator
+    ) {
+        var booleanFacets = facets.stream()
+                .filter(facet -> FilterType.BOOLEAN.equals(facet.getType()))
+                .toList();
+
+        if (booleanFacets.isEmpty()) {
+            return Optional.empty();
+        }
+
+        if (SyntheticDataFacetConfig.TYPE_FACET_KEY.equals(key)) {
+            return buildSyntheticBooleanQuery(key, booleanFacets);
+        }
+
+        var values = booleanFacets.stream()
+                .map(DatasetSearchQueryFacet::getValue)
+                .map(CkanFacetsQueryBuilder::normalizeBoolean)
+                .flatMap(Optional::stream)
+                .map(String::valueOf)
+                .collect(joining(operator));
+
+        if (values.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(FACET_PATTERN.formatted(key, values));
+    }
+
+    private Optional<String> buildSyntheticBooleanQuery(
+            String key,
+            List<DatasetSearchQueryFacet> facets
+    ) {
+        var lastBoolean = facets.stream()
+                .map(DatasetSearchQueryFacet::getValue)
+                .map(CkanFacetsQueryBuilder::normalizeBoolean)
+                .flatMap(Optional::stream)
+                .reduce((first, second) -> second)
+                .orElse(null);
+
+        if (lastBoolean == null) {
+            return Optional.empty();
+        }
+
+        var allowedValues = SyntheticDataFacetConfig.SYNTHETIC_DATASET_TYPES.stream()
+                .map(QUOTED_VALUE::formatted)
+                .collect(joining(" OR "));
+
+        if (allowedValues.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var pattern = lastBoolean ? FACET_PATTERN : NEGATED_FACET_PATTERN;
+        return Optional.of(pattern.formatted(key, allowedValues));
+    }
+
+    private Optional<Boolean> normalizeBoolean(String value) {
+        if (value == null || value.isBlank()) {
+            return Optional.empty();
+        }
+
+        var normalized = value.trim();
+        if ("true".equalsIgnoreCase(normalized)) {
+            return Optional.of(Boolean.TRUE);
+        }
+        if ("false".equalsIgnoreCase(normalized)) {
+            return Optional.of(Boolean.FALSE);
+        }
+        return Optional.empty();
     }
 
     private Optional<String> buildDateTimeRangeQuery(String key,

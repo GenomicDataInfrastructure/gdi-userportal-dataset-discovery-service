@@ -4,6 +4,7 @@
 
 package io.github.genomicdatainfrastructure.discovery.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.cfg.CoercionAction;
 import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
@@ -26,6 +27,9 @@ public class JacksonConfig implements ObjectMapperCustomizer {
 
     @Override
     public void customize(ObjectMapper objectMapper) {
+        // Accept a scalar value where CKAN sometimes returns a single string for list fields.
+        objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+
         // For POJO types, coerce empty strings to null
         // This handles cases where CKAN returns "" instead of {} or null
         objectMapper.coercionConfigFor(LogicalType.POJO)

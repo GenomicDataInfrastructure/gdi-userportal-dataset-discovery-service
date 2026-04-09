@@ -392,12 +392,12 @@ class CkanFacetsQueryBuilderTest {
                                 .type(FilterType.NUMBER)
                                 .key("typical_age")
                                 .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
-                                .value("0")
+                                .value("10")
                                 .build()
                 ))
                 .build();
 
-        var expected = "";
+        var expected = "min_typical_age:[10 TO *]";
         var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
 
         assertEquals(expected, actual);
@@ -412,12 +412,12 @@ class CkanFacetsQueryBuilderTest {
                                 .type(FilterType.NUMBER)
                                 .key("typical_age")
                                 .operator(Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL)
-                                .value("0")
+                                .value("100")
                                 .build()
                 ))
                 .build();
 
-        var expected = "";
+        var expected = "max_typical_age:[* TO 100]";
         var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
 
         assertEquals(expected, actual);

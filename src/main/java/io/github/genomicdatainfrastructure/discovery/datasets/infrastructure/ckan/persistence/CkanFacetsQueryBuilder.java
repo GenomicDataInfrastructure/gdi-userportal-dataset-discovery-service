@@ -136,9 +136,12 @@ public class CkanFacetsQueryBuilder {
         var upper = findValueByOperator(numericFacets, Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL,
                 Operator.LESS_THAN_SYMBOL);
 
-        // since we're dealing with the range overlap explained below, both lower and upper bounds are needed
-        if (lower.isEmpty() || upper.isEmpty()) {
-            return Optional.empty();
+        if (lower.isPresent() && upper.isEmpty()) {
+            return resolveNumberCondition(numericFacets)
+                    .flatMap(condition -> condition.toSolrQuery("min_typical_age"));
+        } else if (upper.isPresent() && lower.isEmpty()) {
+            return resolveNumberCondition(numericFacets)
+                    .flatMap(condition -> condition.toSolrQuery("max_typical_age"));
         }
 
         var sb = new StringBuilder();

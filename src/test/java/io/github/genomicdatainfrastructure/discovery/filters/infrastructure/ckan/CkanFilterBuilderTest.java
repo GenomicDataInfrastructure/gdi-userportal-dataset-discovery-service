@@ -71,7 +71,8 @@ class CkanFilterBuilderTest {
                         .build())
                 .build();
 
-        var builder = new CkanFilterBuilder(new StubCkanQueryApi(response), datasetsConfig);
+        var builder = new CkanFilterBuilder(new StubCkanQueryApi(response),
+                new CkanSearchFacetsMapper(datasetsConfig));
         var filters = builder.build(null, "en");
 
         var modified = findFilter(filters, "modified");
@@ -110,7 +111,8 @@ class CkanFilterBuilderTest {
                         .build())
                 .build();
 
-        var builder = new CkanFilterBuilder(new StubCkanQueryApi(response), datasetsConfig);
+        var builder = new CkanFilterBuilder(new StubCkanQueryApi(response),
+                new CkanSearchFacetsMapper(datasetsConfig));
         var filters = builder.build(null, "en");
 
         var number = findFilter(filters, "number_of_records");
@@ -135,7 +137,7 @@ class CkanFilterBuilderTest {
                 .build();
 
         var builder = new CkanFilterBuilder(new StubCkanQueryApi(response),
-                new FreeTextDatasetsConfig());
+                new CkanSearchFacetsMapper(new FreeTextDatasetsConfig()));
         var filters = builder.build(null, "en");
 
         var tags = findFilter(filters, "tags");

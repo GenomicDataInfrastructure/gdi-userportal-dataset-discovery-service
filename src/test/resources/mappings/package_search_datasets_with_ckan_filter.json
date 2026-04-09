@@ -1,0 +1,98 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "urlPattern": "/api/3/action/enhanced_package_search",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$[?(@.fq == 'tags:(\"synthetic\")')]"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "help": "https://ckan-test.healthdata.nl/api/3/action/help_show?name=package_search",
+      "success": true,
+      "result": {
+        "count": 1,
+        "facets": {},
+        "results": [
+          {
+            "access_rights": {
+              "name": "https://health-ri.sandbox.semlab-leiden.nl/dataset/d73d04ba-23f7-429f-8506-3aa9dccb0435#accessRights",
+              "display_name": "Access Rights"
+            },
+            "conforms_to": [
+              {
+                "display_name": "Conforms to",
+                "name": "https://health-ri.sandbox.semlab-leiden.nl/profile/2f08228e-1789-40f8-84cd-28e3288c3604"
+              }
+            ],
+            "creator_user_id": "f2687934-1127-4c61-ab21-982cb91d7c80",
+            "id": "0ddd7a13-ee11-4e5d-bbff-34e04a6a7949",
+            "identifier": "27866022694497975",
+            "isopen": false,
+            "language": [
+              {
+                "display_name": "English",
+                "name": "http://id.loc.gov/vocabulary/iso639-1/en"
+              }
+            ],
+            "license_id": "",
+            "license_title": "",
+            "metadata_created": "2024-02-22T20:22:34.959037",
+            "metadata_modified": "2024-03-19T13:37:10.885817",
+            "name": "brain_mri_wml_vumcadc3",
+            "notes": "This collection will include brain MRI scans on which the amount of white matter lesions (WML) will be quantified. ",
+            "num_resources": 0,
+            "num_tags": 0,
+            "organization": {
+              "id": "60d8106a-4066-454a-bd19-3d6dbf7d9c99",
+              "name": "lumc",
+              "title": "LUMC",
+              "type": "organization",
+              "description": "",
+              "image_url": "",
+              "created": "2024-01-25T15:51:27.993020",
+              "is_organization": true,
+              "approval_status": "approved",
+              "state": "active"
+            },
+            "owner_org": "60d8106a-4066-454a-bd19-3d6dbf7d9c99",
+            "private": false,
+            "state": "active",
+            "title": "Brain_MRI_WML_VUMCADC",
+            "type": "dataset",
+            "extras": [
+              {
+                "key": "uri",
+                "value": "https://health-ri.sandbox.semlab-leiden.nl/dataset/d73d04ba-23f7-429f-8506-3aa9dccb0435"
+              }
+            ],
+            "resources": [],
+            "tags": [],
+            "groups": [],
+            "relationships_as_subject": [],
+            "relationships_as_object": []
+          }
+        ],
+        "search_facets": {
+          "tags": {
+            "title": "Keywords",
+            "items": [
+              {
+                "name": "synthetic",
+                "display_name": "synthetic",
+                "count": 1
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

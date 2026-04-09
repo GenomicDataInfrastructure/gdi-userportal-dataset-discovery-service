@@ -7,16 +7,20 @@ package io.github.genomicdatainfrastructure.discovery.datasets.application.useca
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.BeaconDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanDatasetIdsCollector;
+import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetsSearchResponse;
 
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -32,16 +36,23 @@ public class SearchDatasetsQuery {
     private final DatasetsRepository repository;
     private final BeaconDatasetIdsCollector beaconDatasetIdsCollector;
     private final CkanDatasetIdsCollector ckanDatasetIdsCollector;
+    private final Instance<FilterBuilder> filterBuilders;
 
     public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
         boolean includeBeacon = query.getIncludeBeacon() == null || query.getIncludeBeacon();
 
         if (!includeBeacon) {
-            return searchCkanOnly(query, accessToken, preferredLanguage);
+            return enrichWithSupplementalFacets(
+                    searchCkanOnly(query, accessToken, preferredLanguage),
+                    accessToken,
+                    preferredLanguage);
         }
 
-        return searchWithBeacon(query, accessToken, preferredLanguage);
+        return enrichWithSupplementalFacets(
+                searchWithBeacon(query, accessToken, preferredLanguage),
+                accessToken,
+                preferredLanguage);
     }
 
     /**
@@ -106,6 +117,7 @@ public class SearchDatasetsQuery {
                 .builder()
                 .count(searchResult.getCount())
                 .results(enhancedDatasets)
+                .facets(searchResult.getFacets())
                 .beaconError(beaconError)
                 .build();
     }
@@ -143,5 +155,28 @@ public class SearchDatasetsQuery {
         }
 
         return newMap;
+    }
+
+    private DatasetsSearchResponse enrichWithSupplementalFacets(DatasetsSearchResponse response,
+            String accessToken,
+            String preferredLanguage) {
+        var supplementalFacets = filterBuilders.stream()
+                .filter(filterBuilder -> !Objects.equals("ckan", filterBuilder.source()))
+                .map(filterBuilder -> filterBuilder.build(accessToken, preferredLanguage))
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .toList();
+
+        if (supplementalFacets.isEmpty()) {
+            return response;
+        }
+
+        var mergedFacets = new java.util.ArrayList<>(
+                response.getFacets() != null ? response.getFacets() : List.of());
+        mergedFacets.addAll(supplementalFacets);
+
+        return response.toBuilder()
+                .facets(List.copyOf(mergedFacets))
+                .build();
     }
 }

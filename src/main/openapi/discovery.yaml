@@ -404,6 +404,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SearchedDataset"
+        facets:
+          type: array
+          description: Refreshed filter facets for the current result set
+          items:
+            $ref: "#/components/schemas/Filter"
         beaconError:
           type: string
           description: Error message if beacon query failed
@@ -688,7 +693,7 @@ components:
         modified:
           type: string
           format: date-time
-        publisher:
+        publishers:
           $ref: "#/components/schemas/Agent"
         issued:
           type: string

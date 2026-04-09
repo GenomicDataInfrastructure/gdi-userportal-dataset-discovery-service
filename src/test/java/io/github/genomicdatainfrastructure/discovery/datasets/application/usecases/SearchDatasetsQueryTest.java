@@ -9,20 +9,24 @@ import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.bea
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetsSearchResponse;
+import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.github.genomicdatainfrastructure.discovery.model.SearchedDataset;
+import jakarta.enterprise.inject.Instance;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
+import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
 
 class SearchDatasetsQueryTest {
 
@@ -32,15 +36,21 @@ class SearchDatasetsQueryTest {
 
     private CkanDatasetIdsCollector ckanCollector;
 
+    private Instance<FilterBuilder> filterBuilders;
+
     private SearchDatasetsQuery underTest;
 
     @BeforeEach
+    @SuppressWarnings("unchecked")
     void setUp() {
         repository = mock(DatasetsRepository.class);
         beaconCollector = mock(BeaconDatasetIdsCollector.class);
         ckanCollector = mock(CkanDatasetIdsCollector.class);
+        filterBuilders = mock(Instance.class);
+        when(filterBuilders.stream()).thenReturn(Stream.empty());
 
-        underTest = new SearchDatasetsQuery(repository, beaconCollector, ckanCollector);
+        underTest = new SearchDatasetsQuery(repository, beaconCollector, ckanCollector,
+                filterBuilders);
     }
 
     @Test
@@ -62,6 +72,8 @@ class SearchDatasetsQueryTest {
         assertEquals(2, response.getCount());
         assertEquals(2, response.getResults().size());
         assertEquals(null, response.getResults().get(0).getRecordsCount());
+        assertEquals(1, response.getFacets().size());
+        assertEquals("tags", response.getFacets().getFirst().getKey());
 
         verify(repository).search(eq(query), eq(accessToken), eq("en"));
         verifyNoInteractions(ckanCollector);
@@ -77,11 +89,13 @@ class SearchDatasetsQueryTest {
 
         when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10, "id2", 20));
         when(beaconCollector.collect(any(), any())).thenReturn(Map.of("id1", 15, "id3", 30));
+        when(filterBuilders.stream()).thenReturn(Stream.of(beaconFilterBuilder("sex")));
 
         var dataset1 = mockDataset("id1");
         when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResponse(
                 1,
-                List.of(dataset1)));
+                List.of(dataset1),
+                List.of(filter("tags"))));
 
         var response = underTest.execute(query, accessToken, "en");
 
@@ -89,6 +103,8 @@ class SearchDatasetsQueryTest {
         assertEquals(1, response.getCount());
         assertEquals("id1", response.getResults().get(0).getIdentifier());
         assertEquals(10, response.getResults().get(0).getRecordsCount()); // CKAN record count
+        assertEquals(List.of("tags", "sex"),
+                response.getFacets().stream().map(Filter::getKey).toList());
 
         verify(repository).search(eq(Set.of("id1")), any(), any(), any(), eq(accessToken), eq(
                 "en"));
@@ -105,6 +121,7 @@ class SearchDatasetsQueryTest {
 
         // CKAN always succeeds
         when(ckanCollector.collect(any(), any())).thenReturn(Map.of("id1", 10));
+        when(filterBuilders.stream()).thenReturn(Stream.of(beaconFilterBuilder("sex")));
 
         // Beacon throws WebApplicationException with 401 status
         var mockResponse = mock(Response.class);
@@ -116,7 +133,8 @@ class SearchDatasetsQueryTest {
         var dataset1 = mockDataset("id1");
         when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResponse(
                 1,
-                List.of(dataset1)));
+                List.of(dataset1),
+                List.of(filter("tags"))));
 
         var response = underTest.execute(query, accessToken, "en");
 
@@ -124,6 +142,8 @@ class SearchDatasetsQueryTest {
         assertNotNull(response);
         assertEquals(1, response.getCount());
         assertEquals("id1", response.getResults().get(0).getIdentifier());
+        assertEquals(List.of("tags", "sex"),
+                response.getFacets().stream().map(Filter::getKey).toList());
 
         // Should capture the error message
         assertNotNull(response.getBeaconError());
@@ -144,7 +164,8 @@ class SearchDatasetsQueryTest {
                 mockResponse));
         when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResponse(
                 1,
-                List.of(mockDataset("id1"))));
+                List.of(mockDataset("id1")),
+                List.of(filter("tags"))));
 
         var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
                 "token", "en");
@@ -161,7 +182,8 @@ class SearchDatasetsQueryTest {
                 "Internal Error", mockResponse));
         when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResponse(
                 1,
-                List.of(mockDataset("id1"))));
+                List.of(mockDataset("id1")),
+                List.of(filter("tags"))));
 
         var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
                 "token", "en");
@@ -178,7 +200,8 @@ class SearchDatasetsQueryTest {
                 mockResponse));
         when(repository.search(any(), any(), any(), any(), any(), any())).thenReturn(searchResponse(
                 1,
-                List.of(mockDataset("id1"))));
+                List.of(mockDataset("id1")),
+                List.of(filter("tags"))));
 
         var response = underTest.execute(DatasetSearchQuery.builder().includeBeacon(true).build(),
                 "token", "en");
@@ -194,9 +217,42 @@ class SearchDatasetsQueryTest {
     }
 
     private DatasetsSearchResponse searchResponse(int count, List<SearchedDataset> results) {
+        return searchResponse(count, results, List.of(filter("tags")));
+    }
+
+    private DatasetsSearchResponse searchResponse(int count, List<SearchedDataset> results,
+            List<Filter> facets) {
         return DatasetsSearchResponse.builder()
                 .count(count)
                 .results(results)
+                .facets(facets)
                 .build();
+    }
+
+    private Filter filter(String key) {
+        return Filter.builder()
+                .source("ckan")
+                .key(key)
+                .label(key)
+                .build();
+    }
+
+    private FilterBuilder beaconFilterBuilder(String key) {
+        return new FilterBuilder() {
+
+            @Override
+            public String source() {
+                return "beacon";
+            }
+
+            @Override
+            public List<Filter> build(String accessToken, String preferredLanguage) {
+                return List.of(Filter.builder()
+                        .source("beacon")
+                        .key(key)
+                        .label(key)
+                        .build());
+            }
+        };
     }
 }

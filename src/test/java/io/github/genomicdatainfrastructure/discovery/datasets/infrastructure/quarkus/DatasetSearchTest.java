@@ -5,9 +5,10 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.quarkus;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.notNullValue;
 
 import io.github.genomicdatainfrastructure.discovery.BaseTest;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
@@ -30,6 +31,7 @@ class DatasetSearchTest extends BaseTest {
                 .then()
                 .statusCode(200)
                 .body("count", equalTo(3))
+                .body("facets.find { it.key == 'tags' }.values.size()", greaterThan(0))
                 .body("results[0].identifier", equalTo("27866022694497975"))
                 .body("results[1].identifier", equalTo("euc_kauno_uc6"))
                 .body("results[2].identifier", equalTo("cp-tavi"));
@@ -47,6 +49,7 @@ class DatasetSearchTest extends BaseTest {
                 .then()
                 .statusCode(200)
                 .body("count", equalTo(3))
+                .body("facets.find { it.key == 'tags' }.values.size()", greaterThan(0))
                 .body("results[0].identifier", equalTo("27866022694497975"))
                 .body("results[1].identifier", equalTo("euc_kauno_uc6"))
                 .body("results[2].identifier", equalTo("cp-tavi"));
@@ -67,9 +70,38 @@ class DatasetSearchTest extends BaseTest {
                 .then()
                 .statusCode(200)
                 .body("count", equalTo(3))
+                .body("facets.find { it.key == 'tags' }.values.size()", greaterThan(0))
+                .body("facets.find { it.source == 'beacon' && it.key == 'sex' }.label",
+                        equalTo("Sex"))
                 .body("results[0].identifier", equalTo("27866022694497975"))
                 .body("results[1].identifier", equalTo("euc_kauno_uc6"))
                 .body("results[2].identifier", equalTo("cp-tavi"));
+    }
+
+    @Test
+    void canSearchDatasets_withCkanFilters_andRefreshFacets() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DROPDOWN)
+                                .key("tags")
+                                .value("synthetic")
+                                .build()
+                ))
+                .build();
+
+        given()
+                .contentType("application/json")
+                .body(query)
+                .when()
+                .post("/api/v1/datasets/search")
+                .then()
+                .statusCode(200)
+                .body("count", equalTo(1))
+                .body("results[0].identifier", equalTo("27866022694497975"))
+                .body("facets.find { it.key == 'tags' }.values.size()", equalTo(1))
+                .body("facets.find { it.key == 'tags' }.values[0].value", equalTo("synthetic"));
     }
 
     @Test
@@ -96,7 +128,10 @@ class DatasetSearchTest extends BaseTest {
                 .statusCode(200)
                 .body("count", equalTo(1))
                 .body("results[0].identifier", equalTo("27866022694497975"))
-                .body("results[0].recordsCount", equalTo(64));
+                .body("results[0].recordsCount", equalTo(64))
+                .body("facets.find { it.key == 'tags' }.values.size()", equalTo(1))
+                .body("facets.find { it.source == 'beacon' && it.key == 'sex' }.label",
+                        equalTo("Sex"));
     }
 
     @Test
@@ -147,7 +182,8 @@ class DatasetSearchTest extends BaseTest {
                 .statusCode(200)
                 .body("beaconError", notNullValue())
                 .body("beaconError", containsString("not recognised as a Researcher"))
-                .body("count", equalTo(3)); // Falls back to CKAN results
+                .body("count", equalTo(3))
+                .body("facets.find { it.key == 'tags' }.values.size()", greaterThan(0)); // Falls back to CKAN results
     }
 
     @Test
@@ -174,7 +210,8 @@ class DatasetSearchTest extends BaseTest {
                 .statusCode(200)
                 .body("beaconError", notNullValue())
                 .body("beaconError", containsString("not recognised as a Researcher"))
-                .body("count", equalTo(3)); // Falls back to CKAN results
+                .body("count", equalTo(3))
+                .body("facets.find { it.key == 'tags' }.values.size()", greaterThan(0)); // Falls back to CKAN results
     }
 
     @Test
@@ -201,6 +238,7 @@ class DatasetSearchTest extends BaseTest {
                 .statusCode(200)
                 .body("beaconError", notNullValue())
                 .body("beaconError", containsString("unexpected remote exception"))
-                .body("count", equalTo(3)); // Falls back to CKAN results
+                .body("count", equalTo(3))
+                .body("facets.find { it.key == 'tags' }.values.size()", greaterThan(0)); // Falls back to CKAN results
     }
 }

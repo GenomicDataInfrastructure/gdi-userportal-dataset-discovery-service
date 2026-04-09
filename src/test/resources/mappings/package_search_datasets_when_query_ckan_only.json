@@ -231,7 +231,24 @@
                         "relationships_as_subject": [],
                         "relationships_as_object": []
                     }
-                ]
+                ],
+                "search_facets": {
+                    "tags": {
+                        "title": "Keywords",
+                        "items": [
+                            {
+                                "name": "synthetic",
+                                "display_name": "synthetic",
+                                "count": 2
+                            },
+                            {
+                                "name": "cardiology",
+                                "display_name": "cardiology",
+                                "count": 1
+                            }
+                        ]
+                    }
+                }
             }
         }
     }

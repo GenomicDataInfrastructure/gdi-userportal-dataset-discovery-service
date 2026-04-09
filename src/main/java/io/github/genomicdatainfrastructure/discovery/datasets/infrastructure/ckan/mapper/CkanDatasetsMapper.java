@@ -91,7 +91,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "frequency", source = "frequency")
     @Mapping(target = "spatial", source = ".", qualifiedByName = "toGeographicalCoverageFromPackage")
     @Mapping(target = "modified", source = "modified")
-    @Mapping(target = "publisher", source = ".", qualifiedByName = "mapSinglePublisherWithMetadata")
+    @Mapping(target = "publishers", source = ".", qualifiedByName = "mapSinglePublisherWithMetadata")
     @Mapping(target = "issued", source = "issued")
     @Mapping(target = "temporalCoverage.start", source = "temporalStart")
     @Mapping(target = "temporalCoverage.end", source = "temporalEnd")

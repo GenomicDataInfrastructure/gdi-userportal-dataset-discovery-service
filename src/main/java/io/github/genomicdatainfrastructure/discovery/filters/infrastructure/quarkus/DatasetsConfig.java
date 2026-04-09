@@ -8,6 +8,7 @@ import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @ConfigMapping(prefix = "datasets")
@@ -33,5 +34,7 @@ public interface DatasetsConfig {
 
         @WithDefault("DROPDOWN")
         FilterType type();
+
+        Optional<Set<String>> rangeComposite();
     }
 }

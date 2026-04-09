@@ -17,8 +17,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,10 +62,12 @@ public class CkanSearchFacetsMapper {
 
     private List<Filter> filters(Map<String, CkanFacet> facets) {
         var filtersByKey = new LinkedHashMap<String, Filter>();
+        var processedKeys = new HashSet<String>();
 
         facets.entrySet()
                 .stream()
-                .map(this::filter)
+                .filter(entry -> !processedKeys.contains(entry.getKey()))
+                .map(f -> this.filter(f, facets, processedKeys))
                 .filter(Objects::nonNull)
                 .forEach(filter -> filtersByKey.put(filter.getKey(), filter));
 
@@ -82,11 +86,42 @@ public class CkanSearchFacetsMapper {
         return List.copyOf(filtersByKey.values());
     }
 
-    private Filter filter(Map.Entry<String, CkanFacet> entry) {
+    private Filter filter(Map.Entry<String, CkanFacet> entry, Map<String, CkanFacet> facets,
+                          Set<String> skipList) {
         var key = entry.getKey();
         var facet = entry.getValue();
 
         var metadata = filtersMetadata.get(key);
+        if (metadata == null) {
+            // check if this is part of a range composite
+            var rangeComponentMatch = filtersMetadata.entrySet()
+                    .stream()
+                    .filter(e -> e.getValue().rangeComposite.contains(entry.getKey()))
+                    .findFirst();
+            if (rangeComponentMatch.isPresent()) {
+                var component = rangeComponentMatch.orElseThrow();
+                key = component.getKey();
+                metadata = component.getValue();
+            }
+        }
+
+        if (metadata != null && !metadata.rangeComposite.isEmpty()) {
+            // Processing a composite range facet. We'll gather individual components and combine them into the
+            // composite facet.
+            var items = new ArrayList<CkanValueLabel>();
+
+            for (var component : metadata.rangeComposite) {
+                var componentFacet = facets.get(component);
+                items.addAll(componentFacet.getItems());
+
+                // skip processing the individual components
+                skipList.add(component);
+            }
+
+            // replace the items (values) for the composite facet with the values collected from the individual facets
+            facet.items(items);
+        }
+
         if (metadata != null && FilterType.DATETIME.equals(metadata.type)) {
             return buildDateTimeFilter(key, facet, metadata.group);
         }
@@ -244,12 +279,13 @@ public class CkanSearchFacetsMapper {
                         .map(filter -> Map.entry(filter.key(),
                                 new FilterMetadata(Optional.ofNullable(filter.type())
                                         .orElse(DEFAULT_FILTER_TYPE),
-                                        group.key()))))
+                                        group.key(),
+                                        filter.rangeComposite().orElse(Set.of())))))
                 .collect(java.util.stream.Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (left, right) -> right, LinkedHashMap::new));
     }
 
-    private record FilterMetadata(FilterType type, String group) {
+    private record FilterMetadata(FilterType type, String group, Set<String> rangeComposite) {
     }
 
     private record NumericBound(BigDecimal numeric, String raw) {

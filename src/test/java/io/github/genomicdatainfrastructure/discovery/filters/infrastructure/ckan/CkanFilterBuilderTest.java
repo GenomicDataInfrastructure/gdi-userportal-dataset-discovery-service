@@ -19,6 +19,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesS
 import jakarta.enterprise.inject.Vetoed;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
@@ -234,6 +235,11 @@ class CkanFilterBuilderTest {
         public FilterType type() {
             return type;
         }
+
+        @Override
+        public Optional<Set<String>> rangeComposite() {
+            return Optional.empty();
+        }
     }
 
     @Vetoed
@@ -247,6 +253,11 @@ class CkanFilterBuilderTest {
         @Override
         public FilterType type() {
             return FilterType.FREE_TEXT;
+        }
+
+        @Override
+        public Optional<Set<String>> rangeComposite() {
+            return Optional.empty();
         }
     }
 

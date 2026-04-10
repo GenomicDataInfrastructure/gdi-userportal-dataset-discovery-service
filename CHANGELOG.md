@@ -12,6 +12,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.41] - 2026-03-24
+
+### Changed
+- Update RetrieveDatasetTest.java by @Quinten in d3b5c3d
+- Use TimeWindow for temporalCoverage; add tests by @Quinten in 214de7d
+- Update CkanDatasetsMapper.java by @Quinten in ae9752a
+- Remove publisher fields and null-safe search by @Quinten in d0ffec6
+- Map dataset series and enrich publisher metadata by @Quinten in 010b821
+- chore(deps): update quarkus-wiremock.version to v1.6.1 by @Renovate Bot in 2314a11
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1773939694 by @Renovate Bot in bd3062e
+- chore(deps): update quarkus.platform.version to v3.32.4 by @Renovate Bot in 2042237
+- doc: update CHANGELOG.md for v1.3.40 by @LNDS-Sysadmins in 97dc967
+
+
+### Fixed
+- fix(deps): update quarkus-openapi-generator.version to v2.15.0 by @Renovate Bot in 6841691
+
+
+### Removed
+- Use publishers array; remove publisher enrichment by @Quinten in 0d5a465
+
+
 ## [v1.3.40] - 2026-03-19
 
 ### Changed

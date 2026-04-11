@@ -383,7 +383,9 @@ components:
           type: integer
           minimum: 0
         temporalCoverage:
-          $ref: "#/components/schemas/TimeWindow"
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeWindow"
         recordsCount:
           type: integer
           title: Records count
@@ -526,7 +528,9 @@ components:
           format: float
           description: Minimum spatial separation resolvable in a dataset, measured in meters.
         temporalCoverage:
-          $ref: "#/components/schemas/TimeWindow"
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeWindow"
         temporalResolution:
           type: string
         populationCoverage:
@@ -629,8 +633,6 @@ components:
                 type: string
               startedAtTime:
                 type: string
-              uri:
-                type: string
               wasAssociatedWith:
                 type: array
                 items:
@@ -694,15 +696,16 @@ components:
           type: string
           format: date-time
         publishers:
-          $ref: "#/components/schemas/Agent"
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"
         issued:
           type: string
           format: date-time
         temporalCoverage:
-          $ref: "#/components/schemas/TimeWindow"
-        uri:
-          type: string
-          title: URI
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeWindow"
       required:
         - id
         - title
@@ -781,8 +784,6 @@ components:
         spatialResolutionInMeters:
           type: number
           format: float
-        uri:
-          type: string
         accessService:
           type: array
           title: Access service
@@ -855,8 +856,6 @@ components:
                 type: array
                 items:
                   $ref: "#/components/schemas/ValueLabel"
-              uri:
-                type: string
               title:
                 type: string
               hvdCategory:
@@ -896,13 +895,12 @@ components:
         email:
           type: string
           title: email
-        uri:
-          type: string
-          title: uri
         url:
-          type: string
+          type: array
           title: url
-          description: URL for more information about the contact point.
+          description: URLs for more information about the contact point.
+          items:
+            type: string
         identifier:
           type: string
           title: identifier
@@ -921,9 +919,6 @@ components:
         url:
           type: string
           title: url
-        uri:
-          type: string
-          title: uri
         homepage:
           type: string
           title: homepage
@@ -1174,8 +1169,6 @@ components:
         seeAlso:
           type: string
         startedAtTime:
-          type: string
-        uri:
           type: string
         wasAssociatedWith:
           type: array

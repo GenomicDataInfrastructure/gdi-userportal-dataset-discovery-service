@@ -46,14 +46,13 @@ class RetrieveDatasetTest extends BaseTest {
                 .body("inSeries[0].identifier", equalTo("series-parent-identifier"))
                 .body("inSeries[0].title", equalTo("Parent series dataset"))
                 .body("inSeries[0].description", equalTo("The parent series"))
-                .body("inSeries[0].uri", equalTo("https://example.org/datasets/series-parent-1"))
                 .body("inSeries[0].applicableLegislation[0].label", equalTo("Data Act"))
                 .body("inSeries[0].contacts[0].name", equalTo("Series Desk"))
                 .body("inSeries[0].frequency.label", equalTo("Monthly"))
                 .body("inSeries[0].spatial[0].label", equalTo("Netherlands"))
-                .body("inSeries[0].publishers.name", equalTo("Series Publisher"))
-                .body("inSeries[0].temporalCoverage.start", equalTo("2020-01-01T00:00:00Z"))
-                .body("inSeries[0].temporalCoverage.end", equalTo("2023-12-31T00:00:00Z"));
+                .body("inSeries[0].publishers[0].name", equalTo("Series Publisher"))
+                .body("inSeries[0].temporalCoverage[0].start", equalTo("2020-01-01T00:00:00Z"))
+                .body("inSeries[0].temporalCoverage[0].end", equalTo("2023-12-31T00:00:00Z"));
     }
 
     @Test

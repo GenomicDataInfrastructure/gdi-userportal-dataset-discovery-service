@@ -246,10 +246,10 @@ components:
           type: string
         metadata_modified:
           type: string
-        temporal_start:
-          type: string
-        temporal_end:
-          type: string
+        temporal_coverage:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanTimeWindow"
         url:
           type: string
         language:
@@ -412,8 +412,6 @@ components:
                 type: string
               startedAtTime:
                 type: string
-              uri:
-                type: string
               wasAssociatedWith:
                 type: array
                 items:
@@ -440,13 +438,12 @@ components:
         email:
           type: string
           title: email
-        uri:
-          type: string
-          title: uri
         url:
-          type: string
+          type: array
           title: url
-          description: URL for more information about the contact point.
+          description: URLs for more information about the contact point.
+          items:
+            type: string
         identifier:
           type: string
           title: identifier
@@ -461,9 +458,6 @@ components:
         url:
           type: string
           title: url
-        uri:
-          type: string
-          title: uri
         homepage:
           type: string
           title: homepage
@@ -637,8 +631,6 @@ components:
                 type: array
                 items:
                   $ref: "#/components/schemas/CkanValueLabel"
-              uri:
-                type: string
               title:
                 type: string
               hvd_category:

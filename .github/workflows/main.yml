@@ -5,25 +5,28 @@
 name: Publish main
 
 on:
-  workflow_run:
-    workflows: ["Run Tests"]
-    branches: [main]
-    types:
-      - completed
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions: {}
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ghcr.io/genomicdatainfrastructure/gdi-userportal-dataset-discovery-service
   REPOSITORY_URL: ${{ github.server_url }}/${{ github.repository }}
-  BUILD_DATE: ""
 
 jobs:
   ort:
     strategy:
       fail-fast: false
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
       - uses: oss-review-toolkit/ort-ci-github-action@1805edcf1f4f55f35ae6e4d2d9795ccfb29b6021 # v1
         with:
           allow-dynamic-versions: "true"
@@ -38,22 +41,25 @@ jobs:
       packages: write
     steps:
       - name: Log in to the Container registry
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up GraalVM JDK 21
-        uses: graalvm/setup-graalvm@03e8abf916fd0e281b2efe7b2da3378bb0a1d085 # v1
+        uses: graalvm/setup-graalvm@60c26726de13f8b90771df4bc1641a52a3159994 # v1
         with:
           java-version: "21"
 
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
 
       - name: Set BUILD_DATE
-        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+        id: build_date
+        run: echo "value=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
 
       - name: Build project
         run: mvn package -Dnative
@@ -73,9 +79,9 @@ jobs:
             type=sha,priority=1000
           labels: |
             vcs-ref=${{env.GITHUB_SHA}}
-            build-date=${{env.BUILD_DATE}}
-            org.opencontainers.image.created=${{env.BUILD_DATE}}
-            release=${{env.BUILD_DATE}}
+            build-date=${{steps.build_date.outputs.value}}
+            org.opencontainers.image.created=${{steps.build_date.outputs.value}}
+            release=${{steps.build_date.outputs.value}}
             version=${{env.GITHUB_REF_NAME}}
             org.opencontainers.image.version=${{env.GITHUB_REF_NAME}}
             org.opencontainers.image.url=${{env.REPOSITORY_URL}}
@@ -87,8 +93,10 @@ jobs:
 
       - name: Extract last tag
         id: tag
+        env:
+          META_TAGS: ${{ steps.meta.outputs.tags }}
         run: |
-          IFS=',' read -ra TAGS <<< "${{ steps.meta.outputs.tags }}"
+          IFS=',' read -ra TAGS <<< "$META_TAGS"
           LAST_INDEX=$((${#TAGS[@]} - 1))
           echo "last_tag=${TAGS[LAST_INDEX]}" >> $GITHUB_OUTPUT
 

@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -45,7 +46,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "creators", source = "creator")
     @Mapping(target = "hasVersions", source = "hasVersion")
-    @Mapping(target = "publishers", source = ".", qualifiedByName = "mapPublishersWithMetadata")
+    @Mapping(target = "publishers", source = "publisher")
     @Mapping(target = "languages", source = "language")
     @Mapping(target = "dcatType", source = "dcatType")
     @Mapping(target = "catalogue", ignore = true)
@@ -58,8 +59,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "frequency", source = "frequency")
     @Mapping(target = "inSeries", ignore = true)
     @Mapping(target = "isReferencedBy", source = "isReferencedBy")
-    @Mapping(target = "temporalCoverage.start", source = "temporalStart")
-    @Mapping(target = "temporalCoverage.end", source = "temporalEnd")
+    @Mapping(target = "temporalCoverage", source = "temporalCoverage")
     @Mapping(target = "retentionPeriod", source = "retentionPeriod")
     @Mapping(target = "spatialCoverage", source = "spatialCoverage")
     @Mapping(target = "accessRights", source = "accessRights")
@@ -91,11 +91,9 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "frequency", source = "frequency")
     @Mapping(target = "spatial", source = ".", qualifiedByName = "toGeographicalCoverageFromPackage")
     @Mapping(target = "modified", source = "modified")
-    @Mapping(target = "publishers", source = ".", qualifiedByName = "mapSinglePublisherWithMetadata")
+    @Mapping(target = "publishers", source = "publisher")
     @Mapping(target = "issued", source = "issued")
-    @Mapping(target = "temporalCoverage.start", source = "temporalStart")
-    @Mapping(target = "temporalCoverage.end", source = "temporalEnd")
-    @Mapping(target = "uri", source = "uri")
+    @Mapping(target = "temporalCoverage", source = "temporalCoverage")
     @Mapping(target = "applicableLegislation", source = "applicableLegislation")
     DatasetSeries mapToDatasetSeries(CkanPackage ckanPackage);
 
@@ -149,7 +147,6 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "publisher", source = "publisher")
     @Mapping(target = "servesDataset", source = "servesDataset")
     @Mapping(target = "theme", source = "theme")
-    @Mapping(target = "uri", source = "uri")
     @Mapping(target = "title", source = "title")
     @Mapping(target = "hvdCategory", source = "hvdCategory")
     AccessServiceInner map(CkanResourceAccessServicesInner source);
@@ -165,19 +162,29 @@ public interface CkanDatasetsMapper {
 
     @Mapping(target = "description", source = "notes")
     @Mapping(target = "themes", source = "theme")
-    @Mapping(target = "publishers", source = ".", qualifiedByName = "mapPublishersWithMetadata")
+    @Mapping(target = "publishers", source = "publisher")
     @Mapping(target = "keywords", source = ".", qualifiedByName = "mergeKeywords")
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "createdAt", source = "issued")
     @Mapping(target = "accessRights", source = "accessRights")
     @Mapping(target = "conformsTo", source = "conformsTo")
     @Mapping(target = "numberOfUniqueIndividuals", source = "numberOfUniqueIndividuals")
-    @Mapping(target = "temporalCoverage.start", source = "temporalStart")
-    @Mapping(target = "temporalCoverage.end", source = "temporalEnd")
+    @Mapping(target = "temporalCoverage", source = "temporalCoverage")
     @Mapping(target = "distributionsCount", source = ".", qualifiedByName = "countDistributions")
     @Mapping(target = "catalogue", ignore = true)
     @Mapping(target = "recordsCount", ignore = true)
     SearchedDataset mapToSearchedDataset(CkanPackage ckanPackage);
+
+    default List<TimeWindow> map(List<CkanTimeWindow> temporalCoverage) {
+        if (temporalCoverage == null || temporalCoverage.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return temporalCoverage.stream()
+                .filter(Objects::nonNull)
+                .map(this::map)
+                .toList();
+    }
 
     @Mapping(target = "start", source = "start")
     @Mapping(target = "end", source = "end")
@@ -192,7 +199,6 @@ public interface CkanDatasetsMapper {
 
     @Mapping(target = "name", source = "name")
     @Mapping(target = "email", source = "email")
-    @Mapping(target = "uri", source = "uri")
     @Mapping(target = "url", source = "url")
     @Mapping(target = "identifier", source = "identifier")
     ContactPoint map(CkanContactPoint ckanContactPoint);
@@ -200,7 +206,6 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "name", source = "name")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "url", source = "url")
-    @Mapping(target = "uri", source = "uri")
     @Mapping(target = "homepage", source = "homepage")
     @Mapping(target = "type", source = "type")
     @Mapping(target = "identifier", source = "identifier")
@@ -395,32 +400,5 @@ public interface CkanDatasetsMapper {
                 .value(value)
                 .label(label)
                 .build();
-    }
-
-    @Named("mapPublishersWithMetadata")
-    default List<Agent> mapPublishersWithMetadata(CkanPackage ckanPackage) {
-        if (ckanPackage == null || ckanPackage.getPublisher() == null) {
-            return Collections.emptyList();
-        }
-
-        return ckanPackage.getPublisher().stream()
-                .map(this::map)
-                .map(publisher -> enrichPublisherMetadata(publisher, ckanPackage))
-                .toList();
-    }
-
-    default Agent enrichPublisherMetadata(Agent agent, CkanPackage ckanPackage) {
-        if (agent == null || ckanPackage == null) {
-            return agent;
-        }
-
-        agent.setSpatial(toGeographicalCoverageFromPackage(ckanPackage));
-        return agent;
-    }
-
-    @Named("mapSinglePublisherWithMetadata")
-    default Agent mapSinglePublisherWithMetadata(CkanPackage ckanPackage) {
-        var publishers = mapPublishersWithMetadata(ckanPackage);
-        return publishers.isEmpty() ? null : publishers.getFirst();
     }
 }

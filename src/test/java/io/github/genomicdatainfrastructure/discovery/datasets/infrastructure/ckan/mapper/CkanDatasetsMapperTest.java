@@ -63,12 +63,32 @@ class CkanDatasetsMapperTest {
                     .analytics(List.of())
                     .samples(List.of())
                     .keywords(List.of())
-                    .temporalCoverage(TimeWindow.builder().build())
+                    .temporalCoverage(List.of())
                     .build();
 
             assertThat(actual)
                     .usingRecursiveComparison()
                     .isEqualTo(expected);
+        }
+
+        @Test
+        void given_temporalCoverage_split_across_multiple_objects_it_should_keep_all_as_separate_entries() {
+            final var ckanPackage = CkanPackage.builder()
+                    .temporalCoverage(List.of(
+                            CkanTimeWindow.builder().start("2015-02-02T00:00:00+00:00").build(),
+                            CkanTimeWindow.builder().end("2018-11-30T00:00:00+00:00").build()))
+                    .build();
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getTemporalCoverage())
+                    .isEqualTo(List.of(
+                            TimeWindow.builder()
+                                    .start(parse("2015-02-02T00:00:00+00:00"))
+                                    .build(),
+                            TimeWindow.builder()
+                                    .end(parse("2018-11-30T00:00:00+00:00"))
+                                    .build()));
         }
 
         @Test
@@ -96,14 +116,12 @@ class CkanDatasetsMapperTest {
                                     .identifier("creatorIdentifier")
                                     .email("email")
                                     .url("url")
-                                    .uri("uri")
                                     .homepage("http://example.com/creator1")
                                     .type(getValueLabel("Creator Type",
                                             "http://example.com/creator/type"))
                                     .actedOnBehalfOf(List.of(
                                             Agent.builder()
                                                     .name("Parent Org 1")
-                                                    .uri("http://example.com/parent-org-1")
                                                     .actedOnBehalfOf(List.of())
                                                     .build()
                                     ))
@@ -113,7 +131,6 @@ class CkanDatasetsMapperTest {
                                     .identifier("creatorIdentifier2")
                                     .email("email2")
                                     .url("url2")
-                                    .uri("uri2")
                                     .homepage("http://example.com/creator2")
                                     .type(getValueLabel("Creator Type 2",
                                             "http://example.com/creator/type2"))
@@ -126,12 +143,9 @@ class CkanDatasetsMapperTest {
                                     .identifier("publisherIdentifier")
                                     .email("email")
                                     .url("url")
-                                    .uri("uri")
                                     .homepage("http://example.com/publisher1")
                                     .type(getValueLabel("Publisher Type",
                                             "http://example.com/publisher/type"))
-                                    .spatial(List.of(getValueLabel("Utrecht, Netherlands",
-                                            "https://www.geonames.org/2745912/utrecht.html")))
                                     .actedOnBehalfOf(List.of())
                                     .build(),
                             Agent.builder()
@@ -139,12 +153,9 @@ class CkanDatasetsMapperTest {
                                     .identifier("publisherIdentifier2")
                                     .email("email2")
                                     .url("url2")
-                                    .uri("uri2")
                                     .homepage("http://example.com/publisher2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
-                                    .spatial(List.of(getValueLabel("Utrecht, Netherlands",
-                                            "https://www.geonames.org/2745912/utrecht.html")))
                                     .actedOnBehalfOf(List.of())
                                     .build()
                     ))
@@ -182,14 +193,13 @@ class CkanDatasetsMapperTest {
                                     .name("Contact 1")
                                     .email("contact1@example.com")
                                     .identifier("contact-identifier-1")
-                                    .url("http://example.com/contact-1")
+                                    .url(List.of("http://example.com/contact-1"))
                                     .build(),
                             ContactPoint.builder()
                                     .name("Contact 2")
                                     .email("contact2@example.com")
-                                    .uri("http://example.com")
                                     .identifier("contact-identifier-2")
-                                    .url("http://example.com/contact-2")
+                                    .url(List.of("http://example.com/contact-2"))
                                     .build()
                     ))
                     .datasetRelationships(List.of(
@@ -216,7 +226,6 @@ class CkanDatasetsMapperTest {
                                     .id("analytics_resource_id")
                                     .title("analytics_resource_name")
                                     .description("analytics_resource_description")
-                                    .uri("http://example.com/analytics")
                                     .createdAt(parse("2025-03-19T00:00Z"))
                                     .modifiedAt(parse("2025-03-19T13:37:05Z"))
                                     .format(getValueLabel("format", "json", 1))
@@ -234,7 +243,6 @@ class CkanDatasetsMapperTest {
                                     .id("sample_resource_id")
                                     .title("sample_resource_name")
                                     .description("sample_resource_description")
-                                    .uri("http://example.com/sample")
                                     .createdAt(parse("2025-03-19T00:00Z"))
                                     .modifiedAt(parse("2025-03-19T13:37:05Z"))
                                     .format(getValueLabel("format", "csv", 1))
@@ -311,11 +319,11 @@ class CkanDatasetsMapperTest {
                                     .centroid("5.095,52.120")
                                     .build()))
                     .spatialResolutionInMeters(10.0f)
-                    .temporalCoverage(
+                    .temporalCoverage(List.of(
                             TimeWindow.builder()
                                     .start(parse("2024-07-12T22:00:00+00:00"))
                                     .end(parse("2024-07-13T22:00:00+00:00"))
-                                    .build())
+                                    .build()))
                     .temporalResolution("P1D")
                     .provenanceActivity(List.of())
                     .qualifiedAttribution(List.of())
@@ -343,9 +351,10 @@ class CkanDatasetsMapperTest {
 
             assertThat(actual.getDistributions())
                     .hasSize(1);
-            assertThat(actual.getDistributions().get(0).getAccessService())
+            assertThat(actual.getDistributions().getFirst().getAccessService())
                     .hasSize(1);
-            assertThat(actual.getDistributions().get(0).getAccessService().get(0).getTheme())
+            assertThat(actual.getDistributions().getFirst().getAccessService().getFirst()
+                    .getTheme())
                     .isEmpty();
         }
 
@@ -358,9 +367,10 @@ class CkanDatasetsMapperTest {
 
             assertThat(actual.getDistributions())
                     .hasSize(1);
-            assertThat(actual.getDistributions().get(0).getAccessService())
+            assertThat(actual.getDistributions().getFirst().getAccessService())
                     .hasSize(1);
-            assertThat(actual.getDistributions().get(0).getAccessService().get(0).getTheme())
+            assertThat(actual.getDistributions().getFirst().getAccessService().getFirst()
+                    .getTheme())
                     .usingRecursiveComparison()
                     .isEqualTo(List.of(
                             getValueLabel("Service Theme 1",
@@ -461,14 +471,13 @@ class CkanDatasetsMapperTest {
                                 .name("Contact 1")
                                 .email("contact1@example.com")
                                 .identifier("contact-identifier-1")
-                                .url("http://example.com/contact-1")
+                                .url(List.of("http://example.com/contact-1"))
                                 .build(),
                         CkanContactPoint.builder()
                                 .name("Contact 2")
                                 .email("contact2@example.com")
-                                .uri("http://example.com")
                                 .identifier("contact-identifier-2")
-                                .url("http://example.com/contact-2")
+                                .url(List.of("http://example.com/contact-2"))
                                 .build()
                 ))
                 .creator(List.of(
@@ -480,11 +489,9 @@ class CkanDatasetsMapperTest {
                                 .homepage("http://example.com/creator1")
                                 .type(getCkanValueLabel("Creator Type",
                                         "http://example.com/creator/type"))
-                                .uri("uri")
                                 .actedOnBehalfOf(List.of(
                                         CkanAgent.builder()
                                                 .name("Parent Org 1")
-                                                .uri("http://example.com/parent-org-1")
                                                 .build()
                                 ))
                                 .build(),
@@ -496,7 +503,6 @@ class CkanDatasetsMapperTest {
                                 .homepage("http://example.com/creator2")
                                 .type(getCkanValueLabel("Creator Type 2",
                                         "http://example.com/creator/type2"))
-                                .uri("uri2")
                                 .build()
                 ))
                 .publisher(List.of(
@@ -508,7 +514,6 @@ class CkanDatasetsMapperTest {
                                 .homepage("http://example.com/publisher1")
                                 .type(getCkanValueLabel("Publisher Type",
                                         "http://example.com/publisher/type"))
-                                .uri("uri")
                                 .build(),
                         CkanAgent.builder()
                                 .name("publisherName2")
@@ -518,7 +523,6 @@ class CkanDatasetsMapperTest {
                                 .homepage("http://example.com/publisher2")
                                 .type(getCkanValueLabel("Publisher Type 2",
                                         "http://example.com/publisher/type2"))
-                                .uri("uri2")
                                 .build()
                 ))
                 .datasetRelationships(List.of(
@@ -598,8 +602,11 @@ class CkanDatasetsMapperTest {
                                 .target("http://example.com/quality-target")
                                 .build()
                 ))
-                .temporalStart("2024-07-12T22:00:00+00:00")
-                .temporalEnd("2024-07-13T22:00:00+00:00")
+                .temporalCoverage(List.of(
+                        CkanTimeWindow.builder()
+                                .start("2024-07-12T22:00:00+00:00")
+                                .end("2024-07-13T22:00:00+00:00")
+                                .build()))
                 .temporalResolution("P1D")
                 .alternateIdentifier(List.of("internalURI:admsIdentifier0"))
                 .spatialCoverage(List.of(
@@ -650,26 +657,20 @@ class CkanDatasetsMapperTest {
                             .name("publisherName")
                             .email("email")
                             .url("url")
-                            .uri("uri")
                             .homepage("http://example.com/publisher1")
                             .identifier("publisherIdentifier")
                             .type(getValueLabel("Publisher Type",
                                     "http://example.com/publisher/type"))
-                            .spatial(List.of(getValueLabel("Utrecht, Netherlands",
-                                    "https://www.geonames.org/2745912/utrecht.html")))
                             .actedOnBehalfOf(List.of())
                             .build(),
                             Agent.builder()
                                     .name("publisherName2")
                                     .email("email2")
                                     .url("url2")
-                                    .uri("uri2")
                                     .homepage("http://example.com/publisher2")
                                     .identifier("publisherIdentifier2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
-                                    .spatial(List.of(getValueLabel("Utrecht, Netherlands",
-                                            "https://www.geonames.org/2745912/utrecht.html")))
                                     .actedOnBehalfOf(List.of())
                                     .build()))
                     .themes(getValueLabels("theme", "theme-name", 3))
@@ -682,10 +683,11 @@ class CkanDatasetsMapperTest {
                     .conformsTo(
                             getValueLabels("DCAT-AP 3.0",
                                     "https://data.europa.eu/dcat-ap/3.0"))
-                    .temporalCoverage(TimeWindow.builder()
-                            .start(parse("2024-07-12T22:00Z"))
-                            .end(parse("2024-07-13T22:00Z"))
-                            .build())
+                    .temporalCoverage(List.of(
+                            TimeWindow.builder()
+                                    .start(parse("2024-07-12T22:00Z"))
+                                    .end(parse("2024-07-13T22:00Z"))
+                                    .build()))
                     .build();
         }
     }
@@ -822,10 +824,6 @@ class CkanDatasetsMapperTest {
 
             assertThat(actual).containsExactly("tags-only");
         }
-    }
-
-    private static @NotNull List<CkanResource> getCkanResources() {
-        return getCkanResourcesWithAccessService(buildCkanAccessService());
     }
 
     private static @NotNull List<CkanResource> getCkanResourcesWithAccessService(

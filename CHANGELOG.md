@@ -12,6 +12,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.42] - 2026-04-13
+
+### Added
+- feat: removes 'uri' from ckan and discovery API by @Alexander Harms in 148b997
+
+
+### Changed
+- Revert array url of contact point by @Quinten in a233a56
+- chore: add zizmor for automated scan and mitigation for current issues by @Kacem Bechka in 3bd1756
+- revert uri by @Quinten in 9dbf529
+- Remove uri field from CKAN schemas and mapper by @Quinten in 4794a4f
+- Treat temporalCoverage as list; update OpenAPI & tests by @Quinten in 856cbdd
+
+
+### Fixed
+- fix(deps): update quarkus-openapi-generator.version to v2.16.0 by @Renovate Bot in fad27f6
+- fix(deps): update quarkus-openapi-generator.version to v2.15.0-lts by @Renovate Bot in c6abae0
+- fix: actions by @Kacem Bechka in 0d33479
+
+
 ## [v1.3.41] - 2026-03-24
 
 ### Changed

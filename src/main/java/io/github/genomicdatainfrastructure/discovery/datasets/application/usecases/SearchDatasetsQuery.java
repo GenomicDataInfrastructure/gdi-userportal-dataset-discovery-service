@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
 import static java.lang.Math.min;
 import static java.util.Objects.nonNull;
 
@@ -161,7 +162,8 @@ public class SearchDatasetsQuery {
             String accessToken,
             String preferredLanguage) {
         var supplementalFacets = filterBuilders.stream()
-                .filter(filterBuilder -> !Objects.equals("ckan", filterBuilder.source()))
+                .filter(filterBuilder -> !Objects.equals(CKAN_FILTER_SOURCE, filterBuilder
+                        .source()))
                 .map(filterBuilder -> filterBuilder.build(accessToken, preferredLanguage))
                 .filter(Objects::nonNull)
                 .flatMap(Collection::stream)

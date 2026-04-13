@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -74,6 +75,44 @@ class SearchDatasetsQueryTest {
         assertEquals(null, response.getResults().get(0).getRecordsCount());
         assertEquals(1, response.getFacets().size());
         assertEquals("tags", response.getFacets().getFirst().getKey());
+
+        verify(repository).search(eq(query), eq(accessToken), eq("en"));
+        verifyNoInteractions(ckanCollector);
+        verifyNoInteractions(beaconCollector); // Beacon should not be called
+    }
+
+    @Test
+    void testExecute_withIncludeBeaconFalse_enrichesWithSupplementalFacets() {
+        var query = DatasetSearchQuery.builder()
+                .includeBeacon(false)
+                .build();
+        var accessToken = "token";
+
+        // Supplemental (non-CKAN) facet builder
+        FilterBuilder supplementalFilterBuilder = beaconFilterBuilder("sex");
+
+        // Override default empty stream with a stream including our supplemental builder
+        when(filterBuilders.stream()).thenReturn(Stream.of(supplementalFilterBuilder));
+
+        var dataset1 = mockDataset("id1");
+        var dataset2 = mockDataset("id2");
+        when(repository.search(any(DatasetSearchQuery.class), any(), any())).thenReturn(
+                searchResponse(
+                        2,
+                        List.of(dataset1, dataset2)));
+
+        var response = underTest.execute(query, accessToken, "en");
+
+        assertEquals(2, response.getCount());
+        assertEquals(2, response.getResults().size());
+
+        // Should contain CKAN facet ("tags") and supplemental facet ("sex")
+        assertEquals(2, response.getFacets().size());
+        var facetKeys = response.getFacets().stream()
+                .map(Filter::getKey)
+                .collect(Collectors.toList());
+        assertTrue(facetKeys.contains("tags"));
+        assertTrue(facetKeys.contains("sex"));
 
         verify(repository).search(eq(query), eq(accessToken), eq("en"));
         verifyNoInteractions(ckanCollector);

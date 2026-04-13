@@ -17,6 +17,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class CkanSearchFacetsMapper {
     public CkanSearchFacetsMapper(DatasetsConfig datasetsConfig) {
         this.selectedFacets = SELECTED_FACETS_PATTERN.formatted(String.join(
                 "\",\"",
-                datasetsConfig.filters().split(",")
+                Arrays.stream(datasetsConfig.filters().split(",")).map(String::trim).toList()
         ));
         this.filtersMetadata = extractFiltersMetadata(datasetsConfig);
     }
@@ -245,7 +246,7 @@ public class CkanSearchFacetsMapper {
                                         .orElse(DEFAULT_FILTER_TYPE),
                                         group.key()))))
                 .collect(java.util.stream.Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (left, right) -> left, LinkedHashMap::new));
+                        (left, right) -> right, LinkedHashMap::new));
     }
 
     private record FilterMetadata(FilterType type, String group) {

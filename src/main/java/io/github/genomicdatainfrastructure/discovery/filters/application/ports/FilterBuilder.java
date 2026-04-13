@@ -10,5 +10,7 @@ import java.util.List;
 
 public interface FilterBuilder {
 
+    String source();
+
     List<Filter> build(String accessToken, String preferredLanguage);
 }

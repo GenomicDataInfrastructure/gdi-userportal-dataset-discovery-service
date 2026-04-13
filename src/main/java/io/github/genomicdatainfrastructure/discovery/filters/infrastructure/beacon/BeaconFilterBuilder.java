@@ -23,6 +23,8 @@ import static java.util.Optional.ofNullable;
 @LookupIfProperty(name = "sources.beacon", stringValue = "true")
 public class BeaconFilterBuilder implements FilterBuilder {
 
+    private static final String BEACON_FILTER_SOURCE = "beacon";
+
     private final BeaconAuth beaconAuth;
     private final ObjectMapper objectMapper;
 
@@ -31,6 +33,11 @@ public class BeaconFilterBuilder implements FilterBuilder {
             ObjectMapper objectMapper) {
         this.beaconAuth = beaconAuth;
         this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public String source() {
+        return BEACON_FILTER_SOURCE;
     }
 
     @SneakyThrows

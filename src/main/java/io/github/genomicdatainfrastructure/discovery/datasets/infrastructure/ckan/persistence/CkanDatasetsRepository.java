@@ -7,6 +7,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ck
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
 import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.DatasetNotFoundException;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.mapper.CkanDatasetsMapper;
+import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan.CkanSearchFacetsMapper;
 import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.*;
@@ -27,13 +28,17 @@ public class CkanDatasetsRepository implements DatasetsRepository {
 
     private final CkanQueryApi ckanQueryApi;
     private final CkanDatasetsMapper ckanDatasetsMapper;
+    private final CkanSearchFacetsMapper ckanSearchFacetsMapper;
 
     @Inject
     public CkanDatasetsRepository(
-            @RestClient CkanQueryApi ckanQueryApi, CkanDatasetsMapper ckanDatasetsMapper
+            @RestClient CkanQueryApi ckanQueryApi,
+            CkanDatasetsMapper ckanDatasetsMapper,
+            CkanSearchFacetsMapper ckanSearchFacetsMapper
     ) {
         this.ckanQueryApi = ckanQueryApi;
         this.ckanDatasetsMapper = ckanDatasetsMapper;
+        this.ckanSearchFacetsMapper = ckanSearchFacetsMapper;
     }
 
     @Override
@@ -45,6 +50,8 @@ public class CkanDatasetsRepository implements DatasetsRepository {
                 .sort(query.getSort())
                 .rows(query.getRows())
                 .start(query.getStart())
+                .facetField(ckanSearchFacetsMapper.selectedFacetField())
+                .facetLimit(-1)
                 .build();
 
         var response = ckanQueryApi.packageSearch(
@@ -59,6 +66,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         return DatasetsSearchResponse.builder()
                 .count(totalCount)
                 .results(mappedResults)
+                .facets(ckanSearchFacetsMapper.map(response.getResult()))
                 .build();
     }
 
@@ -75,6 +83,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
             return DatasetsSearchResponse.builder()
                     .count(0)
                     .results(List.of())
+                    .facets(List.of())
                     .build();
         }
 
@@ -85,6 +94,8 @@ public class CkanDatasetsRepository implements DatasetsRepository {
                 .sort(sort)
                 .rows(rows)
                 .start(start)
+                .facetField(ckanSearchFacetsMapper.selectedFacetField())
+                .facetLimit(-1)
                 .build();
 
         var response = ckanQueryApi.packageSearch(
@@ -99,6 +110,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         return DatasetsSearchResponse.builder()
                 .count(totalCount)
                 .results(mappedResults)
+                .facets(ckanSearchFacetsMapper.map(response.getResult()))
                 .build();
     }
 

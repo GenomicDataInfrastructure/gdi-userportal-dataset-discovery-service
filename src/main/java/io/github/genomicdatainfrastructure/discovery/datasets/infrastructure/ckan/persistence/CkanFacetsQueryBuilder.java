@@ -30,6 +30,8 @@ public class CkanFacetsQueryBuilder {
     private static final String RANGE_WILDCARD = "*";
     private static final String AND = " AND ";
     private static final String TYPICAL_AGE_KEY = "typical_age";
+    private static final String MIN_TYPICAL_AGE = "min_typical_age";
+    private static final String MAX_TYPICAL_AGE = "max_typical_age";
 
     public String buildFacetQuery(DatasetSearchQuery query) {
         var operator = CkanQueryOperatorMapper.getOperator(query.getOperator());
@@ -138,10 +140,10 @@ public class CkanFacetsQueryBuilder {
 
         if (lower.isPresent() && upper.isEmpty()) {
             return resolveNumberCondition(numericFacets)
-                    .flatMap(condition -> condition.toSolrQuery("min_typical_age"));
+                    .flatMap(condition -> condition.toSolrQuery(MIN_TYPICAL_AGE));
         } else if (upper.isPresent() && lower.isEmpty()) {
             return resolveNumberCondition(numericFacets)
-                    .flatMap(condition -> condition.toSolrQuery("max_typical_age"));
+                    .flatMap(condition -> condition.toSolrQuery(MAX_TYPICAL_AGE));
         }
 
         var sb = new StringBuilder();
@@ -159,10 +161,10 @@ public class CkanFacetsQueryBuilder {
         //   - lower <= max_typical_age  (the search range starts before the dataset range ends)
         //   - min_typical_age <= upper  (the dataset range starts before the search range ends)
         upper.flatMap(value -> new NumberCondition(null, value, null).toSolrQuery(
-                "min_typical_age"))
+                MIN_TYPICAL_AGE))
                 .ifPresent(sb::append);
         lower.flatMap(value -> new NumberCondition(value, null, null).toSolrQuery(
-                "max_typical_age"))
+                MAX_TYPICAL_AGE))
                 .ifPresent(value -> {
                     if (!sb.isEmpty()) {
                         sb.append(AND);
@@ -170,6 +172,9 @@ public class CkanFacetsQueryBuilder {
                     sb.append(value);
                 });
 
+        if (sb.isEmpty()) {
+            return Optional.empty();
+        }
         return Optional.of(sb.toString());
     }
 

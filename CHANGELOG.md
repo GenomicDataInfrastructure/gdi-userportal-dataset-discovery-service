@@ -12,6 +12,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.43] - 2026-04-13
+
+### Changed
+- Update CHANGELOG.md to remove dependency updates by @Quinten in 532f821
+- doc: update CHANGELOG.md for v1.3.42 by @LNDS-Sysadmins in 91751a8
+- Fix workflow version comments for zizmor by @Hans-christian in 4682f53
+- Fix dataset retrieval test and REUSE metadata by @Hans-christian in 84c2dfe
+- Add dynamic facets to dataset search by @Hans-christian in 814c8fa
+
+
+### Fixed
+- fix sonarcloud issues by @Hans-christian in fc6b906
+
+
 ## [v1.3.42] - 2026-04-13
 
 ### Added

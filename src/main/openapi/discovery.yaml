@@ -891,11 +891,9 @@ components:
           type: string
           title: email
         url:
-          type: array
           title: url
           description: URLs for more information about the contact point.
-          items:
-            type: string
+          type: string
         identifier:
           type: string
           title: identifier

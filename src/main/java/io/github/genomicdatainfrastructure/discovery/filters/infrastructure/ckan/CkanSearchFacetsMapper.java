@@ -87,7 +87,7 @@ public class CkanSearchFacetsMapper {
     }
 
     private Filter filter(Map.Entry<String, CkanFacet> entry, Map<String, CkanFacet> facets,
-                          Set<String> skipList) {
+            Set<String> skipList) {
         var key = entry.getKey();
         var facet = entry.getValue();
 

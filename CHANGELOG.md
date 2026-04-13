@@ -12,6 +12,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.42] - 2026-04-13
+
+### Added
+- feat: removes 'uri' from ckan and discovery API by @Alexander Harms in 148b997
+
+
+### Changed
+- Revert array url of contact point by @Quinten in a233a56
+- chore(deps): update docker/build-push-action digest to bcafcac by @Renovate Bot in dea9984
+- chore(deps): update oras-project/setup-oras action to v2 by @Renovate Bot in b0ccaba
+- chore(deps): update quarkus.platform.version to v3.34.3 by @Renovate Bot in 9a1bd5f
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1775623882 by @Renovate Bot in 064fd09
+- chore: add zizmor for automated scan and mitigation for current issues by @Kacem Bechka in 3bd1756
+- chore(deps): update quarkus.platform.version to v3.34.2 by @Renovate Bot in 866c6e8
+- revert uri by @Quinten in 9dbf529
+- Remove uri field from CKAN schemas and mapper by @Quinten in 4794a4f
+- chore(deps): update docker/login-action digest to 4907a6d by @Renovate Bot in 7bc1b08
+- Treat temporalCoverage as list; update OpenAPI & tests by @Quinten in 856cbdd
+- chore(deps): update graalvm/setup-graalvm digest to 60c2672 by @Renovate Bot in 1b7cfba
+- chore(deps): update graalvm/setup-graalvm digest to 2149f39 by @Renovate Bot in bdeede9
+- chore(deps): update quarkus.platform.version to v3.34.1 by @Renovate Bot in 04cb975
+- doc: update CHANGELOG.md for v1.3.41 by @LNDS-Sysadmins in ed40803
+
+
+### Fixed
+- fix(deps): update quarkus-openapi-generator.version to v2.16.0 by @Renovate Bot in fad27f6
+- fix(deps): update quarkus-openapi-generator.version to v2.15.0-lts by @Renovate Bot in c6abae0
+- fix: actions by @Kacem Bechka in 0d33479
+
+
 ## [v1.3.41] - 2026-03-24
 
 ### Changed

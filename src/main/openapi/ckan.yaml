@@ -439,9 +439,11 @@ components:
           type: string
           title: email
         url:
+          type: array
           title: url
           description: URLs for more information about the contact point.
-          type: string
+          items:
+            type: string
         identifier:
           type: string
           title: identifier

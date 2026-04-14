@@ -193,13 +193,13 @@ class CkanDatasetsMapperTest {
                                     .name("Contact 1")
                                     .email("contact1@example.com")
                                     .identifier("contact-identifier-1")
-                                    .url("http://example.com/contact-1")
+                                    .url(List.of("http://example.com/contact-1"))
                                     .build(),
                             ContactPoint.builder()
                                     .name("Contact 2")
                                     .email("contact2@example.com")
                                     .identifier("contact-identifier-2")
-                                    .url("http://example.com/contact-2")
+                                    .url(List.of("http://example.com/contact-2"))
                                     .build()
                     ))
                     .datasetRelationships(List.of(
@@ -471,13 +471,13 @@ class CkanDatasetsMapperTest {
                                 .name("Contact 1")
                                 .email("contact1@example.com")
                                 .identifier("contact-identifier-1")
-                                .url("http://example.com/contact-1")
+                                .url(List.of("http://example.com/contact-1"))
                                 .build(),
                         CkanContactPoint.builder()
                                 .name("Contact 2")
                                 .email("contact2@example.com")
                                 .identifier("contact-identifier-2")
-                                .url("http://example.com/contact-2")
+                                .url(List.of("http://example.com/contact-2"))
                                 .build()
                 ))
                 .creator(List.of(

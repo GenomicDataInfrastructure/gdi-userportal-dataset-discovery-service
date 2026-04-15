@@ -5,7 +5,7 @@
     "urlPattern": "/api/3/action/enhanced_package_search",
     "bodyPatterns": [
       {
-        "equalToJson": "{\"rows\":0,\"start\":0,\"facet.field\":\"[\\\"access_rights\\\",\\\"theme\\\",\\\"tags\\\",\\\"publisher_name\\\",\\\"res_format\\\",\\\"modified\\\",\\\"number_of_records\\\"]\",\"facet.limit\":-1}",
+        "equalToJson": "{\"rows\":0,\"start\":0,\"facet.field\":\"[\\\"access_rights\\\",\\\"theme\\\",\\\"tags\\\",\\\"publisher_name\\\",\\\"res_format\\\",\\\"modified\\\",\\\"number_of_records\\\",\\\"vocab_in_series_title\\\"]\",\"facet.limit\":-1}",
         "ignoreExtraElements": true
       }
     ]
@@ -492,6 +492,21 @@
               {
                 "name": "250",
                 "display_name": "250",
+                "count": 1
+              }
+            ]
+          },
+          "vocab_in_series_title": {
+            "title": "Dataset series",
+            "items": [
+              {
+                "name": "Colorectal cohort",
+                "display_name": "Colorectal cohort",
+                "count": 2
+              },
+              {
+                "name": "Rare disease panel",
+                "display_name": "Rare disease panel",
                 "count": 1
               }
             ]

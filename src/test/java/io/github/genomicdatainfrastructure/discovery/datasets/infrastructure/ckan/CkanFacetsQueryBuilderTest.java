@@ -397,7 +397,7 @@ class CkanFacetsQueryBuilderTest {
                 ))
                 .build();
 
-        var expected = "min_typical_age:[10 TO *]";
+        var expected = "max_typical_age:[10 TO *]";
         var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
 
         assertEquals(expected, actual);
@@ -417,7 +417,7 @@ class CkanFacetsQueryBuilderTest {
                 ))
                 .build();
 
-        var expected = "max_typical_age:[* TO 100]";
+        var expected = "min_typical_age:[* TO 100]";
         var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
 
         assertEquals(expected, actual);

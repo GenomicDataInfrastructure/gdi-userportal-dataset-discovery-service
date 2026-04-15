@@ -140,10 +140,10 @@ public class CkanFacetsQueryBuilder {
 
         if (lower.isPresent() && upper.isEmpty()) {
             return resolveNumberCondition(numericFacets)
-                    .flatMap(condition -> condition.toSolrQuery(MIN_TYPICAL_AGE));
+                    .flatMap(condition -> condition.toSolrQuery(MAX_TYPICAL_AGE));
         } else if (upper.isPresent() && lower.isEmpty()) {
             return resolveNumberCondition(numericFacets)
-                    .flatMap(condition -> condition.toSolrQuery(MAX_TYPICAL_AGE));
+                    .flatMap(condition -> condition.toSolrQuery(MIN_TYPICAL_AGE));
         }
 
         var sb = new StringBuilder();

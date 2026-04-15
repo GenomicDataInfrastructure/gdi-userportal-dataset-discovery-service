@@ -17,10 +17,12 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackageSe
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesSearchResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesSearchResult;
 import jakarta.enterprise.inject.Vetoed;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 class CkanFilterBuilderTest {
@@ -103,7 +105,7 @@ class CkanFilterBuilderTest {
                 .result(PackagesSearchResult.builder()
                         .searchFacets(Map.of(
                                 "min_typical_age", CkanFacet.builder()
-                                        .title("Minimal Typical Age")
+                                        .title("Minimum Typical Age")
                                         .items(List.of(CkanValueLabel.builder()
                                                 .name("0")
                                                 .displayName("0")
@@ -137,6 +139,7 @@ class CkanFilterBuilderTest {
         var filters = builder.build(null, "en");
 
         var typicalAge = findFilter(filters, "typical_age");
+        assertThat(typicalAge.getLabel()).isEqualTo("Minimum Typical Age - Maximum Typical Age");
         assertThat(typicalAge.getType()).isEqualTo(FilterType.NUMBER);
         assertThat(typicalAge.getRange()).isNotNull();
         assertThat(typicalAge.getRange().getMin()).isEqualTo("0");
@@ -233,7 +236,8 @@ class CkanFilterBuilderTest {
                 new TestFilter("number_of_records", FilterType.NUMBER),
                 new TestFilter("tags", FilterType.DROPDOWN),
                 new TestFilter("typical_age", FilterType.NUMBER, Optional.of(Set.of(
-                        "min_typical_age", "max_typical_age"))));
+                        "min_typical_age", "max_typical_age"))
+                ));
 
         @Override
         public String filters() {

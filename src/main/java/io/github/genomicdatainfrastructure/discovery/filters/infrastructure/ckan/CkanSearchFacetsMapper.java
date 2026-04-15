@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -109,10 +110,12 @@ public class CkanSearchFacetsMapper {
             // Processing a composite range facet. We'll gather individual components and combine them into the
             // composite facet.
             var items = new ArrayList<CkanValueLabel>();
+            var titles = new LinkedHashSet<String>();
 
             for (var component : metadata.rangeComposite) {
                 var componentFacet = facets.get(component);
                 items.addAll(componentFacet.getItems());
+                titles.add(componentFacet.getTitle());
 
                 // skip processing the individual components
                 skipList.add(component);
@@ -120,6 +123,7 @@ public class CkanSearchFacetsMapper {
 
             // replace the items (values) for the composite facet with the values collected from the individual facets
             facet.items(items);
+            facet.setTitle(String.join(" - ", titles));
         }
 
         if (metadata != null && FilterType.DATETIME.equals(metadata.type)) {

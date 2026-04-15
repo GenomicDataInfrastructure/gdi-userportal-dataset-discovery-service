@@ -35,6 +35,6 @@ public interface DatasetsConfig {
         @WithDefault("DROPDOWN")
         FilterType type();
 
-        Optional<Set<String>> rangeComposite();
+        Optional<List<String>> rangeComposite();
     }
 }

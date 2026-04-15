@@ -237,7 +237,7 @@ class RetrieveFiltersQueryTest {
         }
 
         @Override
-        public Optional<Set<String>> rangeComposite() {
+        public Optional<List<String>> rangeComposite() {
             return Optional.empty();
         }
     }

@@ -235,7 +235,7 @@ class CkanFilterBuilderTest {
                 new TestFilter("modified", FilterType.DATETIME),
                 new TestFilter("number_of_records", FilterType.NUMBER),
                 new TestFilter("tags", FilterType.DROPDOWN),
-                new TestFilter("typical_age", FilterType.NUMBER, Optional.of(Set.of(
+                new TestFilter("typical_age", FilterType.NUMBER, Optional.of(List.of(
                         "min_typical_age", "max_typical_age"))
                 ));
 
@@ -276,7 +276,7 @@ class CkanFilterBuilderTest {
     }
 
     @Vetoed
-    private record TestFilter(String key, FilterType type, Optional<Set<String>> rangeComposite)
+    private record TestFilter(String key, FilterType type, Optional<List<String>> rangeComposite)
             implements DatasetsConfig.Filter {
 
         TestFilter(String key, FilterType type) {
@@ -308,7 +308,7 @@ class CkanFilterBuilderTest {
         }
 
         @Override
-        public Optional<Set<String>> rangeComposite() {
+        public Optional<List<String>> rangeComposite() {
             return Optional.empty();
         }
     }

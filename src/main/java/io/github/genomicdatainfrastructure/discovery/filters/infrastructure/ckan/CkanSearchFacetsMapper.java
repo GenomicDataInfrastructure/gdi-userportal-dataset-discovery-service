@@ -284,12 +284,12 @@ public class CkanSearchFacetsMapper {
                                 new FilterMetadata(Optional.ofNullable(filter.type())
                                         .orElse(DEFAULT_FILTER_TYPE),
                                         group.key(),
-                                        filter.rangeComposite().orElse(Set.of())))))
+                                        filter.rangeComposite().orElse(List.of())))))
                 .collect(java.util.stream.Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (left, right) -> right, LinkedHashMap::new));
     }
 
-    private record FilterMetadata(FilterType type, String group, Set<String> rangeComposite) {
+    private record FilterMetadata(FilterType type, String group, List<String> rangeComposite) {
     }
 
     private record NumericBound(BigDecimal numeric, String raw) {

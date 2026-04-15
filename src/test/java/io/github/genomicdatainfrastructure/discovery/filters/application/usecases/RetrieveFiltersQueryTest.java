@@ -11,6 +11,8 @@ import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import jakarta.enterprise.inject.Instance;
+
+import java.util.Optional;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -232,6 +234,11 @@ class RetrieveFiltersQueryTest {
         @Override
         public FilterType type() {
             return FilterType.DROPDOWN;
+        }
+
+        @Override
+        public Optional<Set<String>> rangeComposite() {
+            return Optional.empty();
         }
     }
 }

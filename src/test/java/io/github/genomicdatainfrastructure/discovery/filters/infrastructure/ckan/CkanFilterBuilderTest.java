@@ -17,9 +17,12 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackageSe
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesSearchResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesSearchResult;
 import jakarta.enterprise.inject.Vetoed;
+
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 class CkanFilterBuilderTest {
@@ -94,6 +97,53 @@ class CkanFilterBuilderTest {
         assertThat(tags.getValues())
                 .extracting(ValueLabel::getCount)
                 .containsExactly(5);
+    }
+
+    @Test
+    void buildRangeMetadataForCompositeFacet() {
+        var response = PackagesSearchResponse.builder()
+                .result(PackagesSearchResult.builder()
+                        .searchFacets(Map.of(
+                                "min_typical_age", CkanFacet.builder()
+                                        .title("Minimum Typical Age")
+                                        .items(List.of(CkanValueLabel.builder()
+                                                .name("0")
+                                                .displayName("0")
+                                                .count(1)
+                                                .build(),
+                                                CkanValueLabel.builder()
+                                                        .name("10")
+                                                        .displayName("10")
+                                                        .count(2)
+                                                        .build()))
+                                        .build(),
+                                "max_typical_age", CkanFacet.builder()
+                                        .title("Maximum Typical Age")
+                                        .items(List.of(CkanValueLabel.builder()
+                                                .name("100")
+                                                .displayName("100")
+                                                .count(3)
+                                                .build(),
+                                                CkanValueLabel.builder()
+                                                        .name("110")
+                                                        .displayName("110")
+                                                        .count(4)
+                                                        .build()))
+                                        .build()
+                        ))
+                        .build())
+                .build();
+
+        var builder = new CkanFilterBuilder(new StubCkanQueryApi(response),
+                new CkanSearchFacetsMapper(datasetsConfig));
+        var filters = builder.build(null, "en");
+
+        var typicalAge = findFilter(filters, "typical_age");
+        assertThat(typicalAge.getLabel()).isEqualTo("Minimum Typical Age - Maximum Typical Age");
+        assertThat(typicalAge.getType()).isEqualTo(FilterType.NUMBER);
+        assertThat(typicalAge.getRange()).isNotNull();
+        assertThat(typicalAge.getRange().getMin()).isEqualTo("0");
+        assertThat(typicalAge.getRange().getMax()).isEqualTo("110");
     }
 
     @Test
@@ -184,11 +234,14 @@ class CkanFilterBuilderTest {
         private static final Set<Filter> FILTERS = Set.of(
                 new TestFilter("modified", FilterType.DATETIME),
                 new TestFilter("number_of_records", FilterType.NUMBER),
-                new TestFilter("tags", FilterType.DROPDOWN));
+                new TestFilter("tags", FilterType.DROPDOWN),
+                new TestFilter("typical_age", FilterType.NUMBER, Optional.of(Set.of(
+                        "min_typical_age", "max_typical_age"))
+                ));
 
         @Override
         public String filters() {
-            return "modified,number_of_records,tags";
+            return "modified,number_of_records,tags,min_typical_age,max_typical_age";
         }
 
         @Override
@@ -223,7 +276,12 @@ class CkanFilterBuilderTest {
     }
 
     @Vetoed
-    private record TestFilter(String key, FilterType type) implements DatasetsConfig.Filter {
+    private record TestFilter(String key, FilterType type, Optional<Set<String>> rangeComposite)
+            implements DatasetsConfig.Filter {
+
+        TestFilter(String key, FilterType type) {
+            this(key, type, Optional.empty());
+        }
 
         @Override
         public String key() {
@@ -247,6 +305,11 @@ class CkanFilterBuilderTest {
         @Override
         public FilterType type() {
             return FilterType.FREE_TEXT;
+        }
+
+        @Override
+        public Optional<Set<String>> rangeComposite() {
+            return Optional.empty();
         }
     }
 

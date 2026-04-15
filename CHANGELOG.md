@@ -12,6 +12,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.44] - 2026-04-15
+
+### Added
+- feat: enable single value deserialization for collection fields in JacksonConfig by @Kacem Bechka in 17501e9
+- feat: add 'vocab_in_series_title' filter to datasets and update related tests and mappings by @Kacem Bechka in bf43b86
+- feat: add only lower and only upper typical age filtering by @kburger in 050e0a5
+- feat: add composite facet support by @kburger in 0bd7d0c
+- feat: add range query handling for min/max typical age by @kburger in 8baa7ec
+
+
+### Changed
+- Range list in stead of Set by @Hans-christian in be8b142
+- test: add test for composite range title concatenation by @kburger in 3244386
+- test: add test covering composite filter building by @kburger in f7b925c
+- style(sourcery): address review comments by @kburger in 3103ffd
+- test: revert properties for typical age facet by @kburger in 9452d2f
+- Make contact.url an array in OpenAPI and tests by @Quinten in 4078429
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1776104705 by @Renovate Bot in c85c50a
+- chore(deps): update actions/cache digest to 27d5ce7 by @Renovate Bot in cf47a33
+- doc: update CHANGELOG.md for v1.3.43 by @LNDS-Sysadmins in 455cda5
+
+
+### Fixed
+- fix: swap range conditions for min and max queries by @kburger in c2acab4
+
+
 ## [v1.3.43] - 2026-04-13
 
 ### Changed

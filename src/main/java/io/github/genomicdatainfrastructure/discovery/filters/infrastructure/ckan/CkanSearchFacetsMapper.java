@@ -113,6 +113,9 @@ public class CkanSearchFacetsMapper {
             var titles = new LinkedHashSet<String>();
 
             for (var component : metadata.rangeComposite) {
+                if (!facets.containsKey(component)) {
+                    continue;
+                }
                 var componentFacet = facets.get(component);
                 items.addAll(componentFacet.getItems());
                 titles.add(componentFacet.getTitle());

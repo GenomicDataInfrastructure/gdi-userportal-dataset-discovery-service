@@ -48,6 +48,12 @@
                         "metadata_modified": "2024-03-19T13:37:10.885817",
                         "name": "brain_mri_wml_vumcadc3",
                         "notes": "This collection will include brain MRI scans on which the amount of white matter lesions (WML) will be quantified. ",
+                        "in_series": [
+                            "series-a",
+                            "series-b",
+                            "series-a",
+                            " "
+                        ],
                         "num_resources": 0,
                         "num_tags": 0,
                         "organization": {
@@ -118,6 +124,9 @@
                         "metadata_modified": "2024-03-19T13:37:08.812120",
                         "name": "eucanimage_kauno_uc61",
                         "notes": "Within the EuCanImage project (https://eucanimage.eu/), imaging datasets are collected from multiple sites to facilitate the use of AI for cancer research. The BMIA XNAT will be used as main image data storage platform for centralized storage. As first usecase, breast cancer was identified, for which the first datasets will be collected from the University of Barcelona. The data will first be available to partners within the consortium, but will potentially be publicly released",
+                        "in_series": [
+                            "series-c"
+                        ],
                         "num_resources": 0,
                         "num_tags": 0,
                         "organization": {

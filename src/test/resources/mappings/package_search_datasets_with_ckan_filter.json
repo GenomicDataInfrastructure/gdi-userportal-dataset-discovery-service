@@ -48,6 +48,12 @@
             "metadata_modified": "2024-03-19T13:37:10.885817",
             "name": "brain_mri_wml_vumcadc3",
             "notes": "This collection will include brain MRI scans on which the amount of white matter lesions (WML) will be quantified. ",
+            "in_series": [
+              "series-a",
+              "series-b",
+              "series-a",
+              " "
+            ],
             "num_resources": 0,
             "num_tags": 0,
             "organization": {

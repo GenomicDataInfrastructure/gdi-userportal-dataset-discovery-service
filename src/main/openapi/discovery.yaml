@@ -392,6 +392,9 @@ components:
         distributionsCount:
           type: integer
           title: Distributions count
+        inSeriesCount:
+          type: integer
+          title: Dataset series count
       required:
         - id
         - title

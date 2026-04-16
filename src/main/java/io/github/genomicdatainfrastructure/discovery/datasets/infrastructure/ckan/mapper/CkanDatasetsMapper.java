@@ -171,6 +171,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "numberOfUniqueIndividuals", source = "numberOfUniqueIndividuals")
     @Mapping(target = "temporalCoverage", source = "temporalCoverage")
     @Mapping(target = "distributionsCount", source = ".", qualifiedByName = "countDistributions")
+    @Mapping(target = "inSeriesCount", source = ".", qualifiedByName = "countInSeries")
     @Mapping(target = "catalogue", ignore = true)
     @Mapping(target = "recordsCount", ignore = true)
     SearchedDataset mapToSearchedDataset(CkanPackage ckanPackage);
@@ -338,6 +339,23 @@ public interface CkanDatasetsMapper {
     @Named("countDistributions")
     default int countDistributions(CkanPackage ckanPackage) {
         return filterDistributions(ckanPackage).size();
+    }
+
+    /**
+     * Counts unique dataset series references, ignoring null/blank values.
+     */
+    @Named("countInSeries")
+    default int countInSeries(CkanPackage ckanPackage) {
+        if (ckanPackage == null || ckanPackage.getInSeries() == null) {
+            return 0;
+        }
+
+        return (int) ckanPackage.getInSeries().stream()
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(StringUtils::isNotBlank)
+                .distinct()
+                .count();
     }
 
     /**

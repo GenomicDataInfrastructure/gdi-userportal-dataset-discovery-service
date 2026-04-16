@@ -40,10 +40,5 @@ public class JacksonConfig implements ObjectMapperCustomizer {
         // This handles multilingual fields like name_translated
         objectMapper.coercionConfigFor(LogicalType.Map)
                 .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsEmpty);
-
-        // For Collection types (arrays/lists), coerce empty strings to empty collections
-        // This handles array fields that CKAN returns as "" instead of []
-        objectMapper.coercionConfigFor(LogicalType.Collection)
-                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsEmpty);
     }
 }

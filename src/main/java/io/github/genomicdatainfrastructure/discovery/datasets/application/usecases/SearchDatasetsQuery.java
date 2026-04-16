@@ -46,7 +46,8 @@ public class SearchDatasetsQuery {
 
     public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
-        boolean includeBeacon = (query.getIncludeBeacon() == null || query.getIncludeBeacon()) && beaconEnabled;
+        boolean includeBeacon = (query.getIncludeBeacon() == null || query.getIncludeBeacon())
+                && beaconEnabled;
 
         if (!includeBeacon) {
             return enrichWithSupplementalFacets(

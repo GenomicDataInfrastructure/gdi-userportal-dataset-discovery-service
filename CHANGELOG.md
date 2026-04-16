@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ### Changed
-- Range list in stead of Set by @Hans-christian in be8b142
+- Range list instead of Set by @Hans-christian in be8b142
 - test: add test for composite range title concatenation by @kburger in 3244386
 - test: add test covering composite filter building by @kburger in f7b925c
 - style(sourcery): address review comments by @kburger in 3103ffd

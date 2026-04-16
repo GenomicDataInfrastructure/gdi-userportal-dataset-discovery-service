@@ -5,6 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.application.usecases;
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.config.BeaconConfiguration;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.BeaconDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
@@ -33,6 +34,8 @@ class SearchDatasetsQueryTest {
 
     private DatasetsRepository repository;
 
+    private BeaconConfiguration beaconConfig;
+
     private BeaconDatasetIdsCollector beaconCollector;
 
     private CkanDatasetIdsCollector ckanCollector;
@@ -45,12 +48,15 @@ class SearchDatasetsQueryTest {
     @SuppressWarnings("unchecked")
     void setUp() {
         repository = mock(DatasetsRepository.class);
+        beaconConfig = mock(BeaconConfiguration.class);
+        when(beaconConfig.beacon()).thenReturn(true);
         beaconCollector = mock(BeaconDatasetIdsCollector.class);
         ckanCollector = mock(CkanDatasetIdsCollector.class);
         filterBuilders = mock(Instance.class);
         when(filterBuilders.stream()).thenReturn(Stream.empty());
 
-        underTest = new SearchDatasetsQuery(repository, beaconCollector, ckanCollector,
+        underTest = new SearchDatasetsQuery(repository, beaconConfig, beaconCollector,
+                ckanCollector,
                 filterBuilders);
     }
 

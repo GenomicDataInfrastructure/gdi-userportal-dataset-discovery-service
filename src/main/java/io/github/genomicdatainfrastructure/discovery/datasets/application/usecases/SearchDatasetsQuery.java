@@ -5,6 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.application.usecases;
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.config.BeaconConfiguration;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.BeaconDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
@@ -35,13 +36,15 @@ import static java.util.Objects.nonNull;
 public class SearchDatasetsQuery {
 
     private final DatasetsRepository repository;
+    private final BeaconConfiguration beaconConfig;
     private final BeaconDatasetIdsCollector beaconDatasetIdsCollector;
     private final CkanDatasetIdsCollector ckanDatasetIdsCollector;
     private final Instance<FilterBuilder> filterBuilders;
 
     public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
-        boolean includeBeacon = query.getIncludeBeacon() == null || query.getIncludeBeacon();
+        boolean includeBeacon = (query.getIncludeBeacon() == null || query.getIncludeBeacon())
+                && beaconConfig.beacon();
 
         if (!includeBeacon) {
             return enrichWithSupplementalFacets(

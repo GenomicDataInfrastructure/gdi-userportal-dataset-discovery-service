@@ -42,7 +42,7 @@ public class SearchDatasetsQuery {
     private final Instance<FilterBuilder> filterBuilders;
 
     @ConfigProperty(name = "sources.beacon", defaultValue = "true")
-    private boolean beaconEnabled;
+    boolean beaconEnabled;
 
     public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {

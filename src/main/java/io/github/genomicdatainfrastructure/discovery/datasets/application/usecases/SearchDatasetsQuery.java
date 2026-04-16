@@ -5,6 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.application.usecases;
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.config.BeaconConfiguration;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.BeaconDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanDatasetIdsCollector;
 import io.github.genomicdatainfrastructure.discovery.filters.application.ports.FilterBuilder;
@@ -25,8 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.config.CkanConfiguration.CKAN_FILTER_SOURCE;
 import static java.lang.Math.min;
 import static java.util.Objects.nonNull;
@@ -37,17 +36,15 @@ import static java.util.Objects.nonNull;
 public class SearchDatasetsQuery {
 
     private final DatasetsRepository repository;
+    private final BeaconConfiguration beaconConfig;
     private final BeaconDatasetIdsCollector beaconDatasetIdsCollector;
     private final CkanDatasetIdsCollector ckanDatasetIdsCollector;
     private final Instance<FilterBuilder> filterBuilders;
 
-    @ConfigProperty(name = "sources.beacon", defaultValue = "true")
-    boolean beaconEnabled;
-
     public DatasetsSearchResponse execute(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
         boolean includeBeacon = (query.getIncludeBeacon() == null || query.getIncludeBeacon())
-                && beaconEnabled;
+                && beaconConfig.beacon();
 
         if (!includeBeacon) {
             return enrichWithSupplementalFacets(

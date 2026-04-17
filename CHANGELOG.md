@@ -12,6 +12,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.46] - 2026-04-17
+
+### Added
+- feat: add inSeriesCount mapping and related functionality to CkanDatasetsMapper by @Kacem Bechka in f75ebdb
+
+
+### Changed
+- Update CHANGELOG.md by @Hans-Christian in baab071
+- doc: update CHANGELOG.md for v1.3.44 by @LNDS-Sysadmins in 4fec6ec
+
+
 ## [v1.3.44] - 2026-04-15
 
 ### Added

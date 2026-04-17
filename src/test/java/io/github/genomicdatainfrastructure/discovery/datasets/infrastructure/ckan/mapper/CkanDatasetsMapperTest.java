@@ -620,7 +620,8 @@ class CkanDatasetsMapperTest {
                                 .build()
                 ))
                 .spatialResolutionInMeters(10.0f)
-                .alternateIdentifier(List.of("internalURI:admsIdentifier0"));
+                .alternateIdentifier(List.of("internalURI:admsIdentifier0"))
+                .inSeries(List.of("series-1", "series-2", "series-2", " "));
     }
 
     @Nested
@@ -678,6 +679,7 @@ class CkanDatasetsMapperTest {
                     .modifiedAt(OffsetDateTime.parse("2024-07-02T22:00Z"))
                     .createdAt(OffsetDateTime.parse("2024-07-01T22:00Z"))
                     .distributionsCount(1)
+                    .inSeriesCount(2)
                     .numberOfUniqueIndividuals(123456789)
                     .accessRights(getValueLabel("accessRights", "public", 10))
                     .conformsTo(

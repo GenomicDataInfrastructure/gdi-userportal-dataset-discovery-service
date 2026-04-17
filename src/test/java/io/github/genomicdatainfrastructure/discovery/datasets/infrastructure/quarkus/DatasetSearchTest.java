@@ -32,6 +32,7 @@ class DatasetSearchTest extends BaseTest {
                 .statusCode(200)
                 .body("count", equalTo(3))
                 .body("facets.find { it.key == 'tags' }.values.size()", greaterThan(0))
+                .body("results[0].inSeriesCount", equalTo(2))
                 .body("results[0].identifier", equalTo("27866022694497975"))
                 .body("results[1].identifier", equalTo("euc_kauno_uc6"))
                 .body("results[2].identifier", equalTo("cp-tavi"));
@@ -50,6 +51,7 @@ class DatasetSearchTest extends BaseTest {
                 .statusCode(200)
                 .body("count", equalTo(3))
                 .body("facets.find { it.key == 'tags' }.values.size()", greaterThan(0))
+                .body("results[0].inSeriesCount", equalTo(2))
                 .body("results[0].identifier", equalTo("27866022694497975"))
                 .body("results[1].identifier", equalTo("euc_kauno_uc6"))
                 .body("results[2].identifier", equalTo("cp-tavi"));
@@ -100,6 +102,7 @@ class DatasetSearchTest extends BaseTest {
                 .statusCode(200)
                 .body("count", equalTo(1))
                 .body("results[0].identifier", equalTo("27866022694497975"))
+                .body("results[0].inSeriesCount", equalTo(2))
                 .body("facets.find { it.key == 'tags' }.values.size()", equalTo(1))
                 .body("facets.find { it.key == 'tags' }.values[0].value", equalTo("synthetic"));
     }
@@ -129,6 +132,7 @@ class DatasetSearchTest extends BaseTest {
                 .body("count", equalTo(1))
                 .body("results[0].identifier", equalTo("27866022694497975"))
                 .body("results[0].recordsCount", equalTo(64))
+                .body("results[0].inSeriesCount", equalTo(2))
                 .body("facets.find { it.key == 'tags' }.values.size()", equalTo(1))
                 .body("facets.find { it.source == 'beacon' && it.key == 'sex' }.label",
                         equalTo("Sex"));

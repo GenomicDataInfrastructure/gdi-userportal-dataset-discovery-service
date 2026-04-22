@@ -12,6 +12,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.45] - 2026-04-16
+
+### Changed
+- Use beaconConfig class for enabling by @Hans-christian in 5fa3284
+- Update JacksonConfig.java by @Quinten in 7008156
+- Skip missing facets when mapping components by @Quinten in 7cc7959
+
+
+### Fixed
+- fix(formatting) Formatting of SearchDatasetsQuery by @Hans-christian in 9d177d1
+- fix(private) private is not recommended by @Hans-christian in b58530e
+- fix(beacon) Check beacon enabled by @Hans-christian in 86ce2f0
+
+
 ## [v1.3.44] - 2026-04-15
 
 ### Added

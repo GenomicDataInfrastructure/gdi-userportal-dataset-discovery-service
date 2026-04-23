@@ -72,7 +72,11 @@
                         "private": false,
                         "state": "active",
                         "title": "Brain_MRI_WML_VUMCADC",
-                        "type": "dataset",
+                        "type": {
+                            "name": "dataset",
+                            "display_name": "dataset",
+                            "count": null
+                        },
                         "extras": [
                             {
                                 "key": "uri",
@@ -145,7 +149,11 @@
                         "private": false,
                         "state": "active",
                         "title": "EuCanImage_KAUNO_UC6",
-                        "type": "dataset",
+                        "type": {
+                            "name": "dataset",
+                            "display_name": "dataset",
+                            "count": null
+                        },
                         "extras": [
                             {
                                 "key": "uri",
@@ -215,7 +223,11 @@
                         "private": false,
                         "state": "active",
                         "title": "CP-TAVI",
-                        "type": "dataset",
+                        "type": {
+                            "name": "dataset",
+                            "display_name": "dataset",
+                            "count": null
+                        },
                         "extras": [
                             {
                                 "key": "uri",

@@ -72,7 +72,11 @@
             "private": false,
             "state": "active",
             "title": "Brain_MRI_WML_VUMCADC",
-            "type": "dataset",
+            "type": {
+              "name": "dataset",
+              "display_name": "dataset",
+              "count": null
+            },
             "extras": [
               {
                 "key": "uri",

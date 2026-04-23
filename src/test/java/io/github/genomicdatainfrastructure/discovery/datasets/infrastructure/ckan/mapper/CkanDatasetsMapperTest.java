@@ -828,6 +828,52 @@ class CkanDatasetsMapperTest {
         }
     }
 
+    @Nested
+    class IsDatasetSeriesTest {
+
+        @Test
+        void given_null_ckanPackage_returns_null() {
+            assertThat(mapper.isDatasetSeries(null)).isNull();
+        }
+
+        @Test
+        void given_ckanPackage_without_type_returns_null() {
+            var ckanPackage = CkanPackage.builder().build();
+
+            assertThat(mapper.isDatasetSeries(ckanPackage)).isNull();
+        }
+
+        @Test
+        void given_dataset_series_type_name_returns_true() {
+            var ckanPackage = CkanPackage.builder()
+                    .type(getCkanValueLabel("dataset_series", "dataset_series"))
+                    .build();
+
+            assertThat(mapper.isDatasetSeries(ckanPackage)).isTrue();
+        }
+
+        @Test
+        void given_dataset_series_type_display_name_returns_true() {
+            var ckanPackage = CkanPackage.builder()
+                    .type(CkanValueLabel.builder()
+                            .name(" ")
+                            .displayName("dataset_series")
+                            .build())
+                    .build();
+
+            assertThat(mapper.isDatasetSeries(ckanPackage)).isTrue();
+        }
+
+        @Test
+        void given_dataset_type_returns_false() {
+            var ckanPackage = CkanPackage.builder()
+                    .type(getCkanValueLabel("dataset", "dataset"))
+                    .build();
+
+            assertThat(mapper.isDatasetSeries(ckanPackage)).isFalse();
+        }
+    }
+
     private static @NotNull List<CkanResource> getCkanResourcesWithAccessService(
             CkanResourceAccessServicesInner accessService) {
         return List.of(

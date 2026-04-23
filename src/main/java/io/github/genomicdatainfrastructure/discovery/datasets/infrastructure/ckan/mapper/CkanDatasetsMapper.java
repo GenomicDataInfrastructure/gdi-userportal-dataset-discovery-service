@@ -84,6 +84,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "versionNotes", source = "versionNotes")
     @Mapping(target = "version", source = "version")
     @Mapping(target = "ownerOrg", source = "ownerOrg")
+    @Mapping(target = "isSeries", source = ".", qualifiedByName = "isDatasetSeries")
     RetrievedDataset map(CkanPackage ckanPackage);
 
     @Mapping(target = "contacts", source = "contact")
@@ -172,6 +173,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "temporalCoverage", source = "temporalCoverage")
     @Mapping(target = "distributionsCount", source = ".", qualifiedByName = "countDistributions")
     @Mapping(target = "inSeriesCount", source = ".", qualifiedByName = "countInSeries")
+    @Mapping(target = "isSeries", source = ".", qualifiedByName = "isDatasetSeries")
     @Mapping(target = "catalogue", ignore = true)
     @Mapping(target = "recordsCount", ignore = true)
     SearchedDataset mapToSearchedDataset(CkanPackage ckanPackage);
@@ -356,6 +358,26 @@ public interface CkanDatasetsMapper {
                 .filter(StringUtils::isNotBlank)
                 .distinct()
                 .count();
+    }
+
+    @Named("isDatasetSeries")
+    default Boolean isDatasetSeries(CkanPackage ckanPackage) {
+        if (ckanPackage == null || ckanPackage.getType() == null) {
+            return null;
+        }
+
+        var packageType = Stream.of(ckanPackage.getType().getName(),
+                ckanPackage.getType().getDisplayName())
+                .filter(StringUtils::isNotBlank)
+                .findFirst()
+                .map(String::trim)
+                .orElse(null);
+
+        if (StringUtils.isBlank(packageType)) {
+            return null;
+        }
+
+        return "dataset_series".equalsIgnoreCase(packageType);
     }
 
     /**

@@ -190,6 +190,8 @@ components:
           type: string
         name:
           type: string
+        type:
+          $ref: "#/components/schemas/CkanValueLabel"
         notes:
           type: string
         version:

@@ -35,6 +35,7 @@ class CkanDatasetsMapperTest {
 
             final var actual = mapper.map(ckanPackage);
             final var expected = RetrievedDataset.builder()
+                    .isSeries(false)
                     .conformsTo(List.of())
                     .distributions(List.of())
                     .hasVersions(List.of())
@@ -100,6 +101,7 @@ class CkanDatasetsMapperTest {
                     .id("id")
                     .identifier("identifier")
                     .title("title")
+                    .isSeries(false)
                     .version("1.0.0")
                     .ownerOrg("test-organization")
                     .dcatType(getValueLabel("type", "type-uri"))
@@ -653,6 +655,7 @@ class CkanDatasetsMapperTest {
                     .id("id")
                     .identifier("identifier")
                     .title("title")
+                    .isSeries(false)
                     .description("notes")
                     .publishers(List.of(Agent.builder()
                             .name("publisherName")
@@ -825,6 +828,52 @@ class CkanDatasetsMapperTest {
             var actual = mapper.mergeKeywords(ckanPackage);
 
             assertThat(actual).containsExactly("tags-only");
+        }
+    }
+
+    @Nested
+    class IsDatasetSeriesTest {
+
+        @Test
+        void given_null_ckanPackage_returns_false() {
+            assertThat(mapper.isDatasetSeries(null)).isFalse();
+        }
+
+        @Test
+        void given_ckanPackage_without_type_returns_false() {
+            var ckanPackage = CkanPackage.builder().build();
+
+            assertThat(mapper.isDatasetSeries(ckanPackage)).isFalse();
+        }
+
+        @Test
+        void given_dataset_series_type_name_returns_true() {
+            var ckanPackage = CkanPackage.builder()
+                    .type(getCkanValueLabel("dataset_series", "dataset_series"))
+                    .build();
+
+            assertThat(mapper.isDatasetSeries(ckanPackage)).isTrue();
+        }
+
+        @Test
+        void given_dataset_series_type_display_name_returns_true() {
+            var ckanPackage = CkanPackage.builder()
+                    .type(CkanValueLabel.builder()
+                            .name(" ")
+                            .displayName("dataset_series")
+                            .build())
+                    .build();
+
+            assertThat(mapper.isDatasetSeries(ckanPackage)).isTrue();
+        }
+
+        @Test
+        void given_dataset_type_returns_false() {
+            var ckanPackage = CkanPackage.builder()
+                    .type(getCkanValueLabel("dataset", "dataset"))
+                    .build();
+
+            assertThat(mapper.isDatasetSeries(ckanPackage)).isFalse();
         }
     }
 

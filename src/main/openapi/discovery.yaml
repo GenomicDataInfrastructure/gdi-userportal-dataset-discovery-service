@@ -395,6 +395,9 @@ components:
         inSeriesCount:
           type: integer
           title: Dataset series count
+        isSeries:
+          type: boolean
+          title: Whether this result is a dataset series
       required:
         - id
         - title
@@ -429,6 +432,9 @@ components:
         title:
           type: string
           title: Title
+        isSeries:
+          type: boolean
+          title: Whether this record is a dataset series
         description:
           type: string
           title: Description

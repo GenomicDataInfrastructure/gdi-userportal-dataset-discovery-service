@@ -363,7 +363,7 @@ public interface CkanDatasetsMapper {
     @Named("isDatasetSeries")
     default Boolean isDatasetSeries(CkanPackage ckanPackage) {
         if (ckanPackage == null || ckanPackage.getType() == null) {
-            return null;
+            return Boolean.FALSE;
         }
 
         var packageType = Stream.of(ckanPackage.getType().getName(),
@@ -371,11 +371,7 @@ public interface CkanDatasetsMapper {
                 .filter(StringUtils::isNotBlank)
                 .findFirst()
                 .map(String::trim)
-                .orElse(null);
-
-        if (StringUtils.isBlank(packageType)) {
-            return null;
-        }
+                .orElse("");
 
         return "dataset_series".equalsIgnoreCase(packageType);
     }

@@ -35,6 +35,7 @@ class CkanDatasetsMapperTest {
 
             final var actual = mapper.map(ckanPackage);
             final var expected = RetrievedDataset.builder()
+                    .isSeries(false)
                     .conformsTo(List.of())
                     .distributions(List.of())
                     .hasVersions(List.of())
@@ -100,6 +101,7 @@ class CkanDatasetsMapperTest {
                     .id("id")
                     .identifier("identifier")
                     .title("title")
+                    .isSeries(false)
                     .version("1.0.0")
                     .ownerOrg("test-organization")
                     .dcatType(getValueLabel("type", "type-uri"))
@@ -653,6 +655,7 @@ class CkanDatasetsMapperTest {
                     .id("id")
                     .identifier("identifier")
                     .title("title")
+                    .isSeries(false)
                     .description("notes")
                     .publishers(List.of(Agent.builder()
                             .name("publisherName")
@@ -832,15 +835,15 @@ class CkanDatasetsMapperTest {
     class IsDatasetSeriesTest {
 
         @Test
-        void given_null_ckanPackage_returns_null() {
-            assertThat(mapper.isDatasetSeries(null)).isNull();
+        void given_null_ckanPackage_returns_false() {
+            assertThat(mapper.isDatasetSeries(null)).isFalse();
         }
 
         @Test
-        void given_ckanPackage_without_type_returns_null() {
+        void given_ckanPackage_without_type_returns_false() {
             var ckanPackage = CkanPackage.builder().build();
 
-            assertThat(mapper.isDatasetSeries(ckanPackage)).isNull();
+            assertThat(mapper.isDatasetSeries(ckanPackage)).isFalse();
         }
 
         @Test

@@ -690,6 +690,7 @@ class CkanDatasetsMapperTest {
 
             final var actual = mapper.mapToSearchedDataset(ckanPackage);
 
+            assertThat(actual.getTemporalCoverage()).isEmpty();
             assertThat(actual.getTemporalCoverageStart()).isNull();
             assertThat(actual.getTemporalCoverageEnd()).isNull();
         }

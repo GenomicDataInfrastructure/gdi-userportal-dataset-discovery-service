@@ -171,6 +171,8 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "conformsTo", source = "conformsTo")
     @Mapping(target = "numberOfUniqueIndividuals", source = "numberOfUniqueIndividuals")
     @Mapping(target = "temporalCoverage", source = "temporalCoverage")
+    @Mapping(target = "temporalCoverageStart", source = "temporalCoverage", qualifiedByName = "mapEarliestTemporalCoverageStart")
+    @Mapping(target = "temporalCoverageEnd", source = "temporalCoverage", qualifiedByName = "mapLatestTemporalCoverageEnd")
     @Mapping(target = "distributionsCount", source = ".", qualifiedByName = "countDistributions")
     @Mapping(target = "inSeriesCount", source = ".", qualifiedByName = "countInSeries")
     @Mapping(target = "isSeries", source = ".", qualifiedByName = "isDatasetSeries")
@@ -192,6 +194,40 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "start", source = "start")
     @Mapping(target = "end", source = "end")
     TimeWindow map(CkanTimeWindow timeWindow);
+
+    @Named("mapEarliestTemporalCoverageStart")
+    default OffsetDateTime mapEarliestTemporalCoverageStart(
+            List<CkanTimeWindow> temporalCoverage) {
+        if (temporalCoverage == null || temporalCoverage.isEmpty()) {
+            return null;
+        }
+
+        return temporalCoverage.stream()
+                .filter(Objects::nonNull)
+                .map(CkanTimeWindow::getStart)
+                .filter(StringUtils::isNotBlank)
+                .map(this::map)
+                .filter(Objects::nonNull)
+                .min(OffsetDateTime::compareTo)
+                .orElse(null);
+    }
+
+    @Named("mapLatestTemporalCoverageEnd")
+    default OffsetDateTime mapLatestTemporalCoverageEnd(
+            List<CkanTimeWindow> temporalCoverage) {
+        if (temporalCoverage == null || temporalCoverage.isEmpty()) {
+            return null;
+        }
+
+        return temporalCoverage.stream()
+                .filter(Objects::nonNull)
+                .map(CkanTimeWindow::getEnd)
+                .filter(StringUtils::isNotBlank)
+                .map(this::map)
+                .filter(Objects::nonNull)
+                .max(OffsetDateTime::compareTo)
+                .orElse(null);
+    }
 
     @Mapping(target = "uri", source = "uri")
     @Mapping(target = "text", source = "text")

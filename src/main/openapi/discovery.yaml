@@ -386,6 +386,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TimeWindow"
+        temporalCoverageStart:
+          type: string
+          format: date-time
+          description: Earliest available temporal coverage start across all periods.
+        temporalCoverageEnd:
+          type: string
+          format: date-time
+          description: Latest available temporal coverage end across all periods.
         recordsCount:
           type: integer
           title: Records count

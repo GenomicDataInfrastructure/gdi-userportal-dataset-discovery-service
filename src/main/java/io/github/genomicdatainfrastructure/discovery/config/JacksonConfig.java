@@ -31,6 +31,11 @@ public class JacksonConfig implements ObjectMapperCustomizer {
         // (e.g. contact.url as "https://..." instead of ["https://..."])
         objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
+        // For Collection types, coerce empty objects {} to empty lists
+        // This handles cases where CKAN returns {} for array fields like temporal_coverage
+        objectMapper.coercionConfigFor(LogicalType.Collection)
+                .setCoercion(CoercionInputShape.EmptyObject, CoercionAction.AsEmpty);
+
         // For POJO types, coerce empty strings to null
         // This handles cases where CKAN returns "" instead of {} or null
         objectMapper.coercionConfigFor(LogicalType.POJO)

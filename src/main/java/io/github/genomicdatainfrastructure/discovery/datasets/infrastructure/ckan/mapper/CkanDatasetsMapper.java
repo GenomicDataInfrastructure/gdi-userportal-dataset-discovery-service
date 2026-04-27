@@ -186,7 +186,7 @@ public interface CkanDatasetsMapper {
         }
 
         return temporalCoverage.stream()
-                .filter(Objects::nonNull)
+                .filter(this::hasTemporalCoverageValue)
                 .map(this::map)
                 .toList();
     }
@@ -194,6 +194,15 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "start", source = "start")
     @Mapping(target = "end", source = "end")
     TimeWindow map(CkanTimeWindow timeWindow);
+
+    default boolean hasTemporalCoverageValue(CkanTimeWindow timeWindow) {
+        if (timeWindow == null) {
+            return false;
+        }
+
+        return StringUtils.isNotBlank(timeWindow.getStart())
+                || StringUtils.isNotBlank(timeWindow.getEnd());
+    }
 
     @Named("mapEarliestTemporalCoverageStart")
     default OffsetDateTime mapEarliestTemporalCoverageStart(

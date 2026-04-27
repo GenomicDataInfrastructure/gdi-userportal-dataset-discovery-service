@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -675,6 +676,59 @@ class CkanDatasetsMapperTest {
                     .isEqualTo(parse("2018-05-01T00:00:00Z"));
             assertThat(actual.getTemporalCoverageEnd())
                     .isEqualTo(parse("2024-02-01T00:00:00Z"));
+        }
+
+        @Test
+        void given_null_temporal_coverage_should_map_null_summary_fields() {
+            final var ckanPackage = CkanPackage.builder()
+                    .id("dataset-id")
+                    .title("Dataset title")
+                    .notes("Dataset description")
+                    .type(getCkanValueLabel("dataset", "dataset"))
+                    .temporalCoverage(null)
+                    .build();
+
+            final var actual = mapper.mapToSearchedDataset(ckanPackage);
+
+            assertThat(actual.getTemporalCoverageStart()).isNull();
+            assertThat(actual.getTemporalCoverageEnd()).isNull();
+        }
+
+        @Test
+        void given_empty_temporal_coverage_should_map_null_summary_fields() {
+            final var ckanPackage = CkanPackage.builder()
+                    .id("dataset-id")
+                    .title("Dataset title")
+                    .notes("Dataset description")
+                    .type(getCkanValueLabel("dataset", "dataset"))
+                    .temporalCoverage(List.of())
+                    .build();
+
+            final var actual = mapper.mapToSearchedDataset(ckanPackage);
+
+            assertThat(actual.getTemporalCoverageStart()).isNull();
+            assertThat(actual.getTemporalCoverageEnd()).isNull();
+        }
+
+        @Test
+        void given_temporal_coverage_without_valid_start_or_end_should_map_null_summary_fields() {
+            final var temporalCoverage = new ArrayList<CkanTimeWindow>();
+            temporalCoverage.add(null);
+            temporalCoverage.add(CkanTimeWindow.builder().start(" ").end(" ").build());
+            temporalCoverage.add(CkanTimeWindow.builder().start(null).end(null).build());
+
+            final var ckanPackage = CkanPackage.builder()
+                    .id("dataset-id")
+                    .title("Dataset title")
+                    .notes("Dataset description")
+                    .type(getCkanValueLabel("dataset", "dataset"))
+                    .temporalCoverage(temporalCoverage)
+                    .build();
+
+            final var actual = mapper.mapToSearchedDataset(ckanPackage);
+
+            assertThat(actual.getTemporalCoverageStart()).isNull();
+            assertThat(actual.getTemporalCoverageEnd()).isNull();
         }
 
         @NotNull

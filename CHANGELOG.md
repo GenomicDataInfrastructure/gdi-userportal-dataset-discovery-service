@@ -12,6 +12,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.3.47] - 2026-04-27
+
+### Added
+- feat: enhance temporal coverage handling in CkanDatasetsMapper by @Kacem Bechka in 41458fc
+- feat: add temporal coverage start and end mappings to CkanDatasetsMapper, update OpenAPI schema, and enhance tests by @Kacem Bechka in 88157b2
+- feat: add isSeries mapping and logic to CkanDatasetsMapper, update OpenAPI schemas, and enhance tests by @Kacem Bechka in 5dd4021
+
+
+### Changed
+- make sonar happy by @Kacem Bechka in 36497b1
+- chore(deps): update quarkus.platform.version to v3.34.6 by @Renovate Bot in e7bf8eb
+- make sonarqube happy? by @Kacem Bechka in 69c10e2
+- chore(deps): update dependency org.projectlombok:lombok to v1.18.46 by @Renovate Bot in 9e14785
+- chore(deps): update aquasecurity/trivy-action action to v0.36.0 by @Renovate Bot in fed527a
+- chore(deps): update dependency org.sonarsource.scanner.maven:sonar-maven-plugin to v5.6.0.6792 by @Renovate Bot in f3d5c9d
+- chore(deps): update astral-sh/setup-uv action to v8.1.0 by @Renovate Bot in f421f21
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1776833838 by @Renovate Bot in ca9024d
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1776645941 by @Renovate Bot in 6fad41a
+- chore(deps): update quarkus.platform.version to v3.34.5 by @Renovate Bot in 708d9b4
+- doc: update CHANGELOG.md for v1.3.46 by @LNDS-Sysadmins in 207b377
+- doc: update CHANGELOG.md for v1.3.45 by @LNDS-Sysadmins in dbac500
+
+
+### Fixed
+- fix(deps): update quarkus-openapi-generator.version to v2.16.0-lts by @Renovate Bot in 0566848
+
+
 ## [v1.3.46] - 2026-04-17
 
 ### Added

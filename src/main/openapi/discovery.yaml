@@ -831,6 +831,7 @@ components:
                   type: string
               description:
                 type: string
+                nullable: true
               endpointDescription:
                 type: string
               endpoint_url:
@@ -844,6 +845,7 @@ components:
               id:
                 type: string
                 title: Data service internal ID
+                nullable: true
               keywords:
                 type: array
                 items:

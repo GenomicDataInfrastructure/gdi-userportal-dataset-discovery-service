@@ -12,6 +12,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.4.0] - 2026-05-05
+
+### Changed
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1777857961 by @Renovate Bot in bf72cf8
+- doc: update CHANGELOG.md for v1.3.48 by @LNDS-Sysadmins in e25232c
+
+
 ## [v1.3.48] - 2026-04-28
 
 ### Added

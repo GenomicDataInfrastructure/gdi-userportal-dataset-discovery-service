@@ -83,12 +83,16 @@ class CkanFilterBuilderTest {
         assertThat(modified.getRange()).isNotNull();
         assertThat(modified.getRange().getMin()).isEqualTo("2024-01-01T00:00Z");
         assertThat(modified.getRange().getMax()).isEqualTo("2024-12-31T23:59:59Z");
+        assertThat(modified.getOperators())
+                .containsExactly("=", ">", "<", ">=", "<=");
 
         var number = findFilter(filters, "number_of_records");
         assertThat(number.getType()).isEqualTo(FilterType.NUMBER);
         assertThat(number.getRange()).isNotNull();
         assertThat(number.getRange().getMin()).isEqualTo("10");
         assertThat(number.getRange().getMax()).isEqualTo("250");
+        assertThat(number.getOperators())
+                .containsExactly("=", ">", "<", ">=", "<=");
 
         var tags = findFilter(filters, "tags");
         assertThat(tags.getValues())

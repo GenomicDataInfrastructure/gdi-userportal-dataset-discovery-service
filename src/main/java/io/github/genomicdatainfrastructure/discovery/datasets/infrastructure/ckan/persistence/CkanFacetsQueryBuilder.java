@@ -11,6 +11,10 @@ import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.github.genomicdatainfrastructure.discovery.model.Operator;
 import lombok.experimental.UtilityClass;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,6 +31,7 @@ public class CkanFacetsQueryBuilder {
     private static final String QUOTED_VALUE = "\"%s\"";
     private static final String FACET_PATTERN = "%s:(%s)";
     private static final String RANGE_PATTERN = "%s:[%s TO %s]";
+    private static final String RANGE_WITH_BOUNDARIES_PATTERN = "%s:%s%s TO %s%s";
     private static final String RANGE_WILDCARD = "*";
     private static final String AND = " AND ";
     private static final String TYPICAL_AGE_KEY = "typical_age";
@@ -102,13 +107,17 @@ public class CkanFacetsQueryBuilder {
             return Optional.empty();
         }
 
-        var lower = findValueByOperator(dateTimeFacets,
+        var lower = findFacetByOperator(dateTimeFacets,
                 Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL,
-                Operator.GREATER_THAN_SYMBOL).orElse(null);
+                Operator.GREATER_THAN_SYMBOL)
+                .map(CkanFacetsQueryBuilder::toLowerDateTimeBound)
+                .orElse(null);
 
-        var upper = findValueByOperator(dateTimeFacets,
+        var upper = findFacetByOperator(dateTimeFacets,
                 Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL,
-                Operator.LESS_THAN_SYMBOL).orElse(null);
+                Operator.LESS_THAN_SYMBOL)
+                .map(CkanFacetsQueryBuilder::toUpperDateTimeBound)
+                .orElse(null);
 
         var exact = findValueByOperator(dateTimeFacets, Operator.EQUAL_SYMBOL).orElse(null);
 
@@ -223,13 +232,86 @@ public class CkanFacetsQueryBuilder {
                 .findFirst();
     }
 
+    private Optional<DatasetSearchQueryFacet> findFacetByOperator(
+            List<DatasetSearchQueryFacet> facets, Operator... operators
+    ) {
+        if (operators == null || operators.length == 0) {
+            return Optional.empty();
+        }
+
+        var allowedOperators = EnumSet.noneOf(Operator.class);
+        allowedOperators.addAll(List.of(operators));
+
+        return facets.stream()
+                .filter(facet -> facet.getOperator() != null &&
+                        allowedOperators.contains(facet.getOperator()))
+                .filter(facet -> facet.getValue() != null && !facet.getValue().isBlank())
+                .findFirst();
+    }
+
+    private DateTimeBound toLowerDateTimeBound(DatasetSearchQueryFacet facet) {
+        var normalizedValue = facet.getValue().trim();
+        var parsedDateOnly = parseDateOnlyRange(normalizedValue).orElse(null);
+
+        if (Operator.GREATER_THAN_SYMBOL.equals(facet.getOperator())) {
+            if (parsedDateOnly != null) {
+                return new DateTimeBound(parsedDateOnly.endExclusive(), true);
+            }
+            return new DateTimeBound(normalizedValue, false);
+        }
+
+        if (parsedDateOnly != null) {
+            return new DateTimeBound(parsedDateOnly.start(), true);
+        }
+        return new DateTimeBound(normalizedValue, true);
+    }
+
+    private DateTimeBound toUpperDateTimeBound(DatasetSearchQueryFacet facet) {
+        var normalizedValue = facet.getValue().trim();
+        var parsedDateOnly = parseDateOnlyRange(normalizedValue).orElse(null);
+
+        if (Operator.LESS_THAN_SYMBOL.equals(facet.getOperator())) {
+            if (parsedDateOnly != null) {
+                return new DateTimeBound(parsedDateOnly.start(), false);
+            }
+            return new DateTimeBound(normalizedValue, false);
+        }
+
+        if (parsedDateOnly != null) {
+            return new DateTimeBound(parsedDateOnly.endExclusive(), false);
+        }
+        return new DateTimeBound(normalizedValue, true);
+    }
+
+    private Optional<DateOnlyRange> parseDateOnlyRange(String value) {
+        if (value == null || value.isBlank()) {
+            return Optional.empty();
+        }
+
+        try {
+            var date = LocalDate.parse(value);
+            var start = date.atStartOfDay(ZoneOffset.UTC).toInstant().toString();
+            var endExclusive = date.plusDays(1)
+                    .atStartOfDay(ZoneOffset.UTC)
+                    .toInstant()
+                    .toString();
+            return Optional.of(new DateOnlyRange(start, endExclusive));
+        } catch (DateTimeParseException exception) {
+            return Optional.empty();
+        }
+    }
+
     private static String formatRangeBoundary(String value) {
         return value == null || value.isBlank()
                 ? RANGE_WILDCARD
                 : QUOTED_VALUE.formatted(value);
     }
 
-    private record DateTimeCondition(String lowerBound, String upperBound, String exactMatch) {
+    private record DateTimeCondition(
+                                     DateTimeBound lowerBound,
+                                     DateTimeBound upperBound,
+                                     String exactMatch
+    ) {
 
         private boolean hasRange() {
             return lowerBound != null || upperBound != null;
@@ -241,18 +323,49 @@ public class CkanFacetsQueryBuilder {
 
         private Optional<String> toSolrQuery(String key) {
             if (hasRange()) {
-                var start = formatRangeBoundary(lowerBound);
-                var end = formatRangeBoundary(upperBound);
-                return Optional.of(RANGE_PATTERN.formatted(key, start, end));
+                var startBoundary = lowerBound != null && !lowerBound.inclusive() ? "{" : "[";
+                var endBoundary = upperBound != null && !upperBound.inclusive() ? "}" : "]";
+                var start = lowerBound != null
+                        ? QUOTED_VALUE.formatted(lowerBound.value())
+                        : RANGE_WILDCARD;
+                var end = upperBound != null
+                        ? QUOTED_VALUE.formatted(upperBound.value())
+                        : RANGE_WILDCARD;
+                return Optional.of(RANGE_WITH_BOUNDARIES_PATTERN.formatted(
+                        key,
+                        startBoundary,
+                        start,
+                        end,
+                        endBoundary
+                ));
             }
 
             if (hasExactMatch()) {
+                var dayRange = parseDateOnlyRange(exactMatch);
+                if (dayRange.isPresent()) {
+                    var parsedDayRange = dayRange.orElseThrow();
+                    var start = QUOTED_VALUE.formatted(parsedDayRange.start());
+                    var endExclusive = QUOTED_VALUE.formatted(parsedDayRange.endExclusive());
+                    return Optional.of(RANGE_WITH_BOUNDARIES_PATTERN.formatted(
+                            key,
+                            "[",
+                            start,
+                            endExclusive,
+                            "}"
+                    ));
+                }
                 var value = QUOTED_VALUE.formatted(exactMatch);
                 return Optional.of(FACET_PATTERN.formatted(key, value));
             }
 
             return Optional.empty();
         }
+    }
+
+    private record DateOnlyRange(String start, String endExclusive) {
+    }
+
+    private record DateTimeBound(String value, boolean inclusive) {
     }
 
     private static String formatNumberBoundary(String value) {

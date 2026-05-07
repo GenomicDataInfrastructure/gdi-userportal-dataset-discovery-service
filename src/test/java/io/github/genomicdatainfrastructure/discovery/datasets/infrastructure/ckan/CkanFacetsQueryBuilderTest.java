@@ -230,6 +230,86 @@ class CkanFacetsQueryBuilderTest {
     }
 
     @Test
+    void canParse_withDateExactFacetDateOnly() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("metadata_modified")
+                                .operator(Operator.EQUAL_SYMBOL)
+                                .value("2024-11-01")
+                                .build()
+                ))
+                .build();
+
+        var expected = "metadata_modified:[\"2024-11-01T00:00:00Z\" TO \"2024-11-02T00:00:00Z\"}";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withDateGreaterThanFacetDateOnly() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("metadata_modified")
+                                .operator(Operator.GREATER_THAN_SYMBOL)
+                                .value("2024-11-01")
+                                .build()
+                ))
+                .build();
+
+        var expected = "metadata_modified:[\"2024-11-02T00:00:00Z\" TO *]";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withDateGreaterThanOrEqualFacetDateOnly() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("metadata_modified")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2024-11-01")
+                                .build()
+                ))
+                .build();
+
+        var expected = "metadata_modified:[\"2024-11-01T00:00:00Z\" TO *]";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void canParse_withDateExactFacetDateTime() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("metadata_modified")
+                                .operator(Operator.EQUAL_SYMBOL)
+                                .value("2024-11-01T09:30:00Z")
+                                .build()
+                ))
+                .build();
+
+        var expected = "metadata_modified:(\"2024-11-01T09:30:00Z\")";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void canParse_withConfigurableDateRangeFacetKey() {
         var query = DatasetSearchQuery.builder()
                 .facets(List.of(

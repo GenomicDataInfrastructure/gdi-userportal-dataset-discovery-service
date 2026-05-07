@@ -8,6 +8,7 @@ import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quar
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.github.genomicdatainfrastructure.discovery.model.FilterRange;
 import io.github.genomicdatainfrastructure.discovery.model.FilterType;
+import io.github.genomicdatainfrastructure.discovery.model.Operator;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFacet;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanValueLabel;
@@ -37,6 +38,13 @@ public class CkanSearchFacetsMapper {
 
     private static final String SELECTED_FACETS_PATTERN = "[\"%s\"]";
     private static final FilterType DEFAULT_FILTER_TYPE = FilterType.DROPDOWN;
+    private static final List<Operator> RANGE_OPERATORS = List.of(
+            Operator.EQUAL_SYMBOL,
+            Operator.GREATER_THAN_SYMBOL,
+            Operator.LESS_THAN_SYMBOL,
+            Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL,
+            Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL
+    );
 
     private final String selectedFacets;
     private final Map<String, FilterMetadata> filtersMetadata;
@@ -169,6 +177,7 @@ public class CkanSearchFacetsMapper {
                 .key(key)
                 .label(label)
                 .range(extractDateTimeRange(facet))
+                .operators(RANGE_OPERATORS)
                 .group(group)
                 .build();
     }
@@ -181,6 +190,7 @@ public class CkanSearchFacetsMapper {
                 .key(key)
                 .label(label)
                 .range(extractNumberRange(facet))
+                .operators(RANGE_OPERATORS)
                 .group(group)
                 .build();
     }

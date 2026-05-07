@@ -43,11 +43,15 @@ public class RetrieveFiltersTest extends BaseTest {
                 .body("find { it.key == 'modified' }.group", equalTo("DEFAULT"))
                 .body("find { it.key == 'modified' }.range.min", equalTo("2024-01-01T00:00Z"))
                 .body("find { it.key == 'modified' }.range.max", equalTo("2024-12-31T23:59:59Z"))
+                .body("find { it.key == 'modified' }.operators", contains("=", ">", "<", ">=",
+                        "<="))
                 .body("find { it.key == 'number_of_records' }.type", equalTo("NUMBER"))
                 .body("find { it.key == 'number_of_records' }.label", equalTo("Number of records"))
                 .body("find { it.key == 'number_of_records' }.group", equalTo("DEFAULT"))
                 .body("find { it.key == 'number_of_records' }.range.min", equalTo("10"))
                 .body("find { it.key == 'number_of_records' }.range.max", equalTo("250"))
+                .body("find { it.key == 'number_of_records' }.operators",
+                        contains("=", ">", "<", ">=", "<="))
                 .body("find { it.key == 'vocab_in_series_title' }.source", equalTo("ckan"))
                 .body("find { it.key == 'vocab_in_series_title' }.type", equalTo("DROPDOWN"))
                 .body("find { it.key == 'vocab_in_series_title' }.label", equalTo("Dataset series"))

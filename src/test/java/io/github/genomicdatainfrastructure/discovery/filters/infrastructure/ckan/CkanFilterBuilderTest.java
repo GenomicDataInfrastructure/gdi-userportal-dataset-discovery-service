@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus.DatasetsConfig;
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.github.genomicdatainfrastructure.discovery.model.FilterType;
+import io.github.genomicdatainfrastructure.discovery.model.Operator;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFacet;
@@ -84,7 +85,13 @@ class CkanFilterBuilderTest {
         assertThat(modified.getRange().getMin()).isEqualTo("2024-01-01T00:00Z");
         assertThat(modified.getRange().getMax()).isEqualTo("2024-12-31T23:59:59Z");
         assertThat(modified.getOperators())
-                .containsExactly("=", ">", "<", ">=", "<=");
+                .containsExactly(
+                        Operator.EQUAL_SYMBOL,
+                        Operator.GREATER_THAN_SYMBOL,
+                        Operator.LESS_THAN_SYMBOL,
+                        Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL,
+                        Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL
+                );
 
         var number = findFilter(filters, "number_of_records");
         assertThat(number.getType()).isEqualTo(FilterType.NUMBER);
@@ -92,7 +99,13 @@ class CkanFilterBuilderTest {
         assertThat(number.getRange().getMin()).isEqualTo("10");
         assertThat(number.getRange().getMax()).isEqualTo("250");
         assertThat(number.getOperators())
-                .containsExactly("=", ">", "<", ">=", "<=");
+                .containsExactly(
+                        Operator.EQUAL_SYMBOL,
+                        Operator.GREATER_THAN_SYMBOL,
+                        Operator.LESS_THAN_SYMBOL,
+                        Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL,
+                        Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL
+                );
 
         var tags = findFilter(filters, "tags");
         assertThat(tags.getValues())

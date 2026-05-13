@@ -12,6 +12,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.4.1] - 2026-05-11
+
+### Added
+- feat: enhance date handling in CkanFacetsQueryBuilder by @Kacem Bechka in f051f2f
+
+
+### Changed
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1778461551 by @Renovate Bot in 58511c3
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1778072020 by @Renovate Bot in a46361b
+- chore(deps): update graalvm/setup-graalvm digest to bef4b0e by @Renovate Bot in 11d9da6
+- chore(deps): update quarkus-wiremock.version to v1.6.3 by @Renovate Bot in d210104
+- chore(deps): update oss-review-toolkit/ort-ci-github-action digest to 086d928 by @Renovate Bot in 911f7e3
+- doc: update CHANGELOG.md for v1.4.0 by @LNDS-Sysadmins in fc4a50c
+- chore(deps): update quarkus.platform.version to v3.34.7 by @Renovate Bot in 9db26f9
+
+
+### Fixed
+- fix tests by @Kacem Bechka in ff08961
+
+
 ## [v1.4.0] - 2026-05-05
 
 ### Changed

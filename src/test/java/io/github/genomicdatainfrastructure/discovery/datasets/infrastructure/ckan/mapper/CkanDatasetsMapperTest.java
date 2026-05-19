@@ -455,6 +455,7 @@ class CkanDatasetsMapperTest {
                 .version("1.0.0")
                 .licenseId("CC-BY-4.0")
                 .ownerOrg("test-organization")
+                .type(getCkanValueLabel("dataset", "dataset"))
                 .dcatType(getCkanValueLabel("type", "type-uri"))
                 .notes("notes")
                 .theme(getCkanValueLabels("theme", "theme-name", 3))
@@ -732,12 +733,43 @@ class CkanDatasetsMapperTest {
             assertThat(actual.getTemporalCoverageEnd()).isNull();
         }
 
+        @Test
+        void given_dcat_type_should_prefer_it_over_explicit_dataset_type() {
+            final var ckanPackage = CkanPackage.builder()
+                    .id("dataset-id")
+                    .title("Dataset title")
+                    .notes("Dataset description")
+                    .datasetType("externally-governed")
+                    .dcatType(getCkanValueLabel("Synthetic data",
+                            "https://publications.europa.eu/resource/authority/dataset-type/SYNTHETIC_DATA"))
+                    .build();
+
+            final var actual = mapper.mapToSearchedDataset(ckanPackage);
+
+            assertThat(actual.getDatasetType()).isEqualTo("Synthetic data");
+        }
+
+        @Test
+        void given_missing_dcat_type_should_fallback_to_explicit_dataset_type() {
+            final var ckanPackage = CkanPackage.builder()
+                    .id("dataset-id")
+                    .title("Dataset title")
+                    .notes("Dataset description")
+                    .datasetType("externally-governed")
+                    .build();
+
+            final var actual = mapper.mapToSearchedDataset(ckanPackage);
+
+            assertThat(actual.getDatasetType()).isEqualTo("externally-governed");
+        }
+
         @NotNull
         private static SearchedDataset buildSearchedDataset() {
             return SearchedDataset.builder()
                     .id("id")
                     .identifier("identifier")
                     .title("title")
+                    .datasetType("type")
                     .isSeries(false)
                     .description("notes")
                     .publishers(List.of(Agent.builder()

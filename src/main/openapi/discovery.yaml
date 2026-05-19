@@ -344,6 +344,9 @@ components:
         title:
           type: string
           title: Title
+        datasetType:
+          type: string
+          title: Dataset type
         description:
           type: string
           title: Description

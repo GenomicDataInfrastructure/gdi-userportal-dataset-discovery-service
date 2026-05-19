@@ -164,6 +164,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "description", source = "notes")
     @Mapping(target = "themes", source = "theme")
     @Mapping(target = "publishers", source = "publisher")
+    @Mapping(target = "datasetType", source = ".", qualifiedByName = "mapDatasetType")
     @Mapping(target = "keywords", source = ".", qualifiedByName = "mergeKeywords")
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "createdAt", source = "issued")
@@ -179,6 +180,29 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "catalogue", ignore = true)
     @Mapping(target = "recordsCount", ignore = true)
     SearchedDataset mapToSearchedDataset(CkanPackage ckanPackage);
+
+    @Named("mapDatasetType")
+    default String mapDatasetType(CkanPackage ckanPackage) {
+        if (ckanPackage == null) {
+            return null;
+        }
+
+        if (ckanPackage.getDcatType() != null) {
+            var dcatDatasetType = Stream.of(
+                    ckanPackage.getDcatType().getDisplayName(),
+                    ckanPackage.getDcatType().getName())
+                    .map(StringUtils::trimToNull)
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(null);
+
+            if (dcatDatasetType != null) {
+                return dcatDatasetType;
+            }
+        }
+
+        return StringUtils.trimToNull(ckanPackage.getDatasetType());
+    }
 
     default List<TimeWindow> map(List<CkanTimeWindow> temporalCoverage) {
         if (temporalCoverage == null || temporalCoverage.isEmpty()) {

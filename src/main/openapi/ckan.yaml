@@ -192,6 +192,8 @@ components:
           type: string
         type:
           $ref: "#/components/schemas/CkanValueLabel"
+        dataset_type:
+          type: string
         notes:
           type: string
         version:

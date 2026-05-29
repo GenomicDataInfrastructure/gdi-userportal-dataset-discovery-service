@@ -15,13 +15,18 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
-import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.POPULATION_PATTERN;
+import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.hasValue;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @ApplicationScoped
 @LookupIfProperty(name = "sources.beacon", stringValue = "true")
 public class GVariantsRepository implements GVariantsRepositoryPort {
+
+    private static final String ALL_FILTER_VALUE = "ALL";
+    private static final Pattern COUNTRY_CODE_PATTERN = Pattern.compile("^[A-Z]{2}$");
 
     private final GVariantsApi gVariantsApi;
 
@@ -62,23 +67,195 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
 
     private boolean matchesFilters(GVariantsSearchResponse variant, String countryOfBirth,
             String sex) {
+        var requestedCountry = parseCountryFilter(countryOfBirth);
+        var requestedSex = parseSexFilter(sex);
 
-        var matcher = POPULATION_PATTERN.matcher(variant.getPopulation());
-        if (!matcher.matches()) {
+        if (requestedCountry.isUnset() && requestedSex.isUnset()) {
+            return true;
+        }
+
+        if (requestedCountry.isInvalid() || requestedSex.isInvalid()) {
             return false;
         }
 
-        String extractedCountry = matcher.group(1);
-        String sexAfterCountry = matcher.group(2);
-        String sexOnly = matcher.group(3);
-        String extractedSex = sexAfterCountry != null ? sexAfterCountry : sexOnly;
+        if (requestedCountry.isAll() && requestedSex.isAll()) {
+            return true;
+        }
 
-        if (!isEmpty(countryOfBirth) &&
-                !countryOfBirth.toUpperCase().equals(extractedCountry)) {
+        var populationTag = parsePopulationTag(variant.getPopulation());
+        if (populationTag == null) {
             return false;
         }
 
-        return isEmpty(sex) ||
-                sex.toUpperCase().equals(extractedSex);
+        boolean countryMustBePresent = !requestedCountry.isUnset();
+        boolean sexMustBePresent = !requestedSex.isUnset();
+
+        if (countryMustBePresent != (populationTag.country() != null)) {
+            return false;
+        }
+
+        if (sexMustBePresent != (populationTag.sex() != null)) {
+            return false;
+        }
+
+        if (requestedCountry.isSpecific() && !requestedCountry.country()
+                .equals(populationTag.country())) {
+            return false;
+        }
+
+        return !requestedSex.isSpecific() || requestedSex.sex() == populationTag.sex();
+    }
+
+    private PopulationTag parsePopulationTag(String population) {
+        if (!hasValue(population)) {
+            return null;
+        }
+
+        var rawTokens = population.trim().split("_");
+        if (rawTokens.length == 1) {
+            var token = normalizeToken(rawTokens[0]);
+            var sex = normalizeSex(token);
+            if (sex != null) {
+                return new PopulationTag(null, sex);
+            }
+
+            var country = normalizeCountry(token);
+            if (country != null) {
+                return new PopulationTag(country, null);
+            }
+
+            return null;
+        }
+
+        if (rawTokens.length == 2) {
+            var country = normalizeCountry(rawTokens[0]);
+            var sex = normalizeSex(rawTokens[1]);
+            if (country != null && sex != null) {
+                return new PopulationTag(country, sex);
+            }
+        }
+
+        return null;
+    }
+
+    private String normalizeCountry(String value) {
+        var normalized = normalizeToken(value);
+        return normalized != null && COUNTRY_CODE_PATTERN.matcher(normalized).matches()
+                ? normalized
+                : null;
+    }
+
+    private Sex normalizeSex(String value) {
+        var normalized = normalizeToken(value);
+        if (normalized == null) {
+            return null;
+        }
+
+        return switch (normalized) {
+            case "M", "MALE" -> Sex.MALE;
+            case "F", "FEMALE" -> Sex.FEMALE;
+            default -> null;
+        };
+    }
+
+    private String normalizeToken(String value) {
+        return hasValue(value) ? value.trim().toUpperCase(Locale.ROOT) : null;
+    }
+
+    private CountryFilter parseCountryFilter(String value) {
+        var normalized = normalizeToken(value);
+        if (normalized == null) {
+            return new CountryFilter(FilterMode.UNSET, null);
+        }
+
+        if (ALL_FILTER_VALUE.equals(normalized)) {
+            return new CountryFilter(FilterMode.ALL, null);
+        }
+
+        var country = normalizeCountry(normalized);
+        if (country != null) {
+            return new CountryFilter(FilterMode.SPECIFIC, country);
+        }
+
+        return new CountryFilter(FilterMode.INVALID, null);
+    }
+
+    private SexFilter parseSexFilter(String value) {
+        var normalized = normalizeToken(value);
+        if (normalized == null) {
+            return new SexFilter(FilterMode.UNSET, null);
+        }
+
+        if (ALL_FILTER_VALUE.equals(normalized)) {
+            return new SexFilter(FilterMode.ALL, null);
+        }
+
+        var sex = normalizeSex(normalized);
+        if (sex != null) {
+            return new SexFilter(FilterMode.SPECIFIC, sex);
+        }
+
+        return new SexFilter(FilterMode.INVALID, null);
+    }
+
+    private enum Sex {
+        MALE, FEMALE
+    }
+
+    private enum FilterMode {
+        UNSET, ALL, SPECIFIC, INVALID
+    }
+
+    private record PopulationTag(String country, Sex sex) {
+
+        boolean isCountryOnly() {
+            return country != null && sex == null;
+        }
+
+        boolean isSexOnly() {
+            return country == null && sex != null;
+        }
+
+        boolean isCountryAndSex() {
+            return country != null && sex != null;
+        }
+    }
+
+    private record CountryFilter(FilterMode mode, String country) {
+
+        boolean isUnset() {
+            return mode == FilterMode.UNSET;
+        }
+
+        boolean isAll() {
+            return mode == FilterMode.ALL;
+        }
+
+        boolean isSpecific() {
+            return mode == FilterMode.SPECIFIC;
+        }
+
+        boolean isInvalid() {
+            return mode == FilterMode.INVALID;
+        }
+    }
+
+    private record SexFilter(FilterMode mode, Sex sex) {
+
+        boolean isUnset() {
+            return mode == FilterMode.UNSET;
+        }
+
+        boolean isAll() {
+            return mode == FilterMode.ALL;
+        }
+
+        boolean isSpecific() {
+            return mode == FilterMode.SPECIFIC;
+        }
+
+        boolean isInvalid() {
+            return mode == FilterMode.INVALID;
+        }
     }
 }

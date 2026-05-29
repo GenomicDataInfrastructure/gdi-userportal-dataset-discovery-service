@@ -14,7 +14,11 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.matchesPattern;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.hasItem;
 
 @QuarkusTest
 class GVariantsApiIT extends BaseTest {
@@ -95,6 +99,35 @@ class GVariantsApiIT extends BaseTest {
                 .body("$", hasSize(1))
                 .body("[0].countryOfBirth", equalTo("FR"))
                 .body("[0].sex", equalTo("F"));
+    }
+
+    @Test
+    void givenSexOnlyFilter_whenSearchGenomicVariants_thenOnlySexPopulationTagsAreReturned() {
+        GVariantSearchQuery query = buildQueryWithFilters(null, "M");
+        given()
+                .contentType(JSON)
+                .body(query)
+                .when()
+                .post("/api/v1/g_variants")
+                .then()
+                .statusCode(200)
+                .body("population", everyItem(matchesPattern("^(?i)(M|F|MALE|FEMALE)$")))
+                .body("population", not(hasItem("FR_M")))
+                .body("population", not(hasItem("FR_Male")));
+    }
+
+    @Test
+    void givenCountryOnlyFilter_whenSearchGenomicVariants_thenOnlyCountryPopulationTagsAreReturned() {
+        GVariantSearchQuery query = buildQueryWithFilters("FR", null);
+        given()
+                .contentType(JSON)
+                .body(query)
+                .when()
+                .post("/api/v1/g_variants")
+                .then()
+                .statusCode(200)
+                .body("population", everyItem(matchesPattern("^[A-Z]{2}$")))
+                .body("population", not(hasItem("FR_M")));
     }
 
     @Test

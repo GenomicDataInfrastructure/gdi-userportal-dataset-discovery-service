@@ -1164,6 +1164,26 @@ components:
           type: string
           description: Population name in GoE format [COUNTRY]_[SEX] where COUNTRY is 2-letter ISO code and SEX is M or F. Examples FR_M, FR_F, FR, M, F
           example: FR_M
+        referenceName:
+          type: string
+          description: Chromosome/contig for the matched variant.
+          example: "1"
+        start:
+          type: integer
+          description: Variant start coordinate reported by the Beacon.
+          example: 123456
+        end:
+          type: integer
+          description: Variant end coordinate reported by the Beacon.
+          example: 123457
+        referenceBases:
+          type: string
+          description: Reference allele for the matched variant.
+          example: "A"
+        alternateBases:
+          type: string
+          description: Alternate allele for the matched variant.
+          example: "G"
         alleleCount:
           type: number
         alleleNumber:

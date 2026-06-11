@@ -246,6 +246,51 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/FrequencyInPopulations"
+        variation:
+          $ref: "#/components/schemas/GenomicVariation"
+        variantInternalId:
+          type: string
+        identifiers:
+          type: object
+          properties:
+            genomicHGVSId:
+              type: string
+    GenomicVariation:
+      type: object
+      properties:
+        location:
+          $ref: "#/components/schemas/GenomicVariationLocation"
+        alternateBases:
+          type: string
+        referenceBases:
+          type: string
+        variantType:
+          type: string
+    GenomicVariationLocation:
+      type: object
+      properties:
+        type:
+          type: string
+        sequence_id:
+          type: string
+        interval:
+          $ref: "#/components/schemas/GenomicVariationInterval"
+    GenomicVariationInterval:
+      type: object
+      properties:
+        type:
+          type: string
+        start:
+          $ref: "#/components/schemas/GenomicVariationIntervalCoordinate"
+        end:
+          $ref: "#/components/schemas/GenomicVariationIntervalCoordinate"
+    GenomicVariationIntervalCoordinate:
+      type: object
+      properties:
+        type:
+          type: string
+        value:
+          type: integer
     FrequencyInPopulations:
       type: object
       properties:

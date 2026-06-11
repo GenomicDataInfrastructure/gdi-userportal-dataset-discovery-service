@@ -4,7 +4,8 @@
 
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan;
 
-import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus.DatasetsConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFilterHelpTextsResponse;
@@ -22,14 +23,12 @@ import java.util.logging.Level;
 public class CkanFilterHelpTextService {
 
     private final CkanQueryApi ckanQueryApi;
-    private final String configuredKeys;
+    private final ObjectMapper objectMapper;
 
-    public CkanFilterHelpTextService(
-            @RestClient CkanQueryApi ckanQueryApi,
-            DatasetsConfig datasetsConfig
-    ) {
+    public CkanFilterHelpTextService(@RestClient CkanQueryApi ckanQueryApi,
+            ObjectMapper objectMapper) {
         this.ckanQueryApi = ckanQueryApi;
-        this.configuredKeys = toJsonArray(datasetsConfig.filters());
+        this.objectMapper = objectMapper;
     }
 
     public List<Filter> enrich(List<Filter> filters, String preferredLanguage) {
@@ -37,7 +36,7 @@ public class CkanFilterHelpTextService {
             return filters;
         }
 
-        var helpTexts = retrieveHelpTexts(preferredLanguage);
+        var helpTexts = retrieveHelpTexts(filters, preferredLanguage);
         if (helpTexts.isEmpty()) {
             return filters;
         }
@@ -46,11 +45,12 @@ public class CkanFilterHelpTextService {
         return filters;
     }
 
-    private Map<String, String> retrieveHelpTexts(String preferredLanguage) {
+    private Map<String, String> retrieveHelpTexts(List<Filter> filters, String preferredLanguage) {
         try {
+            var keys = toJsonArray(filters);
             return Optional.ofNullable(ckanQueryApi.gdiFilterHelpTextsShow(
                     preferredLanguage,
-                    configuredKeys
+                    keys
             ))
                     .map(CkanFilterHelpTextsResponse::getResult)
                     .orElseGet(Map::of);
@@ -60,15 +60,19 @@ public class CkanFilterHelpTextService {
         }
     }
 
-    private String toJsonArray(String filters) {
-        var values = Optional.ofNullable(filters)
+    private String toJsonArray(List<Filter> filters) {
+        var keys = Optional.ofNullable(filters)
+                .orElseGet(List::of)
                 .stream()
-                .flatMap(value -> java.util.Arrays.stream(value.split(",")))
-                .map(String::trim)
-                .filter(value -> !value.isBlank())
-                .map(value -> "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\"")
+                .map(Filter::getKey)
+                .filter(value -> value != null && !value.isBlank())
+                .distinct()
                 .toList();
 
-        return "[" + String.join(",", values) + "]";
+        try {
+            return objectMapper.writeValueAsString(keys);
+        } catch (JsonProcessingException exception) {
+            throw new IllegalStateException("Could not serialize filter keys for CKAN", exception);
+        }
     }
 }

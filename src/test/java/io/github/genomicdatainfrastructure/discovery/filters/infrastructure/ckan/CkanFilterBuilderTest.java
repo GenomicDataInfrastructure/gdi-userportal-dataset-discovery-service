@@ -6,6 +6,7 @@ package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.cka
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus.DatasetsConfig;
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.github.genomicdatainfrastructure.discovery.model.FilterType;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.Test;
 class CkanFilterBuilderTest {
 
     private final TestDatasetsConfig datasetsConfig = new TestDatasetsConfig();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void buildsRangeMetadataForDateTimeAndNumberFacets() {
@@ -79,7 +81,7 @@ class CkanFilterBuilderTest {
         var ckanQueryApi = new StubCkanQueryApi(response);
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(datasetsConfig),
-                new CkanFilterHelpTextService(ckanQueryApi, datasetsConfig));
+                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
         var modified = findFilter(filters, "modified");
@@ -157,7 +159,7 @@ class CkanFilterBuilderTest {
         var ckanQueryApi = new StubCkanQueryApi(response);
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(datasetsConfig),
-                new CkanFilterHelpTextService(ckanQueryApi, datasetsConfig));
+                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
         var typicalAge = findFilter(filters, "typical_age");
@@ -186,7 +188,7 @@ class CkanFilterBuilderTest {
         var ckanQueryApi = new StubCkanQueryApi(response);
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(datasetsConfig),
-                new CkanFilterHelpTextService(ckanQueryApi, datasetsConfig));
+                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
         var number = findFilter(filters, "number_of_records");
@@ -214,7 +216,7 @@ class CkanFilterBuilderTest {
         var ckanQueryApi = new StubCkanQueryApi(response);
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(config),
-                new CkanFilterHelpTextService(ckanQueryApi, config));
+                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
         var tags = findFilter(filters, "tags");
@@ -244,7 +246,7 @@ class CkanFilterBuilderTest {
 
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(new TitleDatasetsConfig()),
-                new CkanFilterHelpTextService(ckanQueryApi, new TitleDatasetsConfig()));
+                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
         assertThat(findFilter(filters, "title").getHelpText())
@@ -267,7 +269,7 @@ class CkanFilterBuilderTest {
         var ckanQueryApi = new StubCkanQueryApi(response, true);
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(new TitleDatasetsConfig()),
-                new CkanFilterHelpTextService(ckanQueryApi, new TitleDatasetsConfig()));
+                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
         assertThat(findFilter(filters, "title").getHelpText()).isNull();

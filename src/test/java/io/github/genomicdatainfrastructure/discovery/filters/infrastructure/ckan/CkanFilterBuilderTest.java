@@ -13,6 +13,7 @@ import io.github.genomicdatainfrastructure.discovery.model.Operator;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFacet;
+import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFilterHelpTextsResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackageSearchRequest;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesSearchResponse;
@@ -75,8 +76,10 @@ class CkanFilterBuilderTest {
                         .build())
                 .build();
 
-        var builder = new CkanFilterBuilder(new StubCkanQueryApi(response),
-                new CkanSearchFacetsMapper(datasetsConfig));
+        var ckanQueryApi = new StubCkanQueryApi(response);
+        var builder = new CkanFilterBuilder(ckanQueryApi,
+                new CkanSearchFacetsMapper(datasetsConfig),
+                new CkanFilterHelpTextService(ckanQueryApi, datasetsConfig));
         var filters = builder.build(null, "en");
 
         var modified = findFilter(filters, "modified");
@@ -151,8 +154,10 @@ class CkanFilterBuilderTest {
                         .build())
                 .build();
 
-        var builder = new CkanFilterBuilder(new StubCkanQueryApi(response),
-                new CkanSearchFacetsMapper(datasetsConfig));
+        var ckanQueryApi = new StubCkanQueryApi(response);
+        var builder = new CkanFilterBuilder(ckanQueryApi,
+                new CkanSearchFacetsMapper(datasetsConfig),
+                new CkanFilterHelpTextService(ckanQueryApi, datasetsConfig));
         var filters = builder.build(null, "en");
 
         var typicalAge = findFilter(filters, "typical_age");
@@ -178,8 +183,10 @@ class CkanFilterBuilderTest {
                         .build())
                 .build();
 
-        var builder = new CkanFilterBuilder(new StubCkanQueryApi(response),
-                new CkanSearchFacetsMapper(datasetsConfig));
+        var ckanQueryApi = new StubCkanQueryApi(response);
+        var builder = new CkanFilterBuilder(ckanQueryApi,
+                new CkanSearchFacetsMapper(datasetsConfig),
+                new CkanFilterHelpTextService(ckanQueryApi, datasetsConfig));
         var filters = builder.build(null, "en");
 
         var number = findFilter(filters, "number_of_records");
@@ -203,12 +210,67 @@ class CkanFilterBuilderTest {
                         .build())
                 .build();
 
-        var builder = new CkanFilterBuilder(new StubCkanQueryApi(response),
-                new CkanSearchFacetsMapper(new FreeTextDatasetsConfig()));
+        var config = new FreeTextDatasetsConfig();
+        var ckanQueryApi = new StubCkanQueryApi(response);
+        var builder = new CkanFilterBuilder(ckanQueryApi,
+                new CkanSearchFacetsMapper(config),
+                new CkanFilterHelpTextService(ckanQueryApi, config));
         var filters = builder.build(null, "en");
 
         var tags = findFilter(filters, "tags");
         assertThat(tags.getType()).isEqualTo(FilterType.FREE_TEXT);
+    }
+
+    @Test
+    void enrichesFiltersWithHelpTextFromCkan() {
+        var response = PackagesSearchResponse.builder()
+                .result(PackagesSearchResult.builder()
+                        .searchFacets(Map.of(
+                                "title", CkanFacet.builder()
+                                        .title("Title")
+                                        .items(List.of())
+                                        .build(),
+                                "tags", CkanFacet.builder()
+                                        .title("Keywords")
+                                        .items(List.of())
+                                        .build()))
+                        .build())
+                .build();
+
+        var ckanQueryApi = new StubCkanQueryApi(response,
+                CkanFilterHelpTextsResponse.builder()
+                        .result(Map.of("title", "Use this filter to search datasets by title."))
+                        .build());
+
+        var builder = new CkanFilterBuilder(ckanQueryApi,
+                new CkanSearchFacetsMapper(new TitleDatasetsConfig()),
+                new CkanFilterHelpTextService(ckanQueryApi, new TitleDatasetsConfig()));
+        var filters = builder.build(null, "en");
+
+        assertThat(findFilter(filters, "title").getHelpText())
+                .isEqualTo("Use this filter to search datasets by title.");
+        assertThat(findFilter(filters, "tags").getHelpText()).isNull();
+    }
+
+    @Test
+    void returnsFiltersWhenHelpTextRequestFails() {
+        var response = PackagesSearchResponse.builder()
+                .result(PackagesSearchResult.builder()
+                        .searchFacets(Map.of(
+                                "title", CkanFacet.builder()
+                                        .title("Title")
+                                        .items(List.of())
+                                        .build()))
+                        .build())
+                .build();
+
+        var ckanQueryApi = new StubCkanQueryApi(response, true);
+        var builder = new CkanFilterBuilder(ckanQueryApi,
+                new CkanSearchFacetsMapper(new TitleDatasetsConfig()),
+                new CkanFilterHelpTextService(ckanQueryApi, new TitleDatasetsConfig()));
+        var filters = builder.build(null, "en");
+
+        assertThat(findFilter(filters, "title").getHelpText()).isNull();
     }
 
     private Filter findFilter(List<Filter> filters, String key) {
@@ -222,9 +284,24 @@ class CkanFilterBuilderTest {
     private static final class StubCkanQueryApi implements CkanQueryApi {
 
         private final PackagesSearchResponse response;
+        private final CkanFilterHelpTextsResponse helpTextsResponse;
+        private final boolean failHelpTextsRequest;
 
         private StubCkanQueryApi(PackagesSearchResponse response) {
+            this(response, CkanFilterHelpTextsResponse.builder().result(Map.of()).build());
+        }
+
+        private StubCkanQueryApi(PackagesSearchResponse response,
+                CkanFilterHelpTextsResponse helpTextsResponse) {
             this.response = response;
+            this.helpTextsResponse = helpTextsResponse;
+            this.failHelpTextsRequest = false;
+        }
+
+        private StubCkanQueryApi(PackagesSearchResponse response, boolean failHelpTextsRequest) {
+            this.response = response;
+            this.helpTextsResponse = null;
+            this.failHelpTextsRequest = failHelpTextsRequest;
         }
 
         @Override
@@ -237,6 +314,15 @@ class CkanFilterBuilderTest {
         public io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanPackageShowResponse packageShow(
                 String id, String acceptLanguage) {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public CkanFilterHelpTextsResponse gdiFilterHelpTextsShow(String acceptLanguage,
+                String keys) {
+            if (failHelpTextsRequest) {
+                throw new RuntimeException("CKAN unavailable");
+            }
+            return helpTextsResponse;
         }
 
         @Override
@@ -289,6 +375,30 @@ class CkanFilterBuilderTest {
         public List<FilterGroup> filterGroups() {
             return List.of(new TestFilterGroup("DEFAULT",
                     Set.of(new FreeTextFilter("tags"))));
+        }
+    }
+
+    @Vetoed
+    private static final class TitleDatasetsConfig implements DatasetsConfig {
+
+        private static final Set<Filter> FILTERS = Set.of(
+                new TestFilter("title", FilterType.FREE_TEXT),
+                new TestFilter("tags", FilterType.DROPDOWN)
+        );
+
+        @Override
+        public String filters() {
+            return "title,tags";
+        }
+
+        @Override
+        public String noGroupKey() {
+            return "DEFAULT";
+        }
+
+        @Override
+        public List<FilterGroup> filterGroups() {
+            return List.of(new TestFilterGroup("DEFAULT", FILTERS));
         }
     }
 

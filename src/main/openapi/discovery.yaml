@@ -1027,6 +1027,9 @@ components:
         label:
           type: string
           title: Label
+        helpText:
+          type: string
+          title: Help text
         values:
           type: array
           items:

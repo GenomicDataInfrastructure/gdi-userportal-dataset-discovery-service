@@ -79,6 +79,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CkanFilterHelpTextsResponse"
+  /api/3/action/gdi_dataset_help_texts_show:
+    get:
+      summary: Retrieves localized help texts for dataset fields
+      operationId: gdi_dataset_help_texts_show
+      tags:
+        - "ckan-query"
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - name: type
+          in: query
+          description: CKAN scheming dataset type
+          required: false
+          schema:
+            type: string
+            example: dataset
+        - name: keys
+          in: query
+          description: JSON array of scheming field names to retrieve help text for
+          required: false
+          schema:
+            type: string
+            example: '["title_translated"]'
+      responses:
+        "200":
+          description: Localized help text keyed by scheming field name
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CkanFilterHelpTextsResponse"
   /dataset/{id}.{format}:
     get:
       summary: Retrieves a dataset by its ID, in the requested format

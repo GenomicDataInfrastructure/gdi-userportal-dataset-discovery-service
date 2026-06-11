@@ -328,6 +328,12 @@ class CkanFilterBuilderTest {
         }
 
         @Override
+        public CkanFilterHelpTextsResponse gdiDatasetHelpTextsShow(String acceptLanguage,
+                String type, String keys) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public String retrieveDatasetInFormat(String id, String format, String authorization) {
             throw new UnsupportedOperationException();
         }

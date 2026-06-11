@@ -85,6 +85,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "version", source = "version")
     @Mapping(target = "ownerOrg", source = "ownerOrg")
     @Mapping(target = "isSeries", source = ".", qualifiedByName = "isDatasetSeries")
+    @Mapping(target = "helpText", ignore = true)
     RetrievedDataset map(CkanPackage ckanPackage);
 
     @Mapping(target = "contacts", source = "contact")

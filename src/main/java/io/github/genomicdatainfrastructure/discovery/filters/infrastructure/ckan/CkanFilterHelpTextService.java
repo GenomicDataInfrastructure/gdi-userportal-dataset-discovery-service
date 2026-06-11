@@ -55,8 +55,7 @@ public class CkanFilterHelpTextService {
                     .map(CkanFilterHelpTextsResponse::getResult)
                     .orElseGet(Map::of);
         } catch (RuntimeException exception) {
-            log.log(Level.WARNING, "Could not retrieve CKAN filter help texts: {0}", exception
-                    .getMessage());
+            log.log(Level.WARNING, "Could not retrieve CKAN filter help texts", exception);
             return Map.of();
         }
     }
@@ -67,7 +66,7 @@ public class CkanFilterHelpTextService {
                 .flatMap(value -> java.util.Arrays.stream(value.split(",")))
                 .map(String::trim)
                 .filter(value -> !value.isBlank())
-                .map(value -> "\"" + value + "\"")
+                .map(value -> "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\"")
                 .toList();
 
         return "[" + String.join(",", values) + "]";

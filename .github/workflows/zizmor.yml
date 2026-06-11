@@ -29,6 +29,6 @@ jobs:
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
 
       - name: Run zizmor
-        run: uvx zizmor --format=github .
+        run: uvx --no-build zizmor@1.25.2 --format=github .
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

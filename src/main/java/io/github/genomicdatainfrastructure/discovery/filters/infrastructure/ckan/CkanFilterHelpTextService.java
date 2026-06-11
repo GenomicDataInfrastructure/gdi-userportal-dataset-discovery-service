@@ -54,7 +54,7 @@ public class CkanFilterHelpTextService {
             ))
                     .map(CkanFilterHelpTextsResponse::getResult)
                     .orElseGet(Map::of);
-        } catch (RuntimeException exception) {
+        } catch (jakarta.ws.rs.WebApplicationException | jakarta.ws.rs.ProcessingException exception) {
             log.log(Level.WARNING, "Could not retrieve CKAN filter help texts", exception);
             return Map.of();
         }

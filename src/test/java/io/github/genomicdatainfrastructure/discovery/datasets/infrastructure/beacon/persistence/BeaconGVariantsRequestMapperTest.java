@@ -67,6 +67,32 @@ class BeaconGVariantsRequestMapperTest {
         assertEquals("GRCh37", requestParams.get("assemblyId"));
     }
 
+    @Test
+    @DisplayName("map(GVariantSearchQuery) should keep range params for position-only search")
+    void map_GVariantSearchQuery_WithPositionOnlyRange_IncludesStartAndEndWithoutAlleles() {
+        GVariantSearchQuery query = new GVariantSearchQuery();
+        GVariantSearchQueryParams params = new GVariantSearchQueryParams();
+        params.setReferenceName("1");
+        params.setStart(List.of(123455));
+        params.setEnd(List.of(123456));
+        params.setReferenceBases(null);
+        params.setAlternateBases(null);
+        query.setParams(params);
+
+        var result = BeaconGVariantsRequestMapper.map(query);
+
+        assertNotNull(result);
+        assertNotNull(result.getQuery());
+        var requestParams = result.getQuery().getRequestParameters();
+        assertNotNull(requestParams);
+        assertNotNull(result.getQuery().getPagination());
+        assertEquals(1000, result.getQuery().getPagination().getLimit());
+        assertEquals(List.of(123455), requestParams.get("start"));
+        assertEquals(List.of(123456), requestParams.get("end"));
+        assertFalse(requestParams.containsKey("referenceBases"));
+        assertFalse(requestParams.containsKey("alternateBases"));
+    }
+
     // Note: BeaconRequest mapping test removed as it requires full query object setup
     // The response mapping test below covers the critical population parsing logic
 
@@ -166,6 +192,22 @@ class BeaconGVariantsRequestMapperTest {
         assertEquals("F", variant.getPopulation());
     }
 
+    @Test
+    void map_BeaconResponse_MapsMatchedVariantDetails() {
+        BeaconResponse beaconResponse = buildBeaconsResponseWithVariantDetails("1", 123456, 123457,
+                "A", "G");
+
+        List<GVariantsSearchResponse> result = BeaconGVariantsRequestMapper.map(beaconResponse);
+
+        assertEquals(1, result.size());
+        GVariantsSearchResponse variant = result.getFirst();
+        assertEquals("1", variant.getReferenceName());
+        assertEquals(123456, variant.getStart());
+        assertEquals(123457, variant.getEnd());
+        assertEquals("A", variant.getReferenceBases());
+        assertEquals("G", variant.getAlternateBases());
+    }
+
     public static BeaconResponse buildBeaconsResponse() {
         var freq = new Frequency();
         freq.setPopulation("fin");
@@ -220,6 +262,40 @@ class BeaconGVariantsRequestMapperTest {
         responseData.setResponse(responseContent);
 
         return responseData;
+    }
+
+    public static BeaconResponse buildBeaconsResponseWithVariantDetails(String referenceName,
+            int start, int end, String referenceBases, String alternateBases) {
+        var response = buildBeaconsResponseWithPopulation("FR_F");
+        var result = response.getResponse().getResultSets().getFirst().getResults().getFirst();
+
+        var intervalStart = new GenomicVariationIntervalCoordinate();
+        intervalStart.setType("Number");
+        intervalStart.setValue(start);
+
+        var intervalEnd = new GenomicVariationIntervalCoordinate();
+        intervalEnd.setType("Number");
+        intervalEnd.setValue(end);
+
+        var interval = new GenomicVariationInterval();
+        interval.setType("SequenceInterval");
+        interval.setStart(intervalStart);
+        interval.setEnd(intervalEnd);
+
+        var location = new GenomicVariationLocation();
+        location.setType("SequenceLocation");
+        location.setSequenceId("HGVSid:%s:g.%d%s>%s".formatted(
+                referenceName, start, referenceBases, alternateBases));
+        location.setInterval(interval);
+
+        var variation = new GenomicVariation();
+        variation.setLocation(location);
+        variation.setReferenceBases(referenceBases);
+        variation.setAlternateBases(alternateBases);
+        variation.setVariantType("SNP");
+
+        result.setVariation(variation);
+        return response;
     }
 
     @Test

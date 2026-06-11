@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import org.apache.commons.lang3.ObjectUtils;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_REFERENCE_NAME;
@@ -26,6 +25,8 @@ import static io.github.genomicdatainfrastructure.discovery.remote.beacon.gvaria
 import static java.util.Optional.ofNullable;
 
 public class BeaconGVariantsRequestMapper {
+
+    private static final int POSITION_RANGE_PAGE_LIMIT = 1000;
 
     public static BeaconRequest map(GVariantSearchQuery query) {
         var params = query.getParams();
@@ -44,7 +45,7 @@ public class BeaconGVariantsRequestMapper {
         beaconRequestQuery.setIncludeResultsetResponses(HIT);
         beaconRequestQuery.setRequestedGranularity(RECORD);
         beaconRequestQuery.setTestMode(false);
-        beaconRequestQuery.setPagination(new BeaconRequestQueryPagination());
+        beaconRequestQuery.setPagination(buildPagination(params));
         beaconRequestQuery.setFilters(Collections.emptyList());
         beaconRequestQuery.setRequestParameters(requestParams.isEmpty() ? null : requestParams);
 
@@ -53,6 +54,22 @@ public class BeaconGVariantsRequestMapper {
         beaconRequest.setQuery(beaconRequestQuery);
 
         return beaconRequest;
+    }
+
+    private static BeaconRequestQueryPagination buildPagination(GVariantSearchQueryParams params) {
+        var pagination = new BeaconRequestQueryPagination();
+        if (isPositionOnlyRangeQuery(params)) {
+            // Position-only range queries should return overlapping variants, not just a single hit.
+            pagination.setLimit(POSITION_RANGE_PAGE_LIMIT);
+        }
+        return pagination;
+    }
+
+    private static boolean isPositionOnlyRangeQuery(GVariantSearchQueryParams params) {
+        return params != null
+                && ObjectUtils.isNotEmpty(params.getEnd())
+                && !PopulationConstants.hasValue(params.getReferenceBases())
+                && !PopulationConstants.hasValue(params.getAlternateBases());
     }
 
     private static void addIfNonNull(Map<String, Object> map, String key, Object value) {
@@ -82,15 +99,17 @@ public class BeaconGVariantsRequestMapper {
         }
 
         return resultSet.getResults().stream()
-                .filter(it -> ObjectUtils.isNotEmpty(it.getFrequencyInPopulations()))
-                .flatMap(r -> r.getFrequencyInPopulations().stream())
-                .filter(it -> ObjectUtils.isNotEmpty(it.getFrequencies()))
-                .flatMap(fip -> fip.getFrequencies().stream())
-                .map(freq -> populateVariantFromFrequency(freq, resultSet.getBeaconId(),
-                        resultSet.getId())).toList();
+                .filter(result -> ObjectUtils.isNotEmpty(result.getFrequencyInPopulations()))
+                .flatMap(result -> result.getFrequencyInPopulations().stream()
+                        .filter(it -> ObjectUtils.isNotEmpty(it.getFrequencies()))
+                        .flatMap(fip -> fip.getFrequencies().stream()
+                                .map(freq -> populateVariantFromFrequency(freq, result,
+                                        resultSet.getBeaconId(), resultSet.getId()))))
+                .toList();
     }
 
     private static GVariantsSearchResponse populateVariantFromFrequency(Frequency freq,
+            Result result,
             String beaconId, String id) {
         GVariantsSearchResponse variant = new GVariantsSearchResponse();
         variant.beacon(beaconId);
@@ -102,6 +121,62 @@ public class BeaconGVariantsRequestMapper {
         variant.alleleCountHomozygous(freq.getAlleleCountHomozygous());
         variant.alleleCountHeterozygous(freq.getAlleleCountHeterozygous());
         variant.alleleCountHemizygous(freq.getAlleleCountHemizygous());
+        populateMatchedVariantDetails(variant, result);
         return variant;
+    }
+
+    private static void populateMatchedVariantDetails(GVariantsSearchResponse mapped,
+            Result result) {
+        var variation = result.getVariation();
+        if (variation == null) {
+            return;
+        }
+
+        mapped.referenceBases(variation.getReferenceBases());
+        mapped.alternateBases(variation.getAlternateBases());
+
+        var location = variation.getLocation();
+        if (location == null) {
+            return;
+        }
+
+        mapped.referenceName(extractReferenceName(location.getSequenceId()));
+
+        var interval = location.getInterval();
+        if (interval == null) {
+            return;
+        }
+
+        mapped.start(ofNullable(interval.getStart())
+                .map(GenomicVariationIntervalCoordinate::getValue)
+                .orElse(null));
+        mapped.end(ofNullable(interval.getEnd())
+                .map(GenomicVariationIntervalCoordinate::getValue)
+                .orElse(null));
+    }
+
+    private static String extractReferenceName(String sequenceId) {
+        if (!PopulationConstants.hasValue(sequenceId)) {
+            return null;
+        }
+
+        var normalized = sequenceId.trim();
+        var tokens = normalized.split(":");
+        if (tokens.length >= 2 && "HGVSID".equalsIgnoreCase(tokens[0])) {
+            return normalizeReferenceName(tokens[1]);
+        }
+
+        return normalizeReferenceName(tokens.length == 1 ? tokens[0] : normalized);
+    }
+
+    private static String normalizeReferenceName(String referenceName) {
+        if (!PopulationConstants.hasValue(referenceName)) {
+            return null;
+        }
+
+        var trimmed = referenceName.trim();
+        return trimmed.regionMatches(true, 0, "chr", 0, 3)
+                ? trimmed.substring(3)
+                : trimmed;
     }
 }

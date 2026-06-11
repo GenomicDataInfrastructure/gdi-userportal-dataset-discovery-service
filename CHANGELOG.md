@@ -12,6 +12,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.4.2] - 2026-06-04
+
+### Added
+- feat: enhance GVariantsRepository with country and sex filtering logic by @Kacem Bechka in 033dcf9
+- feat: add datasetType mapping and update OpenAPI schemas by @Kacem Bechka in da2f5b3
+
+
+### Changed
+- chore(deps): update actions/checkout digest to df4cb1c by @Renovate Bot in 3210b44
+- chore(deps): update actions/checkout action to v6.0.3 by @Renovate Bot in c325efc
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.8-1780378819 by @Renovate Bot in 0e99293
+- chore(deps): update dependency org.sonarsource.scanner.maven:sonar-maven-plugin to v5.7.0.6970 by @Renovate Bot in 746aea1
+- chore(deps): update surefire.version to v3.5.6 by @Renovate Bot in 920f51d
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.8-1779809423 by @Renovate Bot in 1b77d8d
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.8-1779777572 by @Renovate Bot in 96abc5f
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1779770818 by @Renovate Bot in dbd5a98
+- chore(deps): update docker/metadata-action digest to 80c7e94 by @Renovate Bot in d6f1ecc
+- chore(deps): update docker/login-action digest to 650006c by @Renovate Bot in 064094e
+- chore(deps): update docker/build-push-action digest to f9f3042 by @Renovate Bot in c7e88b7
+- chore(deps): update quarkus.platform.version to v3.35.4 by @Renovate Bot in 46cae43
+- chore(deps): update quarkus.platform.version to v3.35.3 by @Renovate Bot in be628f5
+- chore(deps): update quarkus.platform.version to v3.35.2 by @Renovate Bot in b4e5048
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v9.7-1778562320 by @Renovate Bot in f5b5e2a
+- doc: update CHANGELOG.md for v1.4.1 by @LNDS-Sysadmins in 184b231
+
+
+### Fixed
+- chore: fix sonarcloud by @Kacem Bechka in c722d6e
+
+
 ## [v1.4.1] - 2026-05-11
 
 ### Added

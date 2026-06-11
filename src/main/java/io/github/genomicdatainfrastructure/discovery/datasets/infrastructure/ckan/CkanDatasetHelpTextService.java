@@ -133,9 +133,7 @@ public class CkanDatasetHelpTextService {
 
     private String keysAsJson() {
         try {
-            return objectMapper.writeValueAsString(List.copyOf(
-                    SCHEMING_FIELD_TO_DATASET_PROPERTY.keySet()
-            ));
+            return objectMapper.writeValueAsString(SCHEMING_FIELD_TO_DATASET_PROPERTY.keySet());
         } catch (JsonProcessingException exception) {
             throw new IllegalStateException("Could not serialize dataset help-text keys for CKAN",
                     exception);

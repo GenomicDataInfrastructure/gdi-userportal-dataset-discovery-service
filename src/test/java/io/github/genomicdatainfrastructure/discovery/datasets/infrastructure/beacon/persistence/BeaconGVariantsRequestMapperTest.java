@@ -93,6 +93,42 @@ class BeaconGVariantsRequestMapperTest {
         assertFalse(requestParams.containsKey("alternateBases"));
     }
 
+    @Test
+    @DisplayName("map(GVariantSearchQuery) should not force pagination limit for exact variant search")
+    void map_GVariantSearchQuery_WithAlleles_DoesNotSetPositionRangePaginationLimit() {
+        GVariantSearchQuery query = new GVariantSearchQuery();
+        GVariantSearchQueryParams params = new GVariantSearchQueryParams();
+        params.setReferenceName("1");
+        params.setStart(List.of(123455));
+        params.setEnd(List.of(123456));
+        params.setReferenceBases("A");
+        params.setAlternateBases("G");
+        query.setParams(params);
+
+        var result = BeaconGVariantsRequestMapper.map(query);
+
+        assertNotNull(result.getQuery());
+        assertNotNull(result.getQuery().getPagination());
+        assertEquals(1, result.getQuery().getPagination().getLimit());
+    }
+
+    @Test
+    @DisplayName("map(GVariantSearchQuery) should omit empty collection params")
+    void map_GVariantSearchQuery_WithEmptyCollections_UsesNullRequestParameters() {
+        GVariantSearchQuery query = new GVariantSearchQuery();
+        GVariantSearchQueryParams params = new GVariantSearchQueryParams();
+        params.setStart(List.of());
+        params.setEnd(List.of());
+        query.setParams(params);
+
+        var result = BeaconGVariantsRequestMapper.map(query);
+
+        assertNotNull(result.getQuery());
+        assertNull(result.getQuery().getRequestParameters());
+        assertNotNull(result.getQuery().getPagination());
+        assertEquals(1, result.getQuery().getPagination().getLimit());
+    }
+
     // Note: BeaconRequest mapping test removed as it requires full query object setup
     // The response mapping test below covers the critical population parsing logic
 
@@ -206,6 +242,77 @@ class BeaconGVariantsRequestMapperTest {
         assertEquals(123457, variant.getEnd());
         assertEquals("A", variant.getReferenceBases());
         assertEquals("G", variant.getAlternateBases());
+    }
+
+    @Test
+    void map_BeaconResponse_WhenVariationHasNoLocation_MapsAllelesOnly() {
+        var beaconResponse = buildBeaconsResponseWithPopulation("FR_F");
+        var result = beaconResponse.getResponse().getResultSets().getFirst().getResults()
+                .getFirst();
+
+        var variation = new GenomicVariation();
+        variation.setReferenceBases("A");
+        variation.setAlternateBases("T");
+        result.setVariation(variation);
+
+        var mapped = BeaconGVariantsRequestMapper.map(beaconResponse).getFirst();
+
+        assertEquals("A", mapped.getReferenceBases());
+        assertEquals("T", mapped.getAlternateBases());
+        assertNull(mapped.getReferenceName());
+        assertNull(mapped.getStart());
+        assertNull(mapped.getEnd());
+    }
+
+    @Test
+    void map_BeaconResponse_WhenSequenceIdHasChrPrefix_MapsOneBasedReferenceNameWithoutPrefix() {
+        var beaconResponse = buildBeaconsResponseWithPopulation("FR_F");
+        var result = beaconResponse.getResponse().getResultSets().getFirst().getResults()
+                .getFirst();
+
+        var interval = new GenomicVariationInterval();
+        interval.setStart(GenomicVariationIntervalCoordinate.builder().value(123456).build());
+        interval.setEnd(GenomicVariationIntervalCoordinate.builder().value(123457).build());
+
+        var location = new GenomicVariationLocation();
+        location.setSequenceId("chr21");
+        location.setInterval(interval);
+
+        var variation = new GenomicVariation();
+        variation.setLocation(location);
+        result.setVariation(variation);
+
+        var mapped = BeaconGVariantsRequestMapper.map(beaconResponse).getFirst();
+
+        assertEquals("21", mapped.getReferenceName());
+        assertEquals(123456, mapped.getStart());
+        assertEquals(123457, mapped.getEnd());
+    }
+
+    @Test
+    void map_BeaconResponse_WhenSequenceIdIsNotHgvs_UsesOriginalReferenceToken() {
+        var beaconResponse = buildBeaconsResponseWithPopulation("FR_F");
+        var result = beaconResponse.getResponse().getResultSets().getFirst().getResults()
+                .getFirst();
+
+        var location = new GenomicVariationLocation();
+        location.setSequenceId("ref:21");
+        location.setInterval(GenomicVariationInterval.builder()
+                .start(GenomicVariationIntervalCoordinate.builder().value(1).build())
+                .end(GenomicVariationIntervalCoordinate.builder().value(2).build())
+                .build());
+
+        var variation = new GenomicVariation();
+        variation.setLocation(location);
+        result.setVariation(variation);
+
+        var mapped = BeaconGVariantsRequestMapper.map(beaconResponse).getFirst();
+        assertEquals("ref:21", mapped.getReferenceName());
+    }
+
+    @Test
+    void map_NullBeaconResponse_ReturnsEmptyList() {
+        assertThat(BeaconGVariantsRequestMapper.map((BeaconResponse) null)).isEmpty();
     }
 
     public static BeaconResponse buildBeaconsResponse() {

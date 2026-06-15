@@ -10,6 +10,8 @@ import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFilterHelpTextsResponse;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.WebApplicationException;
 import lombok.extern.java.Log;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -54,8 +56,7 @@ public class CkanFilterHelpTextService {
             ))
                     .map(CkanFilterHelpTextsResponse::getResult)
                     .orElseGet(Map::of);
-        } catch (jakarta.ws.rs.WebApplicationException |
-                 jakarta.ws.rs.ProcessingException exception) {
+        } catch (WebApplicationException | ProcessingException exception) {
             log.log(Level.WARNING, "Could not retrieve CKAN filter help texts", exception);
             return Map.of();
         }

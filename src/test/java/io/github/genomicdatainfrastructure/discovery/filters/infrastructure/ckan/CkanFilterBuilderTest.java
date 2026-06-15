@@ -20,6 +20,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackageSe
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesSearchResponse;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesSearchResult;
 import jakarta.enterprise.inject.Vetoed;
+import jakarta.ws.rs.ProcessingException;
 
 import java.util.List;
 import java.util.Map;
@@ -322,7 +323,7 @@ class CkanFilterBuilderTest {
         public CkanFilterHelpTextsResponse gdiFilterHelpTextsShow(String acceptLanguage,
                 String keys) {
             if (failHelpTextsRequest) {
-                throw new RuntimeException("CKAN unavailable");
+                throw new ProcessingException("CKAN unavailable");
             }
             return helpTextsResponse;
         }

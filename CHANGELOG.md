@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - fix(deps): update quarkus-openapi-generator.version to v2.19.0 by @Renovate Bot in 9bd555f
-- Potential fix for pull request finding by @Hans-Christian in 0bd9be7
+- Potential fix for finding pull requests by @Hans-Christian in 0bd9be7
 - fix: sonar by @Kacem Bechka in 1a52756
 
 

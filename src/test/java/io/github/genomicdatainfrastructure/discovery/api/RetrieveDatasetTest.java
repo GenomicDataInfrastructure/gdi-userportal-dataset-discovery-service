@@ -21,7 +21,10 @@ class RetrieveDatasetTest extends BaseTest {
                 .when()
                 .get("/api/v1/datasets/e1b3eff9-13eb-48b0-b180-7ecb76b84454")
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .body("helpText.title", equalTo("A descriptive title for the dataset."))
+                .body("helpText.accessRights",
+                        equalTo("Information that indicates whether the dataset is open or restricted."));
     }
 
     @Test

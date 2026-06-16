@@ -1,0 +1,22 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPath": "/api/3/action/gdi_dataset_help_texts_show"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "help": "https://catalogue.portal.dev.gdi.lu/api/3/action/help_show?name=gdi_dataset_help_texts_show",
+      "success": true,
+      "result": {
+        "title_translated": "A descriptive title for the dataset.",
+        "access_rights": "Information that indicates whether the dataset is open or restricted.",
+        "unknown_field": "This should not be exposed."
+      }
+    }
+  }
+}

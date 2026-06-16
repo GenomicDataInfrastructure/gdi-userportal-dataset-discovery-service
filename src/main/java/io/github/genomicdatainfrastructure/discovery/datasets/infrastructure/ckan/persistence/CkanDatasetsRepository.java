@@ -6,6 +6,7 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ck
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
 import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.DatasetNotFoundException;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.CkanDatasetHelpTextService;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.mapper.CkanDatasetsMapper;
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan.CkanFilterHelpTextService;
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan.CkanSearchFacetsMapper;
@@ -31,18 +32,21 @@ public class CkanDatasetsRepository implements DatasetsRepository {
     private final CkanDatasetsMapper ckanDatasetsMapper;
     private final CkanSearchFacetsMapper ckanSearchFacetsMapper;
     private final CkanFilterHelpTextService ckanFilterHelpTextService;
+    private final CkanDatasetHelpTextService ckanDatasetHelpTextService;
 
     @Inject
     public CkanDatasetsRepository(
             @RestClient CkanQueryApi ckanQueryApi,
             CkanDatasetsMapper ckanDatasetsMapper,
             CkanSearchFacetsMapper ckanSearchFacetsMapper,
-            CkanFilterHelpTextService ckanFilterHelpTextService
+            CkanFilterHelpTextService ckanFilterHelpTextService,
+            CkanDatasetHelpTextService ckanDatasetHelpTextService
     ) {
         this.ckanQueryApi = ckanQueryApi;
         this.ckanDatasetsMapper = ckanDatasetsMapper;
         this.ckanSearchFacetsMapper = ckanSearchFacetsMapper;
         this.ckanFilterHelpTextService = ckanFilterHelpTextService;
+        this.ckanDatasetHelpTextService = ckanDatasetHelpTextService;
     }
 
     @Override
@@ -129,6 +133,11 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         try {
             var ckanPackage = ckanQueryApi.packageShow(id, preferredLanguage);
             var mappedDataset = ckanDatasetsMapper.map(ckanPackage.getResult());
+            ckanDatasetHelpTextService.enrich(
+                    mappedDataset,
+                    ckanPackage.getResult(),
+                    preferredLanguage
+            );
             var inSeries = ofNullable(ckanPackage.getResult().getInSeries())
                     .orElse(List.of())
                     .stream()

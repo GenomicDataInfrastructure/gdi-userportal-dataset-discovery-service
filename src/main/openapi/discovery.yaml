@@ -449,6 +449,11 @@ components:
         description:
           type: string
           title: Description
+        helpText:
+          type: object
+          title: Help text
+          additionalProperties:
+            type: string
         version:
           type: string
           title: Version

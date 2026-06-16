@@ -57,6 +57,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CkanErrorResponse"
+  /api/3/action/gdi_filter_help_texts_show:
+    get:
+      summary: Retrieves localized help texts for search filters
+      operationId: gdi_filter_help_texts_show
+      tags:
+        - "ckan-query"
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - name: keys
+          in: query
+          description: JSON array of filter keys to retrieve help text for
+          required: false
+          schema:
+            type: string
+            example: '["title"]'
+      responses:
+        "200":
+          description: Localized help text keyed by filter key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CkanFilterHelpTextsResponse"
   /dataset/{id}.{format}:
     get:
       summary: Retrieves a dataset by its ID, in the requested format
@@ -157,6 +179,17 @@ components:
           type: boolean
         result:
           $ref: "#/components/schemas/PackagesSearchResult"
+    CkanFilterHelpTextsResponse:
+      type: object
+      properties:
+        help:
+          type: string
+        success:
+          type: boolean
+        result:
+          type: object
+          additionalProperties:
+            type: string
     PackagesSearchResult:
       type: object
       properties:

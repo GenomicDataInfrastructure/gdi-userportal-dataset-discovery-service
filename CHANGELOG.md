@@ -20,27 +20,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Expose dataset detail help text (#387) by @Hans-Christian in 6bcd84c
-- Address PR review comments by @Hans-christian in 88dc944
 - chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1781496842 by @Renovate Bot in f14fee8
 - chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1780379098 by @Renovate Bot in c2e6d5f
 - chore(deps): update Dockerfile to use ubi9-minimal version 9.8-1780378819 by @Kacem Bechka in f1ac59d
 - chore(deps): update quarkus.platform.version to v3.36.2 by @Renovate Bot in 4513a16
-- test: add helpText assertions to dataset search integration tests by @copilot-swe-agent[bot] in 24cd453
-- Fix help text service unit test by @Hans-christian in 88afebf
-- Use actual filter keys for help text lookup by @Hans-christian in 3dbcbc5
-- Apply suggestions from code review by @Hans-Christian in f5901b1
-- Harden zizmor workflow invocation by @Hans-christian in 1305cf1
 - Expose filter help text in discovery by @Hans-christian in 9e4b0af
 - chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1780379098 by @Renovate Bot in 9ddc2e8
 - chore(deps): update quarkus.platform.version to v3.36.1 by @Renovate Bot in aea25d0
 - chore(deps): update astral-sh/setup-uv action to v8.2.0 by @Renovate Bot in 304a41d
 - chore(deps): update dependency org.jacoco:jacoco-maven-plugin to v0.8.15 by @Renovate Bot in 5e43889
-- doc: update CHANGELOG.md for v1.4.2 by @LNDS-Sysadmins in e8bb04c
 
 
 ### Fixed
 - fix(deps): update quarkus-openapi-generator.version to v2.19.0 by @Renovate Bot in 9bd555f
-- Potential fix for finding pull requests by @Hans-Christian in 0bd9be7
 - fix: sonar by @Kacem Bechka in 1a52756
 
 

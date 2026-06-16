@@ -48,6 +48,35 @@ class CkanDatasetHelpTextServiceTest {
     }
 
     @Test
+    void enrichNormalizesMultilineHelpTextValues() {
+        var ckanQueryApi = mock(CkanQueryApi.class);
+        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var dataset = RetrievedDataset.builder().id("dataset-1").build();
+
+        when(ckanQueryApi.gdiDatasetHelpTextsShow(anyString(), anyString(), anyString()))
+                .thenReturn(CkanFilterHelpTextsResponse.builder()
+                        .result(Map.of(
+                                "health_theme",
+                                "A category of the Dataset or tag describing the Dataset.\n",
+                                "access_rights",
+                                "Information that indicates whether\nthis dataset is open or restricted."
+                        ))
+                        .build());
+
+        service.enrich(dataset, CkanPackage.builder().build(), "en");
+
+        assertThat(dataset.getHelpText())
+                .containsEntry(
+                        "healthTheme",
+                        "A category of the Dataset or tag describing the Dataset."
+                )
+                .containsEntry(
+                        "accessRights",
+                        "Information that indicates whether this dataset is open or restricted."
+                );
+    }
+
+    @Test
     void enrichForwardsPreferredLanguageDatasetTypeAndRequestedKeys() {
         var ckanQueryApi = mock(CkanQueryApi.class);
         var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());

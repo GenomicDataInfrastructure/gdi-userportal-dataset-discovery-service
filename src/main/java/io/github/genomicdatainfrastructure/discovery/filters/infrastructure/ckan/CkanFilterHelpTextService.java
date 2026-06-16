@@ -13,6 +13,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
 import lombok.extern.java.Log;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
@@ -43,7 +44,8 @@ public class CkanFilterHelpTextService {
             return filters;
         }
 
-        filters.forEach(filter -> filter.setHelpText(helpTexts.get(filter.getKey())));
+        filters.forEach(filter -> filter.setHelpText(normalizeHelpText(helpTexts.get(filter
+                .getKey()))));
         return filters;
     }
 
@@ -76,5 +78,10 @@ public class CkanFilterHelpTextService {
         } catch (JsonProcessingException exception) {
             throw new IllegalStateException("Could not serialize filter keys for CKAN", exception);
         }
+    }
+
+    private String normalizeHelpText(String helpText) {
+        var normalizedHelpText = StringUtils.normalizeSpace(helpText);
+        return StringUtils.isBlank(normalizedHelpText) ? null : normalizedHelpText;
     }
 }

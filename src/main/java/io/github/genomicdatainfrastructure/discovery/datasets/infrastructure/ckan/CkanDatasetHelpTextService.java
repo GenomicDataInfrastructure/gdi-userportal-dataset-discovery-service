@@ -124,8 +124,9 @@ public class CkanDatasetHelpTextService {
         var mappedHelpTexts = new LinkedHashMap<String, String>();
         helpTexts.forEach((fieldName, helpText) -> {
             var datasetProperty = SCHEMING_FIELD_TO_DATASET_PROPERTY.get(fieldName);
-            if (datasetProperty != null && StringUtils.isNotBlank(helpText)) {
-                mappedHelpTexts.put(datasetProperty, helpText);
+            var normalizedHelpText = StringUtils.normalizeSpace(helpText);
+            if (datasetProperty != null && StringUtils.isNotBlank(normalizedHelpText)) {
+                mappedHelpTexts.put(datasetProperty, normalizedHelpText);
             }
         });
         return mappedHelpTexts;

@@ -13,7 +13,8 @@
       "help": "https://catalogue.portal.dev.gdi.lu/api/3/action/help_show?name=gdi_filter_help_texts_show",
       "success": true,
       "result": {
-        "title": "Use this filter to search datasets by title."
+        "title": "Use this filter to search datasets by title.",
+        "tags": "Use this filter to search datasets by keywords."
       }
     }
   }

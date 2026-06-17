@@ -38,9 +38,13 @@ class CkanDatasetHelpTextServiceTest {
                                 "access_rights", "Access conditions.",
                                 "in_series", "Dataset series this dataset belongs to.",
                                 "resource_fields.name_translated", "A resource title.",
+                                "resource_fields.description_translated", "A resource description.",
                                 "resource_fields.format", "Resource format.",
+                                "resource_fields.download_url", "https://example.org/download.csv",
                                 "resource_fields.access_services.title",
                                 "A data service title.",
+                                "resource_fields.access_services.description",
+                                "A data service description.",
                                 "unknown_field", "Not exposed."
                         ))
                         .build());
@@ -54,10 +58,18 @@ class CkanDatasetHelpTextServiceTest {
                 .containsEntry("distributions.title", "A resource title.")
                 .containsEntry("samples.title", "A resource title.")
                 .containsEntry("analytics.title", "A resource title.")
+                .containsEntry("distributions.description", "A resource description.")
+                .containsEntry("samples.description", "A resource description.")
+                .containsEntry("analytics.description", "A resource description.")
                 .containsEntry("distributions.format", "Resource format.")
                 .containsEntry("samples.format", "Resource format.")
                 .containsEntry("analytics.format", "Resource format.")
+                .containsEntry("distributions.downloadUrl", "https://example.org/download.csv")
+                .containsEntry("samples.downloadUrl", "https://example.org/download.csv")
+                .containsEntry("analytics.downloadUrl", "https://example.org/download.csv")
                 .containsEntry("distributions.accessService.title", "A data service title.")
+                .containsEntry("distributions.accessService.description",
+                        "A data service description.")
                 .doesNotContainKey("unknown_field");
     }
 
@@ -231,6 +243,25 @@ class CkanDatasetHelpTextServiceTest {
         var result = service.enrich(dataset, CkanPackage.builder().build(), "en");
 
         assertThat(result).isSameAs(dataset);
+        assertThat(dataset.getHelpText()).isNull();
+    }
+
+    @Test
+    void enrichSkipsNullHelpTextValues() {
+        var ckanQueryApi = mock(CkanQueryApi.class);
+        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var dataset = RetrievedDataset.builder().id("dataset-1").build();
+        var result = new java.util.LinkedHashMap<String, String>();
+        result.put("title_translated", null);
+        result.put("resource_fields.format", null);
+
+        when(ckanQueryApi.gdiDatasetHelpTextsShow(anyString(), anyString(), anyString()))
+                .thenReturn(CkanFilterHelpTextsResponse.builder()
+                        .result(result)
+                        .build());
+
+        service.enrich(dataset, CkanPackage.builder().build(), "en");
+
         assertThat(dataset.getHelpText()).isNull();
     }
 }

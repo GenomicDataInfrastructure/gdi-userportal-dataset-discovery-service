@@ -16,6 +16,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFilte
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 class CkanFilterHelpTextServiceTest {
@@ -72,5 +73,25 @@ class CkanFilterHelpTextServiceTest {
         assertThat(filters.get(1).getHelpText())
                 .isEqualTo(
                         "Information that indicates whether this dataset is open or restricted.");
+    }
+
+    @Test
+    void enrichSkipsNullHelpTextValues() {
+        var ckanQueryApi = mock(CkanQueryApi.class);
+        var service = new CkanFilterHelpTextService(ckanQueryApi, new ObjectMapper());
+
+        var result = new LinkedHashMap<String, String>();
+        result.put("title", null);
+
+        when(ckanQueryApi.gdiFilterHelpTextsShow(anyString(), anyString())).thenReturn(
+                CkanFilterHelpTextsResponse.builder()
+                        .result(result)
+                        .build());
+
+        var filters = List.of(Filter.builder().key("title").build());
+
+        service.enrich(filters, "en");
+
+        assertThat(filters.get(0).getHelpText()).isNull();
     }
 }

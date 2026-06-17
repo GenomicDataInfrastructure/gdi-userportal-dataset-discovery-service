@@ -81,6 +81,10 @@ public class CkanFilterHelpTextService {
     }
 
     private String normalizeHelpText(String helpText) {
+        if (helpText == null) {
+            return null;
+        }
+
         var normalizedHelpText = StringUtils.normalizeSpace(helpText);
         return StringUtils.isBlank(normalizedHelpText) ? null : normalizedHelpText;
     }

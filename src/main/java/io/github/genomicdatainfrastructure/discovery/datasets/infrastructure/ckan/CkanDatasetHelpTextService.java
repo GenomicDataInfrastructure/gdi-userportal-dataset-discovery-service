@@ -28,6 +28,11 @@ public class CkanDatasetHelpTextService {
 
     private static final String DEFAULT_DATASET_TYPE = "dataset";
     private static final String DATASET_SERIES_TYPE = "dataset_series";
+    private static final List<String> RESOURCE_SECTION_PROPERTIES = List.of(
+            "distributions",
+            "samples",
+            "analytics"
+    );
 
     private static final Map<String, List<String>> SCHEMING_FIELD_TO_DATASET_PROPERTY = Map
             .ofEntries(
@@ -84,21 +89,20 @@ public class CkanDatasetHelpTextService {
                     Map.entry("uri", List.of("uri")),
                     Map.entry("in_series", List.of("inSeries")),
                     Map.entry("resource_fields.name_translated",
-                            List.of("distributions.title", "samples.title", "analytics.title")),
+                            resourceSectionProperties("title")),
                     Map.entry("resource_fields.description_translated",
-                            List.of("distributions.description", "samples.description",
-                                    "analytics.description")),
+                            resourceSectionProperties("description")),
                     Map.entry("resource_fields.format",
-                            List.of("distributions.format", "samples.format", "analytics.format")),
+                            resourceSectionProperties("format")),
                     Map.entry("resource_fields.download_url",
-                            List.of("distributions.downloadUrl", "samples.downloadUrl",
-                                    "analytics.downloadUrl")),
+                            resourceSectionProperties("downloadUrl")),
+                    // Access services are only exposed for distributions in the Discovery API.
                     Map.entry("resource_fields.access_services", List.of(
                             "distributions.accessService")),
                     Map.entry("resource_fields.access_services.title",
-                            List.of("distributions.accessService.title")),
+                            resourceAccessServiceProperties("title")),
                     Map.entry("resource_fields.access_services.description",
-                            List.of("distributions.accessService.description"))
+                            resourceAccessServiceProperties("description"))
             );
 
     private static final Map<String, List<String>> SERIES_FIELD_TO_IN_SERIES_PROPERTY = Map
@@ -192,13 +196,22 @@ public class CkanDatasetHelpTextService {
         var mappedHelpTexts = new LinkedHashMap<String, String>();
         helpTexts.forEach((fieldName, helpText) -> {
             var datasetProperties = fieldMappings.get(fieldName);
-            var normalizedHelpText = StringUtils.normalizeSpace(helpText);
+            var normalizedHelpText = normalizeHelpText(helpText);
             if (datasetProperties != null && StringUtils.isNotBlank(normalizedHelpText)) {
                 datasetProperties.forEach(datasetProperty -> mappedHelpTexts.put(datasetProperty,
                         normalizedHelpText));
             }
         });
         return mappedHelpTexts;
+    }
+
+    private String normalizeHelpText(String helpText) {
+        if (helpText == null) {
+            return null;
+        }
+
+        var normalizedHelpText = StringUtils.normalizeSpace(helpText);
+        return StringUtils.isBlank(normalizedHelpText) ? null : normalizedHelpText;
     }
 
     private String keysAsJson(Map<String, List<String>> fieldMappings) {
@@ -229,5 +242,15 @@ public class CkanDatasetHelpTextService {
             }
         }
         return Optional.empty();
+    }
+
+    private static List<String> resourceSectionProperties(String propertyName) {
+        return RESOURCE_SECTION_PROPERTIES.stream()
+                .map(section -> section + "." + propertyName)
+                .toList();
+    }
+
+    private static List<String> resourceAccessServiceProperties(String propertyName) {
+        return List.of("distributions.accessService." + propertyName);
     }
 }

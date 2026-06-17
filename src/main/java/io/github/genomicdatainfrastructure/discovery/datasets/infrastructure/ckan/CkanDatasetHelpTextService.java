@@ -27,60 +27,97 @@ import java.util.logging.Level;
 public class CkanDatasetHelpTextService {
 
     private static final String DEFAULT_DATASET_TYPE = "dataset";
-
-    private static final Map<String, String> SCHEMING_FIELD_TO_DATASET_PROPERTY = Map.ofEntries(
-            Map.entry("title_translated", "title"),
-            Map.entry("notes_translated", "description"),
-            Map.entry("tags_translated", "keywords"),
-            Map.entry("contact", "contacts"),
-            Map.entry("publisher", "publishers"),
-            Map.entry("owner_org", "ownerOrg"),
-            Map.entry("url", "url"),
-            Map.entry("issued", "createdAt"),
-            Map.entry("modified", "modifiedAt"),
-            Map.entry("version", "version"),
-            Map.entry("version_notes", "versionNotes"),
-            Map.entry("identifier", "identifier"),
-            Map.entry("frequency", "frequency"),
-            Map.entry("provenance", "provenance"),
-            Map.entry("dcat_type", "dcatType"),
-            Map.entry("temporal_coverage", "temporalCoverage"),
-            Map.entry("temporal_resolution", "temporalResolution"),
-            Map.entry("spatial_coverage", "spatialCoverage"),
-            Map.entry("spatial_resolution_in_meters", "spatialResolutionInMeters"),
-            Map.entry("access_rights", "accessRights"),
-            Map.entry("alternate_identifier", "alternateIdentifier"),
-            Map.entry("theme", "themes"),
-            Map.entry("language", "languages"),
-            Map.entry("documentation", "documentation"),
-            Map.entry("conforms_to", "conformsTo"),
-            Map.entry("is_referenced_by", "isReferencedBy"),
-            Map.entry("distribution", "distributions"),
-            Map.entry("sample", "samples"),
-            Map.entry("analytics", "analytics"),
-            Map.entry("applicable_legislation", "applicableLegislation"),
-            Map.entry("has_version", "hasVersions"),
-            Map.entry("code_values", "codeValues"),
-            Map.entry("coding_system", "codingSystem"),
-            Map.entry("purpose", "purpose"),
-            Map.entry("health_category", "healthCategory"),
-            Map.entry("health_theme", "healthTheme"),
-            Map.entry("legal_basis", "legalBasis"),
-            Map.entry("min_typical_age", "minTypicalAge"),
-            Map.entry("max_typical_age", "maxTypicalAge"),
-            Map.entry("number_of_records", "numberOfRecords"),
-            Map.entry("number_of_unique_individuals", "numberOfUniqueIndividuals"),
-            Map.entry("personal_data", "personalData"),
-            Map.entry("trusted_data_holder", "trustedDataHolder"),
-            Map.entry("population_coverage", "populationCoverage"),
-            Map.entry("retention_period", "retentionPeriod"),
-            Map.entry("hdab", "hdab"),
-            Map.entry("qualified_relation", "qualifiedRelation"),
-            Map.entry("provenance_activity", "provenanceActivity"),
-            Map.entry("qualified_attribution", "qualifiedAttribution"),
-            Map.entry("quality_annotation", "qualityAnnotation"),
-            Map.entry("uri", "uri")
+    private static final String DATASET_SERIES_TYPE = "dataset_series";
+    private static final List<String> RESOURCE_SECTION_PROPERTIES = List.of(
+            "distributions",
+            "samples",
+            "analytics"
     );
+
+    private static final Map<String, List<String>> SCHEMING_FIELD_TO_DATASET_PROPERTY = Map
+            .ofEntries(
+                    Map.entry("title_translated", List.of("title")),
+                    Map.entry("notes_translated", List.of("description")),
+                    Map.entry("tags_translated", List.of("keywords")),
+                    Map.entry("contact", List.of("contacts")),
+                    Map.entry("publisher", List.of("publishers")),
+                    Map.entry("owner_org", List.of("ownerOrg")),
+                    Map.entry("url", List.of("url")),
+                    Map.entry("issued", List.of("createdAt")),
+                    Map.entry("modified", List.of("modifiedAt")),
+                    Map.entry("version", List.of("version")),
+                    Map.entry("version_notes", List.of("versionNotes")),
+                    Map.entry("identifier", List.of("identifier")),
+                    Map.entry("frequency", List.of("frequency")),
+                    Map.entry("provenance", List.of("provenance")),
+                    Map.entry("dcat_type", List.of("dcatType")),
+                    Map.entry("temporal_coverage", List.of("temporalCoverage")),
+                    Map.entry("temporal_resolution", List.of("temporalResolution")),
+                    Map.entry("spatial_coverage", List.of("spatialCoverage")),
+                    Map.entry("spatial_resolution_in_meters", List.of("spatialResolutionInMeters")),
+                    Map.entry("access_rights", List.of("accessRights")),
+                    Map.entry("alternate_identifier", List.of("alternateIdentifier")),
+                    Map.entry("theme", List.of("themes")),
+                    Map.entry("language", List.of("languages")),
+                    Map.entry("documentation", List.of("documentation")),
+                    Map.entry("conforms_to", List.of("conformsTo")),
+                    Map.entry("is_referenced_by", List.of("isReferencedBy")),
+                    Map.entry("distribution", List.of("distributions")),
+                    Map.entry("sample", List.of("samples")),
+                    Map.entry("analytics", List.of("analytics")),
+                    Map.entry("applicable_legislation", List.of("applicableLegislation")),
+                    Map.entry("has_version", List.of("hasVersions")),
+                    Map.entry("code_values", List.of("codeValues")),
+                    Map.entry("coding_system", List.of("codingSystem")),
+                    Map.entry("purpose", List.of("purpose")),
+                    Map.entry("health_category", List.of("healthCategory")),
+                    Map.entry("health_theme", List.of("healthTheme")),
+                    Map.entry("legal_basis", List.of("legalBasis")),
+                    Map.entry("min_typical_age", List.of("minTypicalAge")),
+                    Map.entry("max_typical_age", List.of("maxTypicalAge")),
+                    Map.entry("number_of_records", List.of("numberOfRecords")),
+                    Map.entry("number_of_unique_individuals", List.of("numberOfUniqueIndividuals")),
+                    Map.entry("personal_data", List.of("personalData")),
+                    Map.entry("trusted_data_holder", List.of("trustedDataHolder")),
+                    Map.entry("population_coverage", List.of("populationCoverage")),
+                    Map.entry("retention_period", List.of("retentionPeriod")),
+                    Map.entry("hdab", List.of("hdab")),
+                    Map.entry("qualified_relation", List.of("qualifiedRelation")),
+                    Map.entry("provenance_activity", List.of("provenanceActivity")),
+                    Map.entry("qualified_attribution", List.of("qualifiedAttribution")),
+                    Map.entry("quality_annotation", List.of("qualityAnnotation")),
+                    Map.entry("uri", List.of("uri")),
+                    Map.entry("in_series", List.of("inSeries")),
+                    Map.entry("resource_fields.name_translated",
+                            resourceSectionProperties("title")),
+                    Map.entry("resource_fields.description_translated",
+                            resourceSectionProperties("description")),
+                    Map.entry("resource_fields.format",
+                            resourceSectionProperties("format")),
+                    Map.entry("resource_fields.download_url",
+                            resourceSectionProperties("downloadUrl")),
+                    // Access services are only exposed for distributions in the Discovery API.
+                    Map.entry("resource_fields.access_services", List.of(
+                            "distributions.accessService")),
+                    Map.entry("resource_fields.access_services.title",
+                            resourceAccessServiceProperties("title")),
+                    Map.entry("resource_fields.access_services.description",
+                            resourceAccessServiceProperties("description"))
+            );
+
+    private static final Map<String, List<String>> SERIES_FIELD_TO_IN_SERIES_PROPERTY = Map
+            .ofEntries(
+                    Map.entry("title_translated", List.of("inSeries.title")),
+                    Map.entry("notes_translated", List.of("inSeries.description")),
+                    Map.entry("frequency", List.of("inSeries.frequency")),
+                    Map.entry("temporal_coverage", List.of("inSeries.temporalCoverage")),
+                    Map.entry("applicable_legislation", List.of("inSeries.applicableLegislation")),
+                    Map.entry("contact", List.of("inSeries.contacts")),
+                    Map.entry("publisher", List.of("inSeries.publishers")),
+                    Map.entry("issued", List.of("inSeries.issued")),
+                    Map.entry("modified", List.of("inSeries.modified")),
+                    Map.entry("spatial_coverage", List.of("inSeries.spatial"))
+            );
 
     private final CkanQueryApi ckanQueryApi;
     private final ObjectMapper objectMapper;
@@ -106,34 +143,80 @@ public class CkanDatasetHelpTextService {
 
     private Map<String, String> retrieveHelpTexts(CkanPackage ckanPackage,
             String preferredLanguage) {
+        var helpTexts = new LinkedHashMap<String, String>();
+        helpTexts.putAll(retrievePackageHelpTexts(ckanPackage, preferredLanguage));
+        helpTexts.putAll(retrieveJoinedSeriesHelpTexts(ckanPackage, preferredLanguage));
+        return helpTexts;
+    }
+
+    private Map<String, String> retrievePackageHelpTexts(CkanPackage ckanPackage,
+            String preferredLanguage) {
         try {
-            return mapToDatasetProperties(Optional.ofNullable(ckanQueryApi.gdiDatasetHelpTextsShow(
-                    preferredLanguage,
-                    schemingType(ckanPackage),
-                    keysAsJson()
-            ))
-                    .map(CkanFilterHelpTextsResponse::getResult)
-                    .orElseGet(Map::of));
+            return mapToDatasetProperties(
+                    Optional.ofNullable(ckanQueryApi.gdiDatasetHelpTextsShow(
+                            preferredLanguage,
+                            schemingType(ckanPackage),
+                            keysAsJson(SCHEMING_FIELD_TO_DATASET_PROPERTY)
+                    ))
+                            .map(CkanFilterHelpTextsResponse::getResult)
+                            .orElseGet(Map::of),
+                    SCHEMING_FIELD_TO_DATASET_PROPERTY
+            );
         } catch (RuntimeException exception) {
             log.log(Level.WARNING, "Could not retrieve CKAN dataset help texts", exception);
             return Map.of();
         }
     }
 
-    private Map<String, String> mapToDatasetProperties(Map<String, String> helpTexts) {
+    private Map<String, String> retrieveJoinedSeriesHelpTexts(CkanPackage ckanPackage,
+            String preferredLanguage) {
+        if (ckanPackage.getInSeries() == null || ckanPackage.getInSeries().isEmpty()) {
+            return Map.of();
+        }
+
+        try {
+            return mapToDatasetProperties(
+                    Optional.ofNullable(ckanQueryApi.gdiDatasetHelpTextsShow(
+                            preferredLanguage,
+                            DATASET_SERIES_TYPE,
+                            keysAsJson(SERIES_FIELD_TO_IN_SERIES_PROPERTY)
+                    ))
+                            .map(CkanFilterHelpTextsResponse::getResult)
+                            .orElseGet(Map::of),
+                    SERIES_FIELD_TO_IN_SERIES_PROPERTY
+            );
+        } catch (RuntimeException exception) {
+            log.log(Level.WARNING, "Could not retrieve CKAN dataset series help texts", exception);
+            return Map.of();
+        }
+    }
+
+    private Map<String, String> mapToDatasetProperties(Map<String, String> helpTexts,
+            Map<String, List<String>> fieldMappings) {
         var mappedHelpTexts = new LinkedHashMap<String, String>();
         helpTexts.forEach((fieldName, helpText) -> {
-            var datasetProperty = SCHEMING_FIELD_TO_DATASET_PROPERTY.get(fieldName);
-            if (datasetProperty != null && StringUtils.isNotBlank(helpText)) {
-                mappedHelpTexts.put(datasetProperty, helpText);
+            var datasetProperties = fieldMappings.get(fieldName);
+            var normalizedHelpText = normalizeHelpText(helpText);
+            if (datasetProperties != null && StringUtils.isNotBlank(normalizedHelpText)) {
+                datasetProperties.forEach(datasetProperty -> mappedHelpTexts.put(datasetProperty,
+                        normalizedHelpText));
             }
         });
         return mappedHelpTexts;
     }
 
-    private String keysAsJson() {
+    private String normalizeHelpText(String helpText) {
+        if (helpText == null) {
+            return null;
+        }
+
+        var normalizedHelpText = StringUtils.normalizeSpace(helpText);
+        return StringUtils.isBlank(normalizedHelpText) ? null : normalizedHelpText;
+    }
+
+    private String keysAsJson(Map<String, List<String>> fieldMappings) {
         try {
-            return objectMapper.writeValueAsString(SCHEMING_FIELD_TO_DATASET_PROPERTY.keySet());
+            return objectMapper.writeValueAsString(fieldMappings.keySet());
         } catch (JsonProcessingException exception) {
             throw new IllegalStateException("Could not serialize dataset help-text keys for CKAN",
                     exception);
@@ -159,5 +242,15 @@ public class CkanDatasetHelpTextService {
             }
         }
         return Optional.empty();
+    }
+
+    private static List<String> resourceSectionProperties(String propertyName) {
+        return RESOURCE_SECTION_PROPERTIES.stream()
+                .map(section -> section + "." + propertyName)
+                .toList();
+    }
+
+    private static List<String> resourceAccessServiceProperties(String propertyName) {
+        return List.of("distributions.accessService." + propertyName);
     }
 }

@@ -15,6 +15,10 @@
       "result": {
         "title_translated": "A descriptive title for the dataset.",
         "access_rights": "Information that indicates whether the dataset is open or restricted.",
+        "in_series": "Dataset series this dataset belongs to.",
+        "resource_fields.name_translated": "A descriptive title for the resource.",
+        "resource_fields.format": "File format. If not provided it will be guessed.",
+        "resource_fields.access_services.title": "A title for the data service.",
         "unknown_field": "This should not be exposed."
       }
     }

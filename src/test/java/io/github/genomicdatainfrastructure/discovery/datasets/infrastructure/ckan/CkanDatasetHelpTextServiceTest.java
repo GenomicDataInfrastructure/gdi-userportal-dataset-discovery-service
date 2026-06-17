@@ -17,6 +17,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanPacka
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanValueLabel;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 
 class CkanDatasetHelpTextServiceTest {
@@ -35,6 +36,15 @@ class CkanDatasetHelpTextServiceTest {
                         .result(Map.of(
                                 "title_translated", "A descriptive title.",
                                 "access_rights", "Access conditions.",
+                                "in_series", "Dataset series this dataset belongs to.",
+                                "resource_fields.name_translated", "A resource title.",
+                                "resource_fields.description_translated", "A resource description.",
+                                "resource_fields.format", "Resource format.",
+                                "resource_fields.download_url", "https://example.org/download.csv",
+                                "resource_fields.access_services.title",
+                                "A data service title.",
+                                "resource_fields.access_services.description",
+                                "A data service description.",
                                 "unknown_field", "Not exposed."
                         ))
                         .build());
@@ -44,7 +54,52 @@ class CkanDatasetHelpTextServiceTest {
         assertThat(dataset.getHelpText())
                 .containsEntry("title", "A descriptive title.")
                 .containsEntry("accessRights", "Access conditions.")
+                .containsEntry("inSeries", "Dataset series this dataset belongs to.")
+                .containsEntry("distributions.title", "A resource title.")
+                .containsEntry("samples.title", "A resource title.")
+                .containsEntry("analytics.title", "A resource title.")
+                .containsEntry("distributions.description", "A resource description.")
+                .containsEntry("samples.description", "A resource description.")
+                .containsEntry("analytics.description", "A resource description.")
+                .containsEntry("distributions.format", "Resource format.")
+                .containsEntry("samples.format", "Resource format.")
+                .containsEntry("analytics.format", "Resource format.")
+                .containsEntry("distributions.downloadUrl", "https://example.org/download.csv")
+                .containsEntry("samples.downloadUrl", "https://example.org/download.csv")
+                .containsEntry("analytics.downloadUrl", "https://example.org/download.csv")
+                .containsEntry("distributions.accessService.title", "A data service title.")
+                .containsEntry("distributions.accessService.description",
+                        "A data service description.")
                 .doesNotContainKey("unknown_field");
+    }
+
+    @Test
+    void enrichNormalizesMultilineHelpTextValues() {
+        var ckanQueryApi = mock(CkanQueryApi.class);
+        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var dataset = RetrievedDataset.builder().id("dataset-1").build();
+
+        when(ckanQueryApi.gdiDatasetHelpTextsShow(anyString(), anyString(), anyString()))
+                .thenReturn(CkanFilterHelpTextsResponse.builder()
+                        .result(Map.of(
+                                "health_theme",
+                                "A category of the Dataset or tag describing the Dataset.\n",
+                                "access_rights",
+                                "Information that indicates whether\nthis dataset is open or restricted."
+                        ))
+                        .build());
+
+        service.enrich(dataset, CkanPackage.builder().build(), "en");
+
+        assertThat(dataset.getHelpText())
+                .containsEntry(
+                        "healthTheme",
+                        "A category of the Dataset or tag describing the Dataset."
+                )
+                .containsEntry(
+                        "accessRights",
+                        "Information that indicates whether this dataset is open or restricted."
+                );
     }
 
     @Test
@@ -77,7 +132,80 @@ class CkanDatasetHelpTextServiceTest {
         assertThat(capturedType[0]).isEqualTo("dataset_series");
         assertThat(capturedKeys[0])
                 .contains("\"title_translated\"")
-                .contains("\"access_rights\"");
+                .contains("\"access_rights\"")
+                .contains("\"resource_fields.name_translated\"")
+                .contains("\"resource_fields.access_services.title\"");
+    }
+
+    @Test
+    void enrichAddsJoinedDatasetSeriesHelpTextWithInSeriesPrefix() {
+        var ckanQueryApi = mock(CkanQueryApi.class);
+        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var dataset = RetrievedDataset.builder().id("dataset-1").build();
+
+        when(ckanQueryApi.gdiDatasetHelpTextsShow(anyString(), anyString(), anyString()))
+                .thenAnswer(invocation -> {
+                    var type = invocation.getArgument(1, String.class);
+                    if ("dataset_series".equals(type)) {
+                        return CkanFilterHelpTextsResponse.builder()
+                                .result(Map.of(
+                                        "title_translated",
+                                        "A descriptive title for the dataset series.",
+                                        "notes_translated", "A description of the dataset series.",
+                                        "frequency", "The series publication frequency.",
+                                        "temporal_coverage",
+                                        "The temporal period the series covers."
+                                ))
+                                .build();
+                    }
+
+                    return CkanFilterHelpTextsResponse.builder()
+                            .result(Map.of("title_translated", "A descriptive title."))
+                            .build();
+                });
+
+        service.enrich(
+                dataset,
+                CkanPackage.builder().inSeries(List.of("series-1")).build(),
+                "en"
+        );
+
+        assertThat(dataset.getHelpText())
+                .containsEntry("title", "A descriptive title.")
+                .containsEntry("inSeries.title", "A descriptive title for the dataset series.")
+                .containsEntry("inSeries.description", "A description of the dataset series.")
+                .containsEntry("inSeries.frequency", "The series publication frequency.")
+                .containsEntry("inSeries.temporalCoverage",
+                        "The temporal period the series covers.");
+    }
+
+    @Test
+    void enrichKeepsDatasetHelpTextWhenJoinedSeriesHelpTextRequestFails() {
+        var ckanQueryApi = mock(CkanQueryApi.class);
+        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var dataset = RetrievedDataset.builder().id("dataset-1").build();
+
+        when(ckanQueryApi.gdiDatasetHelpTextsShow(anyString(), anyString(), anyString()))
+                .thenAnswer(invocation -> {
+                    var type = invocation.getArgument(1, String.class);
+                    if ("dataset_series".equals(type)) {
+                        throw new RuntimeException("CKAN unavailable");
+                    }
+
+                    return CkanFilterHelpTextsResponse.builder()
+                            .result(Map.of("title_translated", "A descriptive title."))
+                            .build();
+                });
+
+        service.enrich(
+                dataset,
+                CkanPackage.builder().inSeries(List.of("series-1")).build(),
+                "en"
+        );
+
+        assertThat(dataset.getHelpText())
+                .containsEntry("title", "A descriptive title.")
+                .doesNotContainKey("inSeries.title");
     }
 
     @Test
@@ -115,6 +243,25 @@ class CkanDatasetHelpTextServiceTest {
         var result = service.enrich(dataset, CkanPackage.builder().build(), "en");
 
         assertThat(result).isSameAs(dataset);
+        assertThat(dataset.getHelpText()).isNull();
+    }
+
+    @Test
+    void enrichSkipsNullHelpTextValues() {
+        var ckanQueryApi = mock(CkanQueryApi.class);
+        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var dataset = RetrievedDataset.builder().id("dataset-1").build();
+        var result = new java.util.LinkedHashMap<String, String>();
+        result.put("title_translated", null);
+        result.put("resource_fields.format", null);
+
+        when(ckanQueryApi.gdiDatasetHelpTextsShow(anyString(), anyString(), anyString()))
+                .thenReturn(CkanFilterHelpTextsResponse.builder()
+                        .result(result)
+                        .build());
+
+        service.enrich(dataset, CkanPackage.builder().build(), "en");
+
         assertThat(dataset.getHelpText()).isNull();
     }
 }

@@ -24,7 +24,22 @@ class RetrieveDatasetTest extends BaseTest {
                 .statusCode(200)
                 .body("helpText.title", equalTo("A descriptive title for the dataset."))
                 .body("helpText.accessRights",
-                        equalTo("Information that indicates whether the dataset is open or restricted."));
+                        equalTo("Information that indicates whether the dataset is open or restricted."))
+                .body("helpText.inSeries", equalTo("Dataset series this dataset belongs to."))
+                .body("helpText['distributions.title']",
+                        equalTo("A descriptive title for the resource."))
+                .body("helpText['samples.title']",
+                        equalTo("A descriptive title for the resource."))
+                .body("helpText['analytics.title']",
+                        equalTo("A descriptive title for the resource."))
+                .body("helpText['distributions.format']",
+                        equalTo("File format. If not provided it will be guessed."))
+                .body("helpText['distributions.accessService.title']",
+                        equalTo("A title for the data service."))
+                .body("helpText['inSeries.title']",
+                        equalTo("A descriptive title for the dataset series."))
+                .body("helpText['inSeries.frequency']",
+                        equalTo("The frequency with which items are added to the dataset series collection."));
     }
 
     @Test

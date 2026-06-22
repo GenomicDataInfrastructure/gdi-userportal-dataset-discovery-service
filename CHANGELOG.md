@@ -12,6 +12,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.4.4] - 2026-06-22
+
+### Changed
+- chore(deps): update actions/checkout action to v7 by @Renovate Bot in c8ff4c4
+- chore(deps): update quarkus.platform.version to v3.36.3 by @Renovate Bot in b241f06
+- chore(deps): update graalvm/setup-graalvm action to v1.5.6 by @Renovate Bot in c1b9ceb
+- Add nested dataset detail help text (#394) by @Hans-Christian in 49c45e5
+- Update CHANGELOG.md by @Hans-Christian in 887f32d
+- Update CHANGELOG.md by @Hans-Christian in 4bad89d
+- doc: update CHANGELOG.md for v1.4.3 by @LNDS-Sysadmins in 94da8f6
+
+
 ## [v1.4.3] - 2026-06-16
 
 ### Added

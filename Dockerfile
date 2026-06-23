@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2024 PNED G.I.E.
 #
 # SPDX-License-Identifier: Apache-2.0
-FROM registry.access.redhat.com/ubi9-minimal:1781496842
+FROM registry.access.redhat.com/ubi9-minimal:1782191490
 WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \

@@ -362,6 +362,11 @@ class CkanFilterBuilderTest {
         }
 
         @Override
+        public boolean statsEnabled() {
+            return false;
+        }
+
+        @Override
         public List<FilterGroup> filterGroups() {
             return List.of(new TestFilterGroup("DEFAULT", FILTERS));
         }
@@ -378,6 +383,11 @@ class CkanFilterBuilderTest {
         @Override
         public String noGroupKey() {
             return "DEFAULT";
+        }
+
+        @Override
+        public boolean statsEnabled() {
+            return false;
         }
 
         @Override
@@ -406,6 +416,11 @@ class CkanFilterBuilderTest {
         }
 
         @Override
+        public boolean statsEnabled() {
+            return false;
+        }
+
+        @Override
         public List<FilterGroup> filterGroups() {
             return List.of(new TestFilterGroup("DEFAULT", FILTERS));
         }
@@ -428,6 +443,16 @@ class CkanFilterBuilderTest {
         public FilterType type() {
             return type;
         }
+
+        @Override
+        public Optional<String> label() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<String> statsField() {
+            return Optional.empty();
+        }
     }
 
     @Vetoed
@@ -445,6 +470,16 @@ class CkanFilterBuilderTest {
 
         @Override
         public Optional<List<String>> rangeComposite() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<String> label() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<String> statsField() {
             return Optional.empty();
         }
     }

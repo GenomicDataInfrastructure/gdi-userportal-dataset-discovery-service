@@ -39,11 +39,11 @@ public class CkanFilterBuilder implements FilterBuilder {
 
     @Override
     public List<Filter> build(String accessToken, String preferredLanguage) {
-        var request = PackageSearchRequest.builder()
+        var request = ckanSearchFacetsMapper.applyStats(PackageSearchRequest.builder()
                 .rows(0)
                 .start(0)
                 .facetLimit(-1)
-                .facetField(ckanSearchFacetsMapper.selectedFacetField())
+                .facetField(ckanSearchFacetsMapper.selectedFacetField()))
                 .build();
 
         var response = ckanQueryApi.packageSearch(

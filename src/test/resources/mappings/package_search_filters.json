@@ -521,6 +521,14 @@
               }
             ]
           }
+        },
+        "stats": {
+          "stats_fields": {
+            "temporal_coverage_range": {
+              "min": "2015-02-02T00:00:00Z",
+              "max": "2024-12-31T00:00:00Z"
+            }
+          }
         }
       }
     }

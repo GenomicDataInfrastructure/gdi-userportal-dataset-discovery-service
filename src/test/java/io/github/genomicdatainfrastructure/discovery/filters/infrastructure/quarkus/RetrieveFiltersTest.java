@@ -27,7 +27,7 @@ public class RetrieveFiltersTest extends BaseTest {
                 .get("/api/v1/filters")
                 .then()
                 .statusCode(200)
-                .body("", hasSize(9))
+                .body("", hasSize(10))
                 .body("[0].source", Matchers.equalTo("ckan"))
                 .body("[0].key", Matchers.equalTo("tags"))
                 .body("[0].label", Matchers.equalTo("Keywords"))
@@ -56,7 +56,16 @@ public class RetrieveFiltersTest extends BaseTest {
                 .body("find { it.key == 'vocab_in_series_title' }.type", equalTo("DROPDOWN"))
                 .body("find { it.key == 'vocab_in_series_title' }.label", equalTo("Dataset series"))
                 .body("find { it.key == 'vocab_in_series_title' }.group", equalTo("DEFAULT"))
-                .body("find { it.key == 'vocab_in_series_title' }.values.size()", equalTo(2));
+                .body("find { it.key == 'vocab_in_series_title' }.values.size()", equalTo(2))
+                .body("find { it.key == 'temporal_coverage' }.source", equalTo("ckan"))
+                .body("find { it.key == 'temporal_coverage' }.type", equalTo("DATETIME"))
+                .body("find { it.key == 'temporal_coverage' }.group", equalTo("DEFAULT"))
+                .body("find { it.key == 'temporal_coverage' }.operators", contains("=", ">", "<",
+                        ">=", "<="))
+                .body("find { it.key == 'temporal_coverage' }.range.min",
+                        equalTo("2015-02-02T00:00:00Z"))
+                .body("find { it.key == 'temporal_coverage' }.range.max",
+                        equalTo("2024-12-31T00:00:00Z"));
     }
 
     @Test

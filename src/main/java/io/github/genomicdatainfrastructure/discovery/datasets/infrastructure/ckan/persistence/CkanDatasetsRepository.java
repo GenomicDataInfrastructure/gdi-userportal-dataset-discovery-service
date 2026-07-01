@@ -52,7 +52,9 @@ public class CkanDatasetsRepository implements DatasetsRepository {
     @Override
     public DatasetsSearchResponse search(DatasetSearchQuery query, String accessToken,
             String preferredLanguage) {
-        var request = PackageSearchRequest.builder()
+        var temporalCoverageBounds = CkanFacetsQueryBuilder.extractTemporalCoverageBounds(query);
+
+        var request = ckanSearchFacetsMapper.applyStats(PackageSearchRequest.builder()
                 .q(query.getQuery())
                 .fq(CkanFacetsQueryBuilder.buildFacetQuery(query))
                 .sort(query.getSort())
@@ -60,6 +62,8 @@ public class CkanDatasetsRepository implements DatasetsRepository {
                 .start(query.getStart())
                 .facetField(ckanSearchFacetsMapper.selectedFacetField())
                 .facetLimit(-1)
+                .extTemporalMin(temporalCoverageBounds.min())
+                .extTemporalMax(temporalCoverageBounds.max()))
                 .build();
 
         var response = ckanQueryApi.packageSearch(
@@ -100,13 +104,13 @@ public class CkanDatasetsRepository implements DatasetsRepository {
 
         var facetsQuery = buildFacetQuery(datasetIds);
 
-        var request = PackageSearchRequest.builder()
+        var request = ckanSearchFacetsMapper.applyStats(PackageSearchRequest.builder()
                 .fq(facetsQuery)
                 .sort(sort)
                 .rows(rows)
                 .start(start)
                 .facetField(ckanSearchFacetsMapper.selectedFacetField())
-                .facetLimit(-1)
+                .facetLimit(-1))
                 .build();
 
         var response = ckanQueryApi.packageSearch(

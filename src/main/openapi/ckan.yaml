@@ -199,6 +199,24 @@ components:
           type: integer
           description: Maximum number of facets to return
           default: -1
+        ext_temporal_min:
+          type: string
+          description: |-
+            Lower bound for temporal coverage filtering. Read by a CKAN plugin's
+            before_dataset_search hook (via the extras dict) to filter on the
+            temporal_coverage_range Solr field; not a native CKAN search param.
+        ext_temporal_max:
+          type: string
+          description: |-
+            Upper bound for temporal coverage filtering. Read by a CKAN plugin's
+            before_dataset_search hook (via the extras dict) to filter on the
+            temporal_coverage_range Solr field; not a native CKAN search param.
+        stats:
+          type: boolean
+          description: Whether to compute Solr stats (e.g. min/max) for stats.field
+        stats.field:
+          type: string
+          description: Which fields to compute Solr stats for, e.g. temporal_coverage_range
     PackagesSearchResponse:
       type: object
       properties:
@@ -232,6 +250,22 @@ components:
           type: object
           additionalProperties:
             $ref: "#/components/schemas/CkanFacet"
+        stats:
+          $ref: "#/components/schemas/CkanStats"
+    CkanStats:
+      type: object
+      properties:
+        stats_fields:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/CkanStatsField"
+    CkanStatsField:
+      type: object
+      properties:
+        min:
+          type: string
+        max:
+          type: string
     CkanFacet:
       type: object
       properties:

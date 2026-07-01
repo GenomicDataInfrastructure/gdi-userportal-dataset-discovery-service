@@ -11,7 +11,10 @@ import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.github.genomicdatainfrastructure.discovery.model.Operator;
 import io.github.genomicdatainfrastructure.discovery.model.ValueLabel;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFacet;
+import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanStats;
+import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanStatsField;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanValueLabel;
+import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackageSearchRequest;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesSearchResult;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -47,48 +50,64 @@ public class CkanSearchFacetsMapper {
     );
 
     private final String selectedFacets;
+    private final String statsFields;
     private final Map<String, FilterMetadata> filtersMetadata;
 
     public CkanSearchFacetsMapper(DatasetsConfig datasetsConfig) {
-        this.selectedFacets = SELECTED_FACETS_PATTERN.formatted(String.join(
-                "\",\"",
-                Arrays.stream(datasetsConfig.filters().split(",")).map(String::trim).toList()
-        ));
+        this.selectedFacets = formatFacetFieldList(
+                Arrays.stream(datasetsConfig.filters().split(",")).map(String::trim).toList());
         this.filtersMetadata = extractFiltersMetadata(datasetsConfig);
+        this.statsFields = datasetsConfig.statsEnabled()
+                ? buildStatsFields(filtersMetadata)
+                : null;
     }
 
     public String selectedFacetField() {
         return selectedFacets;
     }
 
+    /**
+     * Sets the {@code stats}/{@code stats.field} params on the given request builder, or leaves
+     * them unset if no configured filter needs a stats-derived range.
+     */
+    public PackageSearchRequest.PackageSearchRequestBuilder applyStats(
+            PackageSearchRequest.PackageSearchRequestBuilder builder) {
+        return builder.stats(statsFields != null ? true : null).statsField(statsFields);
+    }
+
     public List<Filter> map(PackagesSearchResult result) {
         var nonNullSearchFacets = ofNullable(result)
                 .map(PackagesSearchResult::getSearchFacets)
                 .orElseGet(Map::of);
+        var statsFieldValues = ofNullable(result)
+                .map(PackagesSearchResult::getStats)
+                .map(CkanStats::getStatsFields)
+                .orElseGet(Map::of);
 
-        return filters(nonNullSearchFacets);
+        return filters(nonNullSearchFacets, statsFieldValues);
     }
 
-    private List<Filter> filters(Map<String, CkanFacet> facets) {
+    private List<Filter> filters(Map<String, CkanFacet> facets,
+            Map<String, CkanStatsField> statsFieldValues) {
         var filtersByKey = new LinkedHashMap<String, Filter>();
         var processedKeys = new HashSet<String>();
 
         facets.entrySet()
                 .stream()
                 .filter(entry -> !processedKeys.contains(entry.getKey()))
-                .map(f -> this.filter(f, facets, processedKeys))
+                .map(f -> this.filter(f, facets, statsFieldValues, processedKeys))
                 .filter(Objects::nonNull)
                 .forEach(filter -> filtersByKey.put(filter.getKey(), filter));
 
         filtersMetadata.forEach((filterKey, metadata) -> {
             if (FilterType.DATETIME.equals(metadata.type)) {
-                filtersByKey.putIfAbsent(filterKey, buildDateTimeFilter(filterKey, null,
-                        metadata.group));
+                filtersByKey.putIfAbsent(filterKey,
+                        buildDateTimeFilter(filterKey, null, metadata, statsFieldValues));
                 return;
             }
             if (FilterType.NUMBER.equals(metadata.type)) {
-                filtersByKey.putIfAbsent(filterKey, buildNumberFilter(filterKey, null,
-                        metadata.group));
+                filtersByKey.putIfAbsent(filterKey,
+                        buildNumberFilter(filterKey, null, metadata, statsFieldValues));
             }
         });
 
@@ -96,7 +115,7 @@ public class CkanSearchFacetsMapper {
     }
 
     private Filter filter(Map.Entry<String, CkanFacet> entry, Map<String, CkanFacet> facets,
-            Set<String> skipList) {
+            Map<String, CkanStatsField> statsFieldValues, Set<String> skipList) {
         var key = entry.getKey();
         var facet = entry.getValue();
 
@@ -138,11 +157,11 @@ public class CkanSearchFacetsMapper {
         }
 
         if (metadata != null && FilterType.DATETIME.equals(metadata.type)) {
-            return buildDateTimeFilter(key, facet, metadata.group);
+            return buildDateTimeFilter(key, facet, metadata, statsFieldValues);
         }
 
         if (metadata != null && FilterType.NUMBER.equals(metadata.type)) {
-            return buildNumberFilter(key, facet, metadata.group);
+            return buildNumberFilter(key, facet, metadata, statsFieldValues);
         }
 
         var values = ofNullable(facet.getItems())
@@ -163,36 +182,65 @@ public class CkanSearchFacetsMapper {
                 .source(CKAN_FILTER_SOURCE)
                 .type(type)
                 .key(key)
-                .label(facet.getTitle())
+                .label(resolveLabel(facet, metadata))
                 .values(values)
                 .group(metadata != null ? metadata.group : null)
                 .build();
     }
 
-    private Filter buildDateTimeFilter(String key, CkanFacet facet, String group) {
-        var label = facet != null ? facet.getTitle() : null;
+    private Filter buildDateTimeFilter(String key, CkanFacet facet, FilterMetadata metadata,
+            Map<String, CkanStatsField> statsFieldValues) {
+        var range = resolveStatsRange(metadata, statsFieldValues)
+                .orElseGet(() -> extractDateTimeRange(facet));
         return Filter.builder()
                 .source(CKAN_FILTER_SOURCE)
                 .type(FilterType.DATETIME)
                 .key(key)
-                .label(label)
-                .range(extractDateTimeRange(facet))
+                .label(resolveLabel(facet, metadata))
+                .range(range)
                 .operators(RANGE_OPERATORS)
-                .group(group)
+                .group(metadata.group)
                 .build();
     }
 
-    private Filter buildNumberFilter(String key, CkanFacet facet, String group) {
-        var label = facet != null ? facet.getTitle() : null;
+    private Filter buildNumberFilter(String key, CkanFacet facet, FilterMetadata metadata,
+            Map<String, CkanStatsField> statsFieldValues) {
+        var range = resolveStatsRange(metadata, statsFieldValues)
+                .orElseGet(() -> extractNumberRange(facet));
         return Filter.builder()
                 .source(CKAN_FILTER_SOURCE)
                 .type(FilterType.NUMBER)
                 .key(key)
-                .label(label)
-                .range(extractNumberRange(facet))
+                .label(resolveLabel(facet, metadata))
+                .range(range)
                 .operators(RANGE_OPERATORS)
-                .group(group)
+                .group(metadata.group)
                 .build();
+    }
+
+    private String resolveLabel(CkanFacet facet, FilterMetadata metadata) {
+        var facetTitle = facet != null ? facet.getTitle() : null;
+        if (facetTitle != null) {
+            return facetTitle;
+        }
+        return metadata != null ? metadata.label : null;
+    }
+
+    private Optional<FilterRange> resolveStatsRange(FilterMetadata metadata,
+            Map<String, CkanStatsField> statsFieldValues) {
+        if (metadata.statsField == null) {
+            return Optional.empty();
+        }
+
+        var statsField = statsFieldValues.get(metadata.statsField);
+        if (statsField == null || (statsField.getMin() == null && statsField.getMax() == null)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(FilterRange.builder()
+                .min(statsField.getMin())
+                .max(statsField.getMax())
+                .build());
     }
 
     private FilterRange extractDateTimeRange(CkanFacet facet) {
@@ -297,12 +345,30 @@ public class CkanSearchFacetsMapper {
                                 new FilterMetadata(Optional.ofNullable(filter.type())
                                         .orElse(DEFAULT_FILTER_TYPE),
                                         group.key(),
-                                        filter.rangeComposite().orElse(List.of())))))
+                                        filter.rangeComposite().orElse(List.of()),
+                                        filter.label().orElse(null),
+                                        filter.statsField().orElse(null)))))
                 .collect(java.util.stream.Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (left, right) -> right, LinkedHashMap::new));
     }
 
-    private record FilterMetadata(FilterType type, String group, List<String> rangeComposite) {
+    private String buildStatsFields(Map<String, FilterMetadata> filtersMetadata) {
+        var fields = filtersMetadata.values()
+                .stream()
+                .map(metadata -> metadata.statsField)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        return fields.isEmpty() ? null : formatFacetFieldList(fields);
+    }
+
+    private String formatFacetFieldList(List<String> fields) {
+        return SELECTED_FACETS_PATTERN.formatted(String.join("\",\"", fields));
+    }
+
+    private record FilterMetadata(FilterType type, String group, List<String> rangeComposite,
+                                  String label, String statsField) {
     }
 
     private record NumericBound(BigDecimal numeric, String raw) {

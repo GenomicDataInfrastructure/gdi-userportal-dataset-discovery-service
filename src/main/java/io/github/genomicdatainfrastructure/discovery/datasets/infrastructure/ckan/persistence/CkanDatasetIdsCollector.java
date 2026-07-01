@@ -34,6 +34,7 @@ public class CkanDatasetIdsCollector implements DatasetIdsCollector {
     @Override
     public Map<String, Integer> collect(DatasetSearchQuery query, String accessToken) {
         var facetsQuery = CkanFacetsQueryBuilder.buildFacetQuery(query);
+        var temporalCoverageBounds = CkanFacetsQueryBuilder.extractTemporalCoverageBounds(query);
 
         var datasetIdsByRecordCount = new HashMap<String, Integer>();
         var start = 0;
@@ -45,6 +46,8 @@ public class CkanDatasetIdsCollector implements DatasetIdsCollector {
                     .fq(facetsQuery)
                     .rows(CKAN_PAGINATION_MAX_SIZE)
                     .start(start)
+                    .extTemporalMin(temporalCoverageBounds.min())
+                    .extTemporalMax(temporalCoverageBounds.max())
                     .build();
 
             var response = ckanQueryApi.packageSearch(

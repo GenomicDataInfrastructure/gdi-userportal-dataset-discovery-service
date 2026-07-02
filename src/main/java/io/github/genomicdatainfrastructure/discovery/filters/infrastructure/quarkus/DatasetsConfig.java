@@ -46,13 +46,6 @@ public interface DatasetsConfig {
         Optional<List<String>> rangeComposite();
 
         /**
-         * Overrides the label normally derived from the CKAN facet title, for filters that
-         * have no real facet of their own (e.g. temporal_coverage, backed by
-         * temporal_coverage_range) and therefore never receive a title from CKAN.
-         */
-        Optional<String> label();
-
-        /**
          * The underlying Solr field to request stats (min/max) for, for filters whose range
          * can't be derived from facet items (e.g. temporal_coverage, backed by the
          * temporal_coverage_range DateRangeField).

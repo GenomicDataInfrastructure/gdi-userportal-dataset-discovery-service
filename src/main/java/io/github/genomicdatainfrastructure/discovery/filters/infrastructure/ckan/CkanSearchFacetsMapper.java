@@ -200,8 +200,10 @@ public class CkanSearchFacetsMapper {
         }
     }
 
-    private Filter buildDateTimeFilter(String key, CkanFacet facet, String group) {
-        var label = facet != null ? facet.getTitle() : null;
+    private Filter buildDateTimeFilter(String key, CkanFacet facet, FilterMetadata metadata,
+            Map<String, CkanStatsField> statsFieldValues) {
+        var range = resolveStatsRange(metadata, statsFieldValues)
+                .orElseGet(() -> extractDateTimeRange(facet));
         return Filter.builder()
                 .source(CKAN_FILTER_SOURCE)
                 .type(FilterType.DATETIME)

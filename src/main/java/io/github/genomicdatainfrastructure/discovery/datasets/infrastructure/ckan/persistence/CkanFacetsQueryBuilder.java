@@ -4,6 +4,7 @@
 
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence;
 
+import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.InvalidFacetException;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.CkanQueryOperatorMapper;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQueryFacet;
@@ -12,6 +13,7 @@ import io.github.genomicdatainfrastructure.discovery.model.Operator;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.EnumSet;
@@ -37,6 +39,7 @@ public class CkanFacetsQueryBuilder {
     private static final String TYPICAL_AGE_KEY = "typical_age";
     private static final String MIN_TYPICAL_AGE = "min_typical_age";
     private static final String MAX_TYPICAL_AGE = "max_typical_age";
+    private static final String TEMPORAL_COVERAGE_KEY = "temporal_coverage";
 
     public String buildFacetQuery(DatasetSearchQuery query) {
         var operator = CkanQueryOperatorMapper.getOperator(query.getOperator());
@@ -93,8 +96,73 @@ public class CkanFacetsQueryBuilder {
 
     private Optional<String> buildDateTimeRangeQuery(String key,
             List<DatasetSearchQueryFacet> facets) {
+        if (TEMPORAL_COVERAGE_KEY.equals(key)) {
+            // temporal_coverage is not filtered via fq: CKAN's before_dataset_search hook reads
+            // ext_temporal_min/ext_temporal_max (see extractTemporalCoverageBounds) and applies an
+            // Intersects range query against the temporal_coverage_range Solr field itself.
+            return Optional.empty();
+        }
+
         return resolveDateTimeCondition(facets)
                 .flatMap(condition -> condition.toSolrQuery(key));
+    }
+
+    /**
+     * Extracts the temporal_coverage facet's bounds to be sent as CKAN's
+     * ext_temporal_min/ext_temporal_max extras, rather than as a Solr fq clause.
+     */
+    public TemporalCoverageBounds extractTemporalCoverageBounds(DatasetSearchQuery query) {
+        var dateTimeFacets = ofNullable(query.getFacets())
+                .orElseGet(List::of)
+                .stream()
+                .filter(CkanFacetsQueryBuilder::belongsToCkan)
+                .filter(facet -> TEMPORAL_COVERAGE_KEY.equals(facet.getKey()))
+                .filter(facet -> FilterType.DATETIME.equals(facet.getType()))
+                .toList();
+
+        if (dateTimeFacets.isEmpty()) {
+            return new TemporalCoverageBounds(null, null);
+        }
+
+        var lowerFacet = findFacetByOperator(dateTimeFacets,
+                Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL,
+                Operator.GREATER_THAN_SYMBOL).orElse(null);
+
+        var upperFacet = findFacetByOperator(dateTimeFacets,
+                Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL,
+                Operator.LESS_THAN_SYMBOL).orElse(null);
+
+        var exactFacet = findFacetByOperator(dateTimeFacets,
+                Operator.EQUAL_SYMBOL).orElse(null);
+
+        if (lowerFacet == null && upperFacet == null && exactFacet != null) {
+            var exactValue = toLowerDateTimeBound(exactFacet).value();
+            return new TemporalCoverageBounds(exactValue, exactValue);
+        }
+
+        var min = lowerFacet != null ? toLowerDateTimeBound(lowerFacet).value() : null;
+        var max = upperFacet != null ? toUpperDateTimeBound(upperFacet).value() : null;
+
+        validateLowerNotAfterUpper(min, max);
+
+        return new TemporalCoverageBounds(min, max);
+    }
+
+    private void validateLowerNotAfterUpper(String min, String max) {
+        if (min == null || max == null) {
+            return;
+        }
+
+        var lower = OffsetDateTime.parse(min);
+        var upper = OffsetDateTime.parse(max);
+
+        if (lower.isAfter(upper)) {
+            throw new InvalidFacetException(
+                    "temporal_coverage: min date must be equal to or smaller than max date");
+        }
+    }
+
+    public record TemporalCoverageBounds(String min, String max) {
     }
 
     private Optional<DateTimeCondition> resolveDateTimeCondition(

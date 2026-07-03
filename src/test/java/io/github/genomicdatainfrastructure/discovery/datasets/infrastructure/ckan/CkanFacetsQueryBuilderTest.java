@@ -4,6 +4,7 @@
 
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan;
 
+import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.InvalidFacetException;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence.CkanFacetsQueryBuilder;
 import io.github.genomicdatainfrastructure.discovery.model.FilterType;
@@ -15,6 +16,8 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -501,5 +504,178 @@ class CkanFacetsQueryBuilderTest {
         var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void buildFacetQuery_ignoresTemporalCoverageFacets() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("temporal_coverage")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2021-01-01T00:00:00Z")
+                                .build(),
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("temporal_coverage")
+                                .operator(Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2021-12-31T23:59:59Z")
+                                .build(),
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DROPDOWN)
+                                .key("field1")
+                                .value("value1")
+                                .build()
+                ))
+                .build();
+
+        var expected = "field1:(\"value1\")";
+        var actual = CkanFacetsQueryBuilder.buildFacetQuery(query);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void extractTemporalCoverageBounds_whenNoFacets() {
+        var query = new DatasetSearchQuery();
+        var actual = CkanFacetsQueryBuilder.extractTemporalCoverageBounds(query);
+
+        assertNull(actual.min());
+        assertNull(actual.max());
+    }
+
+    @Test
+    void extractTemporalCoverageBounds_withRangeFacet() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("temporal_coverage")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2021-01-01T00:00:00Z")
+                                .build(),
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("temporal_coverage")
+                                .operator(Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2021-12-31T23:59:59Z")
+                                .build()
+                ))
+                .build();
+
+        var actual = CkanFacetsQueryBuilder.extractTemporalCoverageBounds(query);
+
+        assertEquals("2021-01-01T00:00:00Z", actual.min());
+        assertEquals("2021-12-31T23:59:59Z", actual.max());
+    }
+
+    @Test
+    void extractTemporalCoverageBounds_withLowerBoundOnly() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("temporal_coverage")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2021-01-01T00:00:00Z")
+                                .build()
+                ))
+                .build();
+
+        var actual = CkanFacetsQueryBuilder.extractTemporalCoverageBounds(query);
+
+        assertEquals("2021-01-01T00:00:00Z", actual.min());
+        assertNull(actual.max());
+    }
+
+    @Test
+    void extractTemporalCoverageBounds_withUpperBoundOnly() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("temporal_coverage")
+                                .operator(Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2021-12-31T23:59:59Z")
+                                .build()
+                ))
+                .build();
+
+        var actual = CkanFacetsQueryBuilder.extractTemporalCoverageBounds(query);
+
+        assertNull(actual.min());
+        assertEquals("2021-12-31T23:59:59Z", actual.max());
+    }
+
+    @Test
+    void extractTemporalCoverageBounds_withExactFacet() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("temporal_coverage")
+                                .operator(Operator.EQUAL_SYMBOL)
+                                .value("2021-06-15T00:00:00Z")
+                                .build()
+                ))
+                .build();
+
+        var actual = CkanFacetsQueryBuilder.extractTemporalCoverageBounds(query);
+
+        assertEquals("2021-06-15T00:00:00Z", actual.min());
+        assertEquals("2021-06-15T00:00:00Z", actual.max());
+    }
+
+    @Test
+    void extractTemporalCoverageBounds_withDateOnlyValues() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("temporal_coverage")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2021-01-01")
+                                .build()
+                ))
+                .build();
+
+        var actual = CkanFacetsQueryBuilder.extractTemporalCoverageBounds(query);
+
+        assertEquals("2021-01-01T00:00:00Z", actual.min());
+    }
+
+    @Test
+    void extractTemporalCoverageBounds_throwsWhenMinAfterMax() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("temporal_coverage")
+                                .operator(Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2021-12-31T23:59:59Z")
+                                .build(),
+                        DatasetSearchQueryFacet.builder()
+                                .source("ckan")
+                                .type(FilterType.DATETIME)
+                                .key("temporal_coverage")
+                                .operator(Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL)
+                                .value("2021-01-01T00:00:00Z")
+                                .build()
+                ))
+                .build();
+
+        assertThrows(InvalidFacetException.class,
+                () -> CkanFacetsQueryBuilder.extractTemporalCoverageBounds(query));
     }
 }

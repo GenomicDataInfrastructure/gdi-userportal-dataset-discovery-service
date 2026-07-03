@@ -240,5 +240,15 @@ class RetrieveFiltersQueryTest {
         public Optional<List<String>> rangeComposite() {
             return Optional.empty();
         }
+
+        @Override
+        public Optional<String> label() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<String> statsField() {
+            return Optional.empty();
+        }
     }
 }

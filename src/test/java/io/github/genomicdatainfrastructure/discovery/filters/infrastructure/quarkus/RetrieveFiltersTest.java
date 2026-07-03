@@ -27,7 +27,7 @@ public class RetrieveFiltersTest extends BaseTest {
                 .get("/api/v1/filters")
                 .then()
                 .statusCode(200)
-                .body("", hasSize((9)))
+                .body("", hasSize(9))
                 .body("[0].source", Matchers.equalTo("ckan"))
                 .body("[0].key", Matchers.equalTo("tags"))
                 .body("[0].label", Matchers.equalTo("Keywords"))

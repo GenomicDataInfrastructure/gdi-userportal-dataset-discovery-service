@@ -134,26 +134,7 @@ public class CkanSearchFacetsMapper {
         }
 
         if (metadata != null && !metadata.rangeComposite.isEmpty()) {
-            // Processing a composite range facet. We'll gather individual components and combine them into the
-            // composite facet.
-            var items = new ArrayList<CkanValueLabel>();
-            var titles = new LinkedHashSet<String>();
-
-            for (var component : metadata.rangeComposite) {
-                if (!facets.containsKey(component)) {
-                    continue;
-                }
-                var componentFacet = facets.get(component);
-                items.addAll(componentFacet.getItems());
-                titles.add(componentFacet.getTitle());
-
-                // skip processing the individual components
-                skipList.add(component);
-            }
-
-            // replace the items (values) for the composite facet with the values collected from the individual facets
-            facet.items(items);
-            facet.setTitle(String.join(" - ", titles));
+            mergeRangeComposite(facet, metadata, facets, skipList);
         }
 
         if (metadata != null && FilterType.DATETIME.equals(metadata.type)) {
@@ -188,10 +169,39 @@ public class CkanSearchFacetsMapper {
                 .build();
     }
 
-    private Filter buildDateTimeFilter(String key, CkanFacet facet, FilterMetadata metadata,
-            Map<String, CkanStatsField> statsFieldValues) {
-        var range = resolveStatsRange(metadata, statsFieldValues)
-                .orElseGet(() -> extractDateTimeRange(facet));
+    private void mergeRangeComposite(CkanFacet facet, FilterMetadata metadata,
+            Map<String, CkanFacet> facets,
+            Set<String> skipList) {
+        // Gather individual range components and combine them into the composite facet.
+        var items = new ArrayList<CkanValueLabel>();
+        var titles = new LinkedHashSet<String>();
+
+        for (var component : metadata.rangeComposite) {
+            if (!facets.containsKey(component)) {
+                continue;
+            }
+            var componentFacet = facets.get(component);
+            items.addAll(componentFacet.getItems());
+            titles.add(componentFacet.getTitle());
+
+            // skip processing the individual components
+            skipList.add(component);
+        }
+
+        // Replace the items/title with the values collected from the individual component facets, but only
+        // when components were actually found: otherwise keep the composite facet's own title/items as
+        // returned by CKAN untouched (e.g. typical_age is requested and translated as its own facet, with no
+        // separate min_typical_age/max_typical_age facets to join).
+        if (!items.isEmpty()) {
+            facet.items(items);
+        }
+        if (!titles.isEmpty()) {
+            facet.setTitle(String.join(" - ", titles));
+        }
+    }
+
+    private Filter buildDateTimeFilter(String key, CkanFacet facet, String group) {
+        var label = facet != null ? facet.getTitle() : null;
         return Filter.builder()
                 .source(CKAN_FILTER_SOURCE)
                 .type(FilterType.DATETIME)

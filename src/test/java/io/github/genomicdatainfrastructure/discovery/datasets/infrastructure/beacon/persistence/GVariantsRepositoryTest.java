@@ -117,7 +117,7 @@ class GVariantsRepositoryTest {
 
         var result = gVariantsRepository.search(query);
 
-        assertEquals(Set.of("FR_Male", "ES_M"), populationsOf(result));
+        assertEquals(Set.of("FR_Male", "ES_M", "Male"), populationsOf(result));
     }
 
     @Test
@@ -128,7 +128,7 @@ class GVariantsRepositoryTest {
 
         var result = gVariantsRepository.search(query);
 
-        assertEquals(Set.of("FR_Male", "FR_Female"), populationsOf(result));
+        assertEquals(Set.of("FR_Male", "FR_Female", "FR"), populationsOf(result));
     }
 
     @Test

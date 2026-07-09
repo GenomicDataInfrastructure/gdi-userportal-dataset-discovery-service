@@ -87,22 +87,37 @@ public class GVariantsRepository implements GVariantsRepositoryPort {
             return false;
         }
 
+        if (requestedCountry.isAll() && requestedSex.isSpecific()) {
+            return populationTag.sex() == requestedSex.sex()
+                    && (populationTag.isSexOnly() || populationTag.isCountryAndSex());
+        }
+
+        if (requestedCountry.isSpecific() && requestedSex.isAll()) {
+            return requestedCountry.country().equals(populationTag.country())
+                    && (populationTag.isCountryOnly() || populationTag.isCountryAndSex());
+        }
+
         boolean countryMustBePresent = !requestedCountry.isUnset();
         boolean sexMustBePresent = !requestedSex.isUnset();
 
+        return countryMatches(populationTag, requestedCountry, countryMustBePresent)
+                && sexMatches(populationTag, requestedSex, sexMustBePresent);
+    }
+
+    private boolean countryMatches(PopulationTag populationTag, CountryFilter requestedCountry,
+            boolean countryMustBePresent) {
         if (countryMustBePresent != (populationTag.country() != null)) {
             return false;
         }
+        return !requestedCountry.isSpecific() || requestedCountry.country().equals(populationTag
+                .country());
+    }
 
+    private boolean sexMatches(PopulationTag populationTag, SexFilter requestedSex,
+            boolean sexMustBePresent) {
         if (sexMustBePresent != (populationTag.sex() != null)) {
             return false;
         }
-
-        if (requestedCountry.isSpecific() && !requestedCountry.country()
-                .equals(populationTag.country())) {
-            return false;
-        }
-
         return !requestedSex.isSpecific() || requestedSex.sex() == populationTag.sex();
     }
 

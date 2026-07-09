@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -172,9 +171,11 @@ public class CkanSearchFacetsMapper {
     private void mergeRangeComposite(CkanFacet facet, FilterMetadata metadata,
             Map<String, CkanFacet> facets,
             Set<String> skipList) {
-        // Gather individual range components and combine them into the composite facet.
+        // Gather individual range components' items into the composite facet, keeping the
+        // composite facet's own title (e.g. "Age Range"/"Leeftijdsbereik", translated from the
+        // typical_age term) untouched rather than joining the components' titles
+        // (e.g. "Minimum Typical Age - Maximum Typical Age").
         var items = new ArrayList<CkanValueLabel>();
-        var titles = new LinkedHashSet<String>();
 
         for (var component : metadata.rangeComposite) {
             if (!facets.containsKey(component)) {
@@ -182,21 +183,13 @@ public class CkanSearchFacetsMapper {
             }
             var componentFacet = facets.get(component);
             items.addAll(componentFacet.getItems());
-            titles.add(componentFacet.getTitle());
 
             // skip processing the individual components
             skipList.add(component);
         }
 
-        // Replace the items/title with the values collected from the individual component facets, but only
-        // when components were actually found: otherwise keep the composite facet's own title/items as
-        // returned by CKAN untouched (e.g. typical_age is requested and translated as its own facet, with no
-        // separate min_typical_age/max_typical_age facets to join).
         if (!items.isEmpty()) {
             facet.items(items);
-        }
-        if (!titles.isEmpty()) {
-            facet.setTitle(String.join(" - ", titles));
         }
     }
 

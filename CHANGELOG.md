@@ -12,6 +12,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.5.1] - 2026-07-09
+
+### Changed
+- refactor(GVariantsRepository): enhance filtering logic for population tags and update tests to reflect changes by @Kacem Bechka in e0553aa
+- chore(deps): update astral-sh/setup-uv action to v8.3.2 by @Renovate Bot in 453b174
+- chore(deps): update graalvm/setup-graalvm action to v1.6.2 by @Renovate Bot in 3e21298
+- chore(deps): update astral-sh/setup-uv action to v8.3.1 by @Renovate Bot in 0acb913
+- chore(deps): update graalvm/setup-graalvm action to v1.6.1 by @Renovate Bot in 2a89b5a
+
+
 ## [v1.5.0] - 2026-07-06
 
 ### Changed

@@ -12,6 +12,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.5.0] - 2026-07-06
+
+### Changed
+- chore(deps): update graalvm/setup-graalvm action to v1.6.0 by @Renovate Bot in e82e556
+- chore(deps): update docker/build-push-action action to v7.3.0 by @Renovate Bot in 6fc746d
+- chore(deps): update astral-sh/setup-uv action to v8.3.0 by @Renovate Bot in ce45115
+- chore(deps): update docker/login-action digest to af1e73f by @Renovate Bot in 9c807aa
+- Update CkanSearchFacetsMapper.java by @Quinten in 87a7371
+- Update RetrieveFiltersTest.java by @Quinten in c087704
+- chore(deps): update quarkus.platform.version to v3.37.1 by @Renovate Bot in b1e5bed
+- Update CkanSearchFacetsMapper.java by @Quinten in 194e726
+- chore(deps): update docker/metadata-action digest to dc80280 by @Renovate Bot in 208b829
+- Revert "Update DatasetsConfig.java" by @Quinten in 3130a22
+- Update DatasetsConfig.java by @Quinten in d32b76c
+- Update application.properties by @Quinten in 46fd4d2
+- chore(deps): update docker/login-action digest to c99871d by @Renovate Bot in 3c2dc8f
+- chore(deps): update docker/build-push-action digest to 53b7df9 by @Renovate Bot in 64aba2f
+- Update trivy_db_cache.yml by @Quinten in 436aafd
+- Feat: temporal coverage filtering possible by @Quinten in b54ad47
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1782797355 by @Renovate Bot in 4f4499b
+- chore(deps): update quarkus.platform.version to v3.37.0 by @Renovate Bot in ff79bb7
+- chore(deps): update actions/cache digest to 55cc834 by @Renovate Bot in b40e72d
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1782366456 by @Renovate Bot in 2ef7b9d
+- chore(deps): update actions/cache action to v6 by @Renovate Bot in 564f623
+- doc: update CHANGELOG.md for v1.4.4 by @LNDS-Sysadmins in b7cd7bd
+
+
+### Fixed
+- fix zizmor by @Quinten in e4a0995
+- fix zizmor error by @Quinten in b3d6500
+- fix tests by @Quinten in 6e0aba2
+- fix(deps): update quarkus-openapi-generator.version to v2.20.0 by @Renovate Bot in bc6f961
+
+
 ## [v1.4.4] - 2026-06-22
 
 ### Changed

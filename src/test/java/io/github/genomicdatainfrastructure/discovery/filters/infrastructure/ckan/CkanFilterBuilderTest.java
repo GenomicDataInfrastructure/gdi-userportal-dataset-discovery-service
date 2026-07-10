@@ -171,7 +171,7 @@ class CkanFilterBuilderTest {
         var filters = builder.build(null, "en");
 
         var typicalAge = findFilter(filters, "typical_age");
-        assertThat(typicalAge.getLabel()).isEqualTo("Minimum Typical Age");
+        assertThat(typicalAge.getLabel()).isEqualTo("Age Range");
         assertThat(typicalAge.getType()).isEqualTo(FilterType.NUMBER);
         assertThat(typicalAge.getRange()).isNotNull();
         assertThat(typicalAge.getRange().getMin()).isEqualTo("0");
@@ -368,7 +368,8 @@ class CkanFilterBuilderTest {
                 new TestFilter("number_of_records", FilterType.NUMBER),
                 new TestFilter("tags", FilterType.DROPDOWN),
                 new TestFilter("typical_age", FilterType.NUMBER, Optional.of(List.of(
-                        "min_typical_age", "max_typical_age"))
+                        "min_typical_age", "max_typical_age")),
+                        Optional.of("Age Range")
                 ));
 
         @Override
@@ -447,11 +448,12 @@ class CkanFilterBuilderTest {
     }
 
     @Vetoed
-    private record TestFilter(String key, FilterType type, Optional<List<String>> rangeComposite)
+    private record TestFilter(String key, FilterType type, Optional<List<String>> rangeComposite,
+                              Optional<String> label)
             implements DatasetsConfig.Filter {
 
         TestFilter(String key, FilterType type) {
-            this(key, type, Optional.empty());
+            this(key, type, Optional.empty(), Optional.empty());
         }
 
         @Override
@@ -466,7 +468,7 @@ class CkanFilterBuilderTest {
 
         @Override
         public Optional<String> label() {
-            return Optional.empty();
+            return label;
         }
 
         @Override

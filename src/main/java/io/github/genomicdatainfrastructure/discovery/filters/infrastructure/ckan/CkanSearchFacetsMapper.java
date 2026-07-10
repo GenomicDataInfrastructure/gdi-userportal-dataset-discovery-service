@@ -224,11 +224,20 @@ public class CkanSearchFacetsMapper {
     }
 
     private String resolveLabel(CkanFacet facet, FilterMetadata metadata) {
+        var configuredLabel = metadata != null ? metadata.label : null;
+
+        // For range composites, the facet here is one of the individual components (e.g.
+        // "Minimum Typical Age"), whose title doesn't describe the merged filter as a whole, so
+        // the configured label takes priority over it.
+        if (metadata != null && !metadata.rangeComposite.isEmpty() && configuredLabel != null) {
+            return configuredLabel;
+        }
+
         var facetTitle = facet != null ? facet.getTitle() : null;
         if (facetTitle != null) {
             return facetTitle;
         }
-        return metadata != null ? metadata.label : null;
+        return configuredLabel;
     }
 
     private Optional<FilterRange> resolveStatsRange(FilterMetadata metadata,

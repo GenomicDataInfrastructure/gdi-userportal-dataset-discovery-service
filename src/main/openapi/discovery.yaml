@@ -453,7 +453,7 @@ components:
           type: object
           title: Help text
           additionalProperties:
-            type: string
+            $ref: "#/components/schemas/HelpText"
         version:
           type: string
           title: Version
@@ -914,6 +914,34 @@ components:
       required:
         - value
         - label
+    HelpText:
+      type: object
+      title: Help text
+      properties:
+        text:
+          type: string
+          title: Text
+        link:
+          $ref: "#/components/schemas/HelpTextLink"
+      required:
+        - link
+    HelpTextLink:
+      type: object
+      title: Help text link
+      properties:
+        label:
+          type: array
+          title: Label
+          items:
+            type: string
+        value:
+          type: array
+          title: Value
+          items:
+            type: string
+      required:
+        - label
+        - value
     ContactPoint:
       properties:
         name:
@@ -1036,8 +1064,7 @@ components:
           type: string
           title: Label
         helpText:
-          type: string
-          title: Help text
+          $ref: "#/components/schemas/HelpText"
         values:
           type: array
           items:

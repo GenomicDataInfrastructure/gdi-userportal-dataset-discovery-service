@@ -6,6 +6,10 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ck
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.HelpTexts;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.quarkus.HelpTextConfig;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.yaml.YamlHelpTextLoader;
+import io.github.genomicdatainfrastructure.discovery.model.HelpText;
 import io.github.genomicdatainfrastructure.discovery.model.RetrievedDataset;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFilterHelpTextsResponse;
@@ -21,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 @Log
 @ApplicationScoped
@@ -121,11 +126,16 @@ public class CkanDatasetHelpTextService {
 
     private final CkanQueryApi ckanQueryApi;
     private final ObjectMapper objectMapper;
+    private final HelpTextConfig helpTextConfig;
+    private final YamlHelpTextLoader yamlHelpTextLoader;
 
     public CkanDatasetHelpTextService(@RestClient CkanQueryApi ckanQueryApi,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper, HelpTextConfig helpTextConfig,
+            YamlHelpTextLoader yamlHelpTextLoader) {
         this.ckanQueryApi = ckanQueryApi;
         this.objectMapper = objectMapper;
+        this.helpTextConfig = helpTextConfig;
+        this.yamlHelpTextLoader = yamlHelpTextLoader;
     }
 
     public RetrievedDataset enrich(RetrievedDataset dataset, CkanPackage ckanPackage,
@@ -134,11 +144,45 @@ public class CkanDatasetHelpTextService {
             return dataset;
         }
 
+        var source = helpTextConfig.datasetSource();
+        if (source.isPresent()) {
+            var helpTexts = retrieveHelpTextsFromYaml(source.get(), preferredLanguage);
+            if (!helpTexts.isEmpty()) {
+                dataset.setHelpText(helpTexts);
+            }
+            return dataset;
+        }
+
         var helpTexts = retrieveHelpTexts(ckanPackage, preferredLanguage);
         if (!helpTexts.isEmpty()) {
-            dataset.setHelpText(helpTexts);
+            dataset.setHelpText(toHelpTextMap(helpTexts));
         }
         return dataset;
+    }
+
+    private Map<String, HelpText> retrieveHelpTextsFromYaml(String source,
+            String preferredLanguage) {
+        var ttl = helpTextConfig.cacheTtl();
+        var helpTexts = new LinkedHashMap<String, HelpText>();
+        allDatasetPropertyKeys().forEach(propertyKey -> yamlHelpTextLoader.lookup(source, ttl,
+                propertyKey, preferredLanguage)
+                .ifPresent(helpText -> helpTexts.put(propertyKey, helpText)));
+        return helpTexts;
+    }
+
+    private static List<String> allDatasetPropertyKeys() {
+        return Stream.concat(
+                SCHEMING_FIELD_TO_DATASET_PROPERTY.values().stream(),
+                SERIES_FIELD_TO_IN_SERIES_PROPERTY.values().stream())
+                .flatMap(List::stream)
+                .distinct()
+                .toList();
+    }
+
+    private Map<String, HelpText> toHelpTextMap(Map<String, String> helpTexts) {
+        var mapped = new LinkedHashMap<String, HelpText>();
+        helpTexts.forEach((propertyKey, text) -> mapped.put(propertyKey, HelpTexts.textOnly(text)));
+        return mapped;
     }
 
     private Map<String, String> retrieveHelpTexts(CkanPackage ckanPackage,

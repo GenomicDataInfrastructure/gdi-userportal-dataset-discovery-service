@@ -6,7 +6,11 @@ package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.cka
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.HelpTexts;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.quarkus.HelpTextConfig;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.yaml.YamlHelpTextLoader;
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
+import io.github.genomicdatainfrastructure.discovery.model.HelpText;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFilterHelpTextsResponse;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -27,15 +31,26 @@ public class CkanFilterHelpTextService {
 
     private final CkanQueryApi ckanQueryApi;
     private final ObjectMapper objectMapper;
+    private final HelpTextConfig helpTextConfig;
+    private final YamlHelpTextLoader yamlHelpTextLoader;
 
     public CkanFilterHelpTextService(@RestClient CkanQueryApi ckanQueryApi,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper, HelpTextConfig helpTextConfig,
+            YamlHelpTextLoader yamlHelpTextLoader) {
         this.ckanQueryApi = ckanQueryApi;
         this.objectMapper = objectMapper;
+        this.helpTextConfig = helpTextConfig;
+        this.yamlHelpTextLoader = yamlHelpTextLoader;
     }
 
     public List<Filter> enrich(List<Filter> filters, String preferredLanguage) {
         if (filters == null || filters.isEmpty()) {
+            return filters;
+        }
+
+        var source = helpTextConfig.filtersSource();
+        if (source.isPresent()) {
+            enrichFromYamlSource(filters, source.get(), preferredLanguage);
             return filters;
         }
 
@@ -44,9 +59,16 @@ public class CkanFilterHelpTextService {
             return filters;
         }
 
-        filters.forEach(filter -> filter.setHelpText(normalizeHelpText(helpTexts.get(filter
-                .getKey()))));
+        filters.forEach(filter -> filter.setHelpText(toHelpText(helpTexts.get(filter.getKey()))));
         return filters;
+    }
+
+    private void enrichFromYamlSource(List<Filter> filters, String source,
+            String preferredLanguage) {
+        var ttl = helpTextConfig.cacheTtl();
+        filters.forEach(filter -> yamlHelpTextLoader.lookup(source, ttl, filter.getKey(),
+                preferredLanguage)
+                .ifPresent(filter::setHelpText));
     }
 
     private Map<String, String> retrieveHelpTexts(List<Filter> filters, String preferredLanguage) {
@@ -78,6 +100,10 @@ public class CkanFilterHelpTextService {
         } catch (JsonProcessingException exception) {
             throw new IllegalStateException("Could not serialize filter keys for CKAN", exception);
         }
+    }
+
+    private HelpText toHelpText(String helpText) {
+        return HelpTexts.textOnly(normalizeHelpText(helpText));
     }
 
     private String normalizeHelpText(String helpText) {

@@ -5,9 +5,12 @@
 package io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.quarkus.DatasetsConfig;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.quarkus.HelpTextConfig;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.yaml.YamlHelpTextLoader;
 import io.github.genomicdatainfrastructure.discovery.model.Filter;
 import io.github.genomicdatainfrastructure.discovery.model.FilterType;
 import io.github.genomicdatainfrastructure.discovery.model.Operator;
@@ -33,6 +36,12 @@ class CkanFilterBuilderTest {
 
     private final TestDatasetsConfig datasetsConfig = new TestDatasetsConfig();
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static CkanFilterHelpTextService helpTextService(CkanQueryApi ckanQueryApi,
+            ObjectMapper objectMapper) {
+        return new CkanFilterHelpTextService(ckanQueryApi, objectMapper,
+                mock(HelpTextConfig.class), mock(YamlHelpTextLoader.class));
+    }
 
     @Test
     void buildsRangeMetadataForDateTimeAndNumberFacets() {
@@ -82,7 +91,7 @@ class CkanFilterBuilderTest {
         var ckanQueryApi = new StubCkanQueryApi(response);
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(datasetsConfig),
-                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
+                helpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
         var modified = findFilter(filters, "modified");
@@ -160,7 +169,7 @@ class CkanFilterBuilderTest {
         var ckanQueryApi = new StubCkanQueryApi(response);
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(datasetsConfig),
-                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
+                helpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
         var typicalAge = findFilter(filters, "typical_age");
@@ -189,7 +198,7 @@ class CkanFilterBuilderTest {
         var ckanQueryApi = new StubCkanQueryApi(response);
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(datasetsConfig),
-                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
+                helpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
         var number = findFilter(filters, "number_of_records");
@@ -217,7 +226,7 @@ class CkanFilterBuilderTest {
         var ckanQueryApi = new StubCkanQueryApi(response);
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(config),
-                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
+                helpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
         var tags = findFilter(filters, "tags");
@@ -247,11 +256,12 @@ class CkanFilterBuilderTest {
 
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(new TitleDatasetsConfig()),
-                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
+                helpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
-        assertThat(findFilter(filters, "title").getHelpText())
+        assertThat(findFilter(filters, "title").getHelpText().getText())
                 .isEqualTo("Use this filter to search datasets by title.");
+        assertThat(findFilter(filters, "title").getHelpText().getLink().getLabel()).isEmpty();
         assertThat(findFilter(filters, "tags").getHelpText()).isNull();
     }
 
@@ -270,7 +280,7 @@ class CkanFilterBuilderTest {
         var ckanQueryApi = new StubCkanQueryApi(response, true);
         var builder = new CkanFilterBuilder(ckanQueryApi,
                 new CkanSearchFacetsMapper(new TitleDatasetsConfig()),
-                new CkanFilterHelpTextService(ckanQueryApi, objectMapper));
+                helpTextService(ckanQueryApi, objectMapper));
         var filters = builder.build(null, "en");
 
         assertThat(findFilter(filters, "title").getHelpText()).isNull();

@@ -143,6 +143,33 @@ class DatasetSearchTest extends BaseTest {
     }
 
     @Test
+    void shouldOmitNullOperatorAndValue_whenUsingBeaconDropdownFilter() {
+        var query = DatasetSearchQuery.builder()
+                .facets(List.of(
+                        DatasetSearchQueryFacet.builder()
+                                .source("beacon")
+                                .type(FilterType.DROPDOWN)
+                                .key("sex")
+                                .value("NCIT:C16576")
+                                .build()
+                ))
+                .build();
+
+        given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .contentType("application/json")
+                .body(query)
+                .when()
+                .post("/api/v1/datasets/search")
+                .then()
+                .statusCode(200)
+                .body("count", equalTo(1))
+                .body("results[0].identifier", equalTo("27866022694497975"))
+                .body("results[0].recordsCount", equalTo(64));
+    }
+
+    @Test
     void shouldSkipSearchDatasets_whenBeaconReturnsEmptyResultSets() {
         var query = DatasetSearchQuery.builder()
                 .facets(List.of(

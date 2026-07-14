@@ -4,11 +4,13 @@
 
 package io.github.genomicdatainfrastructure.discovery.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.cfg.CoercionAction;
 import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import com.fasterxml.jackson.databind.type.LogicalType;
+import io.github.genomicdatainfrastructure.discovery.remote.beacon.individuals.model.BeaconRequestQueryFilter;
 import io.quarkus.jackson.ObjectMapperCustomizer;
 import jakarta.inject.Singleton;
 
@@ -45,5 +47,10 @@ public class JacksonConfig implements ObjectMapperCustomizer {
         // This handles multilingual fields like name_translated
         objectMapper.coercionConfigFor(LogicalType.Map)
                 .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsEmpty);
+
+        // Beacon dropdown filters should not serialize optional fields as null.
+        objectMapper.configOverride(BeaconRequestQueryFilter.class).setInclude(
+                JsonInclude.Value.construct(JsonInclude.Include.NON_NULL,
+                        JsonInclude.Include.NON_NULL));
     }
 }

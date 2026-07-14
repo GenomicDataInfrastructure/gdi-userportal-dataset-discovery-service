@@ -12,6 +12,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.5.2] - 2026-07-14
+
+### Changed
+- chore(deps): update oras-project/setup-oras digest to 1d808f7 by @Renovate Bot in a468c61
+- chore(deps): update quarkus.platform.version to v3.37.2 by @Renovate Bot in 8fd8121
+- doc: update CHANGELOG.md for v1.5.1 by @LNDS-Sysadmins in fac394f
+- doc: update CHANGELOG.md for v1.5.0 by @LNDS-Sysadmins in ef9da7c
+
+
+### Fixed
+- fix tests by @Kacem Bechka in c4d6d8d
+- fix: Invalid Beacon Request When Applying Individual-Level Discovery Filters by @Kacem Bechka in cc23597
+
+
 ## [v1.5.1] - 2026-07-09
 
 ### Changed

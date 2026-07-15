@@ -79,6 +79,9 @@ public class YamlHelpTextLoader {
             cache.put(location, new CacheEntry(entries, now));
             return entries;
         } catch (Exception exception) {
+            if (exception instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             log.log(Level.WARNING, "Could not fetch/parse help text source: " + location,
                     exception);
             return cached != null ? cached.entries() : Map.of();

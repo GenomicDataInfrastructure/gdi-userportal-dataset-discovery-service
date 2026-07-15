@@ -43,9 +43,13 @@ public class YamlHelpTextLoader {
     private static final String DEFAULT_LANGUAGE = "en";
     private static final String DUMMY_LABEL = "More info";
     private static final String DUMMY_VALUE = "#";
+    private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(5);
+    private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(10);
 
     private final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .connectTimeout(CONNECT_TIMEOUT)
+            .build();
     private final Clock clock;
     private final Map<String, CacheEntry> cache = new ConcurrentHashMap<>();
 
@@ -100,7 +104,10 @@ public class YamlHelpTextLoader {
     }
 
     private String fetchUrl(String location) throws IOException, InterruptedException {
-        var request = HttpRequest.newBuilder(URI.create(location)).GET().build();
+        var request = HttpRequest.newBuilder(URI.create(location))
+                .timeout(REQUEST_TIMEOUT)
+                .GET()
+                .build();
         var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() / 100 != 2) {
             throw new IOException(

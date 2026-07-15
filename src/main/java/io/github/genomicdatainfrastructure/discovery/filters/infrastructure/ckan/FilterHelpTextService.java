@@ -27,14 +27,14 @@ import java.util.logging.Level;
 
 @Log
 @ApplicationScoped
-public class CkanFilterHelpTextService {
+public class FilterHelpTextService {
 
     private final CkanQueryApi ckanQueryApi;
     private final ObjectMapper objectMapper;
     private final HelpTextConfig helpTextConfig;
     private final YamlHelpTextLoader yamlHelpTextLoader;
 
-    public CkanFilterHelpTextService(@RestClient CkanQueryApi ckanQueryApi,
+    public FilterHelpTextService(@RestClient CkanQueryApi ckanQueryApi,
             ObjectMapper objectMapper, HelpTextConfig helpTextConfig,
             YamlHelpTextLoader yamlHelpTextLoader) {
         this.ckanQueryApi = ckanQueryApi;
@@ -48,6 +48,7 @@ public class CkanFilterHelpTextService {
             return filters;
         }
 
+        // A configured YAML source (local file or URL) overrides CKAN as the help-text source.
         var source = helpTextConfig.filtersSource();
         if (source.isPresent()) {
             enrichFromYamlSource(filters, source.get(), preferredLanguage);

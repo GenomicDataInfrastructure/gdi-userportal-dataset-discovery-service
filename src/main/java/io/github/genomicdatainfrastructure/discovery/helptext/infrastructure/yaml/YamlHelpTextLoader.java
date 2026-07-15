@@ -136,20 +136,16 @@ public class YamlHelpTextLoader {
     }
 
     /**
-     * {@code label} accepts several shapes in the source YAML: a single string, a list of
-     * strings (both applying regardless of language), a language-code map to a single string, or
-     * a language-code map to a list of strings.
+     * {@code label} is keyed by language code (falling back to {@code en}); each language's value
+     * may be a single string or a list of strings.
      */
-    private List<String> localizeLabel(JsonNode label, String preferredLanguage) {
-        if (label == null || label.isNull() || label.isMissingNode()) {
+    private List<String> localizeLabel(Map<String, JsonNode> label, String preferredLanguage) {
+        if (label == null) {
             return List.of();
         }
-        if (label.isObject()) {
-            var value = label.has(preferredLanguage) ? label.get(preferredLanguage) : label.get(
-                    DEFAULT_LANGUAGE);
-            return value == null ? List.of() : toStringList(value);
-        }
-        return toStringList(label);
+        var value = label.containsKey(preferredLanguage) ? label.get(preferredLanguage)
+                : label.get(DEFAULT_LANGUAGE);
+        return value == null ? List.of() : toStringList(value);
     }
 
     private List<String> toStringList(JsonNode node) {

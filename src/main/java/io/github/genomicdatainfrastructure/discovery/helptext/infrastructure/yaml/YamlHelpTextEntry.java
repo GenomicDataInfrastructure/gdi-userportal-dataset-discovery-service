@@ -17,11 +17,10 @@ import java.util.Map;
 public record YamlHelpTextEntry(Map<String, String> text, YamlHelpTextLink link) {
 
     /**
-     * {@code label} is left as a raw {@link JsonNode} because it accepts several shapes: a
-     * single string, a list of strings, a language-code map to a single string, or a
-     * language-code map to a list of strings. See {@code YamlHelpTextLoader#localizeLabel} for
-     * how each shape is resolved.
+     * {@code label} is keyed by language code, and each language's value may be either a single
+     * string or a list of strings (kept as a {@link JsonNode} so both are accepted). See
+     * {@code YamlHelpTextLoader#localizeLabel} for how it is resolved.
      */
-    public record YamlHelpTextLink(JsonNode label, List<String> value) {
+    public record YamlHelpTextLink(Map<String, JsonNode> label, List<String> value) {
     }
 }

@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-class CkanDatasetHelpTextServiceTest {
+class DatasetHelpTextServiceTest {
 
     private static HelpText textOnly(String text) {
         return HelpText.builder()
@@ -35,8 +35,8 @@ class CkanDatasetHelpTextServiceTest {
                 .build();
     }
 
-    private static CkanDatasetHelpTextService newService(CkanQueryApi ckanQueryApi) {
-        return new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper(),
+    private static DatasetHelpTextService newService(CkanQueryApi ckanQueryApi) {
+        return new DatasetHelpTextService(ckanQueryApi, new ObjectMapper(),
                 mock(HelpTextConfig.class), mock(YamlHelpTextLoader.class));
     }
 
@@ -296,7 +296,7 @@ class CkanDatasetHelpTextServiceTest {
         var ckanQueryApi = mock(CkanQueryApi.class);
         var helpTextConfig = mock(HelpTextConfig.class);
         var yamlHelpTextLoader = mock(YamlHelpTextLoader.class);
-        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper(),
+        var service = new DatasetHelpTextService(ckanQueryApi, new ObjectMapper(),
                 helpTextConfig, yamlHelpTextLoader);
         var dataset = RetrievedDataset.builder().id("dataset-1").build();
 

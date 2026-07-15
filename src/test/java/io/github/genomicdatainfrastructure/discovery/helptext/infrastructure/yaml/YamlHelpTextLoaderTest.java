@@ -108,37 +108,15 @@ class YamlHelpTextLoaderTest {
     }
 
     @Test
-    void lookupAcceptsPlainStringLabelWithoutLanguageTag(@TempDir Path tempDir) throws IOException {
+    void lookupAcceptsLanguageTaggedListLabel(@TempDir Path tempDir) throws IOException {
         var file = tempDir.resolve("filters.yaml");
         write(file, """
                 access_rights:
                   text:
                     en: "English text"
                   link:
-                    label: "Same label everywhere"
-                    value:
-                      - "https://example.com"
-                """);
-        var loader = new YamlHelpTextLoader(Clock.systemUTC());
-
-        var en = loader.lookup(file.toString(), Duration.ofMinutes(5), "access_rights", "en")
-                .orElseThrow();
-        var nl = loader.lookup(file.toString(), Duration.ofMinutes(5), "access_rights", "nl")
-                .orElseThrow();
-
-        assertThat(en.getLink().getLabel()).containsExactly("Same label everywhere");
-        assertThat(nl.getLink().getLabel()).containsExactly("Same label everywhere");
-    }
-
-    @Test
-    void lookupAcceptsListLabelWithoutLanguageTag(@TempDir Path tempDir) throws IOException {
-        var file = tempDir.resolve("filters.yaml");
-        write(file, """
-                access_rights:
-                  text:
-                    en: "English text"
-                  link:
-                    label: ["Label one", "Label two"]
+                    label:
+                      en: ["Label one", "Label two"]
                     value:
                       - "https://example.com/one"
                       - "https://example.com/two"

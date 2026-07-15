@@ -37,9 +37,9 @@ class CkanFilterBuilderTest {
     private final TestDatasetsConfig datasetsConfig = new TestDatasetsConfig();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static CkanFilterHelpTextService helpTextService(CkanQueryApi ckanQueryApi,
+    private static FilterHelpTextService helpTextService(CkanQueryApi ckanQueryApi,
             ObjectMapper objectMapper) {
-        return new CkanFilterHelpTextService(ckanQueryApi, objectMapper,
+        return new FilterHelpTextService(ckanQueryApi, objectMapper,
                 mock(HelpTextConfig.class), mock(YamlHelpTextLoader.class));
     }
 

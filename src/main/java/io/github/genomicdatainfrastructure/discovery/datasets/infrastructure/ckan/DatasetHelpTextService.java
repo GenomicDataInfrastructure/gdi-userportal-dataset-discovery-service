@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 @Log
 @ApplicationScoped
-public class CkanDatasetHelpTextService {
+public class DatasetHelpTextService {
 
     private static final String DEFAULT_DATASET_TYPE = "dataset";
     private static final String DATASET_SERIES_TYPE = "dataset_series";
@@ -129,7 +129,7 @@ public class CkanDatasetHelpTextService {
     private final HelpTextConfig helpTextConfig;
     private final YamlHelpTextLoader yamlHelpTextLoader;
 
-    public CkanDatasetHelpTextService(@RestClient CkanQueryApi ckanQueryApi,
+    public DatasetHelpTextService(@RestClient CkanQueryApi ckanQueryApi,
             ObjectMapper objectMapper, HelpTextConfig helpTextConfig,
             YamlHelpTextLoader yamlHelpTextLoader) {
         this.ckanQueryApi = ckanQueryApi;
@@ -144,6 +144,7 @@ public class CkanDatasetHelpTextService {
             return dataset;
         }
 
+        // A configured YAML source (local file or URL) overrides CKAN as the help-text source.
         var source = helpTextConfig.datasetSource();
         if (source.isPresent()) {
             var helpTexts = retrieveHelpTextsFromYaml(source.get(), preferredLanguage);

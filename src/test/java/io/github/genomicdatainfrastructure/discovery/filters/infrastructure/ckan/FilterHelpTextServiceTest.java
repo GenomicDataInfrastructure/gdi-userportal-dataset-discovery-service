@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-class CkanFilterHelpTextServiceTest {
+class FilterHelpTextServiceTest {
 
     private static HelpText textOnly(String text) {
         return HelpText.builder()
@@ -38,7 +38,7 @@ class CkanFilterHelpTextServiceTest {
     void enrichUsesRequestedFilterKeysWhenCallingCkan() {
         var ckanQueryApi = mock(CkanQueryApi.class);
         var helpTextConfig = mock(HelpTextConfig.class);
-        var service = new CkanFilterHelpTextService(ckanQueryApi, new ObjectMapper(),
+        var service = new FilterHelpTextService(ckanQueryApi, new ObjectMapper(),
                 helpTextConfig, mock(YamlHelpTextLoader.class));
         var capturedKeys = new String[1];
 
@@ -65,7 +65,7 @@ class CkanFilterHelpTextServiceTest {
     void enrichNormalizesMultilineHelpTextValues() {
         var ckanQueryApi = mock(CkanQueryApi.class);
         var helpTextConfig = mock(HelpTextConfig.class);
-        var service = new CkanFilterHelpTextService(ckanQueryApi, new ObjectMapper(),
+        var service = new FilterHelpTextService(ckanQueryApi, new ObjectMapper(),
                 helpTextConfig, mock(YamlHelpTextLoader.class));
 
         when(ckanQueryApi.gdiFilterHelpTextsShow(anyString(), anyString())).thenReturn(
@@ -96,7 +96,7 @@ class CkanFilterHelpTextServiceTest {
     void enrichSkipsNullHelpTextValues() {
         var ckanQueryApi = mock(CkanQueryApi.class);
         var helpTextConfig = mock(HelpTextConfig.class);
-        var service = new CkanFilterHelpTextService(ckanQueryApi, new ObjectMapper(),
+        var service = new FilterHelpTextService(ckanQueryApi, new ObjectMapper(),
                 helpTextConfig, mock(YamlHelpTextLoader.class));
 
         var result = new LinkedHashMap<String, String>();
@@ -119,7 +119,7 @@ class CkanFilterHelpTextServiceTest {
         var ckanQueryApi = mock(CkanQueryApi.class);
         var helpTextConfig = mock(HelpTextConfig.class);
         var yamlHelpTextLoader = mock(YamlHelpTextLoader.class);
-        var service = new CkanFilterHelpTextService(ckanQueryApi, new ObjectMapper(),
+        var service = new FilterHelpTextService(ckanQueryApi, new ObjectMapper(),
                 helpTextConfig, yamlHelpTextLoader);
 
         when(helpTextConfig.filtersSource()).thenReturn(Optional.of("filters.yaml"));

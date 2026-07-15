@@ -20,16 +20,16 @@ public class CkanFilterBuilder implements FilterBuilder {
 
     private final CkanQueryApi ckanQueryApi;
     private final CkanSearchFacetsMapper ckanSearchFacetsMapper;
-    private final CkanFilterHelpTextService ckanFilterHelpTextService;
+    private final FilterHelpTextService filterHelpTextService;
 
     public CkanFilterBuilder(
             @RestClient CkanQueryApi ckanQueryApi,
             CkanSearchFacetsMapper ckanSearchFacetsMapper,
-            CkanFilterHelpTextService ckanFilterHelpTextService
+            FilterHelpTextService filterHelpTextService
     ) {
         this.ckanQueryApi = ckanQueryApi;
         this.ckanSearchFacetsMapper = ckanSearchFacetsMapper;
-        this.ckanFilterHelpTextService = ckanFilterHelpTextService;
+        this.filterHelpTextService = filterHelpTextService;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CkanFilterBuilder implements FilterBuilder {
                 request
         );
 
-        return ckanFilterHelpTextService.enrich(
+        return filterHelpTextService.enrich(
                 ckanSearchFacetsMapper.map(response.getResult()),
                 preferredLanguage
         );

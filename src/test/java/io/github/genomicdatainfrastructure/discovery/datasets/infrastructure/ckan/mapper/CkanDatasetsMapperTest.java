@@ -763,6 +763,28 @@ class CkanDatasetsMapperTest {
             assertThat(actual.getDatasetType()).isEqualTo("externally-governed");
         }
 
+        @Test
+        void given_publisher_type_without_value_or_label_should_map_type_as_null() {
+            final var ckanPackage = CkanPackage.builder()
+                    .id("dataset-id")
+                    .title("Dataset title")
+                    .notes("Dataset description")
+                    .publisher(List.of(
+                            CkanAgent.builder()
+                                    .name("publisherName")
+                                    .type(CkanValueLabel.builder().name(null).displayName(null)
+                                            .build())
+                                    .build()))
+                    .build();
+
+            final var actual = mapper.mapToSearchedDataset(ckanPackage);
+
+            assertThat(actual.getPublishers())
+                    .singleElement()
+                    .extracting(Agent::getType)
+                    .isNull();
+        }
+
         @NotNull
         private static SearchedDataset buildSearchedDataset() {
             return SearchedDataset.builder()

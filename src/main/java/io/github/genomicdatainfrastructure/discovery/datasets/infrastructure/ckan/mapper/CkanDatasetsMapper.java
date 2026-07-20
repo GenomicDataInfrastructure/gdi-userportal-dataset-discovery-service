@@ -99,10 +99,32 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "applicableLegislation", source = "applicableLegislation")
     DatasetSeries mapToDatasetSeries(CkanPackage ckanPackage);
 
-    @Mapping(target = "label", source = "displayName")
-    @Mapping(target = "value", source = "name")
-    @Mapping(target = "count", source = "count")
-    ValueLabel map(CkanValueLabel ckanValueLabel);
+    default ValueLabel map(CkanValueLabel ckanValueLabel) {
+        if (ckanValueLabel == null) {
+            return null;
+        }
+
+        var value = StringUtils.trimToNull(ckanValueLabel.getName());
+        var label = StringUtils.trimToNull(ckanValueLabel.getDisplayName());
+
+        if (value == null && label == null) {
+            return null;
+        }
+
+        if (value == null) {
+            value = label;
+        }
+
+        if (label == null) {
+            label = value;
+        }
+
+        return ValueLabel.builder()
+                .value(value)
+                .label(label)
+                .count(ckanValueLabel.getCount())
+                .build();
+    }
 
     @Mapping(target = "accessUrl", source = "accessUrl")
     @Mapping(target = "downloadUrl", source = "downloadUrl")

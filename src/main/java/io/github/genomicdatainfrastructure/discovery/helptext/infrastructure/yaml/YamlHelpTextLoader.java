@@ -4,6 +4,7 @@
 
 package io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.yaml;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -82,14 +83,19 @@ public class YamlHelpTextLoader {
             var entries = fetchAndParse(location);
             cache.put(location, new CacheEntry(entries, now));
             return entries;
-        } catch (Exception exception) {
-            if (exception instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-            }
-            log.log(Level.WARNING, "Could not fetch/parse help text source: " + location,
+        } catch (JsonProcessingException exception) {
+            log.log(Level.WARNING, "Could not parse help text source as YAML: " + location,
                     exception);
-            return cached != null ? cached.entries() : Map.of();
+        } catch (IOException exception) {
+            log.log(Level.WARNING, "Could not read help text source: " + location, exception);
+        } catch (IllegalArgumentException exception) {
+            log.log(Level.WARNING, "Malformed help text source location: " + location, exception);
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            log.log(Level.WARNING, "Interrupted while fetching help text source: " + location,
+                    exception);
         }
+        return cached != null ? cached.entries() : Map.of();
     }
 
     private Map<String, YamlHelpTextEntry> fetchAndParse(

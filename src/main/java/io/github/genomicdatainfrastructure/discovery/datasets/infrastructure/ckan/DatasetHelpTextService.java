@@ -126,6 +126,13 @@ public class DatasetHelpTextService {
                     Map.entry("spatial_coverage", List.of("inSeries.spatial"))
             );
 
+    private static final List<String> ALL_DATASET_PROPERTY_KEYS = Stream.concat(
+            SCHEMING_FIELD_TO_DATASET_PROPERTY.values().stream(),
+            SERIES_FIELD_TO_IN_SERIES_PROPERTY.values().stream())
+            .flatMap(List::stream)
+            .distinct()
+            .toList();
+
     private final CkanQueryApi ckanQueryApi;
     private final ObjectMapper objectMapper;
     private final HelpTextConfig helpTextConfig;
@@ -167,19 +174,10 @@ public class DatasetHelpTextService {
             String preferredLanguage) {
         var ttl = helpTextConfig.cacheTtl();
         var helpTexts = new LinkedHashMap<String, HelpText>();
-        allDatasetPropertyKeys().forEach(propertyKey -> yamlHelpTextLoader.lookup(source, ttl,
+        ALL_DATASET_PROPERTY_KEYS.forEach(propertyKey -> yamlHelpTextLoader.lookup(source, ttl,
                 propertyKey, preferredLanguage)
                 .ifPresent(helpText -> helpTexts.put(propertyKey, helpText)));
         return helpTexts;
-    }
-
-    private static List<String> allDatasetPropertyKeys() {
-        return Stream.concat(
-                SCHEMING_FIELD_TO_DATASET_PROPERTY.values().stream(),
-                SERIES_FIELD_TO_IN_SERIES_PROPERTY.values().stream())
-                .flatMap(List::stream)
-                .distinct()
-                .toList();
     }
 
     private Map<String, HelpText> toHelpTextMap(Map<String, String> helpTexts) {

@@ -22,23 +22,25 @@ class RetrieveDatasetTest extends BaseTest {
                 .get("/api/v1/datasets/e1b3eff9-13eb-48b0-b180-7ecb76b84454")
                 .then()
                 .statusCode(200)
-                .body("helpText.title", equalTo("A descriptive title for the dataset."))
-                .body("helpText.accessRights",
+                .body("helpText.title.text", equalTo("A descriptive title for the dataset."))
+                .body("helpText.title.link.label.size()", equalTo(0))
+                .body("helpText.title.link.value.size()", equalTo(0))
+                .body("helpText.accessRights.text",
                         equalTo("Information that indicates whether the dataset is open or restricted."))
-                .body("helpText.inSeries", equalTo("Dataset series this dataset belongs to."))
-                .body("helpText['distributions.title']",
+                .body("helpText.inSeries.text", equalTo("Dataset series this dataset belongs to."))
+                .body("helpText['distributions.title'].text",
                         equalTo("A descriptive title for the resource."))
-                .body("helpText['samples.title']",
+                .body("helpText['samples.title'].text",
                         equalTo("A descriptive title for the resource."))
-                .body("helpText['analytics.title']",
+                .body("helpText['analytics.title'].text",
                         equalTo("A descriptive title for the resource."))
-                .body("helpText['distributions.format']",
+                .body("helpText['distributions.format'].text",
                         equalTo("File format. If not provided it will be guessed."))
-                .body("helpText['distributions.accessService.title']",
+                .body("helpText['distributions.accessService.title'].text",
                         equalTo("A title for the data service."))
-                .body("helpText['inSeries.title']",
+                .body("helpText['inSeries.title'].text",
                         equalTo("A descriptive title for the dataset series."))
-                .body("helpText['inSeries.frequency']",
+                .body("helpText['inSeries.frequency'].text",
                         equalTo("The frequency with which items are added to the dataset series collection."));
     }
 

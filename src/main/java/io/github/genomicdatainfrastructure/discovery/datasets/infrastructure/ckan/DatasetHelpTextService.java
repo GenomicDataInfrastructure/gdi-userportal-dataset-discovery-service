@@ -6,6 +6,10 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ck
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.HelpTexts;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.quarkus.HelpTextConfig;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.yaml.YamlHelpTextLoader;
+import io.github.genomicdatainfrastructure.discovery.model.HelpText;
 import io.github.genomicdatainfrastructure.discovery.model.RetrievedDataset;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFilterHelpTextsResponse;
@@ -21,10 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 @Log
 @ApplicationScoped
-public class CkanDatasetHelpTextService {
+public class DatasetHelpTextService {
 
     private static final String DEFAULT_DATASET_TYPE = "dataset";
     private static final String DATASET_SERIES_TYPE = "dataset_series";
@@ -40,6 +45,7 @@ public class CkanDatasetHelpTextService {
                     Map.entry("notes_translated", List.of("description")),
                     Map.entry("tags_translated", List.of("keywords")),
                     Map.entry("contact", List.of("contacts")),
+                    Map.entry("creator", List.of("creators")),
                     Map.entry("publisher", List.of("publishers")),
                     Map.entry("owner_org", List.of("ownerOrg")),
                     Map.entry("url", List.of("url")),
@@ -51,6 +57,7 @@ public class CkanDatasetHelpTextService {
                     Map.entry("frequency", List.of("frequency")),
                     Map.entry("provenance", List.of("provenance")),
                     Map.entry("dcat_type", List.of("dcatType")),
+                    Map.entry("status", List.of("status")),
                     Map.entry("temporal_coverage", List.of("temporalCoverage")),
                     Map.entry("temporal_resolution", List.of("temporalResolution")),
                     Map.entry("spatial_coverage", List.of("spatialCoverage")),
@@ -119,13 +126,25 @@ public class CkanDatasetHelpTextService {
                     Map.entry("spatial_coverage", List.of("inSeries.spatial"))
             );
 
+    private static final List<String> ALL_DATASET_PROPERTY_KEYS = Stream.concat(
+            SCHEMING_FIELD_TO_DATASET_PROPERTY.values().stream(),
+            SERIES_FIELD_TO_IN_SERIES_PROPERTY.values().stream())
+            .flatMap(List::stream)
+            .distinct()
+            .toList();
+
     private final CkanQueryApi ckanQueryApi;
     private final ObjectMapper objectMapper;
+    private final HelpTextConfig helpTextConfig;
+    private final YamlHelpTextLoader yamlHelpTextLoader;
 
-    public CkanDatasetHelpTextService(@RestClient CkanQueryApi ckanQueryApi,
-            ObjectMapper objectMapper) {
+    public DatasetHelpTextService(@RestClient CkanQueryApi ckanQueryApi,
+            ObjectMapper objectMapper, HelpTextConfig helpTextConfig,
+            YamlHelpTextLoader yamlHelpTextLoader) {
         this.ckanQueryApi = ckanQueryApi;
         this.objectMapper = objectMapper;
+        this.helpTextConfig = helpTextConfig;
+        this.yamlHelpTextLoader = yamlHelpTextLoader;
     }
 
     public RetrievedDataset enrich(RetrievedDataset dataset, CkanPackage ckanPackage,
@@ -134,11 +153,37 @@ public class CkanDatasetHelpTextService {
             return dataset;
         }
 
+        // A configured YAML source (local file or URL) overrides CKAN as the help-text source.
+        var source = helpTextConfig.datasetSource();
+        if (source.isPresent()) {
+            var helpTexts = retrieveHelpTextsFromYaml(source.get(), preferredLanguage);
+            if (!helpTexts.isEmpty()) {
+                dataset.setHelpText(helpTexts);
+            }
+            return dataset;
+        }
+
         var helpTexts = retrieveHelpTexts(ckanPackage, preferredLanguage);
         if (!helpTexts.isEmpty()) {
-            dataset.setHelpText(helpTexts);
+            dataset.setHelpText(toHelpTextMap(helpTexts));
         }
         return dataset;
+    }
+
+    private Map<String, HelpText> retrieveHelpTextsFromYaml(String source,
+            String preferredLanguage) {
+        var ttl = helpTextConfig.cacheTtl();
+        var helpTexts = new LinkedHashMap<String, HelpText>();
+        ALL_DATASET_PROPERTY_KEYS.forEach(propertyKey -> yamlHelpTextLoader.lookup(source, ttl,
+                propertyKey, preferredLanguage)
+                .ifPresent(helpText -> helpTexts.put(propertyKey, helpText)));
+        return helpTexts;
+    }
+
+    private Map<String, HelpText> toHelpTextMap(Map<String, String> helpTexts) {
+        var mapped = new LinkedHashMap<String, HelpText>();
+        helpTexts.forEach((propertyKey, text) -> mapped.put(propertyKey, HelpTexts.textOnly(text)));
+        return mapped;
     }
 
     private Map<String, String> retrieveHelpTexts(CkanPackage ckanPackage,

@@ -10,6 +10,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.quarkus.HelpTextConfig;
+import io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.yaml.YamlHelpTextLoader;
+import io.github.genomicdatainfrastructure.discovery.model.HelpText;
+import io.github.genomicdatainfrastructure.discovery.model.HelpTextLink;
 import io.github.genomicdatainfrastructure.discovery.model.RetrievedDataset;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanFilterHelpTextsResponse;
@@ -17,15 +21,29 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanPacka
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanValueLabel;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-class CkanDatasetHelpTextServiceTest {
+class DatasetHelpTextServiceTest {
+
+    private static HelpText textOnly(String text) {
+        return HelpText.builder()
+                .text(text)
+                .link(HelpTextLink.builder().label(List.of()).value(List.of()).build())
+                .build();
+    }
+
+    private static DatasetHelpTextService newService(CkanQueryApi ckanQueryApi) {
+        return new DatasetHelpTextService(ckanQueryApi, new ObjectMapper(),
+                mock(HelpTextConfig.class), mock(YamlHelpTextLoader.class));
+    }
 
     @Test
     void enrichMapsCkanFieldNamesToDatasetPropertyNames() {
         var ckanQueryApi = mock(CkanQueryApi.class);
-        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var service = newService(ckanQueryApi);
         var dataset = RetrievedDataset.builder().id("dataset-1").build();
         var ckanPackage = CkanPackage.builder()
                 .type(CkanValueLabel.builder().name("dataset_series").build())
@@ -52,31 +70,35 @@ class CkanDatasetHelpTextServiceTest {
         service.enrich(dataset, ckanPackage, "nl");
 
         assertThat(dataset.getHelpText())
-                .containsEntry("title", "A descriptive title.")
-                .containsEntry("accessRights", "Access conditions.")
-                .containsEntry("inSeries", "Dataset series this dataset belongs to.")
-                .containsEntry("distributions.title", "A resource title.")
-                .containsEntry("samples.title", "A resource title.")
-                .containsEntry("analytics.title", "A resource title.")
-                .containsEntry("distributions.description", "A resource description.")
-                .containsEntry("samples.description", "A resource description.")
-                .containsEntry("analytics.description", "A resource description.")
-                .containsEntry("distributions.format", "Resource format.")
-                .containsEntry("samples.format", "Resource format.")
-                .containsEntry("analytics.format", "Resource format.")
-                .containsEntry("distributions.downloadUrl", "https://example.org/download.csv")
-                .containsEntry("samples.downloadUrl", "https://example.org/download.csv")
-                .containsEntry("analytics.downloadUrl", "https://example.org/download.csv")
-                .containsEntry("distributions.accessService.title", "A data service title.")
+                .containsEntry("title", textOnly("A descriptive title."))
+                .containsEntry("accessRights", textOnly("Access conditions."))
+                .containsEntry("inSeries", textOnly("Dataset series this dataset belongs to."))
+                .containsEntry("distributions.title", textOnly("A resource title."))
+                .containsEntry("samples.title", textOnly("A resource title."))
+                .containsEntry("analytics.title", textOnly("A resource title."))
+                .containsEntry("distributions.description", textOnly("A resource description."))
+                .containsEntry("samples.description", textOnly("A resource description."))
+                .containsEntry("analytics.description", textOnly("A resource description."))
+                .containsEntry("distributions.format", textOnly("Resource format."))
+                .containsEntry("samples.format", textOnly("Resource format."))
+                .containsEntry("analytics.format", textOnly("Resource format."))
+                .containsEntry("distributions.downloadUrl",
+                        textOnly("https://example.org/download.csv"))
+                .containsEntry("samples.downloadUrl",
+                        textOnly("https://example.org/download.csv"))
+                .containsEntry("analytics.downloadUrl",
+                        textOnly("https://example.org/download.csv"))
+                .containsEntry("distributions.accessService.title",
+                        textOnly("A data service title."))
                 .containsEntry("distributions.accessService.description",
-                        "A data service description.")
+                        textOnly("A data service description."))
                 .doesNotContainKey("unknown_field");
     }
 
     @Test
     void enrichNormalizesMultilineHelpTextValues() {
         var ckanQueryApi = mock(CkanQueryApi.class);
-        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var service = newService(ckanQueryApi);
         var dataset = RetrievedDataset.builder().id("dataset-1").build();
 
         when(ckanQueryApi.gdiDatasetHelpTextsShow(anyString(), anyString(), anyString()))
@@ -94,18 +116,19 @@ class CkanDatasetHelpTextServiceTest {
         assertThat(dataset.getHelpText())
                 .containsEntry(
                         "healthTheme",
-                        "A category of the Dataset or tag describing the Dataset."
+                        textOnly("A category of the Dataset or tag describing the Dataset.")
                 )
                 .containsEntry(
                         "accessRights",
-                        "Information that indicates whether this dataset is open or restricted."
+                        textOnly(
+                                "Information that indicates whether this dataset is open or restricted.")
                 );
     }
 
     @Test
     void enrichForwardsPreferredLanguageDatasetTypeAndRequestedKeys() {
         var ckanQueryApi = mock(CkanQueryApi.class);
-        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var service = newService(ckanQueryApi);
         var capturedLanguage = new String[1];
         var capturedType = new String[1];
         var capturedKeys = new String[1];
@@ -140,7 +163,7 @@ class CkanDatasetHelpTextServiceTest {
     @Test
     void enrichAddsJoinedDatasetSeriesHelpTextWithInSeriesPrefix() {
         var ckanQueryApi = mock(CkanQueryApi.class);
-        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var service = newService(ckanQueryApi);
         var dataset = RetrievedDataset.builder().id("dataset-1").build();
 
         when(ckanQueryApi.gdiDatasetHelpTextsShow(anyString(), anyString(), anyString()))
@@ -171,18 +194,21 @@ class CkanDatasetHelpTextServiceTest {
         );
 
         assertThat(dataset.getHelpText())
-                .containsEntry("title", "A descriptive title.")
-                .containsEntry("inSeries.title", "A descriptive title for the dataset series.")
-                .containsEntry("inSeries.description", "A description of the dataset series.")
-                .containsEntry("inSeries.frequency", "The series publication frequency.")
+                .containsEntry("title", textOnly("A descriptive title."))
+                .containsEntry("inSeries.title",
+                        textOnly("A descriptive title for the dataset series."))
+                .containsEntry("inSeries.description",
+                        textOnly("A description of the dataset series."))
+                .containsEntry("inSeries.frequency",
+                        textOnly("The series publication frequency."))
                 .containsEntry("inSeries.temporalCoverage",
-                        "The temporal period the series covers.");
+                        textOnly("The temporal period the series covers."));
     }
 
     @Test
     void enrichKeepsDatasetHelpTextWhenJoinedSeriesHelpTextRequestFails() {
         var ckanQueryApi = mock(CkanQueryApi.class);
-        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var service = newService(ckanQueryApi);
         var dataset = RetrievedDataset.builder().id("dataset-1").build();
 
         when(ckanQueryApi.gdiDatasetHelpTextsShow(anyString(), anyString(), anyString()))
@@ -204,14 +230,14 @@ class CkanDatasetHelpTextServiceTest {
         );
 
         assertThat(dataset.getHelpText())
-                .containsEntry("title", "A descriptive title.")
+                .containsEntry("title", textOnly("A descriptive title."))
                 .doesNotContainKey("inSeries.title");
     }
 
     @Test
     void enrichFallsBackToDatasetTypeWhenCkanPackageHasNoType() {
         var ckanQueryApi = mock(CkanQueryApi.class);
-        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var service = newService(ckanQueryApi);
         var capturedType = new String[1];
 
         when(ckanQueryApi.gdiDatasetHelpTextsShow(anyString(), anyString(), anyString()))
@@ -234,7 +260,7 @@ class CkanDatasetHelpTextServiceTest {
     @Test
     void enrichLeavesDatasetUnchangedWhenCkanHelpTextRequestFails() {
         var ckanQueryApi = mock(CkanQueryApi.class);
-        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var service = newService(ckanQueryApi);
         var dataset = RetrievedDataset.builder().id("dataset-1").build();
 
         when(ckanQueryApi.gdiDatasetHelpTextsShow(anyString(), anyString(), anyString()))
@@ -249,7 +275,7 @@ class CkanDatasetHelpTextServiceTest {
     @Test
     void enrichSkipsNullHelpTextValues() {
         var ckanQueryApi = mock(CkanQueryApi.class);
-        var service = new CkanDatasetHelpTextService(ckanQueryApi, new ObjectMapper());
+        var service = newService(ckanQueryApi);
         var dataset = RetrievedDataset.builder().id("dataset-1").build();
         var result = new java.util.LinkedHashMap<String, String>();
         result.put("title_translated", null);
@@ -263,5 +289,33 @@ class CkanDatasetHelpTextServiceTest {
         service.enrich(dataset, CkanPackage.builder().build(), "en");
 
         assertThat(dataset.getHelpText()).isNull();
+    }
+
+    @Test
+    void enrichUsesYamlSourceInsteadOfCkanWhenConfigured() {
+        var ckanQueryApi = mock(CkanQueryApi.class);
+        var helpTextConfig = mock(HelpTextConfig.class);
+        var yamlHelpTextLoader = mock(YamlHelpTextLoader.class);
+        var service = new DatasetHelpTextService(ckanQueryApi, new ObjectMapper(),
+                helpTextConfig, yamlHelpTextLoader);
+        var dataset = RetrievedDataset.builder().id("dataset-1").build();
+
+        when(helpTextConfig.datasetSource()).thenReturn(Optional.of("detail-view.yaml"));
+        when(helpTextConfig.cacheTtl()).thenReturn(Duration.ofMinutes(5));
+
+        var titleHelpText = HelpText.builder()
+                .text("Dummy title text")
+                .link(HelpTextLink.builder()
+                        .label(List.of("More info"))
+                        .value(List.of("https://example.com"))
+                        .build())
+                .build();
+        when(yamlHelpTextLoader.lookup("detail-view.yaml", Duration.ofMinutes(5), "title", "en"))
+                .thenReturn(Optional.of(titleHelpText));
+
+        service.enrich(dataset, CkanPackage.builder().build(), "en");
+
+        assertThat(dataset.getHelpText()).containsEntry("title", titleHelpText);
+        org.mockito.Mockito.verifyNoInteractions(ckanQueryApi);
     }
 }

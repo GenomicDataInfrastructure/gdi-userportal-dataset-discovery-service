@@ -6,9 +6,9 @@ package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ck
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetsRepository;
 import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.DatasetNotFoundException;
-import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.CkanDatasetHelpTextService;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.DatasetHelpTextService;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.mapper.CkanDatasetsMapper;
-import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan.CkanFilterHelpTextService;
+import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan.FilterHelpTextService;
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan.CkanSearchFacetsMapper;
 import io.github.genomicdatainfrastructure.discovery.model.*;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
@@ -31,22 +31,22 @@ public class CkanDatasetsRepository implements DatasetsRepository {
     private final CkanQueryApi ckanQueryApi;
     private final CkanDatasetsMapper ckanDatasetsMapper;
     private final CkanSearchFacetsMapper ckanSearchFacetsMapper;
-    private final CkanFilterHelpTextService ckanFilterHelpTextService;
-    private final CkanDatasetHelpTextService ckanDatasetHelpTextService;
+    private final FilterHelpTextService filterHelpTextService;
+    private final DatasetHelpTextService datasetHelpTextService;
 
     @Inject
     public CkanDatasetsRepository(
             @RestClient CkanQueryApi ckanQueryApi,
             CkanDatasetsMapper ckanDatasetsMapper,
             CkanSearchFacetsMapper ckanSearchFacetsMapper,
-            CkanFilterHelpTextService ckanFilterHelpTextService,
-            CkanDatasetHelpTextService ckanDatasetHelpTextService
+            FilterHelpTextService filterHelpTextService,
+            DatasetHelpTextService datasetHelpTextService
     ) {
         this.ckanQueryApi = ckanQueryApi;
         this.ckanDatasetsMapper = ckanDatasetsMapper;
         this.ckanSearchFacetsMapper = ckanSearchFacetsMapper;
-        this.ckanFilterHelpTextService = ckanFilterHelpTextService;
-        this.ckanDatasetHelpTextService = ckanDatasetHelpTextService;
+        this.filterHelpTextService = filterHelpTextService;
+        this.datasetHelpTextService = datasetHelpTextService;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         return DatasetsSearchResponse.builder()
                 .count(totalCount)
                 .results(mappedResults)
-                .facets(ckanFilterHelpTextService.enrich(
+                .facets(filterHelpTextService.enrich(
                         ckanSearchFacetsMapper.map(response.getResult()),
                         preferredLanguage
                 ))
@@ -125,7 +125,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         return DatasetsSearchResponse.builder()
                 .count(totalCount)
                 .results(mappedResults)
-                .facets(ckanFilterHelpTextService.enrich(
+                .facets(filterHelpTextService.enrich(
                         ckanSearchFacetsMapper.map(response.getResult()),
                         preferredLanguage
                 ))
@@ -137,7 +137,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         try {
             var ckanPackage = ckanQueryApi.packageShow(id, preferredLanguage);
             var mappedDataset = ckanDatasetsMapper.map(ckanPackage.getResult());
-            ckanDatasetHelpTextService.enrich(
+            datasetHelpTextService.enrich(
                     mappedDataset,
                     ckanPackage.getResult(),
                     preferredLanguage

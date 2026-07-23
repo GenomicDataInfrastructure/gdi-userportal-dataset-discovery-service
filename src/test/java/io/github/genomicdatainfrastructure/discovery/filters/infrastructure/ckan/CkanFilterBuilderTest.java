@@ -22,6 +22,7 @@ import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.PackagesS
 import jakarta.enterprise.inject.Vetoed;
 import jakarta.ws.rs.ProcessingException;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -124,36 +125,42 @@ class CkanFilterBuilderTest {
 
     @Test
     void buildRangeMetadataForCompositeFacet() {
+        // LinkedHashMap keeps insertion order deterministic, mirroring how CKAN's JSON facet
+        // response is deserialized (order-preserving), so the composite's driving component
+        // (the one whose title/entry is used to build the merged filter) is predictable.
+        var searchFacets = new LinkedHashMap<String, CkanFacet>();
+        searchFacets.put("min_typical_age", CkanFacet.builder()
+                .title("Minimum Typical Age")
+                .items(List.of(
+                        CkanValueLabel.builder()
+                                .name("0")
+                                .displayName("0")
+                                .count(1)
+                                .build(),
+                        CkanValueLabel.builder()
+                                .name("10")
+                                .displayName("10")
+                                .count(2)
+                                .build()))
+                .build());
+        searchFacets.put("max_typical_age", CkanFacet.builder()
+                .title("Maximum Typical Age")
+                .items(List.of(
+                        CkanValueLabel.builder()
+                                .name("100")
+                                .displayName("100")
+                                .count(3)
+                                .build(),
+                        CkanValueLabel.builder()
+                                .name("110")
+                                .displayName("110")
+                                .count(4)
+                                .build()))
+                .build());
+
         var response = PackagesSearchResponse.builder()
                 .result(PackagesSearchResult.builder()
-                        .searchFacets(Map.of(
-                                "min_typical_age", CkanFacet.builder()
-                                        .title("Minimum Typical Age")
-                                        .items(List.of(CkanValueLabel.builder()
-                                                .name("0")
-                                                .displayName("0")
-                                                .count(1)
-                                                .build(),
-                                                CkanValueLabel.builder()
-                                                        .name("10")
-                                                        .displayName("10")
-                                                        .count(2)
-                                                        .build()))
-                                        .build(),
-                                "max_typical_age", CkanFacet.builder()
-                                        .title("Maximum Typical Age")
-                                        .items(List.of(CkanValueLabel.builder()
-                                                .name("100")
-                                                .displayName("100")
-                                                .count(3)
-                                                .build(),
-                                                CkanValueLabel.builder()
-                                                        .name("110")
-                                                        .displayName("110")
-                                                        .count(4)
-                                                        .build()))
-                                        .build()
-                        ))
+                        .searchFacets(searchFacets)
                         .build())
                 .build();
 
@@ -164,11 +171,24 @@ class CkanFilterBuilderTest {
         var filters = builder.build(null, "en");
 
         var typicalAge = findFilter(filters, "typical_age");
-        assertThat(typicalAge.getLabel()).isEqualTo("Minimum Typical Age - Maximum Typical Age");
+        assertThat(typicalAge.getLabel()).isEqualTo("Age Range");
         assertThat(typicalAge.getType()).isEqualTo(FilterType.NUMBER);
         assertThat(typicalAge.getRange()).isNotNull();
         assertThat(typicalAge.getRange().getMin()).isEqualTo("0");
         assertThat(typicalAge.getRange().getMax()).isEqualTo("110");
+        assertThat(typicalAge.getOperators())
+                .containsExactly(
+                        Operator.EQUAL_SYMBOL,
+                        Operator.GREATER_THAN_SYMBOL,
+                        Operator.LESS_THAN_SYMBOL,
+                        Operator.GREATER_THAN_OR_EQUAL_TO_SYMBOL,
+                        Operator.LESS_THAN_OR_EQUAL_TO_SYMBOL
+                );
+
+        assertThat(filters)
+                .extracting(Filter::getKey)
+                .contains("typical_age")
+                .doesNotContain("min_typical_age", "max_typical_age");
     }
 
     @Test
@@ -348,7 +368,8 @@ class CkanFilterBuilderTest {
                 new TestFilter("number_of_records", FilterType.NUMBER),
                 new TestFilter("tags", FilterType.DROPDOWN),
                 new TestFilter("typical_age", FilterType.NUMBER, Optional.of(List.of(
-                        "min_typical_age", "max_typical_age"))
+                        "min_typical_age", "max_typical_age")),
+                        Optional.of("Age Range")
                 ));
 
         @Override
@@ -427,11 +448,12 @@ class CkanFilterBuilderTest {
     }
 
     @Vetoed
-    private record TestFilter(String key, FilterType type, Optional<List<String>> rangeComposite)
+    private record TestFilter(String key, FilterType type, Optional<List<String>> rangeComposite,
+                              Optional<String> label)
             implements DatasetsConfig.Filter {
 
         TestFilter(String key, FilterType type) {
-            this(key, type, Optional.empty());
+            this(key, type, Optional.empty(), Optional.empty());
         }
 
         @Override
@@ -446,7 +468,7 @@ class CkanFilterBuilderTest {
 
         @Override
         public Optional<String> label() {
-            return Optional.empty();
+            return label;
         }
 
         @Override

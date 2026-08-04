@@ -32,7 +32,7 @@ class DatasetSearchTest extends BaseTest {
                 .statusCode(200)
                 .body("count", equalTo(3))
                 .body("facets.find { it.key == 'tags' }.values.size()", greaterThan(0))
-                .body("facets.find { it.key == 'tags' }.helpText",
+                .body("facets.find { it.key == 'tags' }.helpText.text",
                         equalTo("Use this filter to search datasets by keywords."))
                 .body("results[0].isSeries", equalTo(false))
                 .body("results[0].inSeriesCount", equalTo(2))

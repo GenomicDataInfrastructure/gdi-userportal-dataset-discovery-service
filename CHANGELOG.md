@@ -12,6 +12,46 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.5.4] - 2026-08-17
+
+### Changed
+- chore(deps): update quarkus.platform.version to v3.38.2 by @Renovate Bot in 0eb3a7a
+- chore(deps): update graalvm/setup-graalvm action to v1.6.4 by @Renovate Bot in fb87db9
+- chore(deps): update quarkus.platform.version to v3.38.1 by @Renovate Bot in 7f37bbc
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1785777293 by @Renovate Bot in e30dab4
+- chore(deps): update quarkus.platform.version to v3.38.0 by @Renovate Bot in eea3049
+- chore(deps): update quarkus.platform.version to v3.37.4 by @Renovate Bot in 5212c7a
+- chore(deps): downgrade quarkus-openapi-generator.version to v2.20.0 and quarkus.platform.version to v3.37.2 by @Kacem Bechka in b6dcfa7
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1785339196 by @Renovate Bot in c20b0d8
+- chore(deps): update quarkus.platform.version to v3.38.0 by @Renovate Bot in 059c791
+- chore(deps): update docker/login-action digest to dbcb813 by @Renovate Bot in b7ec24c
+- chore(deps): update docker/login-action digest to 371161b by @Renovate Bot in 8a63d68
+- chore(deps): update docker/login-action digest to abd2ef4 by @Renovate Bot in e5f7356
+- chore(deps): update docker/login-action digest to 06fb636 by @Renovate Bot in 280cd86
+- chore(deps): update quarkus.platform.version to v3.37.4 by @Renovate Bot in 013252c
+- Implement review comments by @Quinten in 7ef0774
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1784705645 by @Renovate Bot in 9ef8f6d
+- chore(deps): update astral-sh/setup-uv action to v9 by @Renovate Bot in bdf4462
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1784596149 by @Renovate Bot in 0d27072
+- chore(deps): update actions/checkout action to v7.0.1 by @Renovate Bot in 3476442
+- chore(deps): update actions/checkout digest to 3d3c42e by @Renovate Bot in 2ba2976
+- chore(deps): update quarkus.platform.version to v3.37.3 by @Renovate Bot in 58669db
+- doc: update CHANGELOG.md for v1.5.3 by @LNDS-Sysadmins in f5929a0
+- Update DatasetHelpTextService.java by @Quinten in 807ad4d
+- Fix: sourcery comments about timeouts by @Quinten in ff03b7d
+- Refactor: Rename help text services and simplify YAML schema by @Quinten in 5f1a236
+- Add YAML help text source with links and caching by @Quinten in 4378ba8
+- Fix typical age test new version by @Quinten in a770409
+- Update CkanSearchFacetsMapper.java by @Quinten in 9acb72f
+
+
+### Fixed
+- fix(deps): update quarkus-openapi-generator.version to v2.23.0 by @Renovate Bot in 4c81a5a
+- fix(deps): update quarkus-openapi-generator.version to v2.21.0 by @Renovate Bot in d7380e9
+- fix: sonarqube message by @Quinten in b525870
+- fix label resolving for typical age by @Quinten in d53a7a1
+
+
 ## [v1.5.3] - 2026-07-20
 
 ### Added

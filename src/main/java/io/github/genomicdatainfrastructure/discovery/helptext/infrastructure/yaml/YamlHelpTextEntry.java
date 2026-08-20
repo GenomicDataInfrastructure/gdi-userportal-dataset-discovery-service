@@ -5,6 +5,7 @@
 package io.github.genomicdatainfrastructure.discovery.helptext.infrastructure.yaml;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
  * resolving it down to a single requested language. {@code text} is keyed by language code (e.g.
  * {@code "en"}, {@code "nl"}).
  */
+@RegisterForReflection
 public record YamlHelpTextEntry(Map<String, String> text, YamlHelpTextLink link) {
 
     /**
@@ -21,6 +23,7 @@ public record YamlHelpTextEntry(Map<String, String> text, YamlHelpTextLink link)
      * string or a list of strings (kept as a {@link JsonNode} so both are accepted). See
      * {@code YamlHelpTextLoader#localizeLabel} for how it is resolved.
      */
+    @RegisterForReflection
     public record YamlHelpTextLink(Map<String, JsonNode> label, List<String> value) {
     }
 }

@@ -12,8 +12,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - ./config/.env
-      - ./config/.env.secrets
+      - .env
     healthcheck:
       test: ["CMD", "curl", "-o", "/dev/null", "http://localhost:8080/q/health"]
 
@@ -21,7 +20,7 @@ services:
     image: otel/opentelemetry-collector-contrib:latest
     command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
-      - ./config/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
     ports:
       - "4317:4317" # OTLP gRPC receiver
       - "4318:4318" # OTLP HTTP receiver

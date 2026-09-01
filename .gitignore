@@ -47,4 +47,3 @@ nb-configuration.xml
 /.quarkus/cli/plugins/
 __pycache__/
 venv/
-infra/config/.env.secrets

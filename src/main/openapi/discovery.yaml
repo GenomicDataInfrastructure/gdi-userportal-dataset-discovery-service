@@ -511,6 +511,8 @@ components:
           deprecated: true
         accessRights:
           $ref: "#/components/schemas/ValueLabel"
+        status:
+          $ref: "#/components/schemas/ValueLabel"
         conformsTo:
           type: array
           items:

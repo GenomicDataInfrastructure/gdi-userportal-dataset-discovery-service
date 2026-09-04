@@ -818,6 +818,8 @@ class CkanDatasetsMapperTest {
                             .identifier("publisherIdentifier")
                             .type(getValueLabel("Publisher Type",
                                     "http://example.com/publisher/type"))
+                            .country(getValueLabel("Netherlands",
+                                    "http://publications.europa.eu/resource/authority/country/NLD"))
                             .actedOnBehalfOf(List.of())
                             .build(),
                             Agent.builder()
@@ -828,6 +830,8 @@ class CkanDatasetsMapperTest {
                                     .identifier("publisherIdentifier2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
+                                    .country(getValueLabel("Belgium",
+                                            "http://publications.europa.eu/resource/authority/country/BEL"))
                                     .actedOnBehalfOf(List.of())
                                     .build()))
                     .themes(getValueLabels("theme", "theme-name", 3))

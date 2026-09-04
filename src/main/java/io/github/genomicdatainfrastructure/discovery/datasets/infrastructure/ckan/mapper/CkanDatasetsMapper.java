@@ -51,7 +51,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "dcatType", source = "dcatType")
     @Mapping(target = "catalogue", ignore = true)
     @Mapping(target = "qualifiedAttribution", source = "qualifiedAttribution")
-    @Mapping(target = "provenanceActivity", source = "provenanceActivity")
+    @Mapping(target = "provenanceActivity", source = "wasGeneratedBy")
     @Mapping(target = "qualityAnnotation", source = "qualityAnnotation")
     @Mapping(target = "homepage", source = "homepage")
     @Mapping(target = "uri", source = "uri")

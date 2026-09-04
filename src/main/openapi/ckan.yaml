@@ -567,6 +567,8 @@ components:
         identifier:
           type: string
           title: identifier
+        country:
+          $ref: "#/components/schemas/CkanValueLabel"
         actedOnBehalfOf:
           type: array
           description: Organization the agent acted on behalf of.

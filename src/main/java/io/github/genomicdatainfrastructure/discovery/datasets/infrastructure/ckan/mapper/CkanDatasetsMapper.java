@@ -304,6 +304,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "homepage", source = "homepage")
     @Mapping(target = "type", source = "type")
     @Mapping(target = "identifier", source = "identifier")
+    @Mapping(target = "country", source = "country")
     @Mapping(target = "actedOnBehalfOf", source = "actedOnBehalfOf")
     @Mapping(target = "spatial", ignore = true)
     Agent map(CkanAgent ckanAgent);

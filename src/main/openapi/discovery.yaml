@@ -983,6 +983,8 @@ components:
         identifier:
           type: string
           title: identifier
+        country:
+          $ref: "#/components/schemas/ValueLabel"
         actedOnBehalfOf:
           type: array
           description: Organization the agent acted on behalf of.

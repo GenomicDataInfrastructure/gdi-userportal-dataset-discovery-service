@@ -163,6 +163,8 @@ class CkanDatasetsMapperTest {
                                     .build()
                     ))
                     .accessRights(getValueLabel("accessRights", "public", 10))
+                    .status(getValueLabel("Under Development",
+                            "http://publications.europa.eu/resource/authority/dataset-status/DEVELOP"))
                     .conformsTo(
                             getValueLabels("DCAT-AP 3.0", "https://data.europa.eu/dcat-ap/3.0"))
                     .provenance("provenance")
@@ -466,6 +468,8 @@ class CkanDatasetsMapperTest {
                 .language(getCkanValueLabels("language", "en", 2))
                 .hasVersion(getCkanValueLabels("version", "1"))
                 .accessRights(getCkanValueLabel("accessRights", "public", 10))
+                .datasetStatus(getCkanValueLabel("Under Development",
+                        "http://publications.europa.eu/resource/authority/dataset-status/DEVELOP"))
                 .conformsTo(
                         getCkanValueLabels("DCAT-AP 3.0", "https://data.europa.eu/dcat-ap/3.0"))
                 .provenance("provenance")

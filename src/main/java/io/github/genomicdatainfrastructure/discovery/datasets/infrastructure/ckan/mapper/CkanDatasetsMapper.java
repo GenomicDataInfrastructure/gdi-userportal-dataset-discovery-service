@@ -63,6 +63,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "retentionPeriod", source = "retentionPeriod")
     @Mapping(target = "spatialCoverage", source = "spatialCoverage")
     @Mapping(target = "accessRights", source = "accessRights")
+    @Mapping(target = "status", source = "datasetStatus")
     @Mapping(target = "analytics", source = ".", qualifiedByName = "extractAnalytics")
     @Mapping(target = "samples", source = ".", qualifiedByName = "extractSamples")
     @Mapping(target = "applicableLegislation", source = "applicableLegislation")

@@ -51,7 +51,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "dcatType", source = "dcatType")
     @Mapping(target = "catalogue", ignore = true)
     @Mapping(target = "qualifiedAttribution", source = "qualifiedAttribution")
-    @Mapping(target = "provenanceActivity", source = "wasGeneratedBy")
+    @Mapping(target = "provenanceActivity", source = "wasGeneratedBy") // Discrepancy between CKAN field name and Discovery Service field name to not break existing mapping. CKAN field is "was_generated_by" and Discovery Service field is "provenanceActivity" for now.
     @Mapping(target = "qualityAnnotation", source = "qualityAnnotation")
     @Mapping(target = "homepage", source = "homepage")
     @Mapping(target = "uri", source = "uri")

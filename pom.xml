@@ -13,7 +13,7 @@
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <compiler-plugin.version>3.16.0</compiler-plugin.version>
         <lombok.version>1.18.48</lombok.version>
-        <maven.compiler.release>25</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus-openapi-generator.version>2.23.0</quarkus-openapi-generator.version>

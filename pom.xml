@@ -11,7 +11,7 @@
         <assertj.version>3.27.7</assertj.version>
         <checkstyle-maven-plugin.version>3.3.1</checkstyle-maven-plugin.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
-        <compiler-plugin.version>3.15.0</compiler-plugin.version>
+        <compiler-plugin.version>3.16.0</compiler-plugin.version>
         <lombok.version>1.18.48</lombok.version>
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,9 +19,9 @@
         <quarkus-openapi-generator.version>2.23.0</quarkus-openapi-generator.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.39.1</quarkus.platform.version>
+        <quarkus.platform.version>3.39.2</quarkus.platform.version>
         <skipITs>true</skipITs>
-        <surefire.version>3.5.6</surefire.version>
+        <surefire.version>3.6.0</surefire.version>
         <quarkus-wiremock.version>1.7.0</quarkus-wiremock.version>
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
         <mapstruct.version>1.6.3</mapstruct.version>

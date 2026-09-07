@@ -90,7 +90,7 @@ public class DatasetHelpTextService {
                     Map.entry("retention_period", List.of("retentionPeriod")),
                     Map.entry("hdab", List.of("hdab")),
                     Map.entry("qualified_relation", List.of("qualifiedRelation")),
-                    Map.entry("provenance_activity", List.of("provenanceActivity")),
+                    Map.entry("was_generated_by", List.of("provenanceActivity")),
                     Map.entry("qualified_attribution", List.of("qualifiedAttribution")),
                     Map.entry("quality_annotation", List.of("qualityAnnotation")),
                     Map.entry("uri", List.of("uri")),

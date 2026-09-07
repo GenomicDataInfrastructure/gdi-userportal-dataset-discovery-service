@@ -39,9 +39,9 @@ Ensure you have [Maven](https://maven.apache.org/) and [GraalVM](https://www.gra
 in your machine. We recommend to use [SDKMAN!](https://sdkman.io/).
 
 ```shell script
-sdk install java 21.0.2-graal
+sdk install java 21.0.12-graal
 sdk install maven 3.9.6
-echo -e "\nexport GRAALVM_HOME=\"$HOME/.sdkman/candidates/java/21.0.2-graal/\"" >> $HOME/.zprofile
+echo -e "\nexport GRAALVM_HOME=\"$HOME/.sdkman/candidates/java/21.0.12-graal/\"" >> $HOME/.zprofile
 echo -e "\nryuk.container.privileged=true" >> $HOME/.testcontainers.properties
 echo -e "\nexport TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=\"${HOME}/.colima/docker.sock\"" >> $HOME/.zprofile
 echo -e "\nexport DOCKER_HOST=\"unix:///${HOME}/.colima/docker.sock\"" >> $HOME/.zprofile

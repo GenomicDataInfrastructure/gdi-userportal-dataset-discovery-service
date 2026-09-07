@@ -27,7 +27,7 @@ by the 1+Million Genomes (1+MG) initiative.
 
 The GDI User Portal Dataset Discovery Service serves as an interface between User Portal and the data
 discovery tools. It is developed using [Quarkus](https://quarkus.io/) version 3
-and [GraalVM](https://www.graalvm.org/) for Java 21. This application plays a crucial role in
+and [GraalVM](https://www.graalvm.org/) for Java 25. This application plays a crucial role in
 enabling access request integration between the Data User and different Data Authorities.
 
 - **Status**: 0.0.0
@@ -39,9 +39,9 @@ Ensure you have [Maven](https://maven.apache.org/) and [GraalVM](https://www.gra
 in your machine. We recommend to use [SDKMAN!](https://sdkman.io/).
 
 ```shell script
-sdk install java 21.0.2-graal
+sdk install java 25.0.4-graal
 sdk install maven 3.9.6
-echo -e "\nexport GRAALVM_HOME=\"$HOME/.sdkman/candidates/java/21.0.2-graal/\"" >> $HOME/.zprofile
+echo -e "\nexport GRAALVM_HOME=\"$HOME/.sdkman/candidates/java/25.0.4-graal/\"" >> $HOME/.zprofile
 echo -e "\nryuk.container.privileged=true" >> $HOME/.testcontainers.properties
 echo -e "\nexport TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=\"${HOME}/.colima/docker.sock\"" >> $HOME/.zprofile
 echo -e "\nexport DOCKER_HOST=\"unix:///${HOME}/.colima/docker.sock\"" >> $HOME/.zprofile

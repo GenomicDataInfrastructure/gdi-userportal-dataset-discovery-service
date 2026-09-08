@@ -81,7 +81,7 @@ public class YamlHelpTextLoader {
 
         try {
             var entries = fetchAndParse(location);
-            cache.put(location, new CacheEntry(entries, now));
+            cache.put(location, new CacheEntry(entries, now, true));
             return entries;
         } catch (JsonProcessingException exception) {
             log.log(Level.WARNING, "Could not parse help text source as YAML: " + location,
@@ -96,14 +96,14 @@ public class YamlHelpTextLoader {
                     exception);
         }
 
-        if (cached != null) {
-            return cached.entries();
-        }
-
-        // No prior successful fetch to fall back on: cache the failure for the same TTL so a
-        // persistently broken source doesn't get re-fetched on every single request.
-        cache.put(location, new CacheEntry(Map.of(), now));
-        return Map.of();
+        // Atomically fall back to a still-successful entry if one is currently cached (this may
+        // differ from the `cached` snapshot above if another thread just installed one), or else
+        // (re)install an empty failure entry with a fresh timestamp so the failure TTL is honored
+        // on every cycle instead of the source being re-fetched on every single request.
+        var failedAt = now;
+        return cache.compute(location, (key, existing) -> existing != null && existing.successful()
+                ? existing
+                : new CacheEntry(Map.of(), failedAt, false)).entries();
     }
 
     private Map<String, YamlHelpTextEntry> fetchAndParse(
@@ -201,6 +201,11 @@ public class YamlHelpTextLoader {
         return dashIndex > 0 ? lang.substring(0, dashIndex) : lang;
     }
 
-    private record CacheEntry(Map<String, YamlHelpTextEntry> entries, Instant fetchedAt) {
+    /**
+     * {@code successful} distinguishes a genuinely empty parsed YAML document from a failed
+     * fetch/parse, since both would otherwise be represented by an empty {@code entries} map.
+     */
+    private record CacheEntry(Map<String, YamlHelpTextEntry> entries, Instant fetchedAt,
+                              boolean successful) {
     }
 }

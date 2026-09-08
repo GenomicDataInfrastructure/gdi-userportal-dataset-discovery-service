@@ -277,6 +277,40 @@ class YamlHelpTextLoaderTest {
     }
 
     @Test
+    void lookupRefreshesFailureTimestampOnRepeatedFailure(
+            @TempDir Path tempDir) throws IOException {
+        var file = tempDir.resolve("appears-later.yaml");
+        var clock = new MutableClock(Instant.parse("2026-01-01T00:00:00Z"));
+        var loader = new YamlHelpTextLoader(clock);
+        var ttl = Duration.ofMinutes(5);
+
+        var firstFailure = loader.lookup(file.toString(), ttl, "access_rights", "en");
+        assertThat(firstFailure).isEmpty();
+
+        // Past the first failure's TTL: this triggers a second (still-failing) fetch attempt,
+        // which must refresh the failure entry's timestamp rather than leaving it stuck.
+        clock.advance(Duration.ofMinutes(6));
+        var secondFailure = loader.lookup(file.toString(), ttl, "access_rights", "en");
+        assertThat(secondFailure).isEmpty();
+
+        write(file, """
+                access_rights:
+                  text:
+                    en: "Now it exists"
+                """);
+
+        // Still within the *refreshed* failure TTL: if the timestamp were stuck at the first
+        // failure, this would already look expired and pick up the file early.
+        clock.advance(Duration.ofMinutes(1));
+        var stillSuppressed = loader.lookup(file.toString(), ttl, "access_rights", "en");
+        assertThat(stillSuppressed).isEmpty();
+
+        clock.advance(Duration.ofMinutes(5));
+        var recovered = loader.lookup(file.toString(), ttl, "access_rights", "en").orElseThrow();
+        assertThat(recovered.getText()).isEqualTo("Now it exists");
+    }
+
+    @Test
     void lookupReturnsEmptyForBlankLocation() {
         var loader = new YamlHelpTextLoader(Clock.systemUTC());
 

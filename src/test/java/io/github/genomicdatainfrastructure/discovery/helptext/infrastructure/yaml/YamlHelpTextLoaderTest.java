@@ -251,6 +251,32 @@ class YamlHelpTextLoaderTest {
     }
 
     @Test
+    void lookupCachesFailureWhenNoPriorSuccessfulFetch(@TempDir Path tempDir) throws IOException {
+        var file = tempDir.resolve("does-not-exist-yet.yaml");
+        var clock = new MutableClock(Instant.parse("2026-01-01T00:00:00Z"));
+        var loader = new YamlHelpTextLoader(clock);
+        var ttl = Duration.ofMinutes(5);
+
+        var beforeCreation = loader.lookup(file.toString(), ttl, "access_rights", "en");
+        assertThat(beforeCreation).isEmpty();
+
+        write(file, """
+                access_rights:
+                  text:
+                    en: "Now it exists"
+                """);
+
+        var stillWithinTtl = loader.lookup(file.toString(), ttl, "access_rights", "en");
+        assertThat(stillWithinTtl).isEmpty();
+
+        clock.advance(Duration.ofMinutes(6));
+
+        var afterTtlExpires = loader.lookup(file.toString(), ttl, "access_rights", "en")
+                .orElseThrow();
+        assertThat(afterTtlExpires.getText()).isEqualTo("Now it exists");
+    }
+
+    @Test
     void lookupReturnsEmptyForBlankLocation() {
         var loader = new YamlHelpTextLoader(Clock.systemUTC());
 

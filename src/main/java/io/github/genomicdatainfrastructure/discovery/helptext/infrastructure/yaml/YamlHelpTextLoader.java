@@ -95,7 +95,15 @@ public class YamlHelpTextLoader {
             log.log(Level.WARNING, "Interrupted while fetching help text source: " + location,
                     exception);
         }
-        return cached != null ? cached.entries() : Map.of();
+
+        if (cached != null) {
+            return cached.entries();
+        }
+
+        // No prior successful fetch to fall back on: cache the failure for the same TTL so a
+        // persistently broken source doesn't get re-fetched on every single request.
+        cache.put(location, new CacheEntry(Map.of(), now));
+        return Map.of();
     }
 
     private Map<String, YamlHelpTextEntry> fetchAndParse(

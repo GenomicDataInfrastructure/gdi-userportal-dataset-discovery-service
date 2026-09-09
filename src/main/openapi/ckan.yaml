@@ -363,6 +363,8 @@ components:
           deprecated: true
         access_rights:
           $ref: "#/components/schemas/CkanValueLabel"
+        dataset_status:
+          $ref: "#/components/schemas/CkanValueLabel"
         conforms_to:
           type: array
           items:

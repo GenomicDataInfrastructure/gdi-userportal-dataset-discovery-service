@@ -8,6 +8,7 @@ import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.
 import io.github.genomicdatainfrastructure.discovery.datasets.domain.exceptions.DatasetNotFoundException;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.DatasetHelpTextService;
 import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.mapper.CkanDatasetsMapper;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.SolrQueryTextSanitizer;
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan.FilterHelpTextService;
 import io.github.genomicdatainfrastructure.discovery.filters.infrastructure.ckan.CkanSearchFacetsMapper;
 import io.github.genomicdatainfrastructure.discovery.model.*;
@@ -55,7 +56,7 @@ public class CkanDatasetsRepository implements DatasetsRepository {
         var temporalCoverageBounds = CkanFacetsQueryBuilder.extractTemporalCoverageBounds(query);
 
         var request = ckanSearchFacetsMapper.applyStats(PackageSearchRequest.builder()
-                .q(query.getQuery())
+                .q(SolrQueryTextSanitizer.escape(query.getQuery()))
                 .fq(CkanFacetsQueryBuilder.buildFacetQuery(query))
                 .sort(query.getSort())
                 .rows(query.getRows())

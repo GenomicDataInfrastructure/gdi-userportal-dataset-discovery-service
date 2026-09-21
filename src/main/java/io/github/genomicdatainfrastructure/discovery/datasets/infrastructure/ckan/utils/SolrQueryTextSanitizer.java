@@ -30,7 +30,7 @@ public class SolrQueryTextSanitizer {
      * for another.
      **/
 
-    private final String RESERVED_CHARACTERS = "+-&|!(){}[]^\"~*?:\\/;";
+    private final String RESERVED_CHARACTERS = "+-&|!(){}[]^~*?:\\/;";
 
     public String escape(String query) {
         if (query == null || query.isBlank()) {

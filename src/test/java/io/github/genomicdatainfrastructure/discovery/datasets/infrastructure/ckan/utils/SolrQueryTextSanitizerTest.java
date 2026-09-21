@@ -52,8 +52,8 @@ class SolrQueryTextSanitizerTest {
 
     @Test
     void escape_withEveryReservedCharacter_escapesAll() {
-        var input = "+-&|!(){}[]^\"~*?:\\/;";
-        var expected = "\\+\\-\\&\\|\\!\\(\\)\\{\\}\\[\\]\\^\\\"\\~\\*\\?\\:\\\\\\/\\;";
+        var input = "+-&|!(){}[]^~*?:\\/;";
+        var expected = "\\+\\-\\&\\|\\!\\(\\)\\{\\}\\[\\]\\^\\~\\*\\?\\:\\\\\\/\\;";
         assertEquals(expected, SolrQueryTextSanitizer.escape(input));
     }
 

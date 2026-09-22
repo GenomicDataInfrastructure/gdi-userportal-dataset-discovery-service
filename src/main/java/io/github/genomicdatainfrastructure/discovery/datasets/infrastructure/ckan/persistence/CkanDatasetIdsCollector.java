@@ -5,6 +5,8 @@
 package io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.persistence;
 
 import io.github.genomicdatainfrastructure.discovery.datasets.application.ports.DatasetIdsCollector;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.SolrFuzzySearchQueryBuilder;
+import io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.ckan.utils.SolrQueryTextSanitizer;
 import io.github.genomicdatainfrastructure.discovery.model.DatasetSearchQuery;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.api.CkanQueryApi;
 import io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanPackage;
@@ -42,7 +44,8 @@ public class CkanDatasetIdsCollector implements DatasetIdsCollector {
 
         while (start < totalCount) {
             var request = PackageSearchRequest.builder()
-                    .q(query.getQuery())
+                    .q(SolrFuzzySearchQueryBuilder.applyFuzzy(
+                            SolrQueryTextSanitizer.escape(query.getQuery())))
                     .fq(facetsQuery)
                     .rows(CKAN_PAGINATION_MAX_SIZE)
                     .start(start)

@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.ObjectUtils;
 
 import static io.github.genomicdatainfrastructure.discovery.datasets.infrastructure.beacon.persistence.PopulationConstants.PARAM_REFERENCE_NAME;
@@ -27,6 +28,10 @@ import static java.util.Optional.ofNullable;
 public class BeaconGVariantsRequestMapper {
 
     private static final int POSITION_RANGE_PAGE_LIMIT = 1000;
+    private static final Pattern GENOMIC_HGVS_REFERENCE_PATTERN = Pattern.compile(
+            "^([^:]+):g\\..+$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern REFSEQ_CHROMOSOME_ACCESSION_PATTERN = Pattern.compile(
+            "^NC_(\\d+)(?:\\.\\d+)?$", Pattern.CASE_INSENSITIVE);
 
     public static BeaconRequest map(GVariantSearchQuery query) {
         var params = query.getParams();
@@ -140,7 +145,8 @@ public class BeaconGVariantsRequestMapper {
             return;
         }
 
-        mapped.referenceName(extractReferenceName(location.getSequenceId()));
+        mapped.referenceName(extractReferenceName(location.getSequenceId(), result
+                .getIdentifiers()));
 
         var interval = location.getInterval();
         if (interval == null) {
@@ -155,7 +161,12 @@ public class BeaconGVariantsRequestMapper {
                 .orElse(null));
     }
 
-    private static String extractReferenceName(String sequenceId) {
+    private static String extractReferenceName(String sequenceId, ResultIdentifiers identifiers) {
+        var genomicHgvsReferenceName = extractReferenceNameFromGenomicHgvsId(identifiers);
+        if (genomicHgvsReferenceName != null) {
+            return genomicHgvsReferenceName;
+        }
+
         if (!PopulationConstants.hasValue(sequenceId)) {
             return null;
         }
@@ -167,6 +178,45 @@ public class BeaconGVariantsRequestMapper {
         }
 
         return normalizeReferenceName(tokens.length == 1 ? tokens[0] : normalized);
+    }
+
+    private static String extractReferenceNameFromGenomicHgvsId(ResultIdentifiers identifiers) {
+        var genomicHgvsId = ofNullable(identifiers)
+                .map(ResultIdentifiers::getGenomicHGVSId)
+                .filter(PopulationConstants::hasValue)
+                .orElse(null);
+        if (genomicHgvsId == null) {
+            return null;
+        }
+
+        var matcher = GENOMIC_HGVS_REFERENCE_PATTERN.matcher(genomicHgvsId.trim());
+        if (!matcher.matches()) {
+            return null;
+        }
+
+        var reference = matcher.group(1);
+        var accessionMatcher = REFSEQ_CHROMOSOME_ACCESSION_PATTERN.matcher(reference);
+        if (!accessionMatcher.matches()) {
+            return normalizeReferenceName(reference);
+        }
+
+        return refSeqAccessionToContig(accessionMatcher.group(1));
+    }
+
+    private static String refSeqAccessionToContig(String accessionNumber) {
+        final int number;
+        try {
+            number = Integer.parseInt(accessionNumber);
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+
+        return switch (number) {
+            case 23 -> "X";
+            case 24 -> "Y";
+            case 12920 -> "MT";
+            default -> number >= 1 && number <= 22 ? String.valueOf(number) : null;
+        };
     }
 
     private static String normalizeReferenceName(String referenceName) {

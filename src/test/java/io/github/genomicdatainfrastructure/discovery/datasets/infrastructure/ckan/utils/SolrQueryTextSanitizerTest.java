@@ -35,13 +35,13 @@ class SolrQueryTextSanitizerTest {
                 Arguments.of("screening programmes: a Dutch population-based study",
                         "screening programmes\\: a Dutch population\\-based study"),
                 Arguments.of("The multitarget faecal immunochemical test for improving "
-                                + "stool-based colorectal cancer screening programmes: a Dutch "
-                                + "population-based, paired-design, intervention study",
+                        + "stool-based colorectal cancer screening programmes: a Dutch "
+                        + "population-based, paired-design, intervention study",
                         "The multitarget faecal immunochemical test for improving "
                                 + "stool\\-based colorectal cancer screening programmes\\: a Dutch "
                                 + "population\\-based, paired\\-design, intervention study"),
                 Arguments.of("+-&|!(){}[]^~*?:\\/;",
-                        "\\+\\-\\&\\|\\!\\(\\)\\{\\}\\[\\]\\^\\~\\*\\?\\:\\\\\/\\;"),
+                        "\\+\\-\\&\\|\\!\\(\\)\\{\\}\\[\\]\\^\\~\\*\\?\\:\\\\\\/\\;"),
                 Arguments.of("colorectal cancer", "colorectal cancer"));
     }
 

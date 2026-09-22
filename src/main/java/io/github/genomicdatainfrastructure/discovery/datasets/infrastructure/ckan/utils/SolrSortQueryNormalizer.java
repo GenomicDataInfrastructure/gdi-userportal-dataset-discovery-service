@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 /**
  * Repositions the "score" clause in a client-supplied Solr {@code sort}
- * string. 
+ * string.
  * Rule: "score" goes after "title_string" (alphabetical wins) or before
  * "metadata_modified" (relevance wins); if neither is present, it goes first.
  */

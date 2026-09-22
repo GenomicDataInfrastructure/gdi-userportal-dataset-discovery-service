@@ -311,6 +311,87 @@ class BeaconGVariantsRequestMapperTest {
     }
 
     @Test
+    void map_BeaconResponse_WhenGenomicHgvsIdentifierIsPresent_PrefersItOverSequenceId() {
+        var beaconResponse = buildBeaconsResponseWithVariantDetails("21", 9411448, 9411449,
+                "G", "T");
+        var result = beaconResponse.getResponse().getResultSets().getFirst().getResults()
+                .getFirst();
+        result.getVariation().getLocation()
+                .setSequenceId("ga4gh:SQ.LpTaNW-hwuY_yARP0rtarCnpCQLkgVCg");
+        result.setIdentifiers(ResultIdentifiers.builder()
+                .genomicHGVSId("NC_000021.8:g.9411449G>T")
+                .build());
+
+        var mapped = BeaconGVariantsRequestMapper.map(beaconResponse).getFirst();
+
+        assertEquals("21", mapped.getReferenceName());
+        assertEquals(9411448, mapped.getStart());
+        assertEquals("G", mapped.getReferenceBases());
+        assertEquals("T", mapped.getAlternateBases());
+    }
+
+    @Test
+    void map_BeaconResponse_WhenGenomicHgvsIdentifierIsMissing_FallsBackToSequenceId() {
+        var beaconResponse = buildBeaconsResponseWithVariantDetails("chr21", 9411448, 9411449,
+                "G", "T");
+
+        var mapped = BeaconGVariantsRequestMapper.map(beaconResponse).getFirst();
+
+        assertEquals("21", mapped.getReferenceName());
+    }
+
+    @Test
+    void map_BeaconResponse_WhenGenomicHgvsIdentifierIsMalformed_FallsBackToSequenceId() {
+        var beaconResponse = buildBeaconsResponseWithVariantDetails("chr21", 9411448, 9411449,
+                "G", "T");
+        var result = beaconResponse.getResponse().getResultSets().getFirst().getResults()
+                .getFirst();
+        result.setIdentifiers(ResultIdentifiers.builder()
+                .genomicHGVSId("not-an-hgvs-id")
+                .build());
+
+        var mapped = BeaconGVariantsRequestMapper.map(beaconResponse).getFirst();
+
+        assertEquals("21", mapped.getReferenceName());
+    }
+
+    @Test
+    void map_BeaconResponse_WhenGenomicHgvsAccessionIsTooLarge_FallsBackToSequenceId() {
+        var beaconResponse = buildBeaconsResponseWithVariantDetails("chr21", 9411448, 9411449,
+                "G", "T");
+        var result = beaconResponse.getResponse().getResultSets().getFirst().getResults()
+                .getFirst();
+        result.setIdentifiers(ResultIdentifiers.builder()
+                .genomicHGVSId("NC_999999999999999999999.1:g.9411449G>T")
+                .build());
+
+        var mapped = BeaconGVariantsRequestMapper.map(beaconResponse).getFirst();
+
+        assertEquals("21", mapped.getReferenceName());
+    }
+
+    @Test
+    void map_BeaconResponse_WhenGenomicHgvsUsesSexOrMitochondrialAccession_MapsContigName() {
+        assertGenomicHgvsReferenceName("NC_000023.11:g.1A>T", "X");
+        assertGenomicHgvsReferenceName("NC_000024.10:g.1A>T", "Y");
+        assertGenomicHgvsReferenceName("NC_012920.1:g.1A>T", "MT");
+    }
+
+    private static void assertGenomicHgvsReferenceName(String genomicHgvsId,
+            String expectedReferenceName) {
+        var beaconResponse = buildBeaconsResponseWithVariantDetails("fallback", 0, 1, "A", "T");
+        var result = beaconResponse.getResponse().getResultSets().getFirst().getResults()
+                .getFirst();
+        result.setIdentifiers(ResultIdentifiers.builder()
+                .genomicHGVSId(genomicHgvsId)
+                .build());
+
+        var mapped = BeaconGVariantsRequestMapper.map(beaconResponse).getFirst();
+
+        assertEquals(expectedReferenceName, mapped.getReferenceName());
+    }
+
+    @Test
     void map_NullBeaconResponse_ReturnsEmptyList() {
         assertThat(BeaconGVariantsRequestMapper.map((BeaconResponse) null)).isEmpty();
     }

@@ -11,20 +11,25 @@ COPY --chown=1001:root target/*-runner /work/application
 EXPOSE 8080
 USER 1001
 
-ENV MAINTAINER "PNED G.I.E."
-ENV APP_TITLE "userportal-dataset-discovery-service"
-ENV APP_DESCRIPTION "Microservice used by User Portal responsible for Dataset Discovery."
+ARG VERSION="local"
+ARG VCS_REF="dirty"
+ARG BUILD_DATE="unknown"
 
-LABEL maintainer ${MAINTAINER}
-LABEL summary ${APP_TITLE}
-LABEL description ${APP_DESCRIPTION}
+ENV MAINTAINER="PNED G.I.E." \
+    APP_TITLE="userportal-dataset-discovery-service" \
+    APP_DESCRIPTION="Microservice used by User Portal responsible for Dataset Discovery."
 
-LABEL org.opencontainers.image.vendor ${MAINTAINER}
-LABEL org.opencontainers.image.licenses Apache-2.0
-LABEL org.opencontainers.image.title ${APP_TITLE}
-LABEL org.opencontainers.image.description ${APP_DESCRIPTION}
-
-LABEL io.k8s.display-name ${APP_TITLE}
-LABEL io.k8s.description ${APP_DESCRIPTION}
+LABEL maintainer="${MAINTAINER}" \
+      summary="${APP_TITLE}" \
+      description="${APP_DESCRIPTION}" \
+      org.opencontainers.image.vendor="${MAINTAINER}" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.title="${APP_TITLE}" \
+      org.opencontainers.image.description="${APP_DESCRIPTION}" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      io.k8s.display-name="${APP_TITLE}" \
+      io.k8s.description="${APP_DESCRIPTION}"
 
 ENTRYPOINT ["./application", "-Dquarkus.http.host=0.0.0.0"]

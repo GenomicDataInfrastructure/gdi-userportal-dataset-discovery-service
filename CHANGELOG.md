@@ -12,6 +12,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.6.1] - 2026-09-23
+
+### Added
+- feat: add fuzzy search and normalize sort clause ordering by @Quinten in 5757dab
+
+
+### Changed
+- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1790074409 by @Renovate Bot in f88a002
+- Use sanitized fuzzy CKAN search queries by @Quinten in 517af82
+- Fix Solr special-character escaping by @Quinten in a4ef08f
+- Update Dockerfile by @Quinten in b5fb9ba
+
+
+### Fixed
+- ART-29630 ART-29630 fixed variant reference names using genomic HGVS IDs by @Mohammed Aslam Vattaparambil in 426294d
+
+
 ## [v1.5.4] - 2026-08-17
 
 ### Changed

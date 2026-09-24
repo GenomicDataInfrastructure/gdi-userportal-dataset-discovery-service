@@ -28,6 +28,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ART-29630 ART-29630 fixed variant reference names using genomic HGVS IDs by @Mohammed Aslam Vattaparambil in 426294d
 
 
+## [v1.6.0] - 2026-09-21
+
+### Changed
+- Update SolrQueryTextSanitizerTest.java by @Quinten in 4f7a58b
+- Update SolrQueryTextSanitizer.java by @Quinten in b7c7d2c
+- Escape Solr special chars in dataset queries by @Quinten in 249939f
+- Cache empty result after initial fetch failure by @Quinten in 7d75f1b
+- Update CkanDatasetsMapper.java by @Quinten in c6518bd
+- Update README.md by @Quinten in 02cdad6
+- Revert "Upgrade project to Java 25" by @Quinten in c178c72
+- Upgrade project to Java 25 by @Quinten in 4d81514
+- Update CkanDatasetsMapperTest.java by @Quinten in 948a722
+- Add agent country field to CKAN mapping by @Quinten in a69ab73
+- Align provenance mapping with CKAN rename by @Quinten in 78df7d4
+- Map dataset status from CKAN to discovery API by @Quinten in e4bb96e
+- Upgrade CI workflows to GraalVM JDK 25 by @Quinten in b91034f
+
+
+### Fixed
+- fix: refresh failure-cache timestamp and avoid clobbering good data by @Quinten in 57606f0
+
+
 ## [v1.5.4] - 2026-08-17
 
 ### Changed

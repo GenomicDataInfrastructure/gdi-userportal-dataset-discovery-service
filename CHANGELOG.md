@@ -18,36 +18,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update SolrQueryTextSanitizerTest.java by @Quinten in 4f7a58b
 - Update SolrQueryTextSanitizer.java by @Quinten in b7c7d2c
 - Escape Solr special chars in dataset queries by @Quinten in 249939f
-- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1789639833 by @Renovate Bot in 65889d8
-- chore(deps): update docker/build-push-action action to v7.4.0 by @Renovate Bot in 8c93082
-- chore(deps): update astral-sh/setup-uv action to v10.1.0 by @Renovate Bot in dac4a9a
-- chore(deps): update quarkus.platform.version to v3.39.4 by @Renovate Bot in 5602122
-- chore(deps): update quarkus.platform.version to v3.39.3 by @Renovate Bot in 35a1693
-- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1788939088 by @Renovate Bot in 59da479
-- chore(deps): update dependency org.sonarsource.scanner.maven:sonar-maven-plugin to v5.8.0.7211 by @Renovate Bot in fa2a648
 - Cache empty result after initial fetch failure by @Quinten in 7d75f1b
 - Update CkanDatasetsMapper.java by @Quinten in c6518bd
 - Update README.md by @Quinten in 02cdad6
 - Revert "Upgrade project to Java 25" by @Quinten in c178c72
 - Upgrade project to Java 25 by @Quinten in 4d81514
-- chore(deps): update surefire.version to v3.6.0 by @Renovate Bot in d1579fb
 - Update CkanDatasetsMapperTest.java by @Quinten in 948a722
 - Add agent country field to CKAN mapping by @Quinten in a69ab73
 - Align provenance mapping with CKAN rename by @Quinten in 78df7d4
-- chore(deps): update dependency org.apache.maven.plugins:maven-compiler-plugin to v3.16.0 by @Renovate Bot in e967916
-- chore(deps): update quarkus.platform.version to v3.39.2 by @Renovate Bot in 064bef5
 - Map dataset status from CKAN to discovery API by @Quinten in e4bb96e
-- chore(deps): update graalvm/setup-graalvm action to v1.6.6 by @Renovate Bot in d904204
 - Upgrade CI workflows to GraalVM JDK 25 by @Quinten in b91034f
-- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1788166409 by @Renovate Bot in ab1e0bf
-- chore(deps): update quarkus.platform.version to v3.39.1 by @Renovate Bot in 9dca4f6
-- chore(deps): update quarkus-wiremock.version to v1.7.0 by @Renovate Bot in ec2b1b9
-- chore(deps): update dependency org.projectlombok:lombok to v1.18.48 by @Renovate Bot in 62a3161
-- chore(deps): update graalvm/setup-graalvm action to v1.6.5 by @Renovate Bot in 2e6cbe0
-- chore(deps): update quarkus.platform.version to v3.38.3 by @Renovate Bot in b2904a6
-- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1786987606 by @Renovate Bot in 7651500
-- chore(deps): update astral-sh/setup-uv action to v10 by @Renovate Bot in caa548a
-- doc: update CHANGELOG.md for v1.5.4 by @LNDS-Sysadmins in d5751ba
 
 
 ### Fixed

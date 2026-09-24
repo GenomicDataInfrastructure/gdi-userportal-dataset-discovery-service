@@ -19,7 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ### Changed
-- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1790074409 by @Renovate Bot in f88a002
 - Use sanitized fuzzy CKAN search queries by @Quinten in 517af82
 - Fix Solr special-character escaping by @Quinten in a4ef08f
 - Update Dockerfile by @Quinten in b5fb9ba

@@ -116,57 +116,58 @@ class CkanDatasetsMapperTest {
                     .creators(List.of(
                             Agent.builder()
                                     .name("creatorName")
-                                    .identifier("creatorIdentifier")
+                                    .identifier(List.of("creatorIdentifier"))
                                     .email("email")
                                     .url("url")
                                     .homepage("http://example.com/creator1")
                                     .type(getValueLabel("Creator Type",
                                             "http://example.com/creator/type"))
-                                    .country(getValueLabel("Netherlands",
-                                            "http://publications.europa.eu/resource/authority/country/NLD"))
+                                    .country(List.of(getValueLabel("Netherlands",
+                                            "http://publications.europa.eu/resource/authority/country/NLD")))
                                     .actedOnBehalfOf(List.of(
                                             Agent.builder()
                                                     .name("Parent Org 1")
+                                                    .country(List.of())
                                                     .actedOnBehalfOf(List.of())
                                                     .build()
                                     ))
                                     .build(),
                             Agent.builder()
                                     .name("creatorName2")
-                                    .identifier("creatorIdentifier2")
+                                    .identifier(List.of("creatorIdentifier2"))
                                     .email("email2")
                                     .url("url2")
                                     .homepage("http://example.com/creator2")
                                     .type(getValueLabel("Creator Type 2",
                                             "http://example.com/creator/type2"))
-                                    .country(getValueLabel("Belgium",
-                                            "http://publications.europa.eu/resource/authority/country/BEL"))
+                                    .country(List.of(getValueLabel("Belgium",
+                                            "http://publications.europa.eu/resource/authority/country/BEL")))
                                     .actedOnBehalfOf(List.of())
                                     .build()
                     ))
                     .publishers(List.of(
                             Agent.builder()
                                     .name("publisherName")
-                                    .identifier("publisherIdentifier")
+                                    .identifier(List.of("publisherIdentifier"))
                                     .email("email")
                                     .url("url")
                                     .homepage("http://example.com/publisher1")
                                     .type(getValueLabel("Publisher Type",
                                             "http://example.com/publisher/type"))
-                                    .country(getValueLabel("Netherlands",
-                                            "http://publications.europa.eu/resource/authority/country/NLD"))
+                                    .country(List.of(getValueLabel("Netherlands",
+                                            "http://publications.europa.eu/resource/authority/country/NLD")))
                                     .actedOnBehalfOf(List.of())
                                     .build(),
                             Agent.builder()
                                     .name("publisherName2")
-                                    .identifier("publisherIdentifier2")
+                                    .identifier(List.of("publisherIdentifier2"))
                                     .email("email2")
                                     .url("url2")
                                     .homepage("http://example.com/publisher2")
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
-                                    .country(getValueLabel("Belgium",
-                                            "http://publications.europa.eu/resource/authority/country/BEL"))
+                                    .country(List.of(getValueLabel("Belgium",
+                                            "http://publications.europa.eu/resource/authority/country/BEL")))
                                     .actedOnBehalfOf(List.of())
                                     .build()
                     ))
@@ -280,6 +281,7 @@ class CkanDatasetsMapperTest {
                             .name("EU Health Data Access Body")
                             .email("hdab@example.com")
                             .url("https://www.example.com/hdab")
+                            .country(List.of())
                             .actedOnBehalfOf(List.of())
                             .build()))
                     .healthCategory(List.of(
@@ -499,14 +501,14 @@ class CkanDatasetsMapperTest {
                 .creator(List.of(
                         CkanAgent.builder()
                                 .name("creatorName")
-                                .identifier("creatorIdentifier")
+                                .identifier(List.of("creatorIdentifier"))
                                 .email("email")
                                 .url("url")
                                 .homepage("http://example.com/creator1")
                                 .type(getCkanValueLabel("Creator Type",
                                         "http://example.com/creator/type"))
-                                .country(getCkanValueLabel("Netherlands",
-                                        "http://publications.europa.eu/resource/authority/country/NLD"))
+                                .country(List.of(getCkanValueLabel("Netherlands",
+                                        "http://publications.europa.eu/resource/authority/country/NLD")))
                                 .actedOnBehalfOf(List.of(
                                         CkanAgent.builder()
                                                 .name("Parent Org 1")
@@ -515,38 +517,38 @@ class CkanDatasetsMapperTest {
                                 .build(),
                         CkanAgent.builder()
                                 .name("creatorName2")
-                                .identifier("creatorIdentifier2")
+                                .identifier(List.of("creatorIdentifier2"))
                                 .email("email2")
                                 .url("url2")
                                 .homepage("http://example.com/creator2")
                                 .type(getCkanValueLabel("Creator Type 2",
                                         "http://example.com/creator/type2"))
-                                .country(getCkanValueLabel("Belgium",
-                                        "http://publications.europa.eu/resource/authority/country/BEL"))
+                                .country(List.of(getCkanValueLabel("Belgium",
+                                        "http://publications.europa.eu/resource/authority/country/BEL")))
                                 .build()
                 ))
                 .publisher(List.of(
                         CkanAgent.builder()
                                 .name("publisherName")
-                                .identifier("publisherIdentifier")
+                                .identifier(List.of("publisherIdentifier"))
                                 .email("email")
                                 .url("url")
                                 .homepage("http://example.com/publisher1")
                                 .type(getCkanValueLabel("Publisher Type",
                                         "http://example.com/publisher/type"))
-                                .country(getCkanValueLabel("Netherlands",
-                                        "http://publications.europa.eu/resource/authority/country/NLD"))
+                                .country(List.of(getCkanValueLabel("Netherlands",
+                                        "http://publications.europa.eu/resource/authority/country/NLD")))
                                 .build(),
                         CkanAgent.builder()
                                 .name("publisherName2")
-                                .identifier("publisherIdentifier2")
+                                .identifier(List.of("publisherIdentifier2"))
                                 .email("email2")
                                 .url("url2")
                                 .homepage("http://example.com/publisher2")
                                 .type(getCkanValueLabel("Publisher Type 2",
                                         "http://example.com/publisher/type2"))
-                                .country(getCkanValueLabel("Belgium",
-                                        "http://publications.europa.eu/resource/authority/country/BEL"))
+                                .country(List.of(getCkanValueLabel("Belgium",
+                                        "http://publications.europa.eu/resource/authority/country/BEL")))
                                 .build()
                 ))
                 .datasetRelationships(List.of(
@@ -819,11 +821,11 @@ class CkanDatasetsMapperTest {
                             .email("email")
                             .url("url")
                             .homepage("http://example.com/publisher1")
-                            .identifier("publisherIdentifier")
+                            .identifier(List.of("publisherIdentifier"))
                             .type(getValueLabel("Publisher Type",
                                     "http://example.com/publisher/type"))
-                            .country(getValueLabel("Netherlands",
-                                    "http://publications.europa.eu/resource/authority/country/NLD"))
+                            .country(List.of(getValueLabel("Netherlands",
+                                    "http://publications.europa.eu/resource/authority/country/NLD")))
                             .actedOnBehalfOf(List.of())
                             .build(),
                             Agent.builder()
@@ -831,11 +833,11 @@ class CkanDatasetsMapperTest {
                                     .email("email2")
                                     .url("url2")
                                     .homepage("http://example.com/publisher2")
-                                    .identifier("publisherIdentifier2")
+                                    .identifier(List.of("publisherIdentifier2"))
                                     .type(getValueLabel("Publisher Type 2",
                                             "http://example.com/publisher/type2"))
-                                    .country(getValueLabel("Belgium",
-                                            "http://publications.europa.eu/resource/authority/country/BEL"))
+                                    .country(List.of(getValueLabel("Belgium",
+                                            "http://publications.europa.eu/resource/authority/country/BEL")))
                                     .actedOnBehalfOf(List.of())
                                     .build()))
                     .themes(getValueLabels("theme", "theme-name", 3))

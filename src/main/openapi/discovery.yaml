@@ -678,14 +678,7 @@ components:
         qualifiedAttribution:
           type: array
           items:
-            type: object
-            properties:
-              role:
-                type: object
-              agent:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Agent"
+            $ref: "#/components/schemas/QualifiedAttribution"
       required:
         - id
         - title

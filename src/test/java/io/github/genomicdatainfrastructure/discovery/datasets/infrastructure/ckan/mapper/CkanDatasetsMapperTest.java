@@ -863,6 +863,34 @@ class CkanDatasetsMapperTest {
     }
 
     @Nested
+    class QualifiedAttributionTest {
+
+        @Test
+        void given_qualified_attribution_role_label_is_mapped_to_value_label() {
+            var role = CkanValueLabel.builder()
+                    .name("http://inspire.ec.europa.eu/metadata-codelist/ResponsiblePartyRole/author")
+                    .displayName("Author")
+                    .build();
+            var ckanPackage = CkanPackage.builder()
+                    .id("package-id")
+                    .qualifiedAttribution(List.of(
+                            io.github.genomicdatainfrastructure.discovery.remote.ckan.model.CkanPackageQualifiedAttributionInner
+                                    .builder()
+                                    .role(role)
+                                    .build()))
+                    .build();
+
+            var actual = mapper.map(ckanPackage).getQualifiedAttribution();
+
+            assertThat(actual).hasSize(1);
+            assertThat(actual.get(0).getRole()).isEqualTo(ValueLabel.builder()
+                    .value("http://inspire.ec.europa.eu/metadata-codelist/ResponsiblePartyRole/author")
+                    .label("Author")
+                    .build());
+        }
+    }
+
+    @Nested
     class KeywordsTest {
 
         @Test

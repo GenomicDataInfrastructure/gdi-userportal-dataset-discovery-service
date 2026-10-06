@@ -18,7 +18,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +39,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "themes", source = "theme")
     @Mapping(target = "contacts", source = "contact")
     @Mapping(target = "distributions", source = ".", qualifiedByName = "filterDistributions")
-    @Mapping(target = "keywords", source = ".", qualifiedByName = "mergeKeywords")
+    @Mapping(target = "keywords", source = ".", qualifiedByName = "keywords")
     @Mapping(target = "spatial", source = "spatialUri")
     @Mapping(target = "createdAt", source = "issued")
     @Mapping(target = "modifiedAt", source = "modified")
@@ -189,7 +188,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "themes", source = "theme")
     @Mapping(target = "publishers", source = "publisher")
     @Mapping(target = "datasetType", source = ".", qualifiedByName = "mapDatasetType")
-    @Mapping(target = "keywords", source = ".", qualifiedByName = "mergeKeywords")
+    @Mapping(target = "keywords", source = ".", qualifiedByName = "keywords")
     @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "createdAt", source = "issued")
     @Mapping(target = "accessRights", source = "accessRights")
@@ -329,42 +328,19 @@ public interface CkanDatasetsMapper {
     }
 
     /**
-     * Merges keywords from both tags (array of strings) and tags_translated (multilingual map).
-     * CKAN stores tags differently depending on how they were added:
-     * - Harvested datasets have tags in the 'tags' field
-     * - Manually added tags via web UI are stored in 'tags_translated'
-     * This method combines both sources and removes duplicates.
+     * Returns the keywords of the package. CKAN already selected them in the language of the
+     * request (falling back to English), so tags_translated, which holds every language, is not
+     * used here.
      */
-    @Named("mergeKeywords")
-    default List<String> mergeKeywords(CkanPackage ckanPackage) {
-        if (ckanPackage == null) {
+    @Named("keywords")
+    default List<String> keywords(CkanPackage ckanPackage) {
+        if (ckanPackage == null || ckanPackage.getTags() == null) {
             return Collections.emptyList();
         }
 
-        List<String> tagsFromField = ckanPackage.getTags();
-        Map<String, List<String>> tagsTranslated = ckanPackage.getTagsTranslated();
-
-        List<String> keywords = new ArrayList<>();
-
-        // Add tags from the standard tags field
-        if (tagsFromField != null) {
-            tagsFromField.stream()
-                    .filter(StringUtils::isNotBlank)
-                    .map(String::trim)
-                    .forEach(keywords::add);
-        }
-
-        // Add tags from tags_translated (all languages)
-        if (tagsTranslated != null) {
-            tagsTranslated.values().stream()
-                    .flatMap(List::stream)
-                    .filter(StringUtils::isNotBlank)
-                    .map(String::trim)
-                    .forEach(keywords::add);
-        }
-
-        // Remove duplicates while preserving order
-        return keywords.stream()
+        return ckanPackage.getTags().stream()
+                .filter(StringUtils::isNotBlank)
+                .map(String::trim)
                 .distinct()
                 .toList();
     }

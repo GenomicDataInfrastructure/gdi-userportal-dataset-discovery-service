@@ -524,7 +524,7 @@ components:
             type: object
             properties:
               role:
-                type: object
+                $ref: "#/components/schemas/CkanValueLabel"
               agent:
                 type: array
                 items:

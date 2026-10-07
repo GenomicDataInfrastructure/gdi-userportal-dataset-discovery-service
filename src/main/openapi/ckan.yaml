@@ -567,10 +567,15 @@ components:
         type:
           $ref: "#/components/schemas/CkanValueLabel"
         identifier:
-          type: string
+          type: array
           title: identifier
+          items:
+            type: string
         country:
-          $ref: "#/components/schemas/CkanValueLabel"
+          type: array
+          description: Countries associated with the agent.
+          items:
+            $ref: "#/components/schemas/CkanValueLabel"
         actedOnBehalfOf:
           type: array
           description: Organization the agent acted on behalf of.

@@ -18,25 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: map agent country and identifier as lists (#473) by @Quinten in 8bb8b73
 
 
-### Changed
-- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1791279651 by @Renovate Bot in 23049ad
-- chore(deps): update quarkus-wiremock.version to v1.8.1 by @Renovate Bot in d74303a
-- chore(deps): update registry.access.redhat.com/ubi9-minimal docker tag to v1790754202 by @Renovate Bot in 7775390
-- chore(deps): update quarkus.platform.version to v3.40.1 by @Renovate Bot in 39cbc5a
-- chore(deps): update graalvm/setup-graalvm action to v1.6.7 by @Renovate Bot in 43b81b1
-- chore(deps): update oras-project/setup-oras digest to 005458a by @Renovate Bot in ad58b4e
-- chore(deps): update quarkus.platform.version to v3.39.5 by @Renovate Bot in 2d0d28e
-- Remove outdated dependency update from CHANGELOG by @Quinten in 2c2d41e
-- Update CHANGELOG.md by removing chore entries by @Quinten in 8df741b
-- doc: update CHANGELOG.md for v1.6.1 by @LNDS-Sysadmins in 2c653e5
-- chore(deps): update astral-sh/setup-uv action to v10.2.0 by @Renovate Bot in 4e53662
-- doc: update CHANGELOG.md for v1.6.0 by @LNDS-Sysadmins in 1e965f1
-
-
 ### Fixed
 - fix: type qualified attribution role as a value label (#474) by @Quinten in 9ca774b
 - fix: stop mixing all keyword languages into dataset keywords (#472) by @Quinten in fa08873
-- fix(deps): update dependency org.apache.commons:commons-lang3 to v3.21.0 by @Renovate Bot in 0a68d85
 
 
 ## [v1.6.1] - 2026-09-23

@@ -24,11 +24,20 @@
         <surefire.version>3.6.0</surefire.version>
         <quarkus-wiremock.version>1.8.1</quarkus-wiremock.version>
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
+        <brotli4j.version>1.24.0</brotli4j.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
     </properties>
     <dependencyManagement>
         <dependencies>
+            <!-- brotli4j 1.24.0 bundles Brotli 1.2.1 (CVE-2026-111497); imported before the Quarkus BOM so it wins -->
+            <dependency>
+                <groupId>com.aayushatharva.brotli4j</groupId>
+                <artifactId>brotli4j-bom</artifactId>
+                <version>${brotli4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>${quarkus.platform.artifact-id}</artifactId>
@@ -51,13 +60,6 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-rest</artifactId>
-            <exclusions>
-                <!-- brotli4j 1.23.0 bundles Brotli 1.2.0 (CVE-2026-111497); compression is disabled -->
-                <exclusion>
-                    <groupId>com.aayushatharva.brotli4j</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

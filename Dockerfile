@@ -1,12 +1,27 @@
 # SPDX-FileCopyrightText: 2024 PNED G.I.E.
 #
 # SPDX-License-Identifier: Apache-2.0
-FROM registry.access.redhat.com/ubi9-minimal:1791279651
+# Curated Java trust store (CVE-2026-91403, RHSB-2026-012): the patched RHEL root list,
+# with emSign ECC Root CA - G3 and AAA Certificate Services removed by subject if present.
+# The build fails if either root is still in the store.
+FROM registry.access.redhat.com/ubi9-minimal:1792742129 AS rhel-ca
+RUN microdnf update -y ca-certificates && microdnf clean all
+
+FROM eclipse-temurin:21-jdk@sha256:23cc5734ff46e776f51ce66eb9ee08444fd47caabec0a95b7eb6e94be2d3696d AS truststore
+COPY --from=rhel-ca /etc/pki/ca-trust/extracted/java/cacerts /tmp/cacerts
+RUN keytool -list -v -keystore /tmp/cacerts -storepass changeit \
+    | awk '/^Alias name: /{a=substr($0,13)} /^Owner: CN=(emSign ECC Root CA - G3|AAA Certificate Services),/{print a}' > /tmp/distrust \
+ && while IFS= read -r a; do keytool -delete -keystore /tmp/cacerts -storepass changeit -alias "$a"; done < /tmp/distrust \
+ && ! keytool -list -v -keystore /tmp/cacerts -storepass changeit | grep -qE "^Owner: CN=(emSign ECC Root CA - G3|AAA Certificate Services),"
+
+FROM registry.access.redhat.com/ubi9-minimal:1792742129
+RUN microdnf update -y && microdnf clean all
 WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \
     && chown 1001:root /work
 COPY --chown=1001:root target/*-runner /work/application
+COPY --from=truststore --chown=1001:root /tmp/cacerts /work/cacerts
 
 EXPOSE 8080
 USER 1001
@@ -32,4 +47,4 @@ LABEL maintainer="${MAINTAINER}" \
       io.k8s.display-name="${APP_TITLE}" \
       io.k8s.description="${APP_DESCRIPTION}"
 
-ENTRYPOINT ["./application", "-Dquarkus.http.host=0.0.0.0"]
+ENTRYPOINT ["./application", "-Dquarkus.http.host=0.0.0.0", "-Djavax.net.ssl.trustStore=/work/cacerts", "-Djavax.net.ssl.trustStorePassword=changeit"]

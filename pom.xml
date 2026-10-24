@@ -51,9 +51,8 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-rest</artifactId>
-            <!-- CVE-2026-111497: brotli4j 1.23.0 (managed by the Quarkus BOM) bundles a vulnerable Brotli.
-                 Also removed at build time via quarkus.class-loading.removed-artifacts. -->
             <exclusions>
+                <!-- brotli4j 1.23.0 bundles Brotli 1.2.0 (CVE-2026-111497); compression is disabled -->
                 <exclusion>
                     <groupId>com.aayushatharva.brotli4j</groupId>
                     <artifactId>*</artifactId>

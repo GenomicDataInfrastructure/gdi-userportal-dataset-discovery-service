@@ -1,9 +1,11 @@
 # SPDX-FileCopyrightText: 2024 PNED G.I.E.
 #
 # SPDX-License-Identifier: Apache-2.0
-# Curated Java trust store (CVE-2026-91403, RHSB-2026-012): the patched RHEL root list,
-# with emSign ECC Root CA - G3 and AAA Certificate Services removed by subject if present.
-# The build fails if either root is still in the store, or if keytool cannot read a store of at least 100 roots.
+
+# Curated Java trust store (CVE-2026-91403, RHSB-2026-012). The native binary otherwise keeps the
+# store baked in by GraalVM at build time. Built from the patched RHEL store (ca-certificates
+# 2026.2.92, RHSA-2026:88459); the build fails if keytool fails, the store has fewer than 100 roots,
+# or emSign ECC Root CA - G3 or AAA Certificate Services is present. The Temurin stage only provides keytool.
 FROM registry.access.redhat.com/ubi9-minimal:1792742129 AS rhel-ca
 RUN microdnf update -y ca-certificates && microdnf clean all
 
@@ -17,7 +19,9 @@ RUN keytool -list -v -keystore /tmp/cacerts -storepass changeit > /tmp/list \
  && ! grep -qE "^Owner: CN=(emSign ECC Root CA - G3|AAA Certificate Services)," /tmp/list
 
 FROM registry.access.redhat.com/ubi9-minimal:1792742129
-RUN microdnf update -y && microdnf clean all
+# Apply OS security fixes published after the pinned base image was built.
+RUN microdnf update -y \
+    && microdnf clean all
 WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \

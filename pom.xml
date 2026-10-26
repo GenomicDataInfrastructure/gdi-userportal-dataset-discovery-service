@@ -21,7 +21,7 @@
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.40.1.1</quarkus.platform.version>
         <skipITs>true</skipITs>
-        <surefire.version>3.6.0</surefire.version>
+        <surefire.version>3.6.1</surefire.version>
         <quarkus-wiremock.version>1.8.1</quarkus-wiremock.version>
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
         <brotli4j.version>1.24.0</brotli4j.version>

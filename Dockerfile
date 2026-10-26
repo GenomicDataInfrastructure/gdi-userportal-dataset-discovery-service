@@ -9,7 +9,7 @@
 FROM registry.access.redhat.com/ubi9-minimal:1792742129 AS rhel-ca
 RUN microdnf update -y ca-certificates && microdnf clean all
 
-FROM eclipse-temurin:21-jdk@sha256:23cc5734ff46e776f51ce66eb9ee08444fd47caabec0a95b7eb6e94be2d3696d AS truststore
+FROM eclipse-temurin:21.0.12_8-jdk@sha256:92a2a4d7a928d057e7bd999c418d66c26a34eb9a0442f3ab67721c3f88110b2d AS truststore
 COPY --from=rhel-ca /etc/pki/ca-trust/extracted/java/cacerts /tmp/cacerts
 RUN keytool -list -v -keystore /tmp/cacerts -storepass changeit > /tmp/list \
  && awk '/^Alias name: /{a=substr($0,13)} /^Owner: CN=(emSign ECC Root CA - G3|AAA Certificate Services),/{print a}' /tmp/list > /tmp/distrust \

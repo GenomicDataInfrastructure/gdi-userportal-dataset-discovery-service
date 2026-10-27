@@ -23,7 +23,7 @@
         <skipITs>true</skipITs>
         <surefire.version>3.6.1</surefire.version>
         <quarkus-wiremock.version>1.8.1</quarkus-wiremock.version>
-        <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.16</jacoco-maven-plugin.version>
         <brotli4j.version>1.24.0</brotli4j.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>

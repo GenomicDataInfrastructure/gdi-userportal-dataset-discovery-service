@@ -6,7 +6,7 @@
 # store baked in by GraalVM at build time. Built from the patched RHEL store (ca-certificates
 # 2026.2.92, RHSA-2026:88459); the build fails if keytool fails, the store has fewer than 100 roots,
 # or emSign ECC Root CA - G3 or AAA Certificate Services is present. The Temurin stage only provides keytool.
-FROM registry.access.redhat.com/ubi9-minimal:1792742129 AS rhel-ca
+FROM registry.access.redhat.com/ubi9-minimal:1793050429 AS rhel-ca
 RUN microdnf update -y ca-certificates && microdnf clean all
 
 FROM eclipse-temurin:21.0.12_8-jdk@sha256:92a2a4d7a928d057e7bd999c418d66c26a34eb9a0442f3ab67721c3f88110b2d AS truststore
@@ -18,7 +18,7 @@ RUN keytool -list -v -keystore /tmp/cacerts -storepass changeit > /tmp/list \
  && [ "$(grep -c '^Alias name: ' /tmp/list)" -ge 100 ] \
  && ! grep -qE "^Owner: CN=(emSign ECC Root CA - G3|AAA Certificate Services)," /tmp/list
 
-FROM registry.access.redhat.com/ubi9-minimal:1792742129
+FROM registry.access.redhat.com/ubi9-minimal:1793050429
 # Apply OS security fixes published after the pinned base image was built.
 RUN microdnf update -y \
     && microdnf clean all

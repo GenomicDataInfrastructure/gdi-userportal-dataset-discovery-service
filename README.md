@@ -103,3 +103,20 @@ All tests are automatically executed when you build a new package.
 - All original source code is licensed under [Apache-2.0](./LICENSES/Apache-2.0.txt).
 - All documentation is licensed under [CC-BY-4.0](./LICENSES/CC-BY-4.0.txt).
 - For more accurate information, check the individual files.
+
+## Java4Shell mitigation (ART-31067)
+
+CI disables HotSpot Base64 intrinsics with `JAVA_TOOL_OPTIONS=-XX:-UseBASE64Intrinsics`
+for Maven, tests, and the JVM that runs the native-image build. For local Maven builds,
+dev mode, or JVM deployments, append this option to any existing `JAVA_TOOL_OPTIONS`
+until your Java vendor confirms a fix for CVE-2026-114938.
+
+The published application image runs a native executable, not a HotSpot JVM. Do not pass
+HotSpot `-XX` flags to that executable or treat a build-JVM mitigation as proof that
+the native binary is patched. Assess native-image applicability with the GraalVM vendor;
+rebuild and redeploy with vendor-confirmed patched tooling where applicable.
+
+This is a temporary mitigation, not a runtime upgrade. Preserve the option until patched
+vendor builds are verified. Confirm deployment and run application smoke tests on Deep,
+ELIXIR-LU OpenStack, and GCore; missing AVX-512 on a VM is not a substitute for updates.
+See the [Red Hat advisory](https://access.redhat.com/security/vulnerabilities/RHSB-2026-018).

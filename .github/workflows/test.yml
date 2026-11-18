@@ -8,6 +8,10 @@ on: push
 
 permissions: {}
 
+env:
+  # ART-31067 / CVE-2026-114938: protect Maven, tests and the native-image build JVM.
+  JAVA_TOOL_OPTIONS: "-XX:-UseBASE64Intrinsics"
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -22,6 +26,11 @@ jobs:
         uses: graalvm/setup-graalvm@60e76998d25690099182b796e99b8804da582d90 # v1.6.10
         with:
           java-version: "25"
+      - name: Verify Java4Shell mitigation
+        run: |
+          java -XX:+PrintFlagsFinal -version > java-flags.txt 2>&1
+          grep -Eq 'UseBASE64Intrinsics[[:space:]]*=[[:space:]]*false' java-flags.txt
+          rm java-flags.txt
       - name: run tests
         run: mvn --batch-mode --update-snapshots verify formatter:validate
       - name: run sonar

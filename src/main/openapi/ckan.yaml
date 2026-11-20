@@ -571,6 +571,16 @@ components:
           title: identifier
           items:
             type: string
+        publisher_note:
+          type: string
+          title: publisher note
+          description: A description of the activities of the agent.
+        publisher_type:
+          type: array
+          title: publisher type
+          description: Type of organisation of the agent.
+          items:
+            $ref: "#/components/schemas/CkanValueLabel"
         country:
           type: array
           description: Countries associated with the agent.
@@ -643,11 +653,11 @@ components:
             $ref: "#/components/schemas/CkanValueLabel"
         mimetype:
           $ref: "#/components/schemas/CkanValueLabel"
-        modified_date:
+        modified:
           type: string
         package_format:
           $ref: "#/components/schemas/CkanValueLabel"
-        issued_date:
+        issued:
           type: string
         retention_period:
           type: array

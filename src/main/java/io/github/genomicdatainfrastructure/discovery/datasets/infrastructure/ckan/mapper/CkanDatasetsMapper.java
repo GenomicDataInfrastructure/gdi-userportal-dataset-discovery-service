@@ -132,8 +132,8 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "languages", source = "language")
     @Mapping(target = "retentionPeriod", source = "retentionPeriod")
     @Mapping(target = "accessService", source = "accessServices")
-    @Mapping(target = "createdAt", source = "issuedDate")
-    @Mapping(target = "modifiedAt", source = "modifiedDate")
+    @Mapping(target = "createdAt", source = "issued")
+    @Mapping(target = "modifiedAt", source = "modified")
     @Mapping(target = "title", source = "name")
     @Mapping(target = "license", source = "license")
     @Mapping(target = "mediaType", source = "mimetype")
@@ -302,11 +302,30 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "url", source = "url")
     @Mapping(target = "homepage", source = "homepage")
     @Mapping(target = "type", source = "type")
+    @Mapping(target = "publisherNote", source = "publisherNote")
+    @Mapping(target = "publisherType", source = "publisherType", qualifiedByName = "firstPublisherType")
     @Mapping(target = "identifier", source = "identifier")
     @Mapping(target = "country", source = "country")
     @Mapping(target = "actedOnBehalfOf", source = "actedOnBehalfOf")
     @Mapping(target = "spatial", ignore = true)
     Agent map(CkanAgent ckanAgent);
+
+    /**
+     * The publisher type of an agent has cardinality 0..1, while CKAN stores a list. Takes the
+     * first usable type, in the order CKAN returns them.
+     */
+    @Named("firstPublisherType")
+    default ValueLabel firstPublisherType(List<CkanValueLabel> publisherTypes) {
+        if (publisherTypes == null) {
+            return null;
+        }
+
+        return publisherTypes.stream()
+                .map(this::map)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
 
     default OffsetDateTime map(String date) {
         if (StringUtils.isBlank(date)) {

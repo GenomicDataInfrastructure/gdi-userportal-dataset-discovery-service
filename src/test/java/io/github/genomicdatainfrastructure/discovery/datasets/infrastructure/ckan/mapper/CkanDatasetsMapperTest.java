@@ -161,6 +161,26 @@ class CkanDatasetsMapperTest {
         }
 
         @Test
+        void given_publisher_type_that_is_null_should_leave_it_empty() {
+            final var ckanPackage = CkanPackage.builder()
+                    .publisher(List.of(
+                            CkanAgent.builder().name("publisherName").publisherType(null).build()))
+                    .build();
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getPublishers())
+                    .singleElement()
+                    .extracting(Agent::getPublisherType)
+                    .isNull();
+        }
+
+        @Test
+        void given_no_publisher_type_list_first_publisher_type_should_be_null() {
+            assertThat(mapper.firstPublisherType(null)).isNull();
+        }
+
+        @Test
         void given_resource_with_issued_and_modified_should_map_release_and_modification_date() {
             final var ckanPackage = CkanPackage.builder()
                     .resources(List.of(

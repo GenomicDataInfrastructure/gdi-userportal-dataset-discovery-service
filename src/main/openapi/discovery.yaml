@@ -975,6 +975,12 @@ components:
           description: Homepage URL for the agent.
         type:
           $ref: "#/components/schemas/ValueLabel"
+        publisherNote:
+          type: string
+          title: publisher note
+          description: A description of the activities of the agent.
+        publisherType:
+          $ref: "#/components/schemas/ValueLabel"
         identifier:
           type: array
           title: identifier

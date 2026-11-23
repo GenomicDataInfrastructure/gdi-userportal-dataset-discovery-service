@@ -94,6 +94,127 @@ class CkanDatasetsMapperTest {
         }
 
         @Test
+        void given_publisher_with_note_and_several_types_should_map_the_note_and_the_first_type() {
+            final var ckanPackage = CkanPackage.builder()
+                    .publisher(List.of(
+                            CkanAgent.builder()
+                                    .name("publisherName")
+                                    .publisherNote("Publisher example note")
+                                    .publisherType(List.of(
+                                            getCkanValueLabel("Company",
+                                                    "http://purl.org/adms/publishertype/Company"),
+                                            getCkanValueLabel("National authority",
+                                                    "http://purl.org/adms/publishertype/NationalAuthority")))
+                                    .build()))
+                    .build();
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getPublishers())
+                    .singleElement()
+                    .satisfies(publisher -> {
+                        assertThat(publisher.getPublisherNote())
+                                .isEqualTo("Publisher example note");
+                        assertThat(publisher.getPublisherType())
+                                .isEqualTo(getValueLabel("Company",
+                                        "http://purl.org/adms/publishertype/Company"));
+                    });
+        }
+
+        @Test
+        void given_publisher_type_list_starting_with_an_empty_entry_should_map_the_first_usable_type() {
+            final var ckanPackage = CkanPackage.builder()
+                    .publisher(List.of(
+                            CkanAgent.builder()
+                                    .name("publisherName")
+                                    .publisherType(List.of(
+                                            CkanValueLabel.builder().name(null).displayName(null)
+                                                    .build(),
+                                            getCkanValueLabel("National authority",
+                                                    "http://purl.org/adms/publishertype/NationalAuthority")))
+                                    .build()))
+                    .build();
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getPublishers())
+                    .singleElement()
+                    .extracting(Agent::getPublisherType)
+                    .isEqualTo(getValueLabel("National authority",
+                            "http://purl.org/adms/publishertype/NationalAuthority"));
+        }
+
+        @Test
+        void given_publisher_without_note_and_types_should_leave_them_empty() {
+            final var ckanPackage = CkanPackage.builder()
+                    .publisher(List.of(CkanAgent.builder().name("publisherName").build()))
+                    .build();
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getPublishers())
+                    .singleElement()
+                    .satisfies(publisher -> {
+                        assertThat(publisher.getPublisherNote()).isNull();
+                        assertThat(publisher.getPublisherType()).isNull();
+                    });
+        }
+
+        @Test
+        void given_publisher_type_that_is_null_should_leave_it_empty() {
+            final var ckanPackage = CkanPackage.builder()
+                    .publisher(List.of(
+                            CkanAgent.builder().name("publisherName").publisherType(null).build()))
+                    .build();
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getPublishers())
+                    .singleElement()
+                    .extracting(Agent::getPublisherType)
+                    .isNull();
+        }
+
+        @Test
+        void given_no_publisher_type_list_first_publisher_type_should_be_null() {
+            assertThat(mapper.firstPublisherType(null)).isNull();
+        }
+
+        @Test
+        void given_resource_with_issued_and_modified_should_map_release_and_modification_date() {
+            final var ckanPackage = CkanPackage.builder()
+                    .resources(List.of(
+                            CkanResource.builder()
+                                    .id("resource_id")
+                                    .issued("2024-01-01T00:00:00+00:00")
+                                    .modified("2024-02-02T00:00:00+00:00")
+                                    .build()))
+                    .build();
+
+            final var actual = mapper.map(ckanPackage);
+
+            assertThat(actual.getDistributions())
+                    .singleElement()
+                    .satisfies(distribution -> {
+                        assertThat(distribution.getCreatedAt())
+                                .isEqualTo(parse("2024-01-01T00:00:00+00:00"));
+                        assertThat(distribution.getModifiedAt())
+                                .isEqualTo(parse("2024-02-02T00:00:00+00:00"));
+                    });
+        }
+
+        @Test
+        void given_only_one_bound_of_the_typical_age_should_keep_it_and_leave_the_other_null() {
+            final var onlyMin = mapper.map(CkanPackage.builder().minTypicalAge(18).build());
+            final var onlyMax = mapper.map(CkanPackage.builder().maxTypicalAge(65).build());
+
+            assertThat(onlyMin.getMinTypicalAge()).isEqualTo(18);
+            assertThat(onlyMin.getMaxTypicalAge()).isNull();
+            assertThat(onlyMax.getMinTypicalAge()).isNull();
+            assertThat(onlyMax.getMaxTypicalAge()).isEqualTo(65);
+        }
+
+        @Test
         void given_ckanPackage_should_be_mapped_to_expected_values() {
             final var ckanPackage = buildCkanPackage();
 
@@ -420,8 +541,8 @@ class CkanDatasetsMapperTest {
                         .format(getCkanValueLabel("format", "pdf", 1))
                         .accessUrl("https://accessUrl.com")
                         .downloadUrl("https://downloadUrl.com")
-                        .issuedDate("2025-03-19")
-                        .modifiedDate("2025-03-19T13:37:05Z")
+                        .issued("2025-03-19")
+                        .modified("2025-03-19T13:37:05Z")
                         .compressFormat(getCkanValueLabel("gzip", "gzip"))
                         .hashAlgorithm(getCkanValueLabel("SHA-256", "sha-256"))
                         .accessServices(List.of(buildCkanAccessService()))
@@ -441,8 +562,8 @@ class CkanDatasetsMapperTest {
                         .format(getCkanValueLabel("format", "json", 1))
                         .accessUrl("https://analytics-accessUrl.com")
                         .downloadUrl("https://analytics-downloadUrl.com")
-                        .issuedDate("2025-03-19")
-                        .modifiedDate("2025-03-19T13:37:05Z")
+                        .issued("2025-03-19")
+                        .modified("2025-03-19T13:37:05Z")
                         .build(),
                 // Sample distribution resource
                 CkanResource.builder()
@@ -453,8 +574,8 @@ class CkanDatasetsMapperTest {
                         .format(getCkanValueLabel("format", "csv", 1))
                         .accessUrl("https://sample-accessUrl.com")
                         .downloadUrl("https://sample-downloadUrl.com")
-                        .issuedDate("2025-03-19")
-                        .modifiedDate("2025-03-19T13:37:05Z")
+                        .issued("2025-03-19")
+                        .modified("2025-03-19T13:37:05Z")
                         .build()
         );
     }
@@ -993,8 +1114,8 @@ class CkanDatasetsMapperTest {
                         .format(getCkanValueLabel("format", "pdf", 1))
                         .accessUrl("https://accessUrl.com")
                         .downloadUrl("https://downloadUrl.com")
-                        .issuedDate("2025-03-19")
-                        .modifiedDate("2025-03-19T13:37:05Z")
+                        .issued("2025-03-19")
+                        .modified("2025-03-19T13:37:05Z")
                         .compressFormat(getCkanValueLabel("gzip", "gzip"))
                         .hashAlgorithm(getCkanValueLabel("SHA-256", "sha-256"))
                         .accessServices(List.of(accessService))

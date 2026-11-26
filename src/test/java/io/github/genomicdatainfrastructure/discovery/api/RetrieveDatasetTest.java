@@ -10,6 +10,7 @@ import io.github.genomicdatainfrastructure.discovery.BaseTest;
 import io.quarkus.test.junit.QuarkusTest;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 
 @QuarkusTest
@@ -53,6 +54,35 @@ class RetrieveDatasetTest extends BaseTest {
                 .get("/api/v1/datasets/e1b3eff9-13eb-48b0-b180-7ecb76b84454")
                 .then()
                 .statusCode(200);
+    }
+
+    @Test
+    void retrieves_dataset_served_by_the_healthdcat_r8_profile() {
+        given()
+                .when()
+                .get("/api/v1/datasets/r8-dataset-0001")
+                .then()
+                .statusCode(200)
+                .body("url", contains("https://example.org/a", "https://example.org/b"))
+                .body("dcatType.label", contains("Type A", "Type B"))
+                .body("alternativeTitle", contains("Alternative title"))
+                .body("hasStructuredData", equalTo(true))
+                .body("publishers[0].email", contains("a@example.org", "b@example.org"))
+                .body("publishers[0].url", contains("https://publisher.example.org/1",
+                        "https://publisher.example.org/2"))
+                .body("publishers[0].telephone", contains("+31 20 1234567"))
+                .body("publishers[0].openingHours[0].description", equalTo("Weekdays"))
+                .body("custodian[0].name", equalTo("Custodian"))
+                .body("hdabCoordinator[0].url", contains("https://example.org/coordinator"))
+                .body("variables[0].title", equalTo("Variable group"))
+                .body("variables[0].tables[0].columns[0].name", equalTo("age"))
+                .body("distributions[0].accessUrl", contains("https://example.org/access/1",
+                        "https://example.org/access/2"))
+                .body("distributions[0].rights[0].value", equalTo("https://example.org/licence"))
+                .body("distributions[0].rights[0].label", equalTo("Licence"))
+                .body("distributions[0].checksum", equalTo("abc123"))
+                .body("distributions[0].checksumAlgorithm.label", equalTo("SHA-256"))
+                .body("distributions[0].hasPolicy", equalTo("https://example.org/policy"));
     }
 
     @Test

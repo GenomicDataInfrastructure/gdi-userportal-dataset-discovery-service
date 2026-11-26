@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -81,6 +82,13 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "temporalResolution", source = "temporalResolution")
     @Mapping(target = "healthTheme", source = "healthTheme")
     @Mapping(target = "versionNotes", source = "versionNotes")
+    @Mapping(target = "alternativeTitle", source = "alternativeTitle")
+    @Mapping(target = "hasStructuredData", source = "hasStructuredData")
+    @Mapping(target = "relatedResource", source = "relatedResource")
+    @Mapping(target = "source", source = "source")
+    @Mapping(target = "custodian", source = "custodian")
+    @Mapping(target = "hdabCoordinator", source = "hdabCoordinator")
+    @Mapping(target = "variables", source = "variables")
     @Mapping(target = "version", source = "version")
     @Mapping(target = "ownerOrg", source = "ownerOrg")
     @Mapping(target = "isSeries", source = ".", qualifiedByName = "isDatasetSeries")
@@ -140,8 +148,9 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "compressionFormat", source = "compressFormat")
     @Mapping(target = "packagingFormat", source = "packageFormat")
     @Mapping(target = "byteSize", source = "size")
-    @Mapping(target = "checksum", source = "hash")
-    @Mapping(target = "checksumAlgorithm", source = "hashAlgorithm")
+    @Mapping(target = "checksum", source = ".", qualifiedByName = "checksumValue")
+    @Mapping(target = "checksumAlgorithm", source = ".", qualifiedByName = "checksumAlgorithm")
+    @Mapping(target = "hasPolicy", source = "hasPolicy")
     @Mapping(target = "rights", source = "rights")
     @Mapping(target = "availability", source = "availability")
     @Mapping(target = "status", source = "status")
@@ -162,6 +171,7 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "creator", source = "creator")
     @Mapping(target = "rights", source = "rights")
     @Mapping(target = "description", source = "description")
+    @Mapping(target = "documentation", source = "documentation")
     @Mapping(target = "endpointDescription", source = "endpointDescription")
     @Mapping(target = "endpointUrl", source = "endpointUrl")
     @Mapping(target = "format", source = "format")
@@ -210,9 +220,10 @@ public interface CkanDatasetsMapper {
         }
 
         if (ckanPackage.getDcatType() != null) {
-            var dcatDatasetType = Stream.of(
-                    ckanPackage.getDcatType().getDisplayName(),
-                    ckanPackage.getDcatType().getName())
+            // The search result shows one type: the first usable one of the list.
+            var dcatDatasetType = ckanPackage.getDcatType().stream()
+                    .filter(Objects::nonNull)
+                    .flatMap(type -> Stream.of(type.getDisplayName(), type.getName()))
                     .map(StringUtils::trimToNull)
                     .filter(Objects::nonNull)
                     .findFirst()
@@ -307,6 +318,10 @@ public interface CkanDatasetsMapper {
     @Mapping(target = "identifier", source = "identifier")
     @Mapping(target = "country", source = "country")
     @Mapping(target = "actedOnBehalfOf", source = "actedOnBehalfOf")
+    @Mapping(target = "uri", source = "uri")
+    @Mapping(target = "telephone", source = "telephone")
+    @Mapping(target = "openingHours", source = "openingHours")
+    @Mapping(target = "specialOpeningHours", source = "specialOpeningHours")
     @Mapping(target = "spatial", ignore = true)
     Agent map(CkanAgent ckanAgent);
 
@@ -325,6 +340,111 @@ public interface CkanDatasetsMapper {
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Mapping(target = "title", source = ".", qualifiedByName = "variableGroupTitle")
+    VariableGroup map(CkanVariableGroup group);
+
+    @Mapping(target = "title", source = ".", qualifiedByName = "variableTableTitle")
+    VariableTable map(CkanVariableTable table);
+
+    @Mapping(target = "title", source = ".", qualifiedByName = "variableColumnTitle")
+    @Mapping(target = "description", source = ".", qualifiedByName = "variableColumnDescription")
+    VariableColumn map(CkanVariableColumn column);
+
+    /*
+     * A variable title is the text in the language of the request that CKAN resolved, or, when a
+     * title was typed without a language, the text of title_translated.
+     */
+    @Named("variableGroupTitle")
+    default String variableGroupTitle(CkanVariableGroup group) {
+        return StringUtils.trimToNull(StringUtils.firstNonBlank(group.getTitle(), textOf(group
+                .getTitleTranslated())));
+    }
+
+    @Named("variableTableTitle")
+    default String variableTableTitle(CkanVariableTable table) {
+        return StringUtils.trimToNull(StringUtils.firstNonBlank(table.getTitle(), textOf(table
+                .getTitleTranslated())));
+    }
+
+    @Named("variableColumnTitle")
+    default String variableColumnTitle(CkanVariableColumn column) {
+        return StringUtils.trimToNull(StringUtils.firstNonBlank(column.getTitle(), textOf(column
+                .getTitleTranslated())));
+    }
+
+    @Named("variableColumnDescription")
+    default String variableColumnDescription(CkanVariableColumn column) {
+        return StringUtils.trimToNull(StringUtils.firstNonBlank(column.getDescription(), textOf(
+                column.getDescriptionTranslated())));
+    }
+
+    private static String textOf(CkanLocalizedText text) {
+        return text == null ? null : text.getText();
+    }
+
+    /**
+     * A rights statement as a value and label. The value is the IRI of the statement, or its text
+     * when it has no IRI, as for any other plain text served where a value and label are expected.
+     * The label is the text, or the IRI when the statement has no text.
+     */
+    default ValueLabel map(CkanRight right) {
+        var value = StringUtils.firstNonBlank(right.getUri(), right.getLabel());
+        if (value == null) {
+            return null;
+        }
+
+        return ValueLabel.builder()
+                .value(value)
+                .label(StringUtils.firstNonBlank(right.getLabel(), right.getUri()))
+                .build();
+    }
+
+    /**
+     * Rights statements of a distribution. gdi_current has one text and R8 a list of statements;
+     * both arrive as a list, and a statement without an IRI and a label is left out.
+     */
+    default List<ValueLabel> mapRights(List<CkanRight> rights) {
+        if (rights == null) {
+            return Collections.emptyList();
+        }
+
+        return rights.stream()
+                .filter(Objects::nonNull)
+                .map(this::map)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    /**
+     * The checksum is the plain {@code hash} of gdi_current, or the checksum value of the entity
+     * that R8 has.
+     */
+    @Named("checksumValue")
+    default String checksumValue(CkanResource resource) {
+        return StringUtils.firstNonBlank(
+                resource.getHash(),
+                firstChecksum(resource).map(CkanChecksum::getChecksumValue).orElse(null));
+    }
+
+    @Named("checksumAlgorithm")
+    default ValueLabel checksumAlgorithm(CkanResource resource) {
+        var algorithm = resource.getHashAlgorithm() != null
+                ? resource.getHashAlgorithm()
+                : firstChecksum(resource).map(CkanChecksum::getAlgorithm).orElse(null);
+
+        return map(algorithm);
+    }
+
+    private static Optional<CkanChecksum> firstChecksum(CkanResource resource) {
+        if (resource.getChecksum() == null) {
+            return Optional.empty();
+        }
+
+        return resource.getChecksum().stream()
+                .filter(Objects::nonNull)
+                .findFirst();
     }
 
     default OffsetDateTime map(String date) {

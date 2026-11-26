@@ -1,0 +1,149 @@
+{
+    "request": {
+        "method": "GET",
+        "url": "/api/3/action/enhanced_package_show?id=r8-dataset-0001"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "help": "https://ckan-test.healthdata.nl/api/3/action/help_show?name=package_show",
+            "success": true,
+            "result": {
+                "id": "r8-dataset-0001",
+                "title": "R8 dataset",
+                "notes": "A dataset described with HealthDCAT-AP R8",
+                "url": [
+                    "https://example.org/a",
+                    "https://example.org/b"
+                ],
+                "dcat_type": [
+                    {
+                        "name": "http://example.org/type/a",
+                        "display_name": "Type A"
+                    },
+                    {
+                        "name": "http://example.org/type/b",
+                        "display_name": "Type B"
+                    }
+                ],
+                "alternative_title": [
+                    "Alternative title"
+                ],
+                "has_structured_data": true,
+                "related_resource": [
+                    "https://example.org/related"
+                ],
+                "source": [
+                    "https://example.org/source"
+                ],
+                "publisher": [
+                    {
+                        "name": "Publisher",
+                        "email": [
+                            "a@example.org",
+                            "b@example.org"
+                        ],
+                        "url": [
+                            "https://publisher.example.org/1",
+                            "https://publisher.example.org/2"
+                        ],
+                        "telephone": [
+                            "+31 20 1234567"
+                        ],
+                        "opening_hours": [
+                            {
+                                "description": "Weekdays",
+                                "frequency": [
+                                    "Mo-Fr"
+                                ]
+                            }
+                        ],
+                        "special_opening_hours": []
+                    }
+                ],
+                "custodian": [
+                    {
+                        "uri": "https://example.org/custodian",
+                        "name": "Custodian",
+                        "email": [
+                            "c@example.org"
+                        ]
+                    }
+                ],
+                "hdab_coordinator": [
+                    {
+                        "name": "Coordinator",
+                        "url": [
+                            "https://example.org/coordinator"
+                        ]
+                    }
+                ],
+                "variables": [
+                    {
+                        "title": "Variable group",
+                        "title_translated": {
+                            "en": "Variable group",
+                            "nl": "Variabelegroep"
+                        },
+                        "tables": [
+                            {
+                                "title": "Table",
+                                "title_translated": {
+                                    "en": "Table"
+                                },
+                                "keyword": [
+                                    "k1"
+                                ],
+                                "url": "https://example.org/table.csv",
+                                "columns": [
+                                    {
+                                        "name": "age",
+                                        "title": "Age",
+                                        "title_translated": {
+                                            "en": "Age"
+                                        },
+                                        "datatype": "integer",
+                                        "property_url": "https://example.org/age"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "resources": [
+                    {
+                        "id": "r8-distribution-0001",
+                        "name": "Distribution",
+                        "description": "A distribution",
+                        "access_url": [
+                            "https://example.org/access/1",
+                            "https://example.org/access/2"
+                        ],
+                        "download_url": [
+                            "https://example.org/download"
+                        ],
+                        "rights": [
+                            {
+                                "uri": "https://example.org/licence",
+                                "label": "Licence"
+                            }
+                        ],
+                        "checksum": [
+                            {
+                                "algorithm": {
+                                    "name": "http://example.org/sha256",
+                                    "display_name": "SHA-256"
+                                },
+                                "checksum_value": "abc123"
+                            }
+                        ],
+                        "has_policy": "https://example.org/policy"
+                    }
+                ]
+            }
+        }
+    }
+}

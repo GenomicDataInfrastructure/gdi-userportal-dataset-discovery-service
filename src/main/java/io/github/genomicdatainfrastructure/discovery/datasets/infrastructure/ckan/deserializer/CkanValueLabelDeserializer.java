@@ -14,21 +14,35 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 
 /**
- * Handles CKAN value-label fields provided either as objects or plain strings.
+ * Handles CKAN value-label fields provided either as objects or plain strings. A list is read as
+ * its first usable entry, because the metadata profile of a CKAN deployment can serve a list where
+ * another profile serves a single value.
  */
 public class CkanValueLabelDeserializer extends JsonDeserializer<CkanValueLabel> {
 
     @Override
     public CkanValueLabel deserialize(JsonParser parser,
             DeserializationContext context) throws IOException {
-        JsonNode node = parser.getCodec().readTree(parser);
+        return fromNode(parser.getCodec().readTree(parser));
+    }
 
+    private static CkanValueLabel fromNode(JsonNode node) {
         if (node == null || node.isNull() || node.isMissingNode()) {
             return null;
         }
 
         if (node.isTextual()) {
             return fromText(node.asText());
+        }
+
+        if (node.isArray()) {
+            for (JsonNode element : node) {
+                var valueLabel = fromNode(element);
+                if (valueLabel != null) {
+                    return valueLabel;
+                }
+            }
+            return null;
         }
 
         if (!node.isObject()) {

@@ -490,8 +490,11 @@ components:
           format: date-time
           title: Dataset modified at
         url:
-          type: string
+          type: array
           title: Dataset URL
+          description: Landing pages of the dataset.
+          items:
+            type: string
         languages:
           type: array
           items:
@@ -533,7 +536,9 @@ components:
             $ref: "#/components/schemas/RetrievedDistribution"
           title: Distributions
         dcatType:
-          $ref: "#/components/schemas/ValueLabel"
+          type: array
+          items:
+            $ref: "#/components/schemas/ValueLabel"
         # Below are properties from HealthDCAT
         publisherCoverage:
           type: array
@@ -545,6 +550,35 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Agent"
+        # Below are properties that only HealthDCAT-AP R8 defines. They are empty when the CKAN
+        # deployment does not use that profile.
+        alternativeTitle:
+          type: array
+          items:
+            type: string
+        hasStructuredData:
+          type: boolean
+        relatedResource:
+          type: array
+          items:
+            type: string
+        source:
+          type: array
+          items:
+            type: string
+        custodian:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"
+        hdabCoordinator:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"
+        variables:
+          type: array
+          description: The variables of a structured dataset, as table groups of tables and columns.
+          items:
+            $ref: "#/components/schemas/VariableGroup"
         spatialCoverage:
           type: array
           description: A geographic region that is covered by the dataset.
@@ -622,9 +656,13 @@ components:
             type: object
             properties:
               relation:
-                type: string
+                type: array
+                items:
+                  type: string
               role:
-                $ref: "#/components/schemas/ValueLabel"
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValueLabel"
         personalData:
           type: array
           items:
@@ -733,8 +771,10 @@ components:
       type: object
       properties:
         accessUrl:
-          type: string
+          type: array
           title: Access URL
+          items:
+            type: string
         applicableLegislation:
           type: array
           items:
@@ -757,8 +797,13 @@ components:
           items:
             type: string
         downloadUrl:
-          type: string
+          type: array
           title: Download URL
+          items:
+            type: string
+        hasPolicy:
+          type: string
+          description: IRI of the ODRL policy of the distribution (HealthDCAT-AP R8).
         format:
           $ref: "#/components/schemas/ValueLabel"
         languages:
@@ -788,7 +833,13 @@ components:
           items:
             $ref: "#/components/schemas/TimeWindow"
         rights:
-          type: string
+          type: array
+          description: >-
+            Rights statements. The value is the IRI of the statement, or its text when it has no IRI
+            (a deployment whose profile holds one rights text returns one statement with the text as
+            both value and label).
+          items:
+            $ref: "#/components/schemas/ValueLabel"
         status:
           $ref: "#/components/schemas/ValueLabel"
         temporalResolution:
@@ -835,6 +886,10 @@ components:
               description:
                 type: string
                 nullable: true
+              documentation:
+                type: array
+                items:
+                  type: string
               endpointDescription:
                 type: string
               endpoint_url:
@@ -955,20 +1010,79 @@ components:
           type: string
           title: identifier
           description: Unique identifier for the contact point.
-      required:
-        - name
-        - email
+    OpeningHours:
+      properties:
+        description:
+          type: string
+        frequency:
+          type: array
+          items:
+            type: string
+    VariableGroup:
+      properties:
+        title:
+          type: string
+        tables:
+          type: array
+          items:
+            $ref: "#/components/schemas/VariableTable"
+    VariableTable:
+      properties:
+        title:
+          type: string
+        keyword:
+          type: array
+          items:
+            type: string
+        url:
+          type: string
+        columns:
+          type: array
+          items:
+            $ref: "#/components/schemas/VariableColumn"
+    VariableColumn:
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        datatype:
+          type: string
+        propertyUrl:
+          type: string
     Agent:
       properties:
+        uri:
+          type: string
+          title: uri
         name:
           type: string
           title: name
         email:
-          type: string
+          type: array
           title: email
+          items:
+            type: string
         url:
-          type: string
+          type: array
           title: url
+          items:
+            type: string
+        telephone:
+          type: array
+          title: telephone
+          items:
+            type: string
+        openingHours:
+          type: array
+          items:
+            $ref: "#/components/schemas/OpeningHours"
+        specialOpeningHours:
+          type: array
+          items:
+            $ref: "#/components/schemas/OpeningHours"
         homepage:
           type: string
           title: homepage
@@ -1244,7 +1358,9 @@ components:
       type: object
       properties:
         role:
-          $ref: "#/components/schemas/ValueLabel"
+          type: array
+          items:
+            $ref: "#/components/schemas/ValueLabel"
         agent:
           type: array
           items:

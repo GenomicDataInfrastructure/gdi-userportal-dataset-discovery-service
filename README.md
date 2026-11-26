@@ -98,6 +98,33 @@ consult https://quarkus.io/guides/maven-tooling.
 
 All tests are automatically executed when you build a new package.
 
+## Metadata profiles of CKAN
+
+The CKAN deployment decides the shape of a dataset through its metadata profiles
+(`GDI_METADATA_PROFILES` in `gdi-userportal-ckan-docker`: `gdi_current`, `healthdcat_r8`, or both). This
+service has no setting for it: it reads what the deployment serves.
+
+- **Lists.** A property that any profile may serve with more than one value is a list in both models
+  (`src/main/openapi/ckan.yaml` for what CKAN sends, `src/main/openapi/discovery.yaml` for what this service
+  returns): the landing page `url`, `dcatType`, the `email`, `url` and `telephone` of an agent, the roles and
+  relations of qualified relations and attributions, and the `accessUrl`, `downloadUrl` and `rights` of a
+  distribution. One value arrives as a list of one entry, no value as an empty list. A `rights` entry is a
+  value and label, like other coded values: the value is the IRI of the statement, or its text when it has no IRI
+  (gdi_current holds one rights text, so it arrives as one entry with the text as value and label).
+- **R8 properties.** The properties only HealthDCAT-AP R8 defines (`alternativeTitle`, `hasStructuredData`,
+  `relatedResource`, `source`, `custodian`, `hdabCoordinator`, `variables`, the opening hours of an agent, and
+  `hasPolicy` and the checksum entity of a distribution) are in the models. They are empty when the
+  deployment does not use that profile. The checksum is `hash` for `gdi_current` and the checksum entity for
+  R8, and both end up in `checksum` and `checksumAlgorithm`.
+- **Unknown properties** are ignored, so a profile with more fields than this service knows does not fail.
+- **A text served as a list or an object** (a list of texts, or a text per language) uses its first text,
+  English first, and is reported once per field in the log (`LenientTextProblemHandler`). Other mismatches
+  still fail.
+
+To support a property of a new profile: add it to `ckan.yaml` (as an array when any profile may serve several
+values) and to `discovery.yaml`, add its `@Mapping` to `CkanDatasetsMapper`, and add a case to
+`MetadataProfileShapesTest`. A property that is not added is ignored.
+
 ## License
 
 - All original source code is licensed under [Apache-2.0](./LICENSES/Apache-2.0.txt).

@@ -351,7 +351,10 @@ components:
           items:
             $ref: "#/components/schemas/CkanTimeWindow"
         url:
-          type: string
+          type: array
+          description: Landing pages. One value in gdi_current, any number in HealthDCAT-AP R8.
+          items:
+            type: string
         language:
           type: array
           items:
@@ -379,7 +382,10 @@ components:
           items:
             $ref: "#/components/schemas/CkanResource"
         dcat_type:
-          $ref: "#/components/schemas/CkanValueLabel"
+          type: array
+          description: Dataset types. One value in gdi_current, any number in HealthDCAT-AP R8.
+          items:
+            $ref: "#/components/schemas/CkanValueLabel"
 
         # Below are properties from HealthDCAT
         publisher_coverage:
@@ -392,6 +398,35 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CkanAgent"
+
+        # Below are properties that only the HealthDCAT-AP R8 profile defines
+        alternative_title:
+          type: array
+          items:
+            type: string
+        has_structured_data:
+          type: boolean
+        related_resource:
+          type: array
+          items:
+            type: string
+        source:
+          type: array
+          items:
+            type: string
+        custodian:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanAgent"
+        hdab_coordinator:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanAgent"
+        variables:
+          type: array
+          description: The variables of a structured dataset, as CSVW table groups.
+          items:
+            $ref: "#/components/schemas/CkanVariableGroup"
         spatial_coverage:
           type: array
           description: A geographic region that is covered by the dataset.
@@ -465,9 +500,13 @@ components:
             type: object
             properties:
               relation:
-                type: string
+                type: array
+                items:
+                  type: string
               role:
-                $ref: "#/components/schemas/CkanValueLabel"
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanValueLabel"
         personal_data:
           type: array
           items:
@@ -524,7 +563,9 @@ components:
             type: object
             properties:
               role:
-                $ref: "#/components/schemas/CkanValueLabel"
+                type: array
+                items:
+                  $ref: "#/components/schemas/CkanValueLabel"
               agent:
                 type: array
                 items:
@@ -551,15 +592,37 @@ components:
           title: identifier
     CkanAgent:
       properties:
+        uri:
+          type: string
+          title: uri
         name:
           type: string
           title: name
         email:
-          type: string
+          type: array
           title: email
+          description: Email addresses. One value in gdi_current, any number in HealthDCAT-AP R8.
+          items:
+            type: string
         url:
-          type: string
+          type: array
           title: url
+          description: Contact pages. One value in gdi_current, any number in HealthDCAT-AP R8.
+          items:
+            type: string
+        telephone:
+          type: array
+          title: telephone
+          items:
+            type: string
+        opening_hours:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanOpeningHours"
+        special_opening_hours:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanOpeningHours"
         homepage:
           type: string
           title: homepage
@@ -591,6 +654,76 @@ components:
           description: Organization the agent acted on behalf of.
           items:
             $ref: "#/components/schemas/CkanAgent"
+    CkanOpeningHours:
+      properties:
+        description:
+          type: string
+        frequency:
+          type: array
+          items:
+            type: string
+    CkanLocalizedText:
+      description: >-
+        A text per language, or a plain string typed without a language. It is read as its first
+        text, English first, and is only used when the text is not already resolved to the
+        language of the request.
+      properties:
+        text:
+          type: string
+    CkanVariableGroup:
+      properties:
+        title:
+          type: string
+        title_translated:
+          $ref: "#/components/schemas/CkanLocalizedText"
+        tables:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanVariableTable"
+    CkanVariableTable:
+      properties:
+        title:
+          type: string
+        title_translated:
+          $ref: "#/components/schemas/CkanLocalizedText"
+        keyword:
+          type: array
+          items:
+            type: string
+        url:
+          type: string
+        columns:
+          type: array
+          items:
+            $ref: "#/components/schemas/CkanVariableColumn"
+    CkanVariableColumn:
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        title_translated:
+          $ref: "#/components/schemas/CkanLocalizedText"
+        description:
+          type: string
+        description_translated:
+          $ref: "#/components/schemas/CkanLocalizedText"
+        datatype:
+          type: string
+        property_url:
+          type: string
+    CkanRight:
+      properties:
+        uri:
+          type: string
+        label:
+          type: string
+    CkanChecksum:
+      properties:
+        algorithm:
+          $ref: "#/components/schemas/CkanValueLabel"
+        checksum_value:
+          type: string
     CkanDatasetRelationEntry:
       properties:
         relation:
@@ -616,7 +749,10 @@ components:
       type: object
       properties:
         access_url:
-          type: string
+          type: array
+          description: Access URLs. One value in gdi_current, any number in HealthDCAT-AP R8.
+          items:
+            type: string
         applicable_legislation:
           type: array
           items:
@@ -629,6 +765,14 @@ components:
           type: string
         hash_algorithm:
           $ref: "#/components/schemas/CkanValueLabel"
+        checksum:
+          type: array
+          description: The checksum as an entity (HealthDCAT-AP R8). gdi_current has hash and hash_algorithm.
+          items:
+            $ref: "#/components/schemas/CkanChecksum"
+        has_policy:
+          type: string
+          description: IRI of the ODRL policy of the distribution (HealthDCAT-AP R8).
         compress_format:
           $ref: "#/components/schemas/CkanValueLabel"
         description:
@@ -638,7 +782,10 @@ components:
           items:
             type: string
         download_url:
-          type: string
+          type: array
+          description: Download URLs. One value in gdi_current, any number in HealthDCAT-AP R8.
+          items:
+            type: string
         format:
           $ref: "#/components/schemas/CkanValueLabel"
         language:
@@ -664,7 +811,12 @@ components:
           items:
             $ref: "#/components/schemas/CkanTimeWindow"
         rights:
-          type: string
+          type: array
+          description: >-
+            Rights statements. gdi_current has one text, HealthDCAT-AP R8 a list of statements with an
+            optional IRI and a label.
+          items:
+            $ref: "#/components/schemas/CkanRight"
         status:
           $ref: "#/components/schemas/CkanValueLabel"
         temporal_resolution:
@@ -709,6 +861,10 @@ components:
                   type: string
               description:
                 type: string
+              documentation:
+                type: array
+                items:
+                  type: string
               endpoint_description:
                 type: string
               endpoint_url:
